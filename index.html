@@ -566,6 +566,32 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-stampcard canvas{height:30px;width:60px}
  #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
 }
+
+/* Mobile navigation fixes: keep the sim controls reachable and the globe interactive. */
+#hexlab .br-globe-overlay{isolation:isolate}
+#hexlab .br-globe-zoom{position:absolute;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:5px;padding:5px;border:1px solid #38586c;border-radius:10px;background:#11273be8;box-shadow:0 6px 18px #0008}
+#hexlab .br-globe-zoom button{height:38px;min-width:40px;border:1px solid #466178;border-radius:7px;background:#2b4359;color:#e2eff6;font-size:19px;font-weight:650;touch-action:manipulation}
+#hexlab .br-globe-zoom #br-globe-zoom-reset{font-size:12px;min-width:58px}
+#hexlab #br-globe-target{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#hexlab #br-mobile-speed{display:none}
+@media (orientation:portrait){
+ #hexlab .br-rail{z-index:25;overflow:visible}
+ #hexlab .br-rail-controls .hl-controls{min-width:0;gap:5px}
+ #hexlab .br-rail-controls .hl-controls #hl-step,
+ #hexlab .br-rail-controls .hl-controls #hl-clear,
+ #hexlab .br-rail-controls .hl-controls #hl-seed{display:none!important}
+ #hexlab .br-rail-controls .br-live-tuning{display:contents!important}
+ #hexlab .br-rail-controls #br-tuning-toggle{display:inline-flex!important;align-items:center;gap:3px;min-width:59px}
+ #hexlab #br-tuning-toggle .br-tuning-label{display:none!important}
+ #hexlab #br-mobile-speed{display:inline;font-size:11px;white-space:nowrap}
+ #hexlab.br-tuning-open .br-rail-controls .br-advanced-tuning{position:absolute;top:calc(100% + 7px);right:0;width:min(320px,calc(100vw - 14px));max-height:min(70dvh,490px);overflow-y:auto;z-index:65;display:flex!important;box-shadow:0 10px 32px #000d}
+ #hexlab.br-tuning-open .br-rail-controls .br-advanced-tuning .br-speed-knob{display:grid!important;grid-template-rows:auto 28px;gap:8px;border-bottom:1px solid #3b566a;padding-bottom:10px}
+ #hexlab.br-tuning-open .br-rail-controls .br-speed-knob input[type=range]{height:28px;min-height:28px;touch-action:manipulation}
+ #hexlab .br-globe-top{position:absolute;left:10px;right:10px;top:10px;z-index:50;width:auto}
+ #hexlab .br-globe-top b{font-size:12px}
+ #hexlab .br-globe-zoom{right:10px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+}
+
 </style></head><body><div id="hexlab">
  <div class="br-top"><header class="hl-head">
   <div class="hl-brand"><span class="hl-logo">⬡</span> HEXOPHAGE <span class="hl-tag">6 JOGADORES · EXPERIMENTO</span></div>
@@ -602,7 +628,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
      </div>
      <div class="br-knob br-speed-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">15/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="15" step="1"></div>
     </div>
-    <button id="br-tuning-toggle" type="button" aria-expanded="false" aria-controls="br-advanced-tuning" title="Taxa, dificuldade e ações da partida" aria-label="Abrir ajustes de partida">⚙ <span class="br-tuning-label">Ajustes</span></button>
+    <button id="br-tuning-toggle" type="button" aria-expanded="false" aria-controls="br-advanced-tuning" title="Velocidade, taxa, dificuldade e ações" aria-label="Velocidade e ajustes da simulação">⚙ <span class="br-tuning-label">Ajustes</span><span id="br-mobile-speed">15/s</span></button>
     <button id="br-panel-toggle" class="small" aria-controls="br-sidepanel" aria-expanded="true">Painel</button>
    </div>
    <dialog id="br-building" class="br-builddialog"><strong>Construindo esfera</strong><div id="br-build-msg" role="status"></div><progress id="br-build-progress" max="100"></progress><button id="br-build-cancel" type="button">Cancelar</button></dialog>
@@ -694,7 +720,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     <div class="br-mini-body" id="br-mini-body"><div class="br-globe-slot" id="br-mini-slot"></div><span class="br-mini-caption">Arraste para girar · toque para navegar</span></div>
    </section>
   </aside>
-  <div class="br-globe-overlay" id="br-globe-overlay" hidden role="dialog" aria-modal="true" aria-label="Globo 3D maximizado"><div class="br-globe-top"><b>Hexophage · Inspeção 3D</b><span>Gire · zoom com roda ou pinça · clique para navegar</span><button type="button" id="br-globe-close" aria-label="Fechar visualização ampliada">Fechar ✕</button></div><div id="br-full-slot" class="br-full-slot"></div></div>
+  <div class="br-globe-overlay" id="br-globe-overlay" hidden role="dialog" aria-modal="true" aria-label="Globo 3D maximizado"><div class="br-globe-top"><b>Hexophage · Inspeção 3D</b><span>Gire · zoom com roda ou pinça · clique para navegar</span><button type="button" id="br-globe-close" aria-label="Fechar visualização ampliada">Fechar ✕</button></div><div id="br-full-slot" class="br-full-slot"></div><div class="br-globe-zoom" aria-label="Controles de zoom do globo ampliado"><button type="button" id="br-globe-zoom-out" aria-label="Afastar globo">−</button><button type="button" id="br-globe-zoom-reset" aria-label="Restaurar zoom do globo">100%</button><button type="button" id="br-globe-zoom-in" aria-label="Aproximar globo">+</button></div></div>
  </div>
 
 </div>
@@ -3324,7 +3350,7 @@ function bind(){
   }
   updateStats();world.needsDraw=true;
  };
- $('hl-speed').oninput=e=>{world.speed=Number(e.target.value);$('hl-speed-val').textContent=world.speed+'/s';};
+ $('hl-speed').oninput=e=>{world.speed=Number(e.target.value);$('hl-speed-val').textContent=world.speed+'/s';$('br-mobile-speed').textContent=world.speed+'/s';};
  $('hl-viewmode').onclick=toggleView;
  $('hl-sideflip').onclick=sideFlip;
  $('hl-rotatecw').onclick=()=>rotateWorld(-1);
@@ -3389,9 +3415,20 @@ function setupRealLayout(){
  $('br-mini-toggle').onclick=()=>{const p=$('br-mini-panel'),collapsed=p.classList.toggle('collapsed');$('br-mini-toggle').textContent=collapsed?'+':'−';$('br-mini-toggle').setAttribute('aria-expanded',String(!collapsed));globeNeedsDraw=true;};
  $('br-mini-max').onclick=()=>openFullGlobe(true);
  $('br-globe-close').onclick=()=>openFullGlobe(false);
+ const controlZoom=(factor)=>{const r=$('br-globe-target').getBoundingClientRect();zoomGlobe(factor,r.left+r.width/2,r.top+r.height/2);globeNeedsDraw=true;};
+ $('br-globe-zoom-in').onclick=()=>controlZoom(1.4);
+ $('br-globe-zoom-out').onclick=()=>controlZoom(1/1.4);
+ $('br-globe-zoom-reset').onclick=()=>controlZoom(1/world.globeZoom);
  $('br-rank-fold').onclick=()=>{const p=$('br-rail-ranking'),v=p.classList.toggle('expanded');$('br-rank-fold').textContent=v?'Classificação · Todos':'Classificação · Top 3';$('br-rank-fold').setAttribute('aria-expanded',String(v));};
  $('br-rank-hide').onclick=()=>{const p=$('br-rail-ranking'),hidden=p.classList.toggle('collapsed');$('br-rank-hide').textContent=hidden?'+':'−';$('br-rank-hide').setAttribute('aria-label',hidden?'Mostrar ranking':'Ocultar ranking');};
  const portrait=matchMedia('(orientation:portrait)');
+ // The portrait HUD has no room for a permanent slider. Move the same live
+ // speed control into the settings menu; never duplicate its simulation state.
+ const speedControl=$('hl-speed').closest('.br-speed-knob');
+ const liveTuning=document.querySelector('.br-live-tuning');
+ const advanced=$('br-advanced-tuning');
+ const placeSpeedControl=()=>{if(portrait.matches)advanced.prepend(speedControl);else liveTuning.append(speedControl);};
+ placeSpeedControl();portrait.addEventListener('change',placeSpeedControl);
  const applyPortrait=()=>{if(portrait.matches){$('br-mini-panel').classList.add('collapsed');$('br-mini-toggle').textContent='🌐';$('br-mini-toggle').setAttribute('aria-expanded','false');}else{$('br-mini-panel').classList.remove('collapsed');$('br-mini-toggle').textContent='−';$('br-mini-toggle').setAttribute('aria-expanded','true');}globeNeedsDraw=true;};
  applyPortrait();portrait.addEventListener('change',applyPortrait);
  const observer=new ResizeObserver(()=>{globeNeedsDraw=true;world.needsDraw=true;});
@@ -3407,6 +3444,7 @@ function openFullGlobe(open){
  if(open){overlay.hidden=false;$('br-full-slot').append(target);world.globeZoom=1;$('br-globe-close').focus({preventScroll:true});}
  else{$('br-mini-slot').append(target);overlay.hidden=true;world.globeZoom=1;}
  globeNeedsDraw=true;world.needsDraw=true;
+ $('br-globe-zoom-reset').textContent='100%';
 }
 function setupMiniGlobeEvents(target){
  let drag=null,pinch=null;const touches=new Map();
@@ -3419,7 +3457,7 @@ function setupMiniGlobeEvents(target){
   drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false,arcball:null};globeMouse=drag;
  });
  target.addEventListener('pointermove',e=>{
-  if(touches.has(e.pointerId)){touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pinch&&touches.size===2){const now=two();if(globeExpandedNow)zoomGlobe(now.d/pinch.d,now.x,now.y,pinch.x,pinch.y);pinch=now;globeNeedsDraw=true;return;}}
+  if(touches.has(e.pointerId)){touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pinch&&touches.size===2){const now=two();zoomGlobe(now.d/pinch.d,now.x,now.y,pinch.x,pinch.y);pinch=now;globeNeedsDraw=true;return;}}
   if(!drag||drag.id!==e.pointerId)return;
   drag.x=e.clientX;drag.y=e.clientY;
   if(!drag.moved&&Math.hypot(drag.x-drag.startX,drag.y-drag.startY)>5)drag.moved=true;
@@ -3463,6 +3501,7 @@ function drawMiniFallback(){
 function drawMiniGlobe(time){
  const slot=$('br-globe-target');
  if(!slot||!slot.isConnected||!globeExpandedNow&&$('br-mini-panel').classList.contains('collapsed'))return;
+ if(globeExpandedNow)$('br-globe-zoom-reset').textContent=Math.round(world.globeZoom*100)+'%';
  if(!globeNeedsDraw)return;
  // Inspecting the mini-globe should not saturate the GPU when the main sim is fast.
  if(time-globeLastDraw<(globeMouse?16:globeExpandedNow?33:100))return;
