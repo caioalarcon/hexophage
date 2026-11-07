@@ -361,6 +361,100 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-knob label[for="br-tax-slider"]{font-size:0;white-space:nowrap}
  #hexlab .br-knob label[for="br-tax-slider"]::after{content:'Taxa ‰';font-size:10px}
 }
+
+/* Landscape game UX: keep the 3D/atlas viewport primary. Portrait uses the existing layout. */
+#hexlab .br-advanced-tuning{display:contents}
+/* Open editor drawer must be above the control toolbar. */
+#hexlab .hl-right{z-index:42!important}
+#hexlab .br-panel-overlay{z-index:20}
+#hexlab .br-tuning-actions,#hexlab #br-tuning-toggle{display:none}
+@media (orientation: landscape) {
+ #hexlab .br-top{display:flex;flex-direction:row;align-items:stretch;flex-wrap:nowrap;height:37px;min-height:37px;overflow:hidden}
+ #hexlab .hl-head{flex:0 0 auto;display:flex;align-items:center;min-height:0;height:100%;padding:3px 8px;border:0}
+ #hexlab .hl-brand{font-size:12px;letter-spacing:.3px;gap:5px}
+ #hexlab .hl-logo{font-size:17px}
+ #hexlab .hl-tag{display:none}
+ #hexlab .br-scoreboard{display:flex;flex-direction:row;align-items:center;flex:1 1 auto;min-width:0;gap:5px;height:100%;padding:2px 7px 2px 0;border:0;overflow:hidden}
+ #hexlab .br-scoretitle{flex:0 0 33px;max-width:33px;min-width:33px;align-items:center;justify-content:center;gap:0}
+ #hexlab .br-scoretitle #br-mean,#hexlab .br-scoretitle #br-gamestatus{display:none}
+ #hexlab #br-ledger-open{display:grid;place-items:center;font-size:0;width:29px;height:29px;padding:0;border-radius:7px;background:#233448}
+ #hexlab #br-ledger-open::before{content:'🏆';font-size:15px}
+ #hexlab .br-podium{flex:1 1 auto;display:flex;grid-template-columns:none;overflow:hidden;align-items:center;gap:3px;padding:0;min-width:0}
+ #hexlab .br-podium li{flex:1 1 105px;min-width:0;max-width:170px;height:32px;padding:2px 5px 3px;overflow:hidden;border-top-width:2px}
+ #hexlab .br-player{font-size:10px;line-height:1.1;gap:3px;white-space:nowrap}
+ #hexlab .br-player span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+ #hexlab .br-scorevals{margin:2px 0 0;gap:5px}
+ #hexlab .br-scorevals dd{font-size:10px;line-height:1.15}
+ #hexlab .hl-controls{display:flex;flex-wrap:nowrap;align-items:center;min-height:38px;height:38px;gap:6px;padding:3px 7px;position:relative;z-index:12}
+ #hexlab .hl-controls #hl-step,#hexlab .hl-controls #hl-clear,#hexlab .hl-controls #hl-seed{display:none}
+ #hexlab .hl-controls #hl-play{flex:0 0 auto;height:31px;min-height:31px;padding:4px 9px;font-size:12px}
+ #hexlab .br-live-tuning{display:flex;order:0;flex:1 1 100px;max-width:210px;min-width:70px;margin-left:auto;align-items:center;gap:0}
+ #hexlab .br-speed-knob{display:grid;flex:1 1 auto;width:100%;min-width:0;grid-template-rows:auto 13px;gap:0}
+ #hexlab .br-speed-knob>div{font-size:10px;gap:3px;line-height:1.1}
+ #hexlab .br-speed-knob input[type=range]{height:13px;margin:0;width:100%;touch-action:manipulation}
+ #hexlab .br-advanced-tuning{display:none}
+ #hexlab.br-tuning-open .br-advanced-tuning{display:flex;position:absolute;top:calc(100% + 3px);right:6px;z-index:35;width:min(305px,calc(100vw - 12px));max-height:min(75vh,390px);overflow-y:auto;padding:12px;border:1px solid #4b7284;border-radius:9px;background:#15283b;box-shadow:0 12px 32px #000b;flex-direction:column;gap:11px}
+ #hexlab.br-tuning-open .br-advanced-tuning .br-knob{display:grid;gap:5px;grid-template-rows:auto 20px}
+ #hexlab.br-tuning-open .br-advanced-tuning .br-knob>div{font-size:12px}
+ #hexlab.br-tuning-open .br-advanced-tuning .br-knob input[type=range]{height:20px}
+ #hexlab.br-tuning-open .br-tuning-actions{display:flex;gap:7px;border-top:1px solid #375065;padding-top:10px;flex-wrap:wrap}
+ #hexlab #br-tuning-toggle{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;gap:4px;height:31px;min-height:31px;font-size:12px;padding:4px 9px}
+ #hexlab #br-tuning-toggle[aria-expanded=true]{background:#175746;border-color:#52c6a5}
+ #hexlab #br-panel-toggle{flex:0 0 auto;min-height:31px;height:31px;font-size:12px;padding:4px 9px;margin-left:0}
+ #hexlab .hl-shell,#hexlab .hl-left,#hexlab .br-stage,#hexlab #hl-worldbox{min-height:0;min-width:0}
+ #hexlab .br-hotbar{height:59px;min-height:59px;max-height:59px;gap:5px;padding:3px 6px}
+ #hexlab .br-deck{gap:4px;min-width:0;padding-bottom:1px}
+ #hexlab .br-stampcard{height:52px;flex:0 0 73px;width:73px;padding:1px 3px 5px;border-radius:6px}
+ #hexlab .br-stampcard canvas{width:61px;height:29px}
+ #hexlab .br-stampcard .br-stampname{font-size:9px;line-height:1.1}
+ #hexlab .br-stampcard .br-stampprice{font-size:8px}
+ #hexlab .br-transform{flex-direction:row;gap:3px;align-items:center;justify-content:flex-end;padding:0;max-height:100%;overflow:hidden}
+ #hexlab .br-transform button{height:42px;min-width:32px;padding:0 5px;font-size:18px}
+ #hexlab .br-mapbar{height:27px;min-height:27px;padding:2px 7px;gap:5px;flex-wrap:nowrap;overflow:hidden}
+ #hexlab .br-mapbar .hl-viewtools{flex:0 0 auto;margin-left:auto;gap:3px}
+ #hexlab .br-mapbar .hl-viewtools button,#hexlab .br-mapbar>button{padding:2px 6px;font-size:11px;min-width:24px}
+ #hexlab .br-mapbar .hl-lower{display:none}
+ #hexlab .br-mapbar #hl-topstatus{font-size:10px}
+ #hexlab .br-message{min-height:16px;height:16px;padding:1px 7px 2px;line-height:1.1}
+ #hexlab .br-message,#hexlab .br-message button{font-size:10px}
+}
+@media (orientation: landscape) and (max-width:1150px){
+ #hexlab .br-podium li:not(.mine):not(.rival){display:none}
+ #hexlab .br-podium li{flex:0 1 132px;max-width:132px}
+ #hexlab .br-scoreboard{padding-left:2px}
+ #hexlab .br-tuning-label{display:none}
+ #hexlab #br-tuning-toggle{min-width:32px;padding:4px 6px}
+ #hexlab #br-panel-toggle{font-size:11px;padding:4px 6px}
+}
+@media (orientation: landscape) and (max-height:650px){
+ #hexlab .br-top{height:33px;min-height:33px}
+ #hexlab .hl-head{padding:2px 6px}
+ #hexlab .br-scoreboard{padding-top:1px;padding-bottom:1px}
+ #hexlab .br-podium li{height:29px}
+ #hexlab .hl-controls{height:35px;min-height:35px;padding:2px 5px}
+ #hexlab .hl-controls #hl-play,#hexlab #br-tuning-toggle,#hexlab #br-panel-toggle{height:30px;min-height:30px}
+ #hexlab .br-hotbar{height:52px;min-height:52px;max-height:52px;padding:2px 5px}
+ #hexlab .br-stampcard{height:47px;flex-basis:68px;width:68px;padding:1px 2px 5px}
+ #hexlab .br-stampcard canvas{width:57px;height:25px}
+ #hexlab .br-transform button{height:40px;min-width:30px;padding:0 4px}
+ #hexlab .br-mapbar{height:24px;min-height:24px;padding:1px 6px}
+ #hexlab .br-message{display:none}
+ #hexlab .br-mapbar #hl-overview{display:none}
+}
+@media (orientation: landscape) and (max-width:690px){
+ #hexlab .hl-brand{font-size:10px;letter-spacing:0;gap:3px}
+ #hexlab .hl-logo{font-size:14px}
+ #hexlab .br-scoretitle{flex-basis:28px;min-width:28px;max-width:28px}
+ #hexlab #br-ledger-open{width:25px;height:25px}
+ #hexlab .br-podium li{max-width:110px;flex-basis:110px;padding:2px 4px}
+ #hexlab .br-scorevals dd{font-size:9px}
+ #hexlab .br-live-tuning{max-width:120px}
+ #hexlab .br-speed-knob>div{font-size:9px}
+ #hexlab .br-speed-knob output{font-size:9px}
+ #hexlab #br-panel-toggle{font-size:0;min-width:30px;width:30px;padding:0}
+ #hexlab #br-panel-toggle::before{content:'☷';font-size:17px;line-height:1}
+ #hexlab .br-mapbar #br-fps{display:none}
+}
 </style></head><body><div id="hexlab">
  <div class="br-top"><header class="hl-head">
   <div class="hl-brand"><span class="hl-logo">⬡</span> HEXOPHAGE <span class="hl-tag">6 JOGADORES · EXPERIMENTO</span></div>
@@ -390,10 +484,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     <button class="primary" id="hl-play">▶ Iniciar</button>
     <button id="hl-step">+1 geração</button><button id="hl-seed">Semear</button><button id="hl-clear">Reiniciar</button>
     <div class="br-live-tuning" aria-label="Ajustes ao vivo">
+     <div class="br-advanced-tuning" id="br-advanced-tuning">
      <div class="br-knob"><div><label for="br-tax-slider" title="Unidade: por mil. 0,175 ‰ = k 0,000175">Transferência ‰</label><input id="br-tax" aria-label="Taxa de transferência em milésimos" title="Taxa em ‰: 0,175 representa k = 0,000175. Campo aceita até 20 ‰." type="number" min="0" max="20" step="0.001" value="0.175" step="0.001" min="0" max="20"></div><input id="br-tax-slider" aria-label="Taxa de transferência em milésimos" title="1 ‰ equivale a k = 0,001" type="range" min="0" max="2" step="0.005" value="0.175"></div>
      <div class="br-knob"><div><label for="br-difficulty">Dificuldade</label><span><input id="br-botturn" aria-label="Gerações entre carimbadas dos bots" title="Intervalo por bot, em gerações" type="number" min="1" max="1000" step="1" value="28"> ger.</span></div><input id="br-difficulty" type="range" min="0" max="120" step="1" title="À direita, os bots carimbam com mais frequência"></div>
-     <div class="br-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">15/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="15" step="1"></div>
+     <div class="br-tuning-actions"><button type="button" id="br-menu-step">+1 geração</button><button type="button" id="br-menu-reset">Reiniciar</button></div>
+     </div>
+     <div class="br-knob br-speed-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">15/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="15" step="1"></div>
     </div>
+    <button id="br-tuning-toggle" type="button" aria-expanded="false" aria-controls="br-advanced-tuning" title="Taxa, dificuldade e ações da partida" aria-label="Abrir ajustes de partida">⚙ <span class="br-tuning-label">Ajustes</span></button>
     <button id="br-panel-toggle" class="small" aria-controls="br-sidepanel" aria-expanded="true">Painel</button>
    </div>
    <dialog id="br-building" class="br-builddialog"><strong>Construindo esfera</strong><div id="br-build-msg" role="status"></div><progress id="br-build-progress" max="100"></progress><button id="br-build-cancel" type="button">Cancelar</button></dialog>
@@ -2755,6 +2853,7 @@ function updateGamePanel(force=false){
   game.ended?'Empate · todos eliminados':`${alive.length} em jogo`;
  const ranked=[...game.players].sort((a,b)=>Number(a.out)-Number(b.out)||world.ownerCells[b.id].length-world.ownerCells[a.id].length||b.reserve-a.reserve);
  const podium=$('br-podium'),body=$('br-ranking'),details=$('br-ledger').open;
+ const strongestRival=ranked.find(p=>p.id!==1)?.id;
  updateHumanReport(details);
  if(details)body.replaceChildren();
  for(let i=0;i<ranked.length;i++){
@@ -2765,7 +2864,7 @@ function updateGamePanel(force=false){
    card.style.setProperty('--player',game.colors[p.id]);
    card.innerHTML='<div class="br-player"><small></small><span></span></div><dl class="br-scorevals"><div><dt>Campo</dt><dd></dd></div><div><dt>Reserva</dt><dd></dd></div><div><dt>Saldo/g</dt><dd></dd></div></dl>';
   }
-  card.classList.toggle('mine',p.id===1);card.classList.toggle('out',p.out);
+  card.classList.toggle('mine',p.id===1);card.classList.toggle('rival',p.id===strongestRival);card.classList.toggle('out',p.out);
   const name=card.firstElementChild,values=card.lastElementChild;
   name.firstElementChild.textContent=String(i+1)+'º';
   name.lastElementChild.textContent=p.symbol+' '+p.name+(p.out?' ×':'');
@@ -2886,7 +2985,14 @@ function bindLayoutControls(){
  compact.addEventListener('change',()=>setPanel(false));
  $('br-panel-overlay').addEventListener('pointerdown',()=>setPanel(false));
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('br-panel-toggle').getAttribute('aria-expanded')==='true'&&!document.querySelector('dialog[open]'))setPanel(false);});
- $('br-panel-toggle').onclick=()=>setPanel(shell.classList.contains('hl-panel-closed'));
+ const tuning=$('br-tuning-toggle');
+ const closeTuning=()=>{ $('hexlab').classList.remove('br-tuning-open');tuning.setAttribute('aria-expanded','false'); };
+ tuning.onclick=()=>{const open=$('hexlab').classList.toggle('br-tuning-open');tuning.setAttribute('aria-expanded',String(open));};
+ $('br-menu-step').onclick=()=>{$('hl-step').click();closeTuning();};
+ $('br-menu-reset').onclick=()=>{$('hl-clear').click();closeTuning();};
+ document.addEventListener('pointerdown',e=>{if(!e.target.closest('.hl-controls'))closeTuning();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTuning();});
+ $('br-panel-toggle').onclick=()=>{closeTuning();setPanel(shell.classList.contains('hl-panel-closed'));};
  $('br-panel-close').onclick=()=>{setPanel(false);$('br-panel-toggle').focus();};
  $('br-ledger-open').onclick=()=>{$('br-ledger').showModal();updateGamePanel(true);};
  $('br-loss-open').onclick=()=>{$('br-ledger-open').click();$('br-diag-label').scrollIntoView({block:'nearest'});};
