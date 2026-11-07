@@ -25,6 +25,11 @@ Open `index.html`. There are no dependencies, bundlers or build steps.
 
 Go to **Settings → Pages → Build and deployment**, choose **Deploy from a branch**, select **main** and **/(root)**, then save.
 
+
+## Bot regression test
+
+Run `node tests/bot-isolation.cjs` to check the five bot oscillators against independently recorded population cycles for 600 generations on the spherical map. The test requires only Node.js.
+
 ## Status
 
 Research prototype / playable demo. Very large sphere sizes demand substantial RAM. Gameplay rules and UI are experimental. Future work includes a separate simulation backend, player-designed pattern libraries, alliances, and online multiplayer.
