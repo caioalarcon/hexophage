@@ -2485,6 +2485,10 @@ function resetGame(){
   stamps:0,out:false,debtCarry:0,received:0,paid:0,eroded:0,lastFlow:0,pattern:i===0?'manual':game.bots[i-1]
  }));
  game.botPlans=game.players.map(p=>p.id===1?null:botSpiralPlan(p.seed));
+ // Each bot owns a compact reservation mask for its established oscillators.
+ // Keep the mask even if one is destroyed by combat: new stamps must not
+ // inadvertently overwrite debris from the same structure.
+ game.botReserved=new Uint8Array(world.graph.n);
  // Human starts in a free sector. Helpers for jumping to other sectors are part of debug UI.
  centerOnPlayer(game.players[0].seed);
  const current=$('br-follow');current.replaceChildren();
@@ -2580,6 +2584,47 @@ function gameEconomyTick(){
 }
 // Compile axial neighbors once per bot pattern. Each candidate still uses the
 // sphere's real adjacency, oriented transport, and the original search order.
+// A bot oscillator can grow beyond the cells visible at the moment of stamping.
+// Project its entire periodic orbit onto the sphere and leave one empty-cell
+// guard ring; two separate guard rings cannot overlap unless the structures
+// could interact through their immediate neighbor dependencies.
+const botProtectedCache=new Map();
+function botProtectedOffsets(pattern){
+ const cached=botProtectedCache.get(pattern.id);
+ if(cached)return cached;
+ const period=Number(pattern.id.slice(3));
+ if(!Number.isInteger(period)||period<1||period>256)throw Error('Período inválido: '+pattern.id);
+ const initial=decodeRLE(pattern.rle),position=([q,r])=>key(q,r);
+ let alive=new Set(initial.map(position)),footprint=new Set(alive);
+ const beginning=new Set(alive);
+ for(let generation=0;generation<period;generation++){
+  const candidates=new Set(alive);
+  for(const coord of alive){
+   const [q,r]=coord.split(',').map(Number);
+   for(const [dq,dr] of DIR)candidates.add(key(q+dq,r+dr));
+  }
+  const after=new Set();
+  for(const coord of candidates){
+   const [q,r]=coord.split(',').map(Number);
+   let mask=0;
+   for(let d=0;d<6;d++)if(alive.has(key(q+DIR[d][0],r+DIR[d][1])))mask|=1<<d;
+   const survives=alive.has(coord)?world.callSurv6[mask]:world.callBirth6[mask];
+   if(survives)after.add(coord);
+  }
+  alive=after;
+  for(const coord of alive)footprint.add(coord);
+ }
+ if(alive.size!==beginning.size||[...alive].some(c=>!beginning.has(c)))
+  throw Error('O padrão do bot não é estacionário em '+period+' gerações: '+pattern.id);
+ const guarded=new Set(footprint);
+ for(const coord of footprint){
+  const [q,r]=coord.split(',').map(Number);
+  for(const [dq,dr] of DIR)guarded.add(key(q+dq,r+dr));
+ }
+ const offsets=[...guarded].map(c=>c.split(',').map(Number));
+ botProtectedCache.set(pattern.id,offsets);
+ return offsets;
+}
 const stampStencils=new WeakMap();
 function stampStencil(offsets){
  let stencil=stampStencils.get(offsets);
@@ -2643,14 +2688,28 @@ function gameBotsTick(){
   const player=players[k];if(player.out)continue;
   const pat=patterns.callahan.find(x=>x.id===player.pattern);if(!pat)continue;
   const offsets=player.cachedOffsets||(player.cachedOffsets=decodeRLE(pat.rle));
+  const protectedOffsets=botProtectedOffsets(pat);
   const plan=game.botPlans[k];
   if(!plan||player.reserve<offsets.length)continue;
   let tried=0;
   while(tried++<100){
    const anchor=nextBotAnchor(plan);if(anchor===-1)break;
-   const ids=patchForStamp(anchor,chooseEast(anchor),offsets,true);
+   const orientation=chooseEast(anchor);
+   const ids=patchForStamp(anchor,orientation,offsets,true);
    if(!ids)continue;
-   if(commitStamp(player.id,ids,false))break;
+   // Current cells alone are not enough: P66, for example, sweeps across
+   // many more hexagons during its cycle than it occupies at time zero.
+   const protectedIds=patchForStamp(anchor,orientation,protectedOffsets,false);
+   if(!protectedIds)continue;
+   let independent=true;
+   for(const id of protectedIds){
+    if(game.botReserved[id]===player.id||world.cells[id]){independent=false;break;}
+   }
+   if(!independent)continue;
+   if(commitStamp(player.id,ids,false)){
+    for(const id of protectedIds)game.botReserved[id]=player.id;
+    break;
+   }
   }
  }
 }
