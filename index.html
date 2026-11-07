@@ -470,7 +470,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-mapbar{display:none!important}
 #hexlab .br-message{position:absolute;bottom:10px;left:10px;z-index:3;display:flex!important;width:min(88%,540px);border:0;min-height:0;background:#0e1b2bd8;padding:3px 7px;border-radius:6px;pointer-events:none}
 #hexlab .br-message button{pointer-events:auto}
-#hexlab .br-rail{grid-column:2;grid-row:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px;padding:9px;background:#142336;border-left:1px solid #31475d;overflow:hidden;position:relative}
+#hexlab .br-rail{grid-column:2;grid-row:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px;padding:9px;background:#142336;border-left:1px solid #31475d;overflow:visible;position:relative;z-index:24}
 #hexlab .br-rail-header{display:flex;align-items:center;justify-content:space-between;gap:3px;color:#66e4bc;font-size:13px;white-space:nowrap;min-height:23px}
 #hexlab .br-rail-header>span{font-size:10px;color:#b6cbdc;font-variant-numeric:tabular-nums}
 #hexlab .br-rail-controls{flex:0 0 auto;min-width:0}
@@ -970,7 +970,7 @@ function parseRule(value){
 function allocateCells(n){
  const store={};
  store.cells=new Uint8Array(n);store.next=new Uint8Array(n);
- store.owners=new Uint8Array(n);store.nextOwners=new Uint8Array(n);store.ownerIndex=new Uint32Array(n);store.ownerCells=Array.from({length:8},()=>[]);
+ store.owners=new Uint8Array(n);store.nextOwners=new Uint8Array(n);store.ownerIndex=new Uint32Array(n);store.ownerCells=Array.from({length:8},()=>[]);store.nextOwnerCells=Array.from({length:8},()=>[]);
  const workSize=Math.min(n,4096);
  store.active=new Uint32Array(workSize);store.nextActive=new Uint32Array(workSize);
  store.positionsActive=new Uint32Array(n);store.candidates=new Uint32Array(workSize);store.marks=new Uint32Array(Math.ceil(n/32));
@@ -1486,6 +1486,7 @@ function atlasContext(c,a){
  c.setTransform(a.dpr,0,0,a.dpr,0,0);c.beginPath();c.rect(a.x0,a.y0,a.x1-a.x0,a.y1-a.y0);c.clip();
 }
 // Project one cell center for viewport culling or subpixel occupancy marks.
+const atlasCenterScratch=new Float64Array(2);
 function largeAtlasCenter(id,a,margin=0){
  const at=3*id,c=a.g.coords,x=c[at],y=c[at+1],z=c[at+2],u=a.up,r=a.right,l=a.look;
  const n=x*u[0]+y*u[1]+z*u[2];
@@ -1493,7 +1494,8 @@ function largeAtlasCenter(id,a,margin=0){
  const lat=Math.asin(clamp(n,-1,1)),lon=Math.atan2(x*r[0]+y*r[1]+z*r[2],x*l[0]+y*l[1]+z*l[2]);
  const mapped=atlasCapLon(lon,lat,a.capBlend),x0=a.cx+a.s*mapped,y0=a.cy-a.s*lat;
  const slack=margin*a.s*(2+1/Math.max(.01,Math.cos(lat)));
- return x0<a.x0-slack-.001||x0>a.x1+slack+.001?null:[x0,y0];
+ if(x0<a.x0-slack-.001||x0>a.x1+slack+.001)return null;
+ atlasCenterScratch[0]=x0;atlasCenterScratch[1]=y0;return atlasCenterScratch;
 }
 function largeAtlasRegion(a,expected){
  a.detailIds=null;a.detailSet=null;
@@ -1569,12 +1571,52 @@ function atlasRebuild(a){
  }
  c.restore();
 }
+// Distant-map renderer: a bounded reusable bitmap instead of millions of
+// hexagonal Canvas paths. This affects pixels only, never the automaton state.
+const atlasRaster={canvas:document.createElement('canvas'),ctx:null,image:null,painted:0};
+function drawAtlasRaster(a){
+ const raster=atlasRaster;
+ const ratio=Math.min(1,a.dpr||1),w=Math.max(1,Math.round(a.w*ratio)),h=Math.max(1,Math.round(a.h*ratio));
+ if(raster.canvas.width!==w||raster.canvas.height!==h){
+  raster.canvas.width=w;raster.canvas.height=h;
+  raster.ctx=raster.canvas.getContext('2d',{alpha:true});raster.image=raster.ctx.createImageData(w,h);
+ }
+ const bytes=raster.image.data;bytes.fill(0);
+ // Cap work per paint. This also prevents allocating monster Path2D objects.
+ const limit=Math.max(18000,Math.min(85000,Math.floor(w*h/6)));
+ const stride=Math.max(1,Math.ceil(world.activeCount/limit));
+ const radius=Math.max(0,Math.min(3,Math.floor(Math.max(.75,atlasMetrics.pitch*.40)*Math.sqrt(stride)*ratio)));
+ const x0=Math.max(0,Math.floor(a.x0*ratio)),x1=Math.min(w-1,Math.ceil(a.x1*ratio));
+ const y0=Math.max(0,Math.floor(a.y0*ratio)),y1=Math.min(h-1,Math.ceil(a.y1*ratio));
+ let painted=0;
+ for(let owner=1;owner<world.ownerCells.length;owner++){
+  const cells=world.ownerCells[owner],hex=game.colors[owner];
+  if(!cells.length)continue;
+  const red=parseInt(hex.slice(1,3),16),green=parseInt(hex.slice(3,5),16),blue=parseInt(hex.slice(5,7),16);
+  for(let i=0;i<cells.length;i+=stride){
+   const p=largeAtlasCenter(cells[i],a,2/a.g.f);if(!p)continue;
+   const x=Math.round(p[0]*ratio),y=Math.round(p[1]*ratio);
+   if(x<x0||x>x1||y<y0||y>y1)continue;
+   const lx=Math.max(x0,x-radius),rx=Math.min(x1,x+radius),ly=Math.max(y0,y-radius),ry=Math.min(y1,y+radius);
+   for(let yy=ly;yy<=ry;yy++)for(let xx=lx;xx<=rx;xx++){
+    const k=4*(yy*w+xx);bytes[k]=red;bytes[k+1]=green;bytes[k+2]=blue;bytes[k+3]=255;
+   }
+   painted++;
+  }
+ }
+ raster.painted=painted;
+ raster.ctx.putImageData(raster.image,0,0);
+ const c=ctx;c.setTransform(1,0,0,1,0,0);c.drawImage(raster.canvas,0,0,cv.width,cv.height);
+}
 function drawAtlas(){
  const a=atlasState();
  if(a.builtVersion!==a.version){atlasRebuild(a);a.builtVersion=a.version;}
  grid.style.display='none';
  const c=ctx;c.setTransform(1,0,0,1,0,0);c.drawImage(a.base,0,0);c.save();atlasContext(c,a);
- for(let owner=1;owner<world.ownerCells.length;owner++){
+ const raster=atlasMetrics.pitch<6.5 || (world.activeCount>60000 && atlasMetrics.pitch<9);
+ if(raster){
+  c.restore();drawAtlasRaster(a);c.save();atlasContext(c,a);
+ }else for(let owner=1;owner<world.ownerCells.length;owner++){
   const path=new Path2D();let count=0;
   const cells=world.ownerCells[owner],narrow=a.detailIds&&a.detailIds.length<cells.length;
   for(const id of narrow?a.detailIds:cells){
@@ -1758,7 +1800,7 @@ function clearCells(){
  for(let i=0;i<world.nextActiveCount;i++){
   const id=world.nextActive[i];world.next[id]=world.nextOwners[id]=0;
  }
- world.ownerCells=Array.from({length:8},()=>[]);
+ world.ownerCells=Array.from({length:8},()=>[]);world.nextOwnerCells=Array.from({length:8},()=>[]);
  world.activeCount=0;world.nextActiveCount=0;world.gen=0;world.evaluated=0;gpuDirty=true;markRender();updateStats();
 }
 function nextTick(){
@@ -1776,7 +1818,8 @@ function nextTick(){
  let nextCount=0,evaluated=0;
  if(!useDense)for(let i=0;i<world.nextActiveCount;i++){const id=newActive[i];b[id]=0;ob[id]=0;}
  for(let i=0;i<actCount;i++){const id=act[i];positions[id]=0;world.ownerIndex[id]=0;}
- const nextOwnerCells=Array.from({length:8},()=>[]);
+ const oldOwnerCells=world.ownerCells,nextOwnerCells=world.nextOwnerCells;
+ for(const items of nextOwnerCells)items.length=0;
   const ownerCounts=new Uint8Array(8); // Reused for optional custom rules.
   const calc=id=>{
   const j=id*6,d=deg[id];let count=0,mask=0;
@@ -1838,7 +1881,7 @@ function nextTick(){
  world.cells=b;world.next=a;world.owners=ob;world.nextOwners=oa;
  world.active=newActive;world.nextActive=act;
  world.activeCount=nextCount;world.nextActiveCount=actCount;
- world.ownerCells=nextOwnerCells;
+ world.ownerCells=nextOwnerCells;world.nextOwnerCells=oldOwnerCells;
  world.gen++;world.evaluated=evaluated;world.statCount++;gpuDirty=true;globeNeedsDraw=true;
  world.needsDraw=true;
  const naturalField=nextOwnerCells[1].length;
@@ -3431,7 +3474,17 @@ function drawMiniGlobe(time){
  globeNeedsDraw=false;
 }
 
-let frameMeterAt=0,drawsInWindow=0;
+let frameMeterAt=0,drawsInWindow=0,atlasLastPaintAt=0,atlasLastCamera='';
+function shouldUpdateAtlas(t){
+ if(world.chart||!world.graph||world.activeCount<30000)return true;
+ const pitch=1.16*atlasCamera.scale/world.graph.f;
+ if(pitch>=9)return true;
+ const r=cv.getBoundingClientRect(),cam=atlasCamera;
+ const key=[r.width,r.height,cam.scale,...cam.look,...cam.right,world.hover?.id??-1,world.stampRotation,world.stampCount].join('/');
+ if(key!==atlasLastCamera||world.drag){atlasLastCamera=key;atlasLastPaintAt=t;return true;}
+ if(t-atlasLastPaintAt<90)return false;
+ atlasLastPaintAt=t;return true;
+}
 function frame(t){
  if(!world.prev)world.prev=t;
  const elapsed=Math.min(300,t-world.prev);world.prev=t;
@@ -3450,7 +3503,7 @@ function frame(t){
   world.statCount=0;world.statPrev=t;updateStats();updateGamePanel();
  }
  if(world.needsGrid)drawGrid();
- if(world.needsDraw){drawsInWindow++;measure(cv);if(world.chart)drawFlat();else drawAtlas();}
+ if(world.needsDraw&&shouldUpdateAtlas(t)){drawsInWindow++;measure(cv);if(world.chart)drawFlat();else drawAtlas();}
  drawMiniGlobe(t);
  if(world.needsEditor)drawEditor();
  if(t-frameMeterAt>=600){
