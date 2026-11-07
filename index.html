@@ -614,7 +614,7 @@ function* sphereStages(f){
  const n=10*f*f+2,coords=new Float32Array(n*3),adj=new Uint32Array(n*6),deg=new Uint8Array(n);
  const positions=f<=96?new Float64Array(n*3):coords;
  const edgeIds=new Int32Array(144*(f+1)).fill(-1),baseIds=new Int32Array(12).fill(-1);
- const polygons=f<=96?new Float32Array(n*18):null,backSlot=new Uint8Array(n*6),pents=[];
+ const polygons=f<=96?new Float32Array(n*18):null,backSlot=f<=96?new Uint8Array(n*6):null,pents=[];
  const edgeKey=(u,v,wv)=>u<v?(u*12+v)*(f+1)+wv:(v*12+u)*(f+1)+f-wv;
  let total=0;
  function triangle(a,b,c){
@@ -686,7 +686,7 @@ function* sphereStages(f){
   if((sorted&262143)===0)yield 25+Math.floor(35*sorted/sortedCount);
  }
  if(pents.length!==12)throw Error('A esfera precisa de 12 pentágonos.');
- for(let v=0;v<n;v++){
+ if(backSlot)for(let v=0;v<n;v++){
   for(let k=0;k<deg[v];k++){
    const a=v*6+k,u=adj[a];
    if(u<=v)continue;
@@ -696,9 +696,9 @@ function* sphereStages(f){
   }
   if((v&262143)===0)yield 60+Math.floor(18*v/n);
  }
- const distance=new Uint16Array(n).fill(65535),nearest=new Uint32Array(n),queue=new Uint32Array(n);
+ const distance=new Uint16Array(n).fill(65535),nearest=new Uint8Array(n),queue=new Uint32Array(n);
  let front=0,back=0;
- for(const id of pents){distance[id]=0;nearest[id]=id;queue[back++]=id;}
+ for(let i=0;i<pents.length;i++){const id=pents[i];distance[id]=0;nearest[id]=i;queue[back++]=id;}
  while(front<back){
   const u=queue[front++];for(let k=0;k<deg[u];k++){
    const v=adj[u*6+k];if(distance[v]!==65535)continue;
@@ -753,7 +753,7 @@ function allocateCells(n){
  store.owners=new Uint8Array(n);store.nextOwners=new Uint8Array(n);store.ownerIndex=new Uint32Array(n);store.ownerCells=Array.from({length:8},()=>[]);
  const workSize=Math.min(n,4096);
  store.active=new Uint32Array(workSize);store.nextActive=new Uint32Array(workSize);
- store.positionsActive=new Uint32Array(n);store.candidates=new Uint32Array(workSize);store.marks=new Uint32Array(n);
+ store.positionsActive=new Uint32Array(n);store.candidates=new Uint32Array(workSize);store.marks=new Uint32Array(Math.ceil(n/32));
  return store;
 }
 function newWorld(f,prepared,storage){
@@ -874,12 +874,20 @@ function chooseEast(v){
  for(let k=0;k<g.deg[v];k++){const nb=point(g.adj[v*6+k]),dot=vdot(nb,right);if(dot>score){best=k;score=dot;}}
  return best;
 }
+// Small debug spheres cache the reverse edge. For large spheres, find it on
+// demand (at most six comparisons), saving six bytes per planet cell.
+function reverseSlot(g,id,slot){
+ if(g.backSlot)return g.backSlot[id*6+slot];
+ const to=g.adj[id*6+slot],base=to*6;
+ for(let k=0;k<g.deg[to];k++)if(g.adj[base+k]===id)return k;
+ throw Error('Aresta sem retorno');
+}
 // The screen owns the rectangular window. The graph can accept or reject a camera pose.
 let frameLayout=null;
 function stepPose(g,id,ori,d,side){
  const slot=mod(ori+side*d,6),next=g.adj[id*6+slot];
  if(g.deg[next]!==6)return null;
- return {id:next,ori:mod(g.backSlot[id*6+slot]-side*((d+3)%6),6)};
+ return {id:next,ori:mod(reverseSlot(g,id,slot)-side*((d+3)%6),6)};
 }
 function layoutFor(w,h,z){
  if(frameLayout&&frameLayout.w===w&&frameLayout.h===h&&frameLayout.z===z)return frameLayout;
@@ -920,7 +928,7 @@ function makeChart(center,orient,z=world.zoom,rect=cv.getBoundingClientRect()){
    const j=l.adj[i*6+d];if(j<0)continue;
    const slot=mod(ori+side*d,6),next=g.adj[id*6+slot];
    if(g.deg[next]!==6)return finish(null);
-   const no=mod(g.backSlot[id*6+slot]-side*((d+3)%6),6);
+   const no=mod(reverseSlot(g,id,slot)-side*((d+3)%6),6);
    if(ids[j]!==-1){if(ids[j]!==next||ors[j]!==no)return finish(null);continue;}
    if(used.has(next))return finish(null);
    used.add(next);ids[j]=next;ors[j]=no;queue[tail++]=j;
@@ -1549,7 +1557,8 @@ function nextTick(){
  if(!useDense)for(let i=0;i<world.nextActiveCount;i++){const id=newActive[i];b[id]=0;ob[id]=0;}
  for(let i=0;i<actCount;i++){const id=act[i];positions[id]=0;world.ownerIndex[id]=0;}
  const nextOwnerCells=Array.from({length:8},()=>[]);
- const calc=id=>{
+  const ownerCounts=new Uint8Array(8); // Reused for optional custom rules.
+  const calc=id=>{
   const j=id*6,d=deg[id];let count=0,mask=0;
   for(let k=0;k<d;k++){
    const bit=a[adj[j+k]];count+=bit;mask|=bit<<k;
@@ -1559,13 +1568,22 @@ function nextTick(){
   if(a[id])return oa[id];
   // Births with parents from different owners become physically live neutral cells.
   // A unique strict majority of living parents is required for ownership.
-  const counts=new Uint8Array(8);let best=0,winning=7,tied=false;
-  for(let k=0;k<d;k++)if((mask>>k)&1){const idOwner=oa[adj[j+k]];counts[idOwner]++;}
-  for(let owner=1;owner<=7;owner++){
-   if(counts[owner]>best){best=counts[owner];winning=owner;tied=false;}
-   else if(counts[owner]===best&&best>0)tied=true;
-  }
-  return tied||winning===7?7:winning;
+   if(callahan){
+    let first=0;
+    for(let k=0;k<d;k++)if((mask>>>k)&1){
+     const parent=oa[adj[j+k]];
+     if(first&&first!==parent)return 7;
+     first=parent;
+    }
+    return first||7;
+   }
+   ownerCounts.fill(0);let best=0,winning=7,tied=false;
+   for(let k=0;k<d;k++)if((mask>>k)&1){const idOwner=oa[adj[j+k]];ownerCounts[idOwner]++;}
+   for(let owner=1;owner<=7;owner++){
+    if(ownerCounts[owner]>best){best=ownerCounts[owner];winning=owner;tied=false;}
+    else if(ownerCounts[owner]===best&&best>0)tied=true;
+   }
+   return tied||winning===7?7:winning;
  };
  const store=(id,owner)=>{
   if(owner===1&&!a[id])births++;
@@ -1580,16 +1598,19 @@ function nextTick(){
   }
   evaluated=n;
  }else{
-  if(world.epoch===0xffffffff){world.marks.fill(0);world.epoch=0;}
-  const epoch=++world.epoch,marks=world.marks,candidates=world.candidates;
+   const marks=world.marks,candidates=world.candidates;
   let nCand=0;
-  const insert=id=>{if(marks[id]!==epoch){marks[id]=epoch;candidates[nCand++]=id;}};
+   const insert=id=>{
+    const word=id>>>5,bit=1<<(id&31);
+    if((marks[word]&bit)===0){marks[word]|=bit;candidates[nCand++]=id;}
+   };
   for(let k=0;k<actCount;k++){
    const id=act[k],j=id*6;insert(id);
    for(let z=0;z<deg[id];z++)insert(adj[j+z]);
   }
   for(let k=0;k<nCand;k++){
-   const id=candidates[k],owner=calc(id);
+    const id=candidates[k];marks[id>>>5]&=~(1<<(id&31));
+    const owner=calc(id);
    if(owner)store(id,owner);
   }
   evaluated=nCand;
@@ -1783,7 +1804,7 @@ function drawAnomalyOverlay(c,w,h){
  const g=world.graph,dist=g.distance[world.center];
  const threshold=Math.ceil(Math.max(w/(2*world.zoom*DX),h/(2*world.zoom*DY))*.88)+5;
  if(dist>threshold)return;
- const id=g.nearest[world.center],center=point(world.center),pent=point(id);
+ const id=g.pents[g.nearest[world.center]],center=point(world.center),pent=point(id);
  const ev=point(g.adj[world.center*6+world.orient]);
  const nv=point(g.adj[world.center*6+mod(world.orient+world.side,6)]);
  const tangent=(p)=>{const dot=vdot(p,center);return normal([p[0]-center[0]*dot,p[1]-center[1]*dot,p[2]-center[2]*dot]);};
@@ -2247,7 +2268,7 @@ function zoom(factor,clientX,clientY){
 function inspectPentagon(){
  const g=world.graph;
  if(!world.chart){
-  const pent=g.nearest[world.center],near=g.adj[pent*6];
+  const pent=g.pents[g.nearest[world.center]],near=g.adj[pent*6];
   moveCenterTo(near,chooseEast(near),false);
   toast('Anomalia próxima ao centro do mapa.');return;
  }
