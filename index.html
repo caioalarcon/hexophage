@@ -2002,7 +2002,6 @@ function drawGrid(){
   $('hl-zplus').disabled=world.globeZoom>=maxGlobeZoom();
  }
  if(flat){
-  gpuCanvas.style.display='none';
   $('hl-renderstatus').textContent='Render: 2D';
   $('hl-fit').textContent=Math.round(world.zoom/world.homeZoom*100)+'%';
   const atMin=world.zoom<=minimumZoom()*1.001;
