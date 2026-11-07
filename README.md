@@ -4,6 +4,8 @@
 
 ## Play
 
+Public demo: https://caioalarcon.github.io/hexophage/
+
 After GitHub Pages is enabled, open **https://caioalarcon.github.io/hexophage/**. You can also download `index.html` and open it locally in a modern browser.
 
 ## Prototype features
