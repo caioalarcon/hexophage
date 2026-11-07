@@ -506,7 +506,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-mini-panel.collapsed .br-mini-body{display:none}
 #hexlab .br-mini-body{display:flex;align-items:center;flex-direction:column;gap:2px;margin-top:4px;min-height:0}
 #hexlab .br-mini-caption{font-size:9px;color:#9ab7c7;text-align:center;white-space:nowrap}
-#hexlab .br-globe-slot{width:100%;aspect-ratio:1;max-height:min(28vh,225px);height:auto;position:relative;display:block;overflow:hidden;border-radius:50%;touch-action:none;cursor:grab;background:radial-gradient(circle at 42% 35%,#214859 0%,#163044 57%,#0d1829 68%,transparent 69%)}
+#hexlab .br-globe-slot{width:100%;aspect-ratio:1;max-height:min(28vh,225px);height:auto;position:relative;display:block;overflow:hidden;border-radius:50%;touch-action:none;cursor:grab;background:transparent}
 #hexlab .br-globe-slot:active{cursor:grabbing}
 #hexlab .br-globe-slot canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #hexlab #hl-globe-gpu{pointer-events:none!important;position:absolute!important;inset:0;width:100%;height:100%;z-index:2}
@@ -1164,6 +1164,9 @@ function layoutFor(w,h,z){
  frameLayout={w,h,z,cells,adj,origin:index.get('0,0'),cache:new Map()};return frameLayout;
 }
 function makeChart(center,orient,z=world.zoom,rect=cv.getBoundingClientRect()){
+ // Guard before building the layout: at low zoom the old chart used millions of
+ // JS objects/Map entries and blocked scrolling on large planets.
+ if(!chartWithinBudget(rect,z))return null;
  const g=world.graph,l=layoutFor(rect.width||1,rect.height||1,z),side=world.side;
  const cacheKey=(center*6+orient)*2+(side===1?1:0);
  if(l.cache.has(cacheKey))return l.cache.get(cacheKey);
@@ -1206,8 +1209,16 @@ function detailThreshold(){
  return Math.max(r.width/(.8*f*DX),r.height/(.55*f*DY));
 }
 function maximumZoom(){return Math.max(3.3,Math.min(8,detailThreshold()*1.25));}
+function chartWithinBudget(rect,z){
+ if(!(z>0))return false;
+ const w=rect.width||1,h=rect.height||1;
+ // Conservative upper bound; a local chart includes a little overdraw.
+ const cols=Math.ceil((w/z+2*R)/DX)+2;
+ const rows=Math.ceil((h/z+2*R)/DY)+2;
+ return cols*rows<=8500;
+}
 function chooseMapSurface(){
- world.chart=world.zoom>=detailThreshold()?makeChart(world.center,world.orient):null;
+ world.chart=world.zoom>=detailThreshold()&&chartWithinBudget(cv.getBoundingClientRect(),world.zoom)?makeChart(world.center,world.orient):null;
  world.offsetX=world.offsetY=0;world.hover=null;
 }
 function ensureInitialViewport(){
@@ -1647,7 +1658,11 @@ function drawAtlas(){
  if(a.builtVersion!==a.version){atlasRebuild(a);a.builtVersion=a.version;}
  grid.style.display='none';
  const c=ctx;c.setTransform(1,0,0,1,0,0);c.drawImage(a.base,0,0);c.save();atlasContext(c,a);
- const raster=atlasMetrics.pitch<6.5 || (world.activeCount>60000 && atlasMetrics.pitch<9);
+ // If projected geometry is too large for a local detail list, never fall
+ // back to a huge Path2D. The raster is bounded even at intermediate zoom.
+ const raster=atlasMetrics.pitch<6.5 ||
+  (!a.visible&&!a.detailIds&&world.activeCount>12000) ||
+  (world.activeCount>60000 && atlasMetrics.pitch<9);
  if(raster){
   c.restore();drawAtlasRaster(a);c.save();atlasContext(c,a);
  }else for(let owner=1;owner<world.ownerCells.length;owner++){
@@ -2170,7 +2185,7 @@ function project3D(x,y,z,view){
 }
 // Visual LOD only: neither ownership nor graph adjacency is altered.
 function globeWireGraph(){
- const target=gpu.failed&&world.drag?.moved?12:world.globeZoom>=2.5?48:24;
+ const target=!globeExpandedNow?16:gpu.failed&&world.drag?.moved?12:world.globeZoom>=2.5?48:24;
  const full=gpu.wireMode==='full'&&world.graph.f<=96;
  const f=gpu.wireMode==='none'?0:(full?world.graph.f:Math.min(world.graph.f,target));
  if(!f)return null;
@@ -2415,30 +2430,38 @@ function rebuildGPUPlanet(wire){
  gl.bufferData(gl.ARRAY_BUFFER,0,gl.DYNAMIC_DRAW);
  gl.bindBuffer(gl.ARRAY_BUFFER,gpu.centerBuffer);
  gl.bufferData(gl.ARRAY_BUFFER,12,gl.DYNAMIC_DRAW);
- gpu.liveScratch=new Float32Array(0);
+ gpu.liveScratch=new Float32Array(0);gpu.lastLiveStep=0;
  gpu.planet=g;gpuDirty=true;gpu.lastBuildMs=performance.now()-started;
 }
+// A globe has a fixed number of pixels, even when the planet has 42M cells.
+// Sample for global overviews; never upload millions of overlapping points.
+function globePointBudget(){
+ const r=globeTarget.getBoundingClientRect(),pixels=r.width*r.height;
+ return globeExpandedNow?clamp(Math.round(pixels*.13),18000,80000):clamp(Math.round(pixels*.20),4000,10000);
+}
 function uploadGPULive(){
- if(!gpuDirty)return;
+ const limit=globePointBudget(),step=Math.max(1,Math.ceil(world.activeCount/limit));
+ if(!gpuDirty&&gpu.lastLiveStep===step)return;
  const gl=gpu.gl,g=world.graph,c=g.coords;
+ const required=Math.min(world.activeCount,Math.ceil(world.activeCount/step)+7);
  gl.bindBuffer(gl.ARRAY_BUFFER,gpu.liveBuffer);
- if(world.activeCount*3>gpu.liveScratch.length){
-  const capacity=Math.min(g.n,Math.max(world.activeCount,Math.ceil(gpu.liveScratch.length/3*1.5),256));
+ if(required*3>gpu.liveScratch.length){
+  const capacity=Math.min(g.n,Math.max(required,Math.ceil(gpu.liveScratch.length/3*1.5),256));
   gpu.liveScratch=new Float32Array(capacity*3);gl.bufferData(gl.ARRAY_BUFFER,gpu.liveScratch.byteLength,gl.DYNAMIC_DRAW);
  }
  const positions=gpu.liveScratch;
  let written=0;gpu.ownerRanges=[];
  for(let owner=1;owner<=7;owner++){
-  const start=written;
-  for(const id of world.ownerCells[owner]){
-   const src=id*3,dst=written*3;
+  const start=written,cells=world.ownerCells[owner];
+  for(let j=0;j<cells.length;j+=step){
+   const src=cells[j]*3,dst=written*3;
    positions[dst]=c[src];positions[dst+1]=c[src+1];positions[dst+2]=c[src+2];written++;
   }
   gpu.ownerRanges.push([start,written-start,owner]);
  }
  gl.bindBuffer(gl.ARRAY_BUFFER,gpu.liveBuffer);
  if(written)gl.bufferSubData(gl.ARRAY_BUFFER,0,positions.subarray(0,written*3));
- gpuDirty=false;
+ gpu.lastLiveStep=step;gpuDirty=false;
 }
 function prepareGPUBind(buffer){
  const gl=gpu.gl;gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
@@ -2473,12 +2496,12 @@ function drawGlobeGPU(wire){
  for(const [start,count,owner] of gpu.ownerRanges){
   if(!count)continue;
   drawGPULayer(gpu.liveBuffer,gl.POINTS,count,game.glColors[owner],
-   v.inside?Math.max(3.6,v.focal/world.graph.f*.54):Math.max(2.4,v.radius/world.graph.f*.68),true,start);
+   v.inside?Math.max(1.6,v.focal/world.graph.f*.54)*dpr:Math.max(globeExpandedNow?1.5:1.3,v.radius/world.graph.f*.68)*dpr,true,start);
  }
- if(world.showFaults)drawGPULayer(gpu.markerBuffer,gl.POINTS,gpu.markerCount,new Float32Array([1,.48,.39,1]),v.inside?18:12.4,true);
+ if(world.showFaults)drawGPULayer(gpu.markerBuffer,gl.POINTS,gpu.markerCount,new Float32Array([1,.48,.39,1]),(v.inside?13:11)*dpr,true);
  const center=world.graph.coords.subarray(world.center*3,world.center*3+3);
  gl.bindBuffer(gl.ARRAY_BUFFER,gpu.centerBuffer);gl.bufferSubData(gl.ARRAY_BUFFER,0,center);
- drawGPULayer(gpu.centerBuffer,gl.POINTS,1,new Float32Array([1,.89,.51,1]),18,true);
+ drawGPULayer(gpu.centerBuffer,gl.POINTS,1,new Float32Array([1,.89,.51,1]),11*dpr,true);
  gpu.lastDrawMs=performance.now()-started;
  return true;
 }
@@ -2536,7 +2559,9 @@ function zoom(factor,clientX,clientY){
  const old=world.zoom,wanted=clamp(old*factor,minimumZoom(),maximumZoom());
  if(Math.abs(old-wanted)<1e-7)return;
  const pointed=Number.isFinite(clientX)&&world.view==='flat';
- const oldHit=pointed&&hit(clientX,clientY);
+ // The projected map has a continuous spherical camera; its ray anchor is
+ // sufficient for zoom. Avoid graph searches on every wheel event.
+ const oldHit=pointed&&world.chart?hit(clientX,clientY):null;
  const target=oldHit?(oldHit.id??world.chart.map.get(key(oldHit.q,oldHit.r))?.id):undefined;
  if(world.chart){syncAtlasFromLocal();atlasCamera.scale=old*mapUnit();}
  atlasZoomAt(atlasCamera.scale,wanted*mapUnit(),clientX,clientY);
@@ -2558,7 +2583,9 @@ function zoom(factor,clientX,clientY){
   const ray=atlasRay(clientX,clientY);
   if(ray){atlasAlign(ray,normal(point(target)));syncLocalFromAtlas();}
  }
- if(pointed)world.hover=hit(clientX,clientY);
+ // Re-evaluate the stamp preview on the next pointer movement, not for each
+ // wheel notch: zoom responsiveness takes priority over preview updates.
+ if(pointed)world.hover=null;
  world.globeLook=point(world.center);world.globeRight=null;markRender();
 }
 function inspectPentagon(){
@@ -3483,18 +3510,41 @@ function setupMiniGlobeEvents(target){
  target.addEventListener('pointercancel',e=>{touches.delete(e.pointerId);pinch=null;drag=null;globeMouse=null;});
  target.addEventListener('wheel',e=>{if(!globeExpandedNow)return;e.preventDefault();zoomGlobe(Math.exp(-e.deltaY*.0012),e.clientX,e.clientY);globeNeedsDraw=true;},{passive:false});
 }
-function drawMiniFallback(){
+function drawMiniBackdrop(){
  const canvas=fallbackMini,rect=globeTarget.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
  const w=Math.max(1,Math.round(rect.width*dpr)),h=Math.max(1,Math.round(rect.height*dpr));
  if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,rect.width,rect.height);
  const v=globeContext(),r=v.radius;
- ctx.fillStyle='#1d3a4b';ctx.beginPath();ctx.arc(v.cx,v.cy,r,0,Math.PI*2);ctx.fill();
+ if(v.inside){ctx.fillStyle='#152b3c';ctx.fillRect(0,0,rect.width,rect.height);}
+ else{
+  const gradient=ctx.createRadialGradient(v.cx-r*.35,v.cy-r*.35,r*.07,v.cx,v.cy,r);
+  gradient.addColorStop(0,'#294959');gradient.addColorStop(.68,'#1c3648');gradient.addColorStop(1,'#0e1b2b');
+  ctx.beginPath();ctx.arc(v.cx,v.cy,r,0,Math.PI*2);ctx.fillStyle=gradient;ctx.fill();
+  ctx.beginPath();ctx.arc(v.cx,v.cy,r,0,Math.PI*2);ctx.strokeStyle='#7098ac88';ctx.lineWidth=.85;ctx.stroke();
+ }
+ return {ctx,v,r};
+}
+function drawMiniFallback(){
+ const {ctx,v,r}=drawMiniBackdrop();
  ctx.save();ctx.beginPath();ctx.arc(v.cx,v.cy,r,0,Math.PI*2);ctx.clip();
- ctx.strokeStyle='#638c9a66';ctx.lineWidth=.65;
- const drawCurve=(points)=>{ctx.beginPath();let pen=false;for(const p of points){const x=vdot(p,v.right),y=vdot(p,v.up),z=vdot(p,v.look);if(z<=0){pen=false;continue;}const px=v.cx+x*r,py=v.cy-y*r;if(!pen){ctx.moveTo(px,py);pen=true;}else ctx.lineTo(px,py);}ctx.stroke();};
- for(let lat=-1.2;lat<=1.21;lat+=.4){const row=[];for(let lon=-Math.PI;lon<=Math.PI;lon+=.07)row.push([Math.cos(lat)*Math.cos(lon),Math.sin(lat),Math.cos(lat)*Math.sin(lon)]);drawCurve(row);}
- for(let lon=0;lon<Math.PI*2;lon+=Math.PI/6){const col=[];for(let lat=-Math.PI/2;lat<=Math.PI/2;lat+=.07)col.push([Math.cos(lat)*Math.cos(lon),Math.sin(lat),Math.cos(lat)*Math.sin(lon)]);drawCurve(col);}
+ ctx.strokeStyle='#638c9a44';ctx.lineWidth=.65;
+ // Even in software fallback, show the actual hexagonal topology at low LOD.
+ const wire=globeWireGraph(),lines=wire?.wireLines||globeWireLines(wire);
+ if(lines){ctx.beginPath();const focal=v.inside?v.focal:v.radius;
+  for(let k=0;k<lines.length;k+=6){
+   const x0=lines[k]*v.right[0]+lines[k+1]*v.right[1]+lines[k+2]*v.right[2],
+    y0=lines[k]*v.up[0]+lines[k+1]*v.up[1]+lines[k+2]*v.up[2],
+    z0=lines[k]*v.look[0]+lines[k+1]*v.look[1]+lines[k+2]*v.look[2],
+    x1=lines[k+3]*v.right[0]+lines[k+4]*v.right[1]+lines[k+5]*v.right[2],
+    y1=lines[k+3]*v.up[0]+lines[k+4]*v.up[1]+lines[k+5]*v.up[2],
+    z1=lines[k+3]*v.look[0]+lines[k+4]*v.look[1]+lines[k+5]*v.look[2];
+   if(z0<.06||z1<.06)continue;
+   const scale0=v.inside?focal/z0:r,scale1=v.inside?focal/z1:r;
+   ctx.moveTo(v.cx+x0*scale0,v.cy-y0*scale0);ctx.lineTo(v.cx+x1*scale1,v.cy-y1*scale1);
+  }
+  ctx.stroke();
+ }
  const pos=world.graph.coords;
  for(let owner=1;owner<world.ownerCells.length;owner++){
   const cells=world.ownerCells[owner],sample=Math.max(1,Math.ceil(cells.length/(globeExpandedNow?6000:1200)));
@@ -3515,8 +3565,8 @@ function drawMiniGlobe(time){
  globeLastDraw=time;
  const wire=globeWireMesh(globeContext());
  const worked=drawGlobeGPU(wire);
- gpuCanvas.style.display=worked?'block':'none';fallbackMini.style.display=worked?'none':'block';
- if(!worked)drawMiniFallback();
+ gpuCanvas.style.display=worked?'block':'none';fallbackMini.style.display='block';
+ if(worked)drawMiniBackdrop();else drawMiniFallback();
  globeNeedsDraw=false;
 }
 
