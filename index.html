@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Hexophage: batalha de sobrevivência em um autômato celular esférico. Construa gliders, fortalezas e máquinas emergentes."><title>Hexophage — Battle Royale de Autômatos Celulares</title><style>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hexophage — Battle Royale de Autômatos Celulares</title><style>
 * { box-sizing: border-box; }
 body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
 #hexlab { --bg:#0b111e; --panel:#121c2d; --edge:#29364e; --txt:#ecf3ff; --muted:#99abc2; --accent:#54e1bd; color:var(--txt); width:100%; font-size:13px; }
@@ -277,6 +277,90 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-diagnostic p {max-width:76ch;font-size:12px;line-height:1.5;margin:4px 0}
 #hexlab .br-diagnostic p:empty {display:none}
 #hexlab #br-wire-preview[hidden]{display:none}
+
+/* Hexophage gameplay HUD (existing engine and the Callahan physics are unchanged). */
+#hexlab .br-top{display:grid;grid-template-columns:minmax(150px,205px) minmax(0,1fr);align-items:stretch}
+#hexlab .hl-head{padding:4px 9px;min-height:36px}
+#hexlab .hl-brand{font-size:13px;letter-spacing:.6px}
+#hexlab .hl-headright{display:none}
+#hexlab .br-scoreboard{min-width:0;display:flex;gap:6px;align-items:center;padding:3px 8px;overflow:hidden}
+#hexlab .br-scoretitle{display:flex;flex-direction:row;align-items:center;gap:7px;flex:0 0 auto;max-width:160px;white-space:nowrap}
+#hexlab .br-scoretitle #br-mean{display:none}
+#hexlab .br-scoretitle #br-gamestatus{font-size:9px}
+#hexlab .br-link{font-size:11px}
+#hexlab .br-podium{display:flex;flex:1;overflow-x:auto;min-width:0;flex-wrap:nowrap;gap:4px;padding:0 0 2px;scrollbar-width:thin}
+#hexlab .br-podium li{min-width:94px;flex:1 0 94px;max-width:170px;padding:2px 6px 3px;border-top-width:2px}
+#hexlab .br-player{font-size:10px;gap:3px;line-height:1.2;overflow:hidden}
+#hexlab .br-player span{overflow:hidden;text-overflow:ellipsis}
+#hexlab .br-player small{font-size:9px}
+#hexlab .br-scorevals{margin:1px 0 0;gap:4px;justify-content:flex-start}
+#hexlab .br-scorevals div{flex:0 0 auto}
+#hexlab .br-scorevals dt{display:none}
+#hexlab .br-scorevals dd{font-size:10px;line-height:1.2}
+#hexlab .br-scorevals div:first-child dd::before{content:'▣ ';font-size:9px;color:#90a8c0}
+#hexlab .br-scorevals div:nth-child(2) dd::before{content:'◈ ';font-size:9px;color:#d8b979}
+#hexlab .br-scorevals div:nth-child(3){display:none}
+#hexlab .hl-shell{grid-template-columns:minmax(0,1fr)!important;overflow:hidden}
+#hexlab .hl-right{position:absolute!important;right:0!important;left:auto!important;top:0!important;bottom:0!important;width:min(370px,94vw)!important;display:flex;z-index:9;box-shadow:-12px 0 30px #000a;overflow-y:auto;background:#101e2d}
+#hexlab .hl-panel-closed .hl-right{display:none!important}
+#hexlab .br-panel-overlay{position:absolute;inset:0;background:#03080c70;z-index:8;cursor:pointer}
+#hexlab .br-panel-overlay[hidden]{display:none!important}
+#hexlab #br-tabs{display:none!important}
+#hexlab .br-in-progress .br-loadout-manager, #hexlab .br-in-progress .br-prep-only{display:none!important}
+#hexlab .br-prep-only{display:flex;flex-direction:column;gap:10px}
+#hexlab .br-loadout-manager{border:1px solid #2d4658;padding:9px;border-radius:8px;background:#0b1827}
+#hexlab .br-deck-config{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px;margin-top:6px}
+#hexlab .br-deck-choice{font-size:11px;color:#b8d4df;cursor:pointer;display:flex;align-items:center;gap:3px}
+#hexlab .br-deck-choice input{margin:0;accent-color:#35cfa6}
+#hexlab .br-deck-choice input:disabled{opacity:.5}
+#hexlab .br-worldpick{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#hexlab .br-worldpick select{font-size:12px;max-width:200px}
+#hexlab .br-worldpick button:disabled,#hexlab .br-worldpick select:disabled{opacity:.5}
+#hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;max-height:84px;min-width:0;flex:0 0 auto}
+#hexlab .br-deck{display:flex;gap:5px;align-items:stretch;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scrollbar-width:thin;padding-bottom:3px}
+#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;height:66px;overflow:hidden}
+#hexlab .br-stampcard canvas{display:block;width:68px;height:38px;flex:0 0 auto;pointer-events:none}
+#hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:nowrap}
+#hexlab .br-stampcard .br-stampprice{position:absolute;right:2px;top:1px;background:#0a1926c7;padding:0 2px;border-radius:4px;color:#d0e3ec;font-size:9px}
+#hexlab .br-stampcard.selected{border-color:#57f5c4;box-shadow:inset 0 0 0 1px #3de5bb;background:#173b37}
+#hexlab .br-stampcard.unavailable canvas{opacity:.55}
+#hexlab .br-stampcard.unavailable .br-stampname{color:#8da5ba}
+#hexlab .br-charge{position:absolute;height:3px;background:#0b141f;left:4px;right:4px;bottom:2px;border-radius:10px;overflow:hidden}
+#hexlab .br-charge i{display:block;background:#48e2b5;height:100%;width:0}
+#hexlab .br-transform{display:flex;flex:0 0 auto;gap:4px;align-items:center;padding:0 0 4px}
+#hexlab .br-transform button{font-size:21px;font-weight:700;min-width:35px;height:48px;padding:0 8px;touch-action:manipulation}
+#hexlab .br-mapbar{gap:6px;min-height:28px;padding:3px 8px}
+#hexlab .br-mapbar .hl-viewtools{margin-left:auto}
+#hexlab .br-mapbar .hl-upper{font-size:10px}
+#hexlab .br-mapbar #hl-modehint{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hexlab .br-panelgroup summary{font-size:12px}
+#hexlab .br-knob #br-tax{width:58px}
+@media(max-width:1100px){#hexlab .br-scoretitle #br-gamestatus{display:none}#hexlab .br-scoretitle{max-width:100px}}
+@media(max-width:760px){
+ #hexlab .br-top{display:flex;flex-direction:column}
+ #hexlab .hl-head{min-height:27px;padding:3px 9px}
+ #hexlab .br-scoreboard{padding:2px 5px;gap:6px;flex-direction:row}
+ #hexlab .br-scoretitle{flex-direction:row;max-width:80px}
+ #hexlab .br-podium{display:flex;grid-template-columns:none;gap:4px}
+ #hexlab .br-podium li{flex:0 0 91px;min-width:91px;max-width:91px;padding:2px 4px}
+ #hexlab .br-hotbar{padding:5px 5px;gap:4px;min-height:74px;max-height:80px}
+ #hexlab .br-stampcard{flex-basis:77px;width:77px}
+ #hexlab .br-transform{flex-direction:column;gap:3px;justify-content:center}
+ #hexlab .br-transform button{font-size:16px;min-width:28px;width:33px;height:21px;padding:0 4px}
+ #hexlab .br-mapbar #hl-modehint{display:none}
+ #hexlab .hl-controls{min-height:36px}
+}
+@media(max-width:420px){
+ #hexlab .br-scoretitle{max-width:27px}
+ #hexlab #br-ledger-open{font-size:0}
+ #hexlab #br-ledger-open::before{content:'🏆';font-size:16px}
+ #hexlab .br-stampcard{flex-basis:72px;width:72px}
+ #hexlab .br-stampcard canvas{width:64px}
+ #hexlab .br-transform button{width:30px}
+ #hexlab .br-mapbar #br-fps{display:none}
+ #hexlab .br-knob label[for="br-tax-slider"]{font-size:0;white-space:nowrap}
+ #hexlab .br-knob label[for="br-tax-slider"]::after{content:'Taxa ‰';font-size:10px}
+}
 </style></head><body><div id="hexlab">
  <div class="br-top"><header class="hl-head">
   <div class="hl-brand"><span class="hl-logo">⬡</span> HEXOPHAGE <span class="hl-tag">6 JOGADORES · EXPERIMENTO</span></div>
@@ -306,7 +390,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     <button class="primary" id="hl-play">▶ Iniciar</button>
     <button id="hl-step">+1 geração</button><button id="hl-seed">Semear</button><button id="hl-clear">Reiniciar</button>
     <div class="br-live-tuning" aria-label="Ajustes ao vivo">
-     <div class="br-knob"><div><label for="br-tax-slider">Transferência</label><input id="br-tax" aria-label="Coeficiente de transferência k" title="Valor exato de k. Zero desliga a transferência." type="number" min="0" max="2" step="any" value="0.0015"></div><input id="br-tax-slider" aria-label="Taxa de transferência" title="Coeficiente k por diferença de uma célula por geração" type="range" min="0" max="140" step="1"></div>
+     <div class="br-knob"><div><label for="br-tax-slider" title="Unidade: por mil. 0,175 ‰ = k 0,000175">Transferência ‰</label><input id="br-tax" aria-label="Taxa de transferência em milésimos" title="Taxa em ‰: 0,175 representa k = 0,000175. Campo aceita até 20 ‰." type="number" min="0" max="20" step="0.001" value="0.175" step="0.001" min="0" max="20"></div><input id="br-tax-slider" aria-label="Taxa de transferência em milésimos" title="1 ‰ equivale a k = 0,001" type="range" min="0" max="2" step="0.005" value="0.175"></div>
      <div class="br-knob"><div><label for="br-difficulty">Dificuldade</label><span><input id="br-botturn" aria-label="Gerações entre carimbadas dos bots" title="Intervalo por bot, em gerações" type="number" min="1" max="1000" step="1" value="28"> ger.</span></div><input id="br-difficulty" type="range" min="0" max="120" step="1" title="À direita, os bots carimbam com mais frequência"></div>
      <div class="br-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">15/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="15" step="1"></div>
     </div>
@@ -318,10 +402,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     <canvas id="hl-world" aria-label="Janela plana do universo esférico ou inspeção 3D do globo"></canvas>
     <canvas id="hl-globe-gpu" aria-hidden="true"></canvas>
    </div></div>
+   <div class="br-hotbar" aria-label="Carimbos da partida">
+    <div class="br-deck" id="br-deck" role="group" aria-label="Selecione um carimbo"></div>
+    <div class="br-transform" role="group" aria-label="Transformar carimbo selecionado">
+     <button type="button" id="hl-stampccw" aria-label="Girar padrão 60 graus à esquerda" title="Girar o carimbo atual 60° à esquerda">↶</button>
+     <button type="button" id="hl-stampcw" aria-label="Girar padrão 60 graus à direita" title="Girar o carimbo atual 60° à direita">↷</button>
+     <button type="button" id="hl-stampflip" aria-label="Espelhar padrão" title="Espelhar o carimbo atual">⇋</button>
+    </div>
+   </div>
    <div class="br-mapbar">
     <span class="hl-float hl-upper" id="hl-topstatus">Mapa</span>
     <button id="hl-viewmode">Globo 3D</button>
-    <div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div>
+    
     <button id="br-bench-show" hidden title="Medir um quadro com todas as arestas reais da esfera">Medir malha</button>
     <span id="br-fps" title="Quadros exibidos por segundo durante movimento ou simulação"></span>
     <span class="hl-float hl-lower" id="hl-modehint">Arraste para mover · clique para carimbar</span>
@@ -331,26 +423,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    </div>
    <div class="br-message"><span class="hl-feedback" id="hl-feedback" role="status"></span><button class="br-link" id="br-loss-open" aria-haspopup="dialog">Meu campo ↗</button></div>
   </main>
+  <div class="br-panel-overlay" id="br-panel-overlay" hidden aria-hidden="true"></div>
   <aside class="hl-right" id="br-sidepanel" aria-label="Painel de carimbos e configurações">
    <div class="br-panelhead"><b>Painel de jogo</b><button class="small" id="br-panel-close" aria-label="Fechar painel">Fechar</button></div>
-   <div class="hl-section"><div class="hl-subhead">Carimbos conhecidos</div><div id="br-tabs" class="br-tabs"></div></div>
+   <div id="br-tabs" class="br-tabs" hidden></div><div class="hl-section br-loadout-manager"><div class="hl-subhead">Carimbos na partida</div><div class="hl-muted">Selecione sua barra antes de começar. Edite um desenho abaixo para usar no espaço Livre.</div><div id="br-deck-config" class="br-deck-config"></div></div>
+   <div class="br-prep-only">
    <div class="hl-pick"><label class="hl-section-label" for="hl-pattern">Padrão selecionado</label><select id="hl-pattern"></select><div id="hl-patternhelp" class="hl-smallhelp"></div></div>
    <button id="hl-demo" class="primary hl-demo">▶ Testar padrão na esfera</button>
    <div class="br-sidegutter"><label class="hl-section-label" for="br-follow">Ir até jogador</label><select id="br-follow"></select></div>
    <div class="hl-side-head"><strong>Seu carimbo</strong><span id="hl-stampcount">0 células</span></div>
    <div class="hl-row"><label class="hl-section-label" for="hl-stampsize">Grade</label><select id="hl-stampsize"><option value="7">7 × 7</option><option value="11">11 × 11</option><option value="15">15 × 15</option><option value="19">19 × 19</option><option value="25">25 × 25</option><option value="29">29 × 29</option><option value="33">33 × 33</option><option value="41">41 × 41</option><option value="51">51 × 51</option><option value="61">61 × 61</option><option value="81">81 × 81</option><option value="101">101 × 101</option></select></div>
    <div id="hl-editorbox" class="hl-editorbox"><canvas id="hl-editor" aria-label="Editor hexagonal do carimbo"></canvas></div>
-   <div class="hl-editorctrls"><button class="small" id="hl-stampccw">↶ 60°</button><button class="small" id="hl-stampcw">↷ 60°</button><button class="small" id="hl-stampflip">⇋ Espelhar</button><button class="small" id="hl-stampclear">Apagar</button></div>
+   <div class="hl-editorctrls"><button class="small" id="hl-stampclear">Apagar</button></div>
    <div class="hl-editorctrls"><button class="small" id="hl-ring">Anel</button><button class="small" id="hl-line">Linha</button><button class="small" id="hl-noise">Ruído</button></div>
    <div hidden><span>Modo de clique</span><button class="small active" id="hl-mode">Carimbar ✓</button></div>
-   <div class="hl-helptxt">Clique na prévia para carimbar. Ela aparece quando a posição é válida e há reserva para o padrão inteiro. A borda da janela pode cortar a prévia. O jogo verifica o padrão inteiro antes de aplicar e cobra só as células novas. Arraste o mapa para navegar. Use a roda, os botões ou dois dedos para dar zoom.</div>
+   <div class="hl-helptxt">Desenhe e teste padrões antes da partida. Na partida, escolha um carimbo na barra inferior; gire ou espelhe usando os botões ao lado.</div>
+   </div>
    <details class="br-panelgroup"><summary>Partida e bots</summary><div class="br-groupitems">
  <div class="br-controls">
    <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
-   <label>Biomassa inicial<input id="br-initial" type="number" min="20" max="10000" step="20" value="800"></label>
+   <label>Biomassa inicial<input id="br-initial" type="number" min="20" max="200000" step="20" value="8000"></label>
    <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
    <div class="br-summary">Saldo teórico por geração: <strong>k × (suas células − média)</strong>.<br>Devedores pagam da reserva; sem reserva, perdem células aleatórias. Todo pagamento chega aos vencedores.</div>
  </div>
+   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
    <div class="hl-subhead">Carimbo fixo dos bots</div><div id="br-bots" class="br-bots"></div>
    </div></details>
    <details class="br-panelgroup"><summary>Planeta e inspeção</summary><div class="br-groupitems">
@@ -361,7 +457,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     <div class="hl-muted" id="hl-rulehelp"></div>
    </div>
    <div id="hl-ruleconfig" class="hl-ruleconfig"><label class="hl-section-label" for="hl-rule">Regra personalizada</label><input id="hl-rule" class="hl-rule" value="B2/S35"></div>
-    <label class="hl-smallline"><input type="checkbox" id="hl-debug" checked> Mostrar pentágonos (inspeção)</label>
+    <label class="hl-smallline"><input type="checkbox" id="hl-debug"> Mostrar pentágonos (inspeção)</label>
     <label class="hl-smallline" for="hl-meshdetail">Malha 3D:</label>
     <select id="hl-meshdetail" title="Somente os contornos visuais: não altera o grafo nem a simulação" style="max-width:140px;font-size:12px;padding:5px"><option value="auto">Adaptativa</option><option value="full">Detalhe máximo visível</option><option value="none">Sem contornos</option></select>
     <span id="hl-renderstatus" class="hl-smallline" title="Renderizador 3D utilizado">Render: 2D</span>
@@ -404,7 +500,7 @@ const world={graph:null,degree:null,positions:null,pents:[],distance:null,neares
  candidates:null,marks:null,epoch:0,gen:0,evaluated:0,rule:'bays',birth:new Uint8Array(7),survival:new Uint8Array(7),
  callBirth6:new Uint8Array(64),callSurv6:new Uint8Array(64),callBirth5:new Uint8Array(32),callSurv5:new Uint8Array(32),
  stampN:11,stamp:null,stampCount:0,playing:false,speed:15,actual:0,accum:0,prev:0,statPrev:0,statCount:0,
- view:'flat',side:1,orient:0,center:0,chart:null,zoom:1,offsetX:0,offsetY:0,hover:null,stampMode:true,showFaults:true,
+ view:'flat',side:1,orient:0,center:0,chart:null,zoom:1,offsetX:0,offsetY:0,hover:null,stampMode:true,showFaults:false,
  notify:'',notifyAt:0,needsDraw:true,needsEditor:true,needsGrid:true,needsGlobeBase:true,
  drag:null,editorDrag:null,globeZoom:1,globeRight:null,globeUp:null,globeLook:null,
  globeBase:document.createElement('canvas'),globePents:true,lastTickDraw:0,stampRotation:0};
@@ -425,6 +521,89 @@ const patterns={
  ],
  custom:[]
 };
+// Pattern selection is independent of simulation state and owner identity.
+let currentPatternId='gun';
+const savedPatterns=new Map();
+const deckIds=new Set(['gun','glider','osc42','osc9','osc14','manual']);
+const deckNames={gun:'Gun P42',glider:'Glider',osc42:'P42',osc66:'P66',osc9:'P9',osc14:'P14',osc18:'P18',manual:'Livre'};
+function deckPoints(id){
+ const saved=savedPatterns.get(id);
+ return saved ? saved : (patterns.callahan.find(p=>p.id===id)?.rle ? decodeRLE(patterns.callahan.find(p=>p.id===id).rle):[]);
+}
+function drawDeckIcon(canvas,points){
+ const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+ c.clearRect(0,0,w,h);
+ if(!points.length){c.strokeStyle='#6a8497';c.lineWidth=1.5;c.beginPath();c.moveTo(w/2-8,h/2);c.lineTo(w/2+8,h/2);c.moveTo(w/2,h/2-8);c.lineTo(w/2,h/2+8);c.stroke();return;}
+ const xy=points.map(([q,r])=>[Math.sqrt(3)*(q+r/2),1.5*r]);
+ const minX=Math.min(...xy.map(p=>p[0])),maxX=Math.max(...xy.map(p=>p[0]));
+ const minY=Math.min(...xy.map(p=>p[1])),maxY=Math.max(...xy.map(p=>p[1]));
+ const scale=Math.min((w-8)/(maxX-minX+1.7),(h-6)/(maxY-minY+2));
+ const cx=(minX+maxX)/2,cy=(minY+maxY)/2,r=Math.min(scale*.56,5);
+ c.fillStyle='#5ce8c0';c.strokeStyle='#b2ffe5';c.lineWidth=.5;
+ for(const [x,y] of xy){
+  c.beginPath();
+  for(let k=0;k<6;k++){
+   const a=(k*60-30)*Math.PI/180,xx=w/2+(x-cx)*scale+r*Math.cos(a),yy=h/2+(y-cy)*scale+r*Math.sin(a);
+   if(k)c.lineTo(xx,yy);else c.moveTo(xx,yy);
+  }
+  c.closePath();c.fill();if(r>1.9)c.stroke();
+ }
+}
+function renderDeck(){
+ const dock=$('br-deck');if(!dock)return;
+ // Reuse existing buttons and canvases; don't rebuild on every economy tick.
+ const children=new Map(Array.from(dock.children).map(b=>[b.dataset.pattern,b]));
+ for(const p of [...patterns.callahan.map(x=>x.id),'manual']){
+  if(!deckIds.has(p))continue;
+  let b=children.get(p);
+  if(!b){
+   b=document.createElement('button');b.type='button';b.className='br-stampcard';b.dataset.pattern=p;
+   b.innerHTML='<canvas width="68" height="38" aria-hidden="true"></canvas><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span>';
+   b.onclick=()=>loadPattern(p);
+  }
+  b.querySelector('.br-stampname').textContent=deckNames[p];
+  const points=deckPoints(p),price=points.length;
+  drawDeckIcon(b.querySelector('canvas'),points);
+  b.querySelector('.br-stampprice').textContent=price?'◈'+price:'Editar';
+  b.title=deckNames[p]+' · '+price+' de biomassa (seleção permitida mesmo sem reserva)';
+  b.classList.toggle('selected',p===currentPatternId);
+  b.setAttribute('aria-pressed',String(p===currentPatternId));
+  dock.append(b);children.delete(p);
+ }
+ for(const el of children.values())el.remove();
+ updateDeckAvailability();
+}
+function updateDeckAvailability(){
+ const dock=$('br-deck');if(!dock||!game.players.length)return;
+ const reserve=game.players[0].reserve;
+ for(const b of dock.children){
+  const cost=deckPoints(b.dataset.pattern).length;
+  const fraction=cost?Math.min(100,reserve*100/cost):0;
+  b.classList.toggle('unavailable',cost>reserve||!cost||game.ended);
+  b.querySelector('.br-charge i').style.width=fraction+'%';
+ }
+}
+function buildDeckConfig(){
+ const host=$('br-deck-config');if(!host)return;host.replaceChildren();
+ for(const id of [...patterns.callahan.map(p=>p.id),'manual']){
+  const label=document.createElement('label');label.className='br-deck-choice';
+  const check=document.createElement('input');check.type='checkbox';check.checked=deckIds.has(id);
+  check.dataset.pattern=id;
+  check.onchange=()=>{
+   if(world.gen>0){check.checked=deckIds.has(id);return;}
+   if(check.checked)deckIds.add(id);else{
+    if(deckIds.size===1){check.checked=true;return;}deckIds.delete(id);
+   }
+   if(!deckIds.has(currentPatternId))loadPattern([...deckIds][0]);
+   renderDeck();
+  };
+  label.append(check,document.createTextNode(' '+deckNames[id]));host.append(label);
+ }
+}
+function syncDeckConfig(){
+ const host=$('br-deck-config');if(!host)return;
+ for(const check of host.querySelectorAll('input'))check.disabled=world.gen>0;
+}
 // Face interiors are unique. Only the 30 icosahedron edges and 12 vertices
 // need shared identifiers, so boundary storage grows with frequency, not area.
 function* sphereStages(f){
@@ -1423,6 +1602,7 @@ function nextTick(){
  world.needsDraw=true;
  const naturalField=nextOwnerCells[1].length;
  gameEconomyTick();
+ if(world.gen===1)syncPregameControls();
  if(human&&game.humanHistory){
   const finalField=world.ownerCells[1].length;
   recordHumanTurn(before,finalField,births,before+births-naturalField,naturalField-finalField,reserveBefore);
@@ -1487,6 +1667,7 @@ function updateStampReadiness(){
  tag.style.color=missing?'#ffb99b':'';
  const button=$('hl-mode');
  button.disabled=!stampReady();$('hl-demo').disabled=button.disabled;
+ updateDeckAvailability();
 }
 function transformStamp(type){
  const transformed=stampOffsets().map(([q,r])=>{
@@ -1495,15 +1676,26 @@ function transformStamp(type){
   if(type==='flip')return [-q-r,r];
   return [q,r];
  });
- stampFromPoints(transformed);markEdited();
+ stampFromPoints(transformed);
+ savedPatterns.set(currentPatternId,stampOffsets().map(([q,r])=>[q,r]));
+ refreshTabs();
 }
 function loadPattern(id){
+ currentPatternId=id;
  const pat=patterns[world.rule].find(p=>p.id===id);
- if(pat){stampFromPoints(decodeRLE(pat.rle));$('hl-patternhelp').textContent=pat.info;}
- else{newStamp(11,false);$('hl-stampsize').value='11';$('hl-patternhelp').textContent='Padrão desenhado manualmente.';}
+ const previous=savedPatterns.get(id);
+ if(previous?.length)stampFromPoints(previous);
+ else if(pat)stampFromPoints(decodeRLE(pat.rle));
+ else{newStamp(11,false);$('hl-stampsize').value='11';}
+ $('hl-patternhelp').textContent=pat?.info||'Padrão desenhado manualmente.';
+ $('hl-pattern').value=id;
+ refreshTabs();
 }
 function markEdited(){
+ currentPatternId='manual';
+ savedPatterns.set('manual',stampOffsets().map(([q,r])=>[q,r]));
  $('hl-pattern').value='manual';$('hl-patternhelp').textContent='Padrão personalizado.';
+ refreshTabs();
 }
 function chooseRule(rule){
  world.rule=rule;
@@ -2192,34 +2384,29 @@ const game={
  symbols:['','🦖','🦊','🐙','🦂','👾','🤖','⚪'],
  names:['','Você','Raposa','Polvo','Escorpião','Alien','Robô'],
  bots:['osc42','osc66','osc14','osc9','osc18'],
- players:[],init:800,tax:.0015,interval:28,average:0,winner:0,
+ players:[],init:8000,tax:.000175,interval:28,average:0,winner:0,
  ended:false,humanHistory:null,lastStats:0,initializing:false,botPlans:[],nextSpawn:[],rngState:0x6d2b79f5
 };
 function rng(){
  let x=game.rngState;x^=x<<13;x^=x>>>17;x^=x<<5;
  game.rngState=x>>>0;return game.rngState/4294967296;
 }
-// More slider travel near zero lets small transfers be tuned without sacrificing the full range.
-const taxStops=[0,.0001,.00025,.0005,.001,.0015,.0025,.005,.01,.015,.03,.075,.2,.6,2];
-function taxAt(t){
- const i=Math.min(taxStops.length-2,Math.floor(t/10));
- return Number((taxStops[i]+(taxStops[i+1]-taxStops[i])*(t/10-i)).toPrecision(5));
-}
+// UI uses permille (‰); the engine keeps the actual coefficient k.
 function syncTuning(){
- const tax=game.tax,stops=taxStops,i=Math.max(0,stops.findIndex((k,j)=>j<stops.length-1&&tax>=k&&tax<=stops[j+1]));
- $('br-tax-slider').value=10*(i+(tax-stops[i])/(stops[i+1]-stops[i]));
+ $('br-tax-slider').value=Math.min(2,game.tax*1000);
+ $('br-tax-slider').setAttribute('aria-valuetext',(game.tax*1000).toLocaleString('pt-BR',{maximumFractionDigits:3})+' por mil');
  $('br-difficulty').value=120-40*Math.log10(game.interval);
- $('br-tax-slider').setAttribute('aria-valuetext','k = '+tax.toLocaleString('pt-BR',{maximumFractionDigits:6}));
  $('br-difficulty').setAttribute('aria-valuetext','Um carimbo a cada '+game.interval+' gerações por bot');
 }
 function bindTuning(){
  const rate=$('br-tax'),interval=$('br-botturn');
  function updateRate(){
   if(rate.value===''||!Number.isFinite(rate.valueAsNumber))return;
-  game.tax=clamp(rate.valueAsNumber,0,2);syncTuning();updateGamePanel(true);
+  game.tax=clamp(rate.valueAsNumber,0,20)/1000;
+  syncTuning();updateGamePanel(true);
  }
- rate.oninput=updateRate;rate.onchange=()=>{updateRate();rate.value=String(game.tax);};
- $('br-tax-slider').oninput=e=>{rate.value=String(taxAt(Number(e.target.value)));updateRate();};
+ rate.oninput=updateRate;rate.onchange=()=>{updateRate();rate.value=String(Number((game.tax*1000).toFixed(4)));};
+ $('br-tax-slider').oninput=e=>{rate.value=String(Number(e.target.value));updateRate();};
  function updateBots(){
   if(interval.value===''||!Number.isFinite(interval.valueAsNumber))return;
   game.interval=clamp(Math.round(interval.valueAsNumber),1,1000);syncTuning();
@@ -2229,8 +2416,8 @@ function bindTuning(){
  syncTuning();
 }
 function readSettings(){
- game.init=clamp(Math.round(Number($('br-initial').value)||800),20,10000);
- game.tax=clamp(Number($('br-tax').value)||0,0,2);
+ game.init=clamp(Math.round(Number($('br-initial').value)||8000),20,200000);
+ game.tax=clamp(Number($('br-tax').value)||0,0,20)/1000;
  game.interval=clamp(Math.round(Number($('br-botturn').value)||28),1,1000);syncTuning();
 }
 function sphereSpawns(g){
@@ -2467,15 +2654,23 @@ function gameBotsTick(){
   }
  }
 }
+function syncPregameControls(){
+ const changing=world.gen>0;
+ syncDeckConfig();
+ $('hl-frequency').disabled=changing;$('hl-rebuild').disabled=changing;
+ $('br-world-note').textContent=changing?'Para trocar o planeta, inicie uma nova partida.':'Carregar reinicia o mundo e a partida.';
+ $('hexlab').classList.toggle('br-in-progress',changing);
+}
 function updateGamePanel(force=false){
  if(!game.players.length)return;
  if(!force&&world.gen===game.lastStats)return;
  game.lastStats=world.gen;
  const alive=game.players.filter(p=>!p.out),avg=alive.length?alive.reduce((a,p)=>a+world.ownerCells[p.id].length,0)/alive.length:0;
  game.average=avg;
- $('br-mean').textContent='Média em campo '+avg.toLocaleString('pt-BR',{maximumFractionDigits:1});
+ $('br-mean').textContent='μ '+avg.toLocaleString('pt-BR',{maximumFractionDigits:0});
  $('br-neutral').textContent=world.ownerCells[7].length.toLocaleString('pt-BR');
  $('hl-play').disabled=$('hl-step').disabled=game.ended;
+ syncPregameControls();
  const status=$('br-gamestatus');status.textContent=game.winner?'Vencedor: '+game.symbols[game.winner]+' '+game.names[game.winner]:
   game.ended?'Empate · todos eliminados':`${alive.length} em jogo`;
  const ranked=[...game.players].sort((a,b)=>Number(a.out)-Number(b.out)||world.ownerCells[b.id].length-world.ownerCells[a.id].length||b.reserve-a.reserve);
@@ -2499,7 +2694,7 @@ function updateGamePanel(force=false){
   const balance=values.children[2].lastElementChild;
   balance.textContent=(rate>0?'+':'')+rate.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   balance.className=rate>0?'positive':rate<0?'negative':'';
-  card.title=p.out?'Eliminado':p.reserve===0&&rate<0?'Sem reserva. O pagamento sai do campo.':'Saldo teórico de biomassa por geração.';
+  card.title=`${i+1}º ${p.symbol} ${p.name} · Campo ${pop.toLocaleString('pt-BR')} · Reserva ${p.reserve.toLocaleString('pt-BR')} · Saldo ${rate.toFixed(3)} por geração`+(p.out?' · Eliminado':'');
   if(podium.children[i]!==card)podium.insertBefore(card,podium.children[i]||null);
   if(!details)continue;
   const tr=document.createElement('tr');if(p.id===1)tr.className='mine';if(p.out)tr.classList.add('out');
@@ -2604,10 +2799,13 @@ function bindLayoutControls(){
  const shell=document.querySelector('.hl-shell'),compact=matchMedia('(max-width:760px), (max-width:940px) and (max-height:500px)');
  const setPanel=open=>{
   shell.classList.toggle('hl-panel-closed',!open);
+  $('br-panel-overlay').hidden=!open;
   $('br-panel-toggle').setAttribute('aria-expanded',String(open));
  };
- setPanel(!compact.matches);
- compact.addEventListener('change',()=>setPanel(!compact.matches));
+ setPanel(false);
+ compact.addEventListener('change',()=>setPanel(false));
+ $('br-panel-overlay').addEventListener('pointerdown',()=>setPanel(false));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('br-panel-toggle').getAttribute('aria-expanded')==='true'&&!document.querySelector('dialog[open]'))setPanel(false);});
  $('br-panel-toggle').onclick=()=>setPanel(shell.classList.contains('hl-panel-closed'));
  $('br-panel-close').onclick=()=>{setPanel(false);$('br-panel-toggle').focus();};
  $('br-ledger-open').onclick=()=>{$('br-ledger').showModal();updateGamePanel(true);};
@@ -2628,7 +2826,8 @@ function setupGameUI(){
   const button=document.createElement('button');button.type='button';button.textContent=names[p.id]||p.name;button.dataset.pattern=p.id;
   button.onclick=()=>{loadPattern(p.id);$('hl-pattern').value=p.id;refreshTabs();};tab.append(button);
  }
- const free=document.createElement('button');free.type='button';free.textContent='Livre';free.onclick=()=>{newStamp(11,false);markEdited();refreshTabs();};tab.append(free);
+ const free=document.createElement('button');free.type='button';free.textContent='Livre';free.onclick=()=>loadPattern('manual');tab.append(free);
+ buildDeckConfig();
  const bots=$('br-bots');bots.replaceChildren();
  for(let id=2;id<=6;id++){
   const label=document.createElement('label');label.className='br-botlabel';label.textContent=game.symbols[id]+' '+game.names[id];
@@ -2653,6 +2852,7 @@ function setupGameUI(){
 function refreshTabs(){
  const id=$('hl-pattern').value;
  for(const button of $('br-tabs').children)button.classList.toggle('active',button.dataset.pattern===id);
+ renderDeck();
 }
 function bind(){
  const touches=new Map();let pinch=null;
@@ -2788,7 +2988,7 @@ function bind(){
  const sizes=[20,24,32,48,64,96,160,320,640,1024,2048];
  for(const f of sizes){
   const memory=f>=1024?' · ~'+(65.75*(10*f*f+2)/1073741824).toLocaleString('pt-BR',{maximumFractionDigits:1})+' GiB':'';
-  $('hl-frequency').add(new Option('f'+f+' · '+(10*f*f+2).toLocaleString('pt-BR')+memory,String(f),f===32,f===32));
+  $('hl-frequency').add(new Option('f'+f+' · '+(10*f*f+2).toLocaleString('pt-BR')+memory,String(f),f===320,f===320));
  }
  $('hl-frequency').onchange=e=>{const f=Number(e.target.value);$('hl-rebuild').title='Iniciar nova partida em f'+f+' com '+(10*f*f+2).toLocaleString('pt-BR')+' células.';};
  $('hl-rebuild').onclick=requestSphere;
@@ -2856,7 +3056,7 @@ initRuleTables();parseRule('B2/S35');
 newStamp(11,false);
 bind();newWorld(Number($('hl-frequency').value));
 chooseRule('callahan');
-setupGameUI();loadPattern('osc42');$('hl-pattern').value='osc42';resetGame();refreshTabs();
+setupGameUI();loadPattern('gun');resetGame();refreshTabs();
 requestAnimationFrame(frame);
 window.__sphereLab={world,game,gpu,get atlasMetrics(){return atlasMetrics;},buildSphere,makeChart,viewportValid,nextTick,stampAt,decodeRLE,chooseRule,newWorld,resetGame,inspectPentagon,moveCenterTo,zoom,rotateWorld,sideFlip,stampOffsets,patchForStamp,commitStamp};
 })();
