@@ -516,9 +516,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-globe-top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:900px;font-size:12px}
 #hexlab .br-globe-top>span{color:#a7c3d4;font-size:11px}
 #hexlab .br-globe-top button{padding:7px 10px;border-radius:7px;background:#263e53;border:1px solid #48647c}
-#hexlab .br-full-slot{flex:1;min-height:0;min-width:0;width:min(100%,900px);position:relative;touch-action:none;cursor:grab;background:radial-gradient(circle at center,#24485a 0%,#132d40 40%,transparent 44%)}
+#hexlab .br-full-slot{flex:1;min-height:0;min-width:0;width:min(100%,900px);position:relative;touch-action:none;cursor:grab;background:transparent}
 #hexlab .br-full-slot:active{cursor:grabbing}
-#hexlab .br-full-slot .br-globe-slot{width:100%;height:100%;max-height:none;border-radius:0;aspect-ratio:auto;background:radial-gradient(circle at center,#24485a 0%,#132d40 40%,transparent 44%)}
+#hexlab .br-full-slot .br-globe-slot{width:100%;height:100%;max-height:none;border-radius:0;aspect-ratio:auto;background:transparent}
 #hexlab .hl-right{z-index:46!important}
 #hexlab .br-panel-overlay{z-index:44!important}
 #hexlab .br-rail .br-rank-open{display:none}
@@ -2670,6 +2670,7 @@ function maxGlobeZoom(){
  return Math.max(6,Math.min(512,60*world.graph.f/Math.max(1,Math.min(r.width,r.height))));
 }
 function zoomGlobe(factor,x,y,prevX=x,prevY=y){
+ if(!globeExpandedNow)return; // The miniature is a navigator, not a zoomable view.
  const before=globeContext(),old=world.globeZoom;
  world.globeZoom=clamp(old*factor,.5,maxGlobeZoom());
  const after=globeContext(),r=globeTarget.getBoundingClientRect();
@@ -3453,11 +3454,11 @@ function setupMiniGlobeEvents(target){
   if(e.button!==0)return;
   target.setPointerCapture(e.pointerId);
   if(e.pointerType==='touch')touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(touches.size===2){pinch=two();drag=null;globeMouse=null;return;}
+  if(touches.size===2){pinch=globeExpandedNow?two():null;drag=null;globeMouse=null;return;}
   drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false,arcball:null};globeMouse=drag;
  });
  target.addEventListener('pointermove',e=>{
-  if(touches.has(e.pointerId)){touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pinch&&touches.size===2){const now=two();zoomGlobe(now.d/pinch.d,now.x,now.y,pinch.x,pinch.y);pinch=now;globeNeedsDraw=true;return;}}
+  if(touches.has(e.pointerId)){touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pinch&&globeExpandedNow&&touches.size===2){const now=two();zoomGlobe(now.d/pinch.d,now.x,now.y,pinch.x,pinch.y);pinch=now;globeNeedsDraw=true;return;}}
   if(!drag||drag.id!==e.pointerId)return;
   drag.x=e.clientX;drag.y=e.clientY;
   if(!drag.moved&&Math.hypot(drag.x-drag.startX,drag.y-drag.startY)>5)drag.moved=true;
