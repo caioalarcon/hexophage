@@ -567,6 +567,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
 }
 
+/* Feedback is announced to assistive technology, never drawn over the world. */
+#hexlab .br-message {
+ position:absolute!important;width:1px!important;height:1px!important;
+ padding:0!important;margin:0!important;border:0!important;
+ overflow:hidden!important;clip-path:inset(50%)!important;
+ white-space:nowrap!important;background:transparent!important;
+ pointer-events:none!important;
+}
 /* Mobile navigation fixes: keep the sim controls reachable and the globe interactive. */
 #hexlab .br-globe-overlay{isolation:isolate}
 #hexlab .br-globe-zoom{position:absolute;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:5px;padding:5px;border:1px solid #38586c;border-radius:10px;background:#11273be8;box-shadow:0 6px 18px #0008}
@@ -656,7 +664,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
      <button id="hl-zminus" aria-label="Diminuir zoom" title="Diminuir zoom">−</button><button id="hl-fit" title="Voltar ao zoom de construção" aria-label="Voltar ao zoom de construção">100%</button><button id="hl-zplus" aria-label="Aumentar zoom" title="Aumentar zoom">+</button><button id="hl-overview" title="Enquadrar a esfera inteira no mapa">Planeta inteiro</button>
     </div>
    </div>
-   <div class="br-message"><span class="hl-feedback" id="hl-feedback" role="status"></span><button class="br-link" id="br-loss-open" aria-haspopup="dialog">Meu campo ↗</button></div>
+   <div class="br-message" aria-live="polite" aria-atomic="true"><span class="hl-feedback" id="hl-feedback" role="status"></span></div>
   </main>
   <div class="br-panel-overlay" id="br-panel-overlay" hidden aria-hidden="true"></div>
   <aside class="hl-right" id="br-sidepanel" aria-label="Painel de carimbos e configurações">
@@ -2844,7 +2852,6 @@ function recordHumanTurn(before,after,births,deaths,erosion,reserveBefore){
 function updateHumanReport(showDetails){
  const h=game.humanHistory;if(!h)return;
  const e=h.largest,fmt=n=>n.toLocaleString('pt-BR');
- $('br-loss-open').textContent=e?'Maior queda · −'+fmt(e.before-e.after)+' ↗':'Meu campo ↗';
  if(!showDetails)return;
  const p=game.players[0],peak=h.peak,field=world.ownerCells[1].length;
  $('br-diag-peak').textContent=peak&&peak.field>0?`Desde o pico de ${fmt(peak.field)} células na geração ${fmt(peak.gen)}, seu campo chegou a ${fmt(field)}. Carimbadas +${fmt(h.placed-peak.placed)}, nascidas +${fmt(h.births-peak.births)}, mortas pelo autômato −${fmt(h.deaths-peak.deaths)}, removidas por dívida −${fmt(p.eroded-peak.eroded)}. Reserva ${fmt(peak.reserve)} → ${fmt(p.reserve)}, com ${fmt(p.received-peak.received)} recebidas, ${fmt((p.paid-peak.paid)-(p.eroded-peak.eroded))} pagas da reserva e ${fmt(h.placed-peak.placed)} gastas em carimbos.`:'Aguardando o primeiro carimbo.';
@@ -3186,7 +3193,6 @@ function bindLayoutControls(){
  $('br-panel-toggle').onclick=()=>{closeTuning();setPanel(shell.classList.contains('hl-panel-closed'));};
  $('br-panel-close').onclick=()=>{setPanel(false);$('br-panel-toggle').focus();};
  $('br-ledger-open').onclick=()=>{$('br-ledger').showModal();updateGamePanel(true);};
- $('br-loss-open').onclick=()=>{$('br-ledger-open').click();$('br-diag-label').scrollIntoView({block:'nearest'});};
 }
 function setupGameUI(){
  $('br-wire-bench').onclick=measureWholeWire;
@@ -3409,7 +3415,7 @@ function setupRealLayout(){
  const rail=$('br-rail'),top=document.querySelector('.br-top'),controls=document.querySelector('.hl-controls');
  $('br-rail-controls').append(controls);
  $('br-rail-rank-slot').append(document.querySelector('.br-scoreboard'));
- const stage=$('br-stage');stage.append(document.querySelector('.br-message'));
+ // Acessibilidade: notificações ficam no DOM, sem cobrir a visualização.
  const g=$('br-mini-slot'),target=document.createElement('div');target.className='br-globe-slot';target.id='br-globe-target';
  target.setAttribute('aria-label','Arraste para girar o mundo; clique para centralizar a janela plana');
  target.append(fallbackMini,gpuCanvas);g.append(target);
