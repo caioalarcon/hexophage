@@ -455,6 +455,117 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab #br-panel-toggle::before{content:'☷';font-size:17px;line-height:1}
  #hexlab .br-mapbar #br-fps{display:none}
 }
+
+/* Hexophage integrated adaptive layout — the map stays on screen while the 3D globe is a navigator. */
+#hexlab {height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+#hexlab .br-top{display:none!important}
+#hexlab .hl-shell{flex:1 1 auto;min-height:0;min-width:0;display:grid!important;grid-template-columns:minmax(0,1fr) clamp(184px,19vw,255px)!important;grid-template-rows:minmax(0,1fr)!important;overflow:hidden}
+#hexlab .hl-left{grid-column:1;grid-row:1;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;border:0}
+#hexlab .br-stage{flex:1 1 auto;min-height:0;width:100%;position:relative}
+#hexlab #hl-worldbox{min-height:0!important;height:100%;width:100%}
+#hexlab .br-hotbar{flex:0 0 auto;min-height:77px;max-height:82px;width:100%;min-width:0;align-items:center;border-top:1px solid #354a61;padding:5px 7px}
+#hexlab .br-deck{flex:1 1 0;min-width:0}
+#hexlab .br-transform{flex:0 0 auto;align-self:center;padding:0;gap:4px}
+#hexlab .br-transform button{width:34px;height:43px;font-size:20px;min-width:34px;padding:0 3px}
+#hexlab .br-mapbar{display:none!important}
+#hexlab .br-message{position:absolute;bottom:10px;left:10px;z-index:3;display:flex!important;width:min(88%,540px);border:0;min-height:0;background:#0e1b2bd8;padding:3px 7px;border-radius:6px;pointer-events:none}
+#hexlab .br-message button{pointer-events:auto}
+#hexlab .br-rail{grid-column:2;grid-row:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px;padding:9px;background:#142336;border-left:1px solid #31475d;overflow:hidden;position:relative}
+#hexlab .br-rail-header{display:flex;align-items:center;justify-content:space-between;gap:3px;color:#66e4bc;font-size:13px;white-space:nowrap;min-height:23px}
+#hexlab .br-rail-header>span{font-size:10px;color:#b6cbdc;font-variant-numeric:tabular-nums}
+#hexlab .br-rail-controls{flex:0 0 auto;min-width:0}
+#hexlab .br-rail-controls .hl-controls{min-height:0;height:auto;display:flex;align-items:center;gap:6px;padding:0;border:0;background:transparent;flex-wrap:wrap!important;position:relative;overflow:visible}
+#hexlab .br-rail-controls #hl-play{flex:1 1 70px;min-height:36px;font-size:12px}
+#hexlab .br-rail-controls #br-panel-toggle,#hexlab .br-rail-controls #br-tuning-toggle{flex:0 0 auto;min-height:35px;margin:0;font-size:11px;padding:6px 7px}
+#hexlab .br-rail-controls .br-live-tuning{flex:1 0 100%;order:10;max-width:none;margin:0;min-width:0;display:flex;align-items:center}
+#hexlab .br-rail-controls .br-speed-knob{display:grid!important;width:100%;grid-template-rows:auto 18px;gap:2px}
+#hexlab .br-rail-controls .br-speed-knob>div{font-size:11px}
+#hexlab .br-rail-controls .br-speed-knob input[type=range]{width:100%;height:16px}
+#hexlab .br-rail-controls .br-advanced-tuning{display:none!important}
+#hexlab.br-tuning-open .br-rail-controls .br-advanced-tuning{display:flex!important;position:absolute;top:calc(100% + 6px);right:0;z-index:45;width:min(300px,calc(100vw - 12px));max-height:55vh;overflow:auto;flex-direction:column;padding:10px;gap:10px;border:1px solid #46667c;border-radius:8px;background:#1b3144;box-shadow:0 12px 30px #000b}
+#hexlab.br-tuning-open .br-rail-controls .br-tuning-actions{display:flex;gap:6px}
+#hexlab .br-rail-ranking{border:1px solid #30485d;background:#192c3e;border-radius:7px;min-width:0;flex:0 0 auto;padding:6px}
+#hexlab .br-rail-rankhead{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:5px}
+#hexlab .br-rail-rankhead button{font-size:11px;padding:3px 6px;background:#243950;border:1px solid #435b70;border-radius:5px}
+#hexlab .br-rail-ranking.collapsed .br-scoreboard{display:none!important}
+#hexlab .br-rail-ranking.collapsed .br-rail-rankhead{margin-bottom:0}
+#hexlab .br-rail-ranking .br-scoreboard{display:flex!important;flex-direction:column;align-items:stretch;gap:3px;background:transparent;border:0;padding:0;min-width:0;max-height:none;overflow:hidden}
+#hexlab .br-rail-ranking .br-scoretitle{display:none}
+#hexlab .br-rail-ranking .br-podium{display:grid;grid-template-columns:minmax(0,1fr);min-width:0;overflow:visible;gap:3px;padding:0;margin:0}
+#hexlab .br-rail-ranking .br-podium li{display:block!important;min-width:0;max-width:none;height:auto;flex:initial;padding:4px 6px;border-radius:5px}
+#hexlab .br-rail-ranking:not(.expanded) .br-podium li:nth-child(n+4){display:none!important}
+#hexlab .br-rail-ranking .br-player{font-size:11px}
+#hexlab .br-rail-ranking .br-scorevals{font-size:10px}
+#hexlab .br-rail-ranking .br-scorevals dd{font-size:10px}
+#hexlab .br-rail-spacer{flex:1 1 auto;min-height:0}
+#hexlab .br-mini-panel{background:#192d40;border:1px solid #39566e;border-radius:8px;padding:7px;flex:0 0 auto;min-width:0}
+#hexlab .br-mini-heading{display:flex;justify-content:space-between;align-items:center;gap:5px;min-height:23px}
+#hexlab .br-mini-heading b{font-size:11px;color:#d4e9ef}
+#hexlab .br-mini-heading>div{display:flex;gap:4px}
+#hexlab .br-mini-heading button{border:1px solid #455e73;background:#294257;border-radius:5px;padding:2px 7px;font-size:13px;min-width:27px;min-height:25px}
+#hexlab .br-mini-panel.collapsed .br-mini-body{display:none}
+#hexlab .br-mini-body{display:flex;align-items:center;flex-direction:column;gap:2px;margin-top:4px;min-height:0}
+#hexlab .br-mini-caption{font-size:9px;color:#9ab7c7;text-align:center;white-space:nowrap}
+#hexlab .br-globe-slot{width:100%;aspect-ratio:1;max-height:min(28vh,225px);height:auto;position:relative;display:block;overflow:hidden;border-radius:50%;touch-action:none;cursor:grab;background:radial-gradient(circle at 42% 35%,#214859 0%,#163044 57%,#0d1829 68%,transparent 69%)}
+#hexlab .br-globe-slot:active{cursor:grabbing}
+#hexlab .br-globe-slot canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hexlab #hl-globe-gpu{pointer-events:none!important;position:absolute!important;inset:0;width:100%;height:100%;z-index:2}
+#hexlab #br-mini-fallback{pointer-events:none;z-index:1}
+#hexlab .br-globe-overlay[hidden]{display:none!important}
+#hexlab .br-globe-overlay{position:absolute;inset:0;display:flex;flex-direction:column;z-index:40;background:#07121bf7;backdrop-filter:blur(5px);padding:12px;align-items:center;gap:10px}
+#hexlab .br-globe-top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:900px;font-size:12px}
+#hexlab .br-globe-top>span{color:#a7c3d4;font-size:11px}
+#hexlab .br-globe-top button{padding:7px 10px;border-radius:7px;background:#263e53;border:1px solid #48647c}
+#hexlab .br-full-slot{flex:1;min-height:0;min-width:0;width:min(100%,900px);position:relative;touch-action:none;cursor:grab;background:radial-gradient(circle at center,#24485a 0%,#132d40 40%,transparent 44%)}
+#hexlab .br-full-slot:active{cursor:grabbing}
+#hexlab .br-full-slot .br-globe-slot{width:100%;height:100%;max-height:none;border-radius:0;aspect-ratio:auto;background:radial-gradient(circle at center,#24485a 0%,#132d40 40%,transparent 44%)}
+#hexlab .hl-right{z-index:46!important}
+#hexlab .br-panel-overlay{z-index:44!important}
+#hexlab .br-rail .br-rank-open{display:none}
+@media (orientation:portrait){
+ #hexlab .hl-shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important}
+ #hexlab .br-rail{grid-row:1;grid-column:1;display:flex;flex-direction:row;align-items:center;gap:6px;padding:5px 8px;min-height:45px;max-height:64px;overflow:visible;border:0;border-bottom:1px solid #30495e}
+ #hexlab .br-rail-header{font-size:11px;flex:0 1 auto;min-width:0}
+ #hexlab .br-rail-header strong{white-space:nowrap}
+ #hexlab .br-rail-header>span{display:none}
+ #hexlab .br-rail-controls{margin-left:auto;flex:0 0 auto}
+ #hexlab .br-rail-controls .hl-controls{flex-wrap:nowrap!important;gap:4px}
+ #hexlab .br-rail-controls #hl-play{flex:0 0 auto;min-height:31px;font-size:11px;padding:4px 7px}
+ #hexlab .br-rail-controls #br-tuning-toggle,#hexlab .br-rail-controls #br-panel-toggle{min-height:30px;padding:4px 7px;font-size:11px}
+ #hexlab .br-rail-controls .br-live-tuning{display:none}
+ #hexlab .br-rail-ranking{position:absolute;top:56px;left:8px;z-index:5;max-width:min(62%,250px);width:auto;padding:3px 6px;box-shadow:0 2px 14px #0008}
+ #hexlab .br-rail-ranking .br-rail-rankhead{margin:0}
+ #hexlab .br-rail-ranking .br-rail-rankhead button{font-size:10px;padding:2px 4px}
+ #hexlab .br-rail-ranking .br-scoreboard{display:none!important}
+ #hexlab .br-rail-ranking.expanded .br-scoreboard{display:flex!important;max-height:155px;overflow:auto}
+ #hexlab .br-rail-spacer{display:none}
+ #hexlab .br-mini-panel{position:fixed!important;right:7px;bottom:85px;width:min(170px,48vw);z-index:13;box-shadow:0 5px 16px #0008;padding:5px}
+ #hexlab .br-mini-panel.collapsed{width:auto;background:#20364a}
+ #hexlab .br-mini-panel.collapsed .br-mini-heading b{display:none}
+ #hexlab .br-mini-panel.collapsed #br-mini-max{display:none}
+ #hexlab .br-mini-caption{font-size:9px}
+ #hexlab .br-globe-slot{max-height:min(160px,30vh)}
+ #hexlab .hl-left{display:contents!important}
+ #hexlab .br-stage{grid-row:2;grid-column:1;min-height:0}
+ #hexlab .br-hotbar{grid-row:3;grid-column:1;min-height:75px;max-height:79px;width:100%;padding:5px}
+ #hexlab .br-transform{flex-direction:column;gap:2px}
+ #hexlab .br-transform button{height:21px;width:29px;min-width:29px;font-size:15px;padding:0}
+ #hexlab .br-message{bottom:84px;max-width:68%;font-size:10px}
+ #hexlab .br-globe-top>span{display:none}
+}
+@media (orientation:landscape) and (max-height:470px){
+ #hexlab .br-rail{padding:5px;gap:5px}
+ #hexlab .br-rail-header{font-size:10px;min-height:17px}
+ #hexlab .br-rail-controls #hl-play{min-height:27px}
+ #hexlab .br-rail-controls #br-panel-toggle,#hexlab .br-rail-controls #br-tuning-toggle{min-height:27px}
+ #hexlab .br-rail-ranking .br-podium li{padding:2px 4px}
+ #hexlab .br-mini-caption{display:none}
+ #hexlab .br-globe-slot{max-height:24vh}
+ #hexlab .br-hotbar{min-height:62px;max-height:66px;padding:3px 4px}
+ #hexlab .br-stampcard{height:56px;flex-basis:69px;width:69px}
+ #hexlab .br-stampcard canvas{height:30px;width:60px}
+ #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
+}
 </style></head><body><div id="hexlab">
  <div class="br-top"><header class="hl-head">
   <div class="hl-brand"><span class="hl-logo">⬡</span> HEXOPHAGE <span class="hl-tag">6 JOGADORES · EXPERIMENTO</span></div>
@@ -573,6 +684,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    </div>
    </div></details>
   </aside>
+  <aside class="br-rail" id="br-rail" aria-label="Ferramentas de simulação">
+   <div class="br-rail-header"><strong>⬡ HEXOPHAGE</strong><span id="br-rail-gen" title="Geração atual">Geração 0</span></div>
+   <div class="br-rail-controls" id="br-rail-controls"></div>
+   <div class="br-rail-ranking" id="br-rail-ranking"><div class="br-rail-rankhead"><button type="button" id="br-rank-fold" aria-expanded="false">Classificação · Top 3</button><button type="button" id="br-rank-hide" aria-label="Ocultar ranking" title="Mostrar ou ocultar ranking">−</button></div><div id="br-rail-rank-slot"></div></div>
+   <div class="br-rail-spacer"></div>
+   <section class="br-mini-panel" id="br-mini-panel" aria-label="Mini-mundo esférico">
+    <div class="br-mini-heading"><b>Mini-mundo 3D</b><div><button type="button" id="br-mini-max" title="Maximizar o globo" aria-label="Maximizar o mini-mundo">⛶</button><button type="button" id="br-mini-toggle" title="Mostrar ou ocultar o mini-mundo" aria-expanded="true">−</button></div></div>
+    <div class="br-mini-body" id="br-mini-body"><div class="br-globe-slot" id="br-mini-slot"></div><span class="br-mini-caption">Arraste para girar · toque para navegar</span></div>
+   </section>
+  </aside>
+  <div class="br-globe-overlay" id="br-globe-overlay" hidden role="dialog" aria-modal="true" aria-label="Globo 3D maximizado"><div class="br-globe-top"><b>Hexophage · Inspeção 3D</b><span>Gire · zoom com roda ou pinça · clique para navegar</span><button type="button" id="br-globe-close" aria-label="Fechar visualização ampliada">Fechar ✕</button></div><div id="br-full-slot" class="br-full-slot"></div></div>
  </div>
 
 </div>
@@ -863,7 +985,7 @@ function newWorld(f,prepared,storage){
  world.activeCount=0;world.nextActiveCount=0;world.epoch=0;world.gen=0;world.evaluated=0;gpuDirty=true;
  world.center=world.graph.farthest;world.orient=chooseEast(world.center);world.side=1;
  world.view='flat';world.homeZoom=cv.clientWidth<550?.76:.94;world.zoom=world.homeZoom;
- $('hl-side').textContent='Exterior';$('hl-viewmode').textContent='Globo 3D';
+ $('hl-side').textContent='Exterior';globeNeedsDraw=true;
  ensureInitialViewport();
  world.globeLook=point(world.center);world.globeRight=null;
  $('hl-dims').textContent=n.toLocaleString('pt-BR')+' células';
@@ -884,7 +1006,7 @@ function cancelBuild(){
  toast('Construção cancelada. A partida continua disponível.');
 }
 function requestSphere(){
- const f=Number($('hl-frequency').value),wasPlaying=world.playing,globe=world.view==='globe';
+ const f=Number($('hl-frequency').value),wasPlaying=world.playing,globeExpanded=globeExpandedNow;
  if(buildJob)return;
  if(f===world.graph.f){resetGame();return;}
  setPlay(false);
@@ -918,7 +1040,7 @@ function requestSphere(){
  function ready(g,buffers){
   if(buildJob!==job)return;
   try{
-   newWorld(f,g,buffers);resetGame();if(globe)toggleView();
+   newWorld(f,g,buffers);resetGame();if(globeExpanded)openFullGlobe(true);globeNeedsDraw=true;
    let bytes=0;
    for(const obj of [g,buffers])for(const v of Object.values(obj))if(ArrayBuffer.isView(v))bytes+=v.byteLength;
    stopBuild();
@@ -1450,7 +1572,7 @@ function atlasRebuild(a){
 function drawAtlas(){
  const a=atlasState();
  if(a.builtVersion!==a.version){atlasRebuild(a);a.builtVersion=a.version;}
- grid.style.display='none';gpuCanvas.style.display='none';
+ grid.style.display='none';
  const c=ctx;c.setTransform(1,0,0,1,0,0);c.drawImage(a.base,0,0);c.save();atlasContext(c,a);
  for(let owner=1;owner<world.ownerCells.length;owner++){
   const path=new Path2D();let count=0;
@@ -1579,7 +1701,7 @@ function addLive(id,owner=7){
  world.active=fitIndexBuffer(world.active,world.activeCount+1);
  world.active[world.activeCount]=id;world.positionsActive[id]=++world.activeCount;
  const owners=world.ownerCells[owner];world.ownerIndex[id]=owners.length+1;owners.push(id);
- gpuDirty=true;return true;
+ gpuDirty=true;globeNeedsDraw=true;return true;
 }
 function removeLive(id){
  if(!world.cells[id])return false;
@@ -1589,7 +1711,7 @@ function removeLive(id){
  const owner=world.owners[id],items=world.ownerCells[owner];
  const slot=world.ownerIndex[id]-1,tail=items.pop();
  if(slot<items.length){items[slot]=tail;world.ownerIndex[tail]=slot+1;}
- world.owners[id]=0;world.ownerIndex[id]=0;gpuDirty=true;return true;
+ world.owners[id]=0;world.ownerIndex[id]=0;gpuDirty=true;globeNeedsDraw=true;return true;
 }
 // The same placement check drives the in-world ghost and the final click/drop.
 function stampAdditions(owner,ids){
@@ -1717,7 +1839,7 @@ function nextTick(){
  world.active=newActive;world.nextActive=act;
  world.activeCount=nextCount;world.nextActiveCount=actCount;
  world.ownerCells=nextOwnerCells;
- world.gen++;world.evaluated=evaluated;world.statCount++;gpuDirty=true;
+ world.gen++;world.evaluated=evaluated;world.statCount++;gpuDirty=true;globeNeedsDraw=true;
  world.needsDraw=true;
  const naturalField=nextOwnerCells[1].length;
  gameEconomyTick();
@@ -1957,7 +2079,7 @@ function globeProjection(v,view){
  return [vdot(vec,right),vdot(vec,up),vdot(vec,look)];
 }
 function globeContext(){
- const rect=cv.getBoundingClientRect(),w=rect.width,h=rect.height;
+ const rect=globeTarget.getBoundingClientRect(),w=rect.width,h=rect.height;
  const look=world.globeLook||point(world.center);
  const right=world.globeRight||(world.globeRight=basis(look).right),up=cross(look,right),radius=Math.min(w,h)*.425*world.globeZoom;
  return {w,h,look,right,up,radius,focal:Math.min(w,h)*1.1*world.globeZoom,cx:w/2,cy:h/2,inside:world.side===-1};
@@ -2420,7 +2542,7 @@ function rotateWorld(dir){
  world.hover=null;markRender();
 }
 function closestVisibleCell(clientX,clientY){
- const rect=cv.getBoundingClientRect(),v=globeContext();
+ const rect=globeTarget.getBoundingClientRect(),v=globeContext();
  let x,y,z;
  if(v.inside){
   x=(clientX-rect.left-v.cx)/v.focal;
@@ -2451,7 +2573,7 @@ function rotateGlobeFromDrag(drag){
  let v=drag.arcball;
  if(!v){
   v=globeContext();
-  const rect=cv.getBoundingClientRect();
+  const rect=globeTarget.getBoundingClientRect();
   v.cx+=rect.left;v.cy+=rect.top;
   v.start=grabVector(drag.startX,drag.startY,v);
   v.outside=!v.inside&&Math.hypot(drag.startX-v.cx,drag.startY-v.cy)>=v.radius;
@@ -2476,13 +2598,13 @@ function orientGlobe(v,axis,angle){
  world.needsGlobeBase=true;world.needsDraw=true;
 }
 function maxGlobeZoom(){
- const r=cv.getBoundingClientRect();
+ const r=globeTarget.getBoundingClientRect();
  return Math.max(6,Math.min(512,60*world.graph.f/Math.max(1,Math.min(r.width,r.height))));
 }
 function zoomGlobe(factor,x,y,prevX=x,prevY=y){
  const before=globeContext(),old=world.globeZoom;
  world.globeZoom=clamp(old*factor,.5,maxGlobeZoom());
- const after=globeContext(),r=cv.getBoundingClientRect();
+ const after=globeContext(),r=globeTarget.getBoundingClientRect();
  if(Number.isFinite(x)&&Number.isFinite(y)){
   const captured=before.inside||Math.hypot(prevX-r.left-before.cx,prevY-r.top-before.cy)<=before.radius;
   if(captured){
@@ -3209,6 +3331,107 @@ function bind(){
  });
  observer.observe($('hl-worldbox'));observer.observe($('hl-editorbox'));
 }
+
+// The 3D world is now a navigator, not an alternative main-game view.
+const globeTarget={getBoundingClientRect:()=>$('br-globe-target')?.getBoundingClientRect()||cv.getBoundingClientRect()}; // Current miniature or maximized 3D surface.
+let globeNeedsDraw=true,globeLastDraw=0,globeExpandedNow=false,globeMouse=null;
+const fallbackMini=document.createElement('canvas');fallbackMini.id='br-mini-fallback';fallbackMini.setAttribute('aria-hidden','true');
+function setupRealLayout(){
+ const rail=$('br-rail'),top=document.querySelector('.br-top'),controls=document.querySelector('.hl-controls');
+ $('br-rail-controls').append(controls);
+ $('br-rail-rank-slot').append(document.querySelector('.br-scoreboard'));
+ const stage=$('br-stage');stage.append(document.querySelector('.br-message'));
+ const g=$('br-mini-slot'),target=document.createElement('div');target.className='br-globe-slot';target.id='br-globe-target';
+ target.setAttribute('aria-label','Arraste para girar o mundo; clique para centralizar a janela plana');
+ target.append(fallbackMini,gpuCanvas);g.append(target);
+ $('br-mini-toggle').onclick=()=>{const p=$('br-mini-panel'),collapsed=p.classList.toggle('collapsed');$('br-mini-toggle').textContent=collapsed?'+':'−';$('br-mini-toggle').setAttribute('aria-expanded',String(!collapsed));globeNeedsDraw=true;};
+ $('br-mini-max').onclick=()=>openFullGlobe(true);
+ $('br-globe-close').onclick=()=>openFullGlobe(false);
+ $('br-rank-fold').onclick=()=>{const p=$('br-rail-ranking'),v=p.classList.toggle('expanded');$('br-rank-fold').textContent=v?'Classificação · Todos':'Classificação · Top 3';$('br-rank-fold').setAttribute('aria-expanded',String(v));};
+ $('br-rank-hide').onclick=()=>{const p=$('br-rail-ranking'),hidden=p.classList.toggle('collapsed');$('br-rank-hide').textContent=hidden?'+':'−';$('br-rank-hide').setAttribute('aria-label',hidden?'Mostrar ranking':'Ocultar ranking');};
+ const portrait=matchMedia('(orientation:portrait)');
+ const applyPortrait=()=>{if(portrait.matches){$('br-mini-panel').classList.add('collapsed');$('br-mini-toggle').textContent='🌐';$('br-mini-toggle').setAttribute('aria-expanded','false');}else{$('br-mini-panel').classList.remove('collapsed');$('br-mini-toggle').textContent='−';$('br-mini-toggle').setAttribute('aria-expanded','true');}globeNeedsDraw=true;};
+ applyPortrait();portrait.addEventListener('change',applyPortrait);
+ const observer=new ResizeObserver(()=>{globeNeedsDraw=true;world.needsDraw=true;});
+ observer.observe(rail);observer.observe($('br-mini-slot'));observer.observe($('br-full-slot'));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&globeExpandedNow)openFullGlobe(false);});
+ setupMiniGlobeEvents(target);
+ // There is no alternating main viewport; retain the original map viewport at all times.
+ world.view='flat';
+}
+function openFullGlobe(open){
+ const overlay=$('br-globe-overlay'),target=$('br-globe-target');
+ globeExpandedNow=!!open;
+ if(open){overlay.hidden=false;$('br-full-slot').append(target);world.globeZoom=1;$('br-globe-close').focus({preventScroll:true});}
+ else{$('br-mini-slot').append(target);overlay.hidden=true;world.globeZoom=1;}
+ globeNeedsDraw=true;world.needsDraw=true;
+}
+function setupMiniGlobeEvents(target){
+ let drag=null,pinch=null;const touches=new Map();
+ const two=()=>{const [a,b]=touches.values();return{x:(a.x+b.x)/2,y:(a.y+b.y)/2,d:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y))};};
+ target.addEventListener('pointerdown',e=>{
+  if(e.button!==0)return;
+  target.setPointerCapture(e.pointerId);
+  if(e.pointerType==='touch')touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(touches.size===2){pinch=two();drag=null;globeMouse=null;return;}
+  drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false,arcball:null};globeMouse=drag;
+ });
+ target.addEventListener('pointermove',e=>{
+  if(touches.has(e.pointerId)){touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pinch&&touches.size===2){const now=two();if(globeExpandedNow)zoomGlobe(now.d/pinch.d,now.x,now.y,pinch.x,pinch.y);pinch=now;globeNeedsDraw=true;return;}}
+  if(!drag||drag.id!==e.pointerId)return;
+  drag.x=e.clientX;drag.y=e.clientY;
+  if(!drag.moved&&Math.hypot(drag.x-drag.startX,drag.y-drag.startY)>5)drag.moved=true;
+  if(drag.moved){rotateGlobeFromDrag(drag);globeNeedsDraw=true;}
+ });
+ target.addEventListener('pointerup',e=>{
+  touches.delete(e.pointerId);
+  if(pinch){if(touches.size<2)pinch=null;drag=null;globeMouse=null;return;}
+  if(drag?.id===e.pointerId&&!drag.moved){
+   const id=closestVisibleCell(e.clientX,e.clientY);
+   if(id!==null){const g=world.graph,selected=g.deg[id]===5?g.adj[id*6]:id;
+    if(moveCenterTo(selected,chooseEast(selected))){if(globeExpandedNow)openFullGlobe(false);toast('Região selecionada no mini-mundo.');}}
+  }
+  drag=null;globeMouse=null;globeNeedsDraw=true;
+ });
+ target.addEventListener('pointercancel',e=>{touches.delete(e.pointerId);pinch=null;drag=null;globeMouse=null;});
+ target.addEventListener('wheel',e=>{if(!globeExpandedNow)return;e.preventDefault();zoomGlobe(Math.exp(-e.deltaY*.0012),e.clientX,e.clientY);globeNeedsDraw=true;},{passive:false});
+}
+function drawMiniFallback(){
+ const canvas=fallbackMini,rect=globeTarget.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
+ const w=Math.max(1,Math.round(rect.width*dpr)),h=Math.max(1,Math.round(rect.height*dpr));
+ if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+ const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,rect.width,rect.height);
+ const v=globeContext(),r=v.radius;
+ ctx.fillStyle='#1d3a4b';ctx.beginPath();ctx.arc(v.cx,v.cy,r,0,Math.PI*2);ctx.fill();
+ ctx.save();ctx.beginPath();ctx.arc(v.cx,v.cy,r,0,Math.PI*2);ctx.clip();
+ ctx.strokeStyle='#638c9a66';ctx.lineWidth=.65;
+ const drawCurve=(points)=>{ctx.beginPath();let pen=false;for(const p of points){const x=vdot(p,v.right),y=vdot(p,v.up),z=vdot(p,v.look);if(z<=0){pen=false;continue;}const px=v.cx+x*r,py=v.cy-y*r;if(!pen){ctx.moveTo(px,py);pen=true;}else ctx.lineTo(px,py);}ctx.stroke();};
+ for(let lat=-1.2;lat<=1.21;lat+=.4){const row=[];for(let lon=-Math.PI;lon<=Math.PI;lon+=.07)row.push([Math.cos(lat)*Math.cos(lon),Math.sin(lat),Math.cos(lat)*Math.sin(lon)]);drawCurve(row);}
+ for(let lon=0;lon<Math.PI*2;lon+=Math.PI/6){const col=[];for(let lat=-Math.PI/2;lat<=Math.PI/2;lat+=.07)col.push([Math.cos(lat)*Math.cos(lon),Math.sin(lat),Math.cos(lat)*Math.sin(lon)]);drawCurve(col);}
+ const pos=world.graph.coords;
+ for(let owner=1;owner<world.ownerCells.length;owner++){
+  const cells=world.ownerCells[owner],sample=Math.max(1,Math.ceil(cells.length/(globeExpandedNow?6000:1200)));
+  ctx.fillStyle=game.colors[owner];ctx.beginPath();
+  for(let j=0;j<cells.length;j+=sample){const id=cells[j],p=id*3,x=pos[p]*v.right[0]+pos[p+1]*v.right[1]+pos[p+2]*v.right[2],y=pos[p]*v.up[0]+pos[p+1]*v.up[1]+pos[p+2]*v.up[2],z=pos[p]*v.look[0]+pos[p+1]*v.look[1]+pos[p+2]*v.look[2];
+   if(z<=0)continue;const [sx,sy]=[v.cx+x*r,v.cy-y*r];ctx.moveTo(sx+1.2,sy);ctx.arc(sx,sy,1.2,0,Math.PI*2);
+  }ctx.fill();
+ }
+ ctx.restore();ctx.strokeStyle='#8fb9c6';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(v.cx,v.cy,r,0,Math.PI*2);ctx.stroke();
+}
+function drawMiniGlobe(time){
+ const slot=$('br-globe-target');
+ if(!slot||!slot.isConnected||!globeExpandedNow&&$('br-mini-panel').classList.contains('collapsed'))return;
+ if(!globeNeedsDraw)return;
+ // Inspecting the mini-globe should not saturate the GPU when the main sim is fast.
+ if(time-globeLastDraw<(globeMouse?16:globeExpandedNow?33:100))return;
+ globeLastDraw=time;
+ const wire=globeWireMesh(globeContext());
+ const worked=drawGlobeGPU(wire);
+ gpuCanvas.style.display=worked?'block':'none';fallbackMini.style.display=worked?'none':'block';
+ if(!worked)drawMiniFallback();
+ globeNeedsDraw=false;
+}
+
 let frameMeterAt=0,drawsInWindow=0;
 function frame(t){
  if(!world.prev)world.prev=t;
@@ -3228,19 +3451,20 @@ function frame(t){
   world.statCount=0;world.statPrev=t;updateStats();updateGamePanel();
  }
  if(world.needsGrid)drawGrid();
- if(world.needsDraw){drawsInWindow++;measure(cv);if(world.view==='globe')drawGlobe();else if(world.chart)drawFlat();else drawAtlas();}
+ if(world.needsDraw){drawsInWindow++;measure(cv);if(world.chart)drawFlat();else drawAtlas();}
+ drawMiniGlobe(t);
  if(world.needsEditor)drawEditor();
  if(t-frameMeterAt>=600){
   const fps=frameMeterAt&&drawsInWindow>1?Math.round(1000*drawsInWindow/(t-frameMeterAt))+' fps':'';
   const api=world.view==='globe'?(gpu.gl?'WebGL':'Canvas'):'';
-  $('br-fps').textContent=[api,fps].filter(Boolean).join(' · ');
+  $('br-fps').textContent=[api,fps].filter(Boolean).join(' · ');$('br-rail-gen').textContent='G '+world.gen.toLocaleString('pt-BR');
   frameMeterAt=t;drawsInWindow=0;
  }
  requestAnimationFrame(frame);
 }
 initRuleTables();parseRule('B2/S35');
 newStamp(11,false);
-bind();newWorld(Number($('hl-frequency').value));
+bind();setupRealLayout();newWorld(Number($('hl-frequency').value));
 chooseRule('callahan');
 setupGameUI();loadPattern('gun');resetGame();refreshTabs();
 requestAnimationFrame(frame);
