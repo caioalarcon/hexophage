@@ -39,7 +39,18 @@
  border:2px solid #65cdb2;padding:13px;
 }
 #hexlab.br-economy-open .br-energy-panel .br-energy-sliders {display:grid;gap:10px}
-#hexlab.br-economy-open .br-energy-panel .br-energy-help {display:block;font-size:10px}
+#hexlab.br-economy-open .br-economy-guide {display:block}
+#hexlab.br-economy-open .br-economy-guide[open] .br-energy-help {display:block;font-size:10px}
+#hexlab .br-economy-guide {display:none;border-top:1px solid #355569;margin-top:9px;padding-top:6px}
+#hexlab .br-economy-guide summary {font-size:11px;color:#accbce;cursor:pointer}
+#hexlab .br-energy-extra {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-top:6px}
+#hexlab .br-energy-extra>div {min-width:0;min-height:32px;border:1px solid #2d455c;background:#112334;border-radius:5px;padding:4px 5px}
+#hexlab .br-energy-extra span {display:block;font-size:9px;line-height:1.1;color:#acc5d3;overflow-wrap:break-word}
+#hexlab .br-energy-extra b {display:block;font-size:12px;font-variant-numeric:tabular-nums;color:#e1f7f5}
+#hexlab .br-stats-more {grid-column:1/-1;font-size:10px}
+#hexlab .br-stats-more summary {cursor:pointer;color:#8fc5c0;padding:6px 4px;border-radius:5px}
+#hexlab .br-stats-more summary:hover {background:#223d50}
+
 #hexlab.br-economy-open .br-energy-panel #br-economy-close {display:inline-flex}
 #hexlab.br-economy-open .br-energy-panel h3 {position:sticky;top:-13px;z-index:2;padding:7px 0;background:#152c40}
 #hexlab.br-economy-open .br-energy-panel .br-energy-sliders label {font-size:12px}

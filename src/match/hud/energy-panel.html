@@ -1,16 +1,19 @@
-<section class="br-energy-panel" id="br-energy-panel" aria-label="Energia por estabilidade">
- <h3>Energia por estabilidade <small>Prévia experimental</small><button type="button" id="br-economy-close" aria-label="Fechar ajustes de economia">✕</button></h3>
+<section class="br-energy-panel" id="br-energy-panel" aria-label="Economia">
+ <h3>Economia <small>Prévia</small><button type="button" id="br-economy-close" aria-label="Fechar ajustes de economia">✕</button></h3>
  <div class="br-energy-sliders" id="br-energy-sliders">
-  <label for="eco-stable-energy">Renda-base por célula madura / geração <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
-  <label for="eco-scale">Células maduras para meia renda por célula <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="1" max="16000" step="1" value="8000" data-energy="productionScale"></label>
+  <label for="eco-stable-energy">Renda por célula madura <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
+  <label for="eco-scale">Escala de produção <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="1" max="16000" step="1" value="8000" data-energy="productionScale"></label>
   <label for="eco-birth-cost">Custo por nascimento <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
-  <label for="eco-combat-fee">Tributo por morte em combate <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee" aria-describedby="eco-combat-help"></label>
-  <label for="eco-age">Idade para começar a produzir <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
-  <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
+  <label for="eco-combat-fee">Tributo por morte <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee" aria-describedby="eco-combat-help"></label>
+  <label for="eco-age">Maturação (gerações) <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
+  <label for="eco-stamp">Custo por célula <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
   <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">82</output><input id="eco-initial" type="range" min="0" max="300" step="1" value="82" data-energy="initialCells"></label>
  </div>
- <p class="br-energy-help">Uma célula madura permaneceu viva no mesmo lugar pela idade escolhida. A cada geração, ela rende energia. Quando a colônia alcança o número de células maduras indicado, cada uma rende metade da taxa-base. A reserva inicial só muda durante a preparação. O padrão permite financiar duas colmeias ou uma colmeia e armamentos desde a abertura. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
- <p id="eco-combat-help" class="br-energy-help">Se uma célula sobreviveria sem os vizinhos rivais, seu dono transfere o tributo aos responsáveis pela morte, até o saldo disponível. Zero desativa o tributo.</p>
+ <details class="br-economy-guide">
+  <summary>Ajuda sobre as regras</summary>
+  <p class="br-energy-help">Células que continuam vivas amadurecem e produzem energia. A escala reduz o rendimento por célula quando a colônia cresce. Nascimentos gastam energia; carimbos pagam por célula colocada.</p>
+  <p id="eco-combat-help" class="br-energy-help">O tributo transfere energia quando uma célula morre por influência direta do adversário. Valor zero desativa. A reserva inicial muda apenas antes da partida. Clique com o botão direito no slider ou no número para ajustar seu máximo.</p>
+ </details>
  <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
   <form id="eco-limit-form" novalidate>
    <h3 id="eco-limit-title">Definir máximo</h3>
@@ -20,24 +23,29 @@
   </form>
  </dialog>
  <div class="br-energy-stats" aria-live="off">
-  <div><span>Energia na reserva</span><b id="eco-reserve">820.000</b></div>
-  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">82</b></div>
+  <div><span>Reserva</span><b id="eco-reserve">820.000</b></div>
+  <div><span>Saldo/ger.</span><b id="eco-flow">+0</b></div>
+  <div><span>Energia/s</span><b id="eco-rate">0/s</b></div>
+  <div><span>Vivas</span><b id="eco-live">0</b></div>
+  <div><span>Maduras</span><b id="eco-stable">0</b></div>
+  <div><span>Carimbáveis</span><b id="eco-can-stamp">82</b></div>
+  <div><span>Corroídas</span><b id="eco-eroded">0</b></div>
   <div><span>Geração</span><b id="eco-generation">0</b></div>
-  <div><span>Células vivas</span><b id="eco-live">0</b></div>
-  <div><span>Células maduras</span><b id="eco-stable">0</b></div>
-  <div><span>Células corroídas · total</span><b id="eco-eroded">0</b></div>
-  <div><span>Nascimentos reais · agora</span><b id="eco-births">0</b></div>
-  <div><span>Nascimentos · acumulados</span><b id="eco-births-total">0</b></div>
-  <div><span>Mortes naturais · total</span><b id="eco-deaths-total">0</b></div>
-  <div><span>Energia das maduras / ger.</span><b id="eco-income">+0</b></div>
-  <div><span>Energia recebida · total</span><b id="eco-income-total">0</b></div>
-  <div><span>Custo dos nascimentos / ger.</span><b id="eco-maintenance">−0</b></div>
-  <div><span>Energia paga por nascimentos</span><b id="eco-maintenance-total">0</b></div>
-  <div><span>Tributos recebidos · total</span><b id="eco-tribute-in">0</b></div>
-  <div><span>Tributos pagos · total</span><b id="eco-tribute-out">0</b></div>
-  <div><span>Energia gasta em carimbos</span><b id="eco-stamped-total">0</b></div>
-  <div><span>Saldo de energia / ger.</span><b id="eco-flow">+0</b></div>
-  <div><span>Energia por segundo · aprox.</span><b id="eco-rate">0/s</b></div>
-  <div><span>Erosão na última geração</span><b id="eco-eroded-last">0</b></div>
+  <details class="br-stats-more">
+   <summary>Mais dados</summary>
+   <div class="br-energy-extra">
+  <div><span>Nascimentos/ger.</span><b id="eco-births">0</b></div>
+  <div><span>Nascimentos (total)</span><b id="eco-births-total">0</b></div>
+  <div><span>Mortes naturais (total)</span><b id="eco-deaths-total">0</b></div>
+  <div><span>Receita/ger.</span><b id="eco-income">+0</b></div>
+  <div><span>Receita (total)</span><b id="eco-income-total">0</b></div>
+  <div><span>Nascimentos: custo/ger.</span><b id="eco-maintenance">−0</b></div>
+  <div><span>Nascimentos: custo total</span><b id="eco-maintenance-total">0</b></div>
+  <div><span>Tributos recebidos</span><b id="eco-tribute-in">0</b></div>
+  <div><span>Tributos pagos</span><b id="eco-tribute-out">0</b></div>
+  <div><span>Carimbos: gasto total</span><b id="eco-stamped-total">0</b></div>
+  <div><span>Erosão/ger.</span><b id="eco-eroded-last">0</b></div>
+   </div>
+  </details>
  </div>
 </section>

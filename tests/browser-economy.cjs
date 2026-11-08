@@ -23,8 +23,14 @@ const {chromium}=require('playwright');
     assert.equal(await page.locator('#br-energy-sliders input[type=range]').count(),7);
     await page.locator('#br-economy-toggle').click();
     assert(await page.locator('#eco-combat-fee').isVisible(),'combat tribute must be directly accessible');
+    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),false,'help stays collapsed until requested');
+    await page.locator('.br-economy-guide summary').click();
+    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),true,'help appears only on demand');
     await require('./support/slider-limits.cjs')(page);
     await page.locator('#br-economy-close').click();
+    assert.equal(await page.locator('#eco-tribute-in').isVisible(),false,'secondary statistics stay collapsed');
+    await page.locator('.br-stats-more summary').click();
+    assert.equal(await page.locator('#eco-tribute-in').isVisible(),true,'secondary statistics available on demand');
     assert.equal(await page.locator('#eco-reserve').textContent(),'820.000');
     assert.equal(await page.locator('#eco-can-stamp').textContent(),'82');
     const placed=await page.evaluate(()=>{

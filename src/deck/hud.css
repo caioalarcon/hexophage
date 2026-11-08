@@ -79,7 +79,8 @@
  #hexlab .br-mapbar #br-fps{display:none}
 }
 
-/* An economic role remains visible on each recommended card. */
+#hexlab .br-stampcard .br-stamprole {display:none}
+/* Compact cards: image, full multiline pattern name and price. */
 #hexlab .br-stampcard .br-stamprole{font-size:9px;font-weight:600;line-height:1.2;color:#84cbb9}
 #hexlab .br-stamprole:empty{display:none}
 #hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}

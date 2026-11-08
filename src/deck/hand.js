@@ -14,7 +14,7 @@ function renderDeck(currentPatternId, loadPattern) {
     if (!b) {
       b=document.createElement('button');b.type='button';
       b.className='br-stampcard';b.dataset.slot=key;
-      b.innerHTML='<canvas width="68" height="38" aria-hidden="true"></canvas><small class="br-stamprole"></small><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span><span class="br-slot-edit" title="Trocar padrão deste slot">⋯</span>';
+      b.innerHTML='<canvas width="68" height="38" aria-hidden="true"></canvas><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span><span class="br-slot-edit" title="Trocar padrão deste slot">⋯</span>';
       b.onclick=e=>{
         if(e.target.closest('.br-slot-edit')){e.stopPropagation();requestSlotPicker(Number(b.dataset.slot));return;}
         selectSlot(Number(b.dataset.slot));loadPattern(b.dataset.pattern);
@@ -25,7 +25,6 @@ function renderDeck(currentPatternId, loadPattern) {
     const pts=deckPoints(id),name=deckNames[id]||id;
     const price=energyCost(pts.length,game.economy);
     b.querySelector('.br-stampname').textContent=name;
-    b.querySelector('.br-stamprole').textContent=fieldKit[id]?.role || '';
     b.querySelector('.br-stampprice').textContent=price?'◈'+price:'◈0';
     b.title = [name, fieldKit[id]?.use, 'Clique nos três pontos para trocar.'].filter(Boolean).join(' · ');
     drawDeckIcon(b.querySelector('canvas'),pts);
