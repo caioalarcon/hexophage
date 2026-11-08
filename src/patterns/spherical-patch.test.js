@@ -15,7 +15,7 @@ test('RLE maps columns and empty rows into signed axial offsets', () => {
   ]);
   assert.deepEqual(
     patterns.callahan.filter((p) => !p.group).map((p) => decodeRLE(p.rle).length),
-    [64, 6, 17, 25, 35, 21, 44],
+    [64, 17, 25, 35, 21, 44],
   );
 });
 
