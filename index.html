@@ -208,6 +208,32 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-limit-dialog h3 { margin: 0; font-size: 14px }
 #hexlab .br-limit-dialog input { width: 100%; min-height: 30px; padding: 4px 6px; border: 1px solid #496579; border-radius: 4px; background: #0f2130; color: inherit }
 #hexlab .br-limit-dialog form > div { display: flex; justify-content: flex-end; gap: 6px }
+
+/* Compact stats remain visible. All seven tunable sliders live in a clearly
+   labeled, on-demand pane, including on portrait phones. */
+#hexlab .br-energy-panel .br-energy-sliders,
+#hexlab .br-energy-panel .br-energy-help {display:none}
+#hexlab .br-energy-panel #br-economy-close {display:none;margin-left:auto;padding:2px 8px}
+#hexlab .br-rail-controls #br-economy-toggle {flex:1 1 85px;min-height:35px;font-size:11px;padding:5px 7px;white-space:nowrap}
+#hexlab.br-economy-open .br-rail .br-energy-panel {
+ display:block!important;position:fixed!important;top:clamp(12px,6vh,60px);
+ right:clamp(8px,2vw,24px);left:auto;width:min(385px,calc(100vw - 16px));
+ max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;
+ z-index:100!important;background:#152c40;box-shadow:0 14px 65px #000e;
+ border:2px solid #65cdb2;padding:13px;
+}
+#hexlab.br-economy-open .br-energy-panel .br-energy-sliders {display:grid;gap:10px}
+#hexlab.br-economy-open .br-energy-panel .br-energy-help {display:block;font-size:10px}
+#hexlab.br-economy-open .br-energy-panel #br-economy-close {display:inline-flex}
+#hexlab.br-economy-open .br-energy-panel h3 {position:sticky;top:-13px;z-index:2;padding:7px 0;background:#152c40}
+#hexlab.br-economy-open .br-energy-panel .br-energy-sliders label {font-size:12px}
+#hexlab.br-economy-open .br-energy-panel .br-energy-sliders input {height:22px}
+#hexlab.br-economy-open .br-energy-panel .br-energy-stats {display:none}
+@media (orientation:portrait) {
+ #hexlab.br-economy-open .br-rail .br-energy-panel {top:clamp(8px,6vh,48px);right:8px}
+}
+
+#hexlab.br-economy-open .br-rail{z-index:65!important;overflow:visible}
 #hexlab .br-atlas-dialog{box-sizing:border-box;width:min(1150px,96vw);max-width:96vw;max-height:min(92vh,980px);overflow:hidden;background:#101e2d;border:1px solid #4b6c83;color:#e8f3fa;padding:0;border-radius:12px}
 #hexlab .br-atlas-dialog::backdrop{background:#020910d9}
 #hexlab .br-atlas-dialog *{box-sizing:border-box}
@@ -452,6 +478,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}
 #hexlab .br-stampcard:focus-visible{outline:2px solid #8beecd;outline-offset:1px}
 #hexlab #br-open-atlas{margin:7px 0 0;width:100%;font-size:11px}
+
+/* A complete fifteen-card laboratory palette, horizontally scrollable. */
+#hexlab .br-deck {scrollbar-width:thin;scrollbar-color:#55bca7 #0d1a2a;scroll-snap-type:x proximity}
+#hexlab .br-stampcard {scroll-snap-align:start;flex-shrink:0}
+#hexlab .br-stampcard .br-stampname {white-space:normal;overflow-wrap:anywhere}
 /* Landscape game UX: keep the 3D/atlas viewport primary. Portrait uses the existing layout. */
 #hexlab .br-advanced-tuning{display:contents}
 /* Open editor drawer must be above the control toolbar. */
@@ -739,6 +770,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <div class="br-knob br-speed-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">200/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="200" step="1"></div>
  </div>
  <button id="br-tuning-toggle" type="button" aria-expanded="false" aria-controls="br-advanced-tuning" title="Velocidade, dificuldade e ações" aria-label="Velocidade e ajustes da simulação">⚙ <span class="br-tuning-label">Ajustes</span><span id="br-mobile-speed">200/s</span></button>
+ <button id="br-economy-toggle" type="button" aria-expanded="false" aria-controls="br-energy-panel" title="Configurar os sete parâmetros da economia e o tributo de combate">⚖ Economia</button>
  <button id="br-panel-toggle" class="small" aria-controls="br-sidepanel" aria-expanded="true">Painel</button>
 </div>
    <dialog id="br-building" class="br-builddialog"><strong>Construindo esfera</strong><div id="br-build-msg" role="status"></div><progress id="br-build-progress" max="100"></progress><button id="br-build-cancel" type="button">Cancelar</button></dialog>
@@ -794,7 +826,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <div class="br-controls">
   <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
   <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
-  <div class="br-summary">Iniciar planta um crescedor no seu setor e paga o carimbo com a sua reserva. Você também pode escolher a posição e carimbar antes de iniciar. Proteja a ponta enquanto a colmeia amadurece.</div>
+  <div class="br-summary">Você pode escolher entre plantar duas colmeias, investir em incursões ou guardar recursos. Iniciar planta uma colmeia paga, caso ainda não tenha colocado uma peça. Mais colmeias são permitidas; abra ⚖ Economia para ajustar as regras em tempo real.</div>
 </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="hl-subhead">Estratégia dos bots</div><div id="br-bots" class="br-bots"></div>
@@ -830,17 +862,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <div class="br-rail-controls" id="br-rail-controls"></div>
  <div class="br-rail-ranking" id="br-rail-ranking"><div class="br-rail-rankhead"><button type="button" id="br-rank-fold" aria-expanded="false">Classificação · Top 3</button><button type="button" id="br-rank-hide" aria-label="Ocultar ranking" title="Mostrar ou ocultar ranking">−</button></div><div id="br-rail-rank-slot"></div></div>
  <section class="br-energy-panel" id="br-energy-panel" aria-label="Energia por estabilidade">
- <h3>Energia por estabilidade <small>Experimental · dev</small></h3>
+ <h3>Energia por estabilidade <small>Prévia experimental</small><button type="button" id="br-economy-close" aria-label="Fechar ajustes de economia">✕</button></h3>
  <div class="br-energy-sliders" id="br-energy-sliders">
   <label for="eco-stable-energy">Renda-base por célula madura / geração <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
-  <label for="eco-scale">Células maduras para meia renda por célula <output id="eco-scale-val">1500</output><input id="eco-scale" type="range" min="1" max="6000" step="1" value="1500" data-energy="productionScale"></label>
+  <label for="eco-scale">Células maduras para meia renda por célula <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="1" max="16000" step="1" value="8000" data-energy="productionScale"></label>
   <label for="eco-birth-cost">Custo por nascimento <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
   <label for="eco-combat-fee">Tributo por morte em combate <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee" aria-describedby="eco-combat-help"></label>
   <label for="eco-age">Idade para começar a produzir <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
   <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
-  <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">37</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="37" data-energy="initialCells"></label>
+  <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">82</output><input id="eco-initial" type="range" min="0" max="300" step="1" value="82" data-energy="initialCells"></label>
  </div>
- <p class="br-energy-help">Uma célula madura permaneceu viva no mesmo lugar pela idade escolhida. A cada geração, ela rende energia. Quando a colônia alcança o número de células maduras indicado, cada uma rende metade da taxa-base. A reserva inicial só muda durante a preparação. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
+ <p class="br-energy-help">Uma célula madura permaneceu viva no mesmo lugar pela idade escolhida. A cada geração, ela rende energia. Quando a colônia alcança o número de células maduras indicado, cada uma rende metade da taxa-base. A reserva inicial só muda durante a preparação. O padrão permite financiar duas colmeias ou uma colmeia e armamentos desde a abertura. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
  <p id="eco-combat-help" class="br-energy-help">Se uma célula sobreviveria sem os vizinhos rivais, seu dono transfere o tributo aos responsáveis pela morte, até o saldo disponível. Zero desativa o tributo.</p>
  <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
   <form id="eco-limit-form" novalidate>
@@ -851,8 +883,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   </form>
  </dialog>
  <div class="br-energy-stats" aria-live="off">
-  <div><span>Energia na reserva</span><b id="eco-reserve">370.000</b></div>
-  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">37</b></div>
+  <div><span>Energia na reserva</span><b id="eco-reserve">820.000</b></div>
+  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">82</b></div>
   <div><span>Geração</span><b id="eco-generation">0</b></div>
   <div><span>Células vivas</span><b id="eco-live">0</b></div>
   <div><span>Células maduras</span><b id="eco-stable">0</b></div>
@@ -1378,11 +1410,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var DEFAULT_ECONOMY = Object.freeze({
     combatFee: 0.25,
     stableEnergy: 0.02,
-    productionScale: 1500,
+    productionScale: 8e3,
     birthCost: 1,
     stableAfter: 256,
     stampCost: 1e4,
-    initialCells: 37
+    initialCells: 82
   });
   var ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
   function generationEnergy(births, stable, economy) {
@@ -3970,11 +4002,21 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/deck/field-kit.js
   var fieldKit = {
-    stalk: { role: "Economia", use: "A ponta estende o núcleo produtor. Proteja o crescimento inicial." },
-    glider: { role: "Incursão", use: "Disparo móvel de 6 células para cortar uma ponta ou atingir um alvo próximo." },
-    p42: { role: "Refletor", use: "A orientação e a fase mudam o destino de um glider que o atinge." },
-    gun42: { role: "Cerco", use: "Um disparo a cada 42 gerações. Reserve energia para os projéteis em voo." },
-    gun20: { role: "Assalto", use: "Um disparo a cada 20 gerações. Use perto de um alvo para sustentar o ataque." }
+    stalk: { role: "Economia", use: "Expande a produção. Você pode plantar vários crescedores quando tiver reserva." },
+    glider: { role: "Ataque", use: "Nave P4 de baixo custo para sabotar colmeias e interceptar gliders." },
+    gun20: { role: "Cerco P20", use: "Produz gliders rapidamente; o custo dos projéteis deve ser financiado." },
+    gun42: { role: "Cerco P42", use: "Emite gliders mais lentamente, permitindo cerco econômico prolongado." },
+    p42: { role: "Defesa", use: "Reflete ou perturba gliders conforme orientação e fase." },
+    gun43: { role: "Cerco P43", use: "Emissor de dois pulsos por período completo de 86 gerações." },
+    gun200: { role: "Cerco P200", use: "Arma de cadência baixa e estrutura maior." },
+    gun210: { role: "Cerco P210", use: "Emissor relé com refletores." },
+    gun840: { role: "Cerco P840", use: "Emissor caro de cadência muito baixa." },
+    p15: { role: "Nave P15", use: "Nave móvel para experimentar outra velocidade e geometria de colisão." },
+    p48: { role: "Nave P48", use: "Nave móvel de período longo." },
+    p42rot: { role: "Rotativo", use: "Oscilador rotativo para teste de defesa e colisão; consome energia." },
+    p7a: { role: "Defesa exp.", use: "Oscilador P7; possível obstáculo, com custo operacional." },
+    p66: { role: "Defesa exp.", use: "Oscilador P66; geometria extensa, com custo operacional." },
+    p2: { role: "Flipper exp.", use: "Oscilador mínimo de três células. É deficitário nesta economia." }
   };
 
   // src/deck/card-icon.js
@@ -5721,6 +5763,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return !world.matchStarted && world.gen === 0 && game.players.every((p) => p.stamps === 0);
   }
   function bindEnergyPanel() {
+    const root = $("hexlab"), toggle = $("br-economy-toggle"), close = $("br-economy-close");
+    const setOpen = (open) => {
+      root.classList.toggle("br-economy-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.classList.toggle("primary", open);
+      if (open) $("eco-combat-fee").focus({ preventScroll: true });
+      else toggle.focus({ preventScroll: true });
+    };
+    toggle.addEventListener("click", () => setOpen(!root.classList.contains("br-economy-open")));
+    close.addEventListener("click", () => setOpen(false));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && root.classList.contains("br-economy-open") && !$("eco-limit-dialog").open) setOpen(false);
+    });
     bindSliderLimits(Object.values(controls).map((id) => $(id)));
     for (const [key2, id] of Object.entries(controls)) {
       const slider = $(id);
