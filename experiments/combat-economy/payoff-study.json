@@ -1,0 +1,3086 @@
+{
+  "generationRate": 200,
+  "horizon": 1440000,
+  "liquidReserveForNamed": 100,
+  "stampCost": 10,
+  "escrowShare": 0.25,
+  "named": [
+    {
+      "name": "stalk-hit",
+      "seedCells": [
+        6,
+        36
+      ],
+      "directVictims": [
+        1,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            12.5,
+            90
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            -2.5,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            2.5,
+            -2.5
+          ],
+          "moved": [
+            0,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            12.5,
+            90
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stalk-hit-delayed",
+      "seedCells": [
+        6,
+        36
+      ],
+      "directVictims": [
+        0,
+        1
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            2.5,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            2.5,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            2.5,
+            0
+          ],
+          "moved": [
+            0,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            87.5
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            2.5,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            2.5,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            2.5,
+            -2.5
+          ],
+          "moved": [
+            0,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            -2.5,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            2.5,
+            0
+          ],
+          "moved": [
+            0,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            87.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stalk-miss",
+      "seedCells": [
+        6,
+        36
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            90
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            90
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stalk-same-owner",
+      "seedCells": [
+        0,
+        42
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            105
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            105
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stalk-alone",
+      "seedCells": [
+        0,
+        36
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            90
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            90
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p4-alone",
+      "seedCells": [
+        6,
+        0
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p2-alone",
+      "seedCells": [
+        0,
+        3
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            7.5
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            7.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gun20-alone",
+      "seedCells": [
+        0,
+        52
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            130
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            130
+          ]
+        }
+      ]
+    },
+    {
+      "name": "reflector-alone",
+      "seedCells": [
+        0,
+        17
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            42.5
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            42.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "reflector-hit",
+      "seedCells": [
+        6,
+        17
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            42.5
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            42.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "reflector-same-owner",
+      "seedCells": [
+        0,
+        23
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            57.5
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            57.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p2-hit",
+      "seedCells": [
+        6,
+        3
+      ],
+      "directVictims": [
+        0,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            7.5
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            15,
+            7.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gun20-hit",
+      "seedCells": [
+        6,
+        52
+      ],
+      "directVictims": [
+        2,
+        2
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            5,
+            5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            5,
+            5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            5,
+            5
+          ],
+          "moved": [
+            5,
+            5
+          ],
+          "collected": [
+            5,
+            5
+          ],
+          "leftInEscrow": [
+            10,
+            125
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            5,
+            5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            5,
+            5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            5,
+            5
+          ],
+          "collected": [
+            5,
+            5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            5,
+            5
+          ],
+          "collected": [
+            5,
+            5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            5,
+            5
+          ],
+          "moved": [
+            5,
+            5
+          ],
+          "collected": [
+            5,
+            5
+          ],
+          "leftInEscrow": [
+            10,
+            125
+          ]
+        }
+      ]
+    },
+    {
+      "name": "glider-hit",
+      "seedCells": [
+        6,
+        6
+      ],
+      "directVictims": [
+        1,
+        1
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            2.5,
+            2.5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            2.5,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            2.5,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            2.5
+          ],
+          "leftInEscrow": [
+            12.5,
+            12.5
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            2.5,
+            2.5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            2.5,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            2.5,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            2.5,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            2.5,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            2.5
+          ],
+          "leftInEscrow": [
+            12.5,
+            12.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "disruption-without-target-direct-death",
+      "seedCells": [
+        6,
+        36
+      ],
+      "directVictims": [
+        1,
+        0
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "controls": [
+        {
+          "openCash": 0,
+          "mode": "bounty",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "transfer",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "indemnity",
+          "delta": [
+            0,
+            0
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 0,
+          "mode": "salvage",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            12.5,
+            90
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "bounty",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            0,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "transfer",
+          "delta": [
+            -2.5,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "indemnity",
+          "delta": [
+            2.5,
+            -2.5
+          ],
+          "moved": [
+            0,
+            2.5
+          ],
+          "collected": [
+            2.5,
+            0
+          ],
+          "leftInEscrow": [
+            0,
+            0
+          ]
+        },
+        {
+          "openCash": 100,
+          "mode": "salvage",
+          "delta": [
+            0,
+            2.5
+          ],
+          "moved": [
+            2.5,
+            0
+          ],
+          "collected": [
+            0,
+            2.5
+          ],
+          "leftInEscrow": [
+            12.5,
+            90
+          ]
+        }
+      ]
+    }
+  ],
+  "swept": {
+    "trajectories": 1548,
+    "disrupted": 573,
+    "totalDirectVictims": [
+      26,
+      54
+    ],
+    "totalStampedVictims": [
+      0,
+      0
+    ],
+    "richestNet": {
+      "target": "mirror42",
+      "shot": "glider",
+      "shotOwner": 1,
+      "orientation": 3,
+      "q": 17,
+      "r": -2,
+      "shotAt": 0,
+      "horizon": 96,
+      "seedCells": [
+        6,
+        17
+      ],
+      "direct": [
+        0,
+        3
+      ],
+      "directStamped": [
+        0,
+        0
+      ],
+      "adjacent": [
+        1,
+        4
+      ],
+      "deaths": [
+        244,
+        221
+      ],
+      "births": [
+        241,
+        204
+      ],
+      "live": [
+        3,
+        0,
+        0
+      ],
+      "controlLive": 25,
+      "endOverlap": 0,
+      "altered": 14,
+      "controlShotLive": 6,
+      "shotAltered": 16,
+      "firstDirect": 16,
+      "neutralBorn": 3
+    }
+  },
+  "sweep": [
+    {
+      "tariff": 0.25,
+      "transferPositive": 32,
+      "recoupShotTransfer": 0,
+      "recoupShotMinted": 0,
+      "maxTransfer": 0.75,
+      "maxMinted": 0.75
+    },
+    {
+      "tariff": 1,
+      "transferPositive": 32,
+      "recoupShotTransfer": 0,
+      "recoupShotMinted": 0,
+      "maxTransfer": 3,
+      "maxMinted": 3
+    },
+    {
+      "tariff": 2.5,
+      "transferPositive": 32,
+      "recoupShotTransfer": 0,
+      "recoupShotMinted": 0,
+      "maxTransfer": 7.5,
+      "maxMinted": 7.5
+    },
+    {
+      "tariff": 5,
+      "transferPositive": 32,
+      "recoupShotTransfer": 0,
+      "recoupShotMinted": 0,
+      "maxTransfer": 15,
+      "maxMinted": 15
+    },
+    {
+      "tariff": 10,
+      "transferPositive": 32,
+      "recoupShotTransfer": 0,
+      "recoupShotMinted": 0,
+      "maxTransfer": 30,
+      "maxMinted": 30
+    },
+    {
+      "tariff": 20,
+      "transferPositive": 32,
+      "recoupShotTransfer": 1,
+      "recoupShotMinted": 1,
+      "maxTransfer": 60,
+      "maxMinted": 60
+    },
+    {
+      "tariff": 60,
+      "transferPositive": 32,
+      "recoupShotTransfer": 32,
+      "recoupShotMinted": 47,
+      "maxTransfer": 180,
+      "maxMinted": 180
+    }
+  ],
+  "recurring": [
+    {
+      "id": [
+        "censo-oscillator-9-p6-1",
+        "censo-oscillator-10-p2-3"
+      ],
+      "stampEnergy": [
+        90,
+        100
+      ],
+      "period": 12,
+      "prelude": 0,
+      "direct": [
+        1,
+        0
+      ],
+      "victimsAgesInVerifiedCycle": [
+        2
+      ],
+      "direct2h": [
+        120000,
+        0
+      ],
+      "jointInverseOperatingEnergy": [
+        6000000,
+        6960000
+      ],
+      "blocked": [
+        15,
+        15
+      ],
+      "blocked2h": [
+        1800000,
+        1800000
+      ],
+      "blockingUnderFeeOne": {
+        "minted": 3600000,
+        "netPerSecondFirstInSteadyCycle": 0
+      },
+      "results": [
+        {
+          "tariff": 1,
+          "unitsMinted": 120000,
+          "paidFromClosed100Wallet": [
+            100,
+            0
+          ],
+          "paidWithInverseOperatingFlows": [
+            120000,
+            0
+          ],
+          "atMostFromPooledStampEscrow": [
+            22.5,
+            0
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 30000
+          }
+        },
+        {
+          "tariff": 2.5,
+          "unitsMinted": 300000,
+          "paidFromClosed100Wallet": [
+            100,
+            0
+          ],
+          "paidWithInverseOperatingFlows": [
+            300000,
+            0
+          ],
+          "atMostFromPooledStampEscrow": [
+            22.5,
+            0
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 30000
+          }
+        },
+        {
+          "tariff": 10,
+          "unitsMinted": 1200000,
+          "paidFromClosed100Wallet": [
+            100,
+            0
+          ],
+          "paidWithInverseOperatingFlows": [
+            1200000,
+            0
+          ],
+          "atMostFromPooledStampEscrow": [
+            22.5,
+            0
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 30000
+          }
+        }
+      ]
+    },
+    {
+      "id": [
+        "censo-oscillator-10-p2-6",
+        "censo-oscillator-11-p2-14"
+      ],
+      "stampEnergy": [
+        100,
+        110
+      ],
+      "period": 6,
+      "prelude": 18,
+      "direct": [
+        0,
+        1
+      ],
+      "victimsAgesInVerifiedCycle": [
+        1
+      ],
+      "direct2h": [
+        0,
+        239997
+      ],
+      "jointInverseOperatingEnergy": [
+        4559986,
+        9839993
+      ],
+      "blocked": [
+        1,
+        1
+      ],
+      "blocked2h": [
+        239997,
+        239998
+      ],
+      "blockingUnderFeeOne": {
+        "minted": 479995,
+        "netPerSecondFirstInSteadyCycle": 0
+      },
+      "results": [
+        {
+          "tariff": 1,
+          "unitsMinted": 239997,
+          "paidFromClosed100Wallet": [
+            0,
+            100
+          ],
+          "paidWithInverseOperatingFlows": [
+            0,
+            239997
+          ],
+          "atMostFromPooledStampEscrow": [
+            0,
+            27.5
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 59999.25
+          }
+        },
+        {
+          "tariff": 2.5,
+          "unitsMinted": 599992.5,
+          "paidFromClosed100Wallet": [
+            0,
+            100
+          ],
+          "paidWithInverseOperatingFlows": [
+            0,
+            599992.5
+          ],
+          "atMostFromPooledStampEscrow": [
+            0,
+            27.5
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 59999.25
+          }
+        },
+        {
+          "tariff": 10,
+          "unitsMinted": 2399970,
+          "paidFromClosed100Wallet": [
+            0,
+            100
+          ],
+          "paidWithInverseOperatingFlows": [
+            0,
+            2399970
+          ],
+          "atMostFromPooledStampEscrow": [
+            0,
+            27.5
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 59999.25
+          }
+        }
+      ]
+    },
+    {
+      "id": [
+        "censo-oscillator-8-p2-1",
+        "censo-oscillator-12-p2-6"
+      ],
+      "stampEnergy": [
+        80,
+        120
+      ],
+      "period": 14,
+      "prelude": 19,
+      "direct": [
+        0,
+        2
+      ],
+      "victimsAgesInVerifiedCycle": [
+        9,
+        9
+      ],
+      "direct2h": [
+        0,
+        205712
+      ],
+      "jointInverseOperatingEnergy": [
+        2468570,
+        6788564
+      ],
+      "blocked": [
+        4,
+        8
+      ],
+      "blocked2h": [
+        411440,
+        822857
+      ],
+      "blockingUnderFeeOne": {
+        "minted": 1234297,
+        "netPerSecondFirstInSteadyCycle": 57.142857142857146
+      },
+      "results": [
+        {
+          "tariff": 1,
+          "unitsMinted": 205712,
+          "paidFromClosed100Wallet": [
+            0,
+            100
+          ],
+          "paidWithInverseOperatingFlows": [
+            0,
+            205712
+          ],
+          "atMostFromPooledStampEscrow": [
+            0,
+            30
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 51428
+          }
+        },
+        {
+          "tariff": 2.5,
+          "unitsMinted": 514280,
+          "paidFromClosed100Wallet": [
+            0,
+            100
+          ],
+          "paidWithInverseOperatingFlows": [
+            0,
+            514280
+          ],
+          "atMostFromPooledStampEscrow": [
+            0,
+            30
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 51428
+          }
+        },
+        {
+          "tariff": 10,
+          "unitsMinted": 2057120,
+          "paidFromClosed100Wallet": [
+            0,
+            100
+          ],
+          "paidWithInverseOperatingFlows": [
+            0,
+            2057120
+          ],
+          "atMostFromPooledStampEscrow": [
+            0,
+            30
+          ],
+          "maximumRecoveryFromEachLife": {
+            "shippingEconomy": 0,
+            "invertedUnitBirthCost": 51428
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3019 @@
+[
+  {
+    "fight": {
+      "first": "censo-oscillator-9-p6-1",
+      "second": "censo-oscillator-10-p2-3",
+      "k": 4,
+      "q": 4,
+      "r": -2,
+      "stampCells": [
+        9,
+        10
+      ],
+      "start": 0,
+      "period": 12,
+      "base": [
+        -50,
+        -58
+      ],
+      "direct": [
+        1,
+        0
+      ],
+      "adjacent": [
+        1,
+        0
+      ],
+      "blocked": [
+        15,
+        15
+      ],
+      "frames": [
+        {
+          "g": 1,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 2,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            3
+          ],
+          "births": [
+            3,
+            2
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 3,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 4,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            2
+          ],
+          "births": [
+            3,
+            3
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 5,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            5,
+            4
+          ],
+          "stable": [
+            8,
+            9
+          ]
+        },
+        {
+          "g": 6,
+          "direct": [
+            1,
+            0
+          ],
+          "adjacent": [
+            1,
+            0
+          ],
+          "victimAges": [
+            [
+              2
+            ],
+            []
+          ],
+          "blocked": [
+            2,
+            1
+          ],
+          "births": [
+            2,
+            3
+          ],
+          "stable": [
+            8,
+            9
+          ]
+        },
+        {
+          "g": 7,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            0
+          ],
+          "births": [
+            4,
+            3
+          ],
+          "stable": [
+            8,
+            9
+          ]
+        },
+        {
+          "g": 8,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            2,
+            3
+          ],
+          "stable": [
+            8,
+            8
+          ]
+        },
+        {
+          "g": 9,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            4,
+            4
+          ],
+          "stable": [
+            8,
+            8
+          ]
+        },
+        {
+          "g": 10,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            8,
+            8
+          ]
+        },
+        {
+          "g": 11,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 12,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 13,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 14,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            3
+          ],
+          "births": [
+            3,
+            2
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 15,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 16,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            2
+          ],
+          "births": [
+            3,
+            3
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 17,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            5,
+            4
+          ],
+          "stable": [
+            8,
+            9
+          ]
+        },
+        {
+          "g": 18,
+          "direct": [
+            1,
+            0
+          ],
+          "adjacent": [
+            1,
+            0
+          ],
+          "victimAges": [
+            [
+              2
+            ],
+            []
+          ],
+          "blocked": [
+            2,
+            1
+          ],
+          "births": [
+            2,
+            3
+          ],
+          "stable": [
+            8,
+            9
+          ]
+        },
+        {
+          "g": 19,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            0
+          ],
+          "births": [
+            4,
+            3
+          ],
+          "stable": [
+            8,
+            9
+          ]
+        },
+        {
+          "g": 20,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            2,
+            3
+          ],
+          "stable": [
+            8,
+            8
+          ]
+        },
+        {
+          "g": 21,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            4,
+            4
+          ],
+          "stable": [
+            8,
+            8
+          ]
+        },
+        {
+          "g": 22,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            8,
+            8
+          ]
+        },
+        {
+          "g": 23,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 24,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        }
+      ],
+      "cellAgesRepeatRequired": false
+    },
+    "alone1": {
+      "first": "censo-oscillator-9-p6-1",
+      "second": null,
+      "k": 4,
+      "q": 4,
+      "r": -2,
+      "stampCells": [
+        9,
+        0
+      ],
+      "start": 0,
+      "period": 6,
+      "base": [
+        -16,
+        0
+      ],
+      "direct": [
+        0,
+        0
+      ],
+      "adjacent": [
+        0,
+        0
+      ],
+      "blocked": [
+        0,
+        0
+      ]
+    },
+    "alone2": {
+      "first": null,
+      "second": "censo-oscillator-10-p2-3",
+      "k": 4,
+      "q": 4,
+      "r": -2,
+      "stampCells": [
+        0,
+        10
+      ],
+      "start": 0,
+      "period": 2,
+      "base": [
+        0,
+        -8
+      ],
+      "direct": [
+        0,
+        0
+      ],
+      "adjacent": [
+        0,
+        0
+      ],
+      "blocked": [
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "fight": {
+      "first": "censo-oscillator-10-p2-6",
+      "second": "censo-oscillator-11-p2-14",
+      "k": 3,
+      "q": -1,
+      "r": 0,
+      "stampCells": [
+        10,
+        11
+      ],
+      "start": 18,
+      "period": 6,
+      "base": [
+        -19,
+        -41
+      ],
+      "direct": [
+        0,
+        1
+      ],
+      "adjacent": [
+        2,
+        1
+      ],
+      "blocked": [
+        1,
+        1
+      ],
+      "frames": [
+        {
+          "g": 1,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            1
+          ],
+          "births": [
+            5,
+            4
+          ],
+          "stable": [
+            6,
+            8
+          ]
+        },
+        {
+          "g": 2,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            3
+          ],
+          "stable": [
+            6,
+            7
+          ]
+        },
+        {
+          "g": 3,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            6,
+            8
+          ]
+        },
+        {
+          "g": 4,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            4
+          ],
+          "stable": [
+            6,
+            8
+          ]
+        },
+        {
+          "g": 5,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            6,
+            9
+          ]
+        },
+        {
+          "g": 6,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            6,
+            9
+          ]
+        },
+        {
+          "g": 7,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            1,
+            1
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            6,
+            10
+          ]
+        },
+        {
+          "g": 8,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            3,
+            5
+          ],
+          "stable": [
+            8,
+            12
+          ]
+        },
+        {
+          "g": 9,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            4
+          ],
+          "stable": [
+            7,
+            13
+          ]
+        },
+        {
+          "g": 10,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            8,
+            13
+          ]
+        },
+        {
+          "g": 11,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            3,
+            6
+          ],
+          "stable": [
+            8,
+            14
+          ]
+        },
+        {
+          "g": 12,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            14
+          ]
+        },
+        {
+          "g": 13,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            3
+          ],
+          "stable": [
+            6,
+            13
+          ]
+        },
+        {
+          "g": 14,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            7
+          ],
+          "stable": [
+            7,
+            11
+          ]
+        },
+        {
+          "g": 15,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            6,
+            14
+          ]
+        },
+        {
+          "g": 16,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            3,
+            7
+          ],
+          "stable": [
+            7,
+            14
+          ]
+        },
+        {
+          "g": 17,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            4
+          ],
+          "stable": [
+            6,
+            14
+          ]
+        },
+        {
+          "g": 18,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            12
+          ]
+        },
+        {
+          "g": 19,
+          "direct": [
+            0,
+            1
+          ],
+          "adjacent": [
+            0,
+            1
+          ],
+          "victimAges": [
+            [],
+            [
+              1
+            ]
+          ],
+          "blocked": [
+            0,
+            1
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            12
+          ]
+        },
+        {
+          "g": 20,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            1,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            4
+          ],
+          "stable": [
+            8,
+            12
+          ]
+        },
+        {
+          "g": 21,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            1,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            0
+          ],
+          "births": [
+            3,
+            5
+          ],
+          "stable": [
+            8,
+            12
+          ]
+        },
+        {
+          "g": 22,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            3,
+            4
+          ],
+          "stable": [
+            7,
+            12
+          ]
+        },
+        {
+          "g": 23,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            6,
+            11
+          ]
+        },
+        {
+          "g": 24,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            6
+          ],
+          "stable": [
+            7,
+            11
+          ]
+        },
+        {
+          "g": 25,
+          "direct": [
+            0,
+            1
+          ],
+          "adjacent": [
+            0,
+            1
+          ],
+          "victimAges": [
+            [],
+            [
+              1
+            ]
+          ],
+          "blocked": [
+            0,
+            1
+          ],
+          "births": [
+            4,
+            5
+          ],
+          "stable": [
+            7,
+            12
+          ]
+        },
+        {
+          "g": 26,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            1,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            4
+          ],
+          "stable": [
+            8,
+            12
+          ]
+        },
+        {
+          "g": 27,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            1,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            0
+          ],
+          "births": [
+            3,
+            5
+          ],
+          "stable": [
+            8,
+            12
+          ]
+        },
+        {
+          "g": 28,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            3,
+            4
+          ],
+          "stable": [
+            7,
+            12
+          ]
+        },
+        {
+          "g": 29,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            5
+          ],
+          "stable": [
+            6,
+            11
+          ]
+        },
+        {
+          "g": 30,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            6
+          ],
+          "stable": [
+            7,
+            11
+          ]
+        }
+      ],
+      "cellAgesRepeatRequired": false
+    },
+    "alone1": {
+      "first": "censo-oscillator-10-p2-6",
+      "second": null,
+      "k": 3,
+      "q": -1,
+      "r": 0,
+      "stampCells": [
+        10,
+        0
+      ],
+      "start": 0,
+      "period": 2,
+      "base": [
+        -3,
+        0
+      ],
+      "direct": [
+        0,
+        0
+      ],
+      "adjacent": [
+        0,
+        0
+      ],
+      "blocked": [
+        0,
+        0
+      ]
+    },
+    "alone2": {
+      "first": null,
+      "second": "censo-oscillator-11-p2-14",
+      "k": 3,
+      "q": -1,
+      "r": 0,
+      "stampCells": [
+        0,
+        11
+      ],
+      "start": 0,
+      "period": 2,
+      "base": [
+        0,
+        -8
+      ],
+      "direct": [
+        0,
+        0
+      ],
+      "adjacent": [
+        0,
+        0
+      ],
+      "blocked": [
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "fight": {
+      "first": "censo-oscillator-8-p2-1",
+      "second": "censo-oscillator-12-p2-6",
+      "k": 1,
+      "q": 5,
+      "r": 1,
+      "stampCells": [
+        8,
+        12
+      ],
+      "start": 19,
+      "period": 14,
+      "base": [
+        -24,
+        -66
+      ],
+      "direct": [
+        0,
+        2
+      ],
+      "adjacent": [
+        0,
+        2
+      ],
+      "blocked": [
+        4,
+        8
+      ],
+      "frames": [
+        {
+          "g": 1,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            1,
+            1
+          ],
+          "births": [
+            4,
+            7
+          ],
+          "stable": [
+            5,
+            10
+          ]
+        },
+        {
+          "g": 2,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            1,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            3,
+            2
+          ],
+          "births": [
+            3,
+            2
+          ],
+          "stable": [
+            4,
+            11
+          ]
+        },
+        {
+          "g": 3,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            3,
+            7
+          ],
+          "stable": [
+            3,
+            11
+          ]
+        },
+        {
+          "g": 4,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            4,
+            2
+          ],
+          "stable": [
+            3,
+            11
+          ]
+        },
+        {
+          "g": 5,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            2,
+            7
+          ],
+          "stable": [
+            5,
+            10
+          ]
+        },
+        {
+          "g": 6,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            3,
+            4
+          ],
+          "stable": [
+            4,
+            9
+          ]
+        },
+        {
+          "g": 7,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            1,
+            6
+          ],
+          "stable": [
+            4,
+            9
+          ]
+        },
+        {
+          "g": 8,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            1,
+            4
+          ],
+          "stable": [
+            4,
+            6
+          ]
+        },
+        {
+          "g": 9,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            3,
+            8
+          ],
+          "stable": [
+            4,
+            6
+          ]
+        },
+        {
+          "g": 10,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            2,
+            0
+          ],
+          "stable": [
+            5,
+            6
+          ]
+        },
+        {
+          "g": 11,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            1,
+            6
+          ],
+          "stable": [
+            5,
+            6
+          ]
+        },
+        {
+          "g": 12,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            3,
+            0
+          ],
+          "stable": [
+            3,
+            6
+          ]
+        },
+        {
+          "g": 13,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            5,
+            6
+          ],
+          "stable": [
+            3,
+            6
+          ]
+        },
+        {
+          "g": 14,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            1,
+            0
+          ],
+          "stable": [
+            7,
+            8
+          ]
+        },
+        {
+          "g": 15,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            4,
+            6
+          ],
+          "stable": [
+            5,
+            8
+          ]
+        },
+        {
+          "g": 16,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            2
+          ],
+          "births": [
+            3,
+            2
+          ],
+          "stable": [
+            5,
+            10
+          ]
+        },
+        {
+          "g": 17,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            4
+          ],
+          "births": [
+            3,
+            6
+          ],
+          "stable": [
+            5,
+            8
+          ]
+        },
+        {
+          "g": 18,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            1,
+            4
+          ],
+          "stable": [
+            3,
+            12
+          ]
+        },
+        {
+          "g": 19,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            6
+          ],
+          "stable": [
+            3,
+            12
+          ]
+        },
+        {
+          "g": 20,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 21,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            0,
+            8
+          ],
+          "stable": [
+            3,
+            4
+          ]
+        },
+        {
+          "g": 22,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 23,
+          "direct": [
+            0,
+            2
+          ],
+          "adjacent": [
+            0,
+            2
+          ],
+          "victimAges": [
+            [],
+            [
+              10,
+              10
+            ]
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 24,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            1,
+            8
+          ]
+        },
+        {
+          "g": 25,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            0
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 26,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 27,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            2
+          ],
+          "stable": [
+            3,
+            6
+          ]
+        },
+        {
+          "g": 28,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            1,
+            6
+          ]
+        },
+        {
+          "g": 29,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            6
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 30,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            3,
+            10
+          ]
+        },
+        {
+          "g": 31,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            8
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 32,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            0,
+            4
+          ],
+          "stable": [
+            3,
+            12
+          ]
+        },
+        {
+          "g": 33,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            6
+          ],
+          "stable": [
+            3,
+            12
+          ]
+        },
+        {
+          "g": 34,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 35,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            0,
+            8
+          ],
+          "stable": [
+            3,
+            4
+          ]
+        },
+        {
+          "g": 36,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 37,
+          "direct": [
+            0,
+            2
+          ],
+          "adjacent": [
+            0,
+            2
+          ],
+          "victimAges": [
+            [],
+            [
+              9,
+              9
+            ]
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 38,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            1,
+            8
+          ]
+        },
+        {
+          "g": 39,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            0
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 40,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            2
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 41,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            2
+          ],
+          "stable": [
+            3,
+            6
+          ]
+        },
+        {
+          "g": 42,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            1,
+            6
+          ]
+        },
+        {
+          "g": 43,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            0
+          ],
+          "births": [
+            0,
+            6
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 44,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            2
+          ],
+          "stable": [
+            3,
+            10
+          ]
+        },
+        {
+          "g": 45,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            8
+          ],
+          "stable": [
+            3,
+            8
+          ]
+        },
+        {
+          "g": 46,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            2,
+            0
+          ],
+          "births": [
+            0,
+            4
+          ],
+          "stable": [
+            3,
+            12
+          ]
+        },
+        {
+          "g": 47,
+          "direct": [
+            0,
+            0
+          ],
+          "adjacent": [
+            0,
+            0
+          ],
+          "victimAges": [
+            [],
+            []
+          ],
+          "blocked": [
+            0,
+            2
+          ],
+          "births": [
+            2,
+            6
+          ],
+          "stable": [
+            3,
+            12
+          ]
+        }
+      ],
+      "cellAgesRepeatRequired": false
+    },
+    "alone1": {
+      "first": "censo-oscillator-8-p2-1",
+      "second": null,
+      "k": 1,
+      "q": 5,
+      "r": 1,
+      "stampCells": [
+        8,
+        0
+      ],
+      "start": 0,
+      "period": 2,
+      "base": [
+        -2,
+        0
+      ],
+      "direct": [
+        0,
+        0
+      ],
+      "adjacent": [
+        0,
+        0
+      ],
+      "blocked": [
+        0,
+        0
+      ]
+    },
+    "alone2": {
+      "first": null,
+      "second": "censo-oscillator-12-p2-6",
+      "k": 1,
+      "q": 5,
+      "r": 1,
+      "stampCells": [
+        0,
+        12
+      ],
+      "start": 0,
+      "period": 2,
+      "base": [
+        0,
+        -10
+      ],
+      "direct": [
+        0,
+        0
+      ],
+      "adjacent": [
+        0,
+        0
+      ],
+      "blocked": [
+        0,
+        0
+      ]
+    }
+  }
+]

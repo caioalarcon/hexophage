@@ -1,0 +1,476 @@
+{
+  "horizon": 96,
+  "fee": 1,
+  "recoverable": 0.5,
+  "attempts": 1548,
+  "direct": {
+    "deposited": 40,
+    "claimed": 26,
+    "returned": 21,
+    "looted": 5,
+    "outstanding": 14,
+    "attacker": 3,
+    "defender": 23,
+    "any": 38,
+    "maxAttacker": 0.5,
+    "maxDefender": 2
+  },
+  "contact": {
+    "deposited": 469,
+    "claimed": 272,
+    "returned": 171,
+    "looted": 101,
+    "outstanding": 197,
+    "attacker": 26,
+    "defender": 246,
+    "any": 360,
+    "maxAttacker": 1.5,
+    "maxDefender": 2.5
+  },
+  "byTarget": {
+    "p2": {
+      "deposited": 70,
+      "claimed": 22,
+      "returned": 16,
+      "looted": 6,
+      "outstanding": 48,
+      "attacker": 2,
+      "defender": 20,
+      "any": 36,
+      "maxAttacker": 0.5,
+      "maxDefender": 1
+    },
+    "mirror42": {
+      "deposited": 103.5,
+      "claimed": 76.5,
+      "returned": 43,
+      "looted": 33.5,
+      "outstanding": 27,
+      "attacker": 3.5,
+      "defender": 73,
+      "any": 102,
+      "maxAttacker": 0.5,
+      "maxDefender": 2.5
+    },
+    "stalk": {
+      "deposited": 86.5,
+      "claimed": 46,
+      "returned": 27,
+      "looted": 19,
+      "outstanding": 40.5,
+      "attacker": 5.5,
+      "defender": 40.5,
+      "any": 66,
+      "maxAttacker": 1.5,
+      "maxDefender": 2
+    },
+    "gun20": {
+      "deposited": 177,
+      "claimed": 120.5,
+      "returned": 80.5,
+      "looted": 40,
+      "outstanding": 56.5,
+      "attacker": 12,
+      "defender": 108.5,
+      "any": 150,
+      "maxAttacker": 0.5,
+      "maxDefender": 2.5
+    },
+    "glider": {
+      "deposited": 32,
+      "claimed": 7,
+      "returned": 4.5,
+      "looted": 2.5,
+      "outstanding": 25,
+      "attacker": 3,
+      "defender": 4,
+      "any": 6,
+      "maxAttacker": 1,
+      "maxDefender": 1
+    }
+  },
+  "named": [
+    {
+      "name": "stalk-hit",
+      "target": "stalk",
+      "altered": true,
+      "paid": 1359,
+      "direct": {
+        "deposited": 0.5,
+        "claimed": 0.5,
+        "returned": 0.5,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {
+          "1": 0.5
+        }
+      },
+      "contact": {
+        "deposited": 2,
+        "claimed": 1.5,
+        "returned": 1,
+        "looted": 0.5,
+        "outstanding": 0.5,
+        "sites": 1,
+        "byOwner": {
+          "1": 1.5
+        }
+      }
+    },
+    {
+      "name": "stalk-hit-delayed",
+      "target": "stalk",
+      "altered": true,
+      "paid": 1410,
+      "direct": {
+        "deposited": 0.5,
+        "claimed": 0.5,
+        "returned": 0.5,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {
+          "2": 0.5
+        }
+      },
+      "contact": {
+        "deposited": 1.5,
+        "claimed": 1.5,
+        "returned": 0.5,
+        "looted": 1,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {
+          "2": 1.5
+        }
+      }
+    },
+    {
+      "name": "stalk-miss",
+      "target": "stalk",
+      "altered": false,
+      "paid": 2847,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "stalk-same-owner",
+      "target": "stalk",
+      "altered": true,
+      "paid": 1510,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "stalk-alone",
+      "target": "stalk",
+      "altered": false,
+      "paid": 1561,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "p4-alone",
+      "target": null,
+      "altered": false,
+      "paid": 1286,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "p2-alone",
+      "target": "p2",
+      "altered": false,
+      "paid": 515,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "gun20-alone",
+      "target": "gun20",
+      "altered": false,
+      "paid": 12964,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "reflector-alone",
+      "target": "mirror42",
+      "altered": false,
+      "paid": 1576,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "reflector-hit",
+      "target": "mirror42",
+      "altered": true,
+      "paid": 2055,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0.5,
+        "claimed": 0.5,
+        "returned": 0.5,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {
+          "2": 0.5
+        }
+      }
+    },
+    {
+      "name": "reflector-same-owner",
+      "target": "mirror42",
+      "altered": true,
+      "paid": 2056,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "p2-hit",
+      "target": "p2",
+      "altered": true,
+      "paid": 250,
+      "direct": {
+        "deposited": 0,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 1.5,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 1.5,
+        "sites": 3,
+        "byOwner": {}
+      }
+    },
+    {
+      "name": "gun20-hit",
+      "target": "gun20",
+      "altered": true,
+      "paid": 11872,
+      "direct": {
+        "deposited": 2,
+        "claimed": 2,
+        "returned": 1,
+        "looted": 1,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {
+          "2": 2
+        }
+      },
+      "contact": {
+        "deposited": 3,
+        "claimed": 2.5,
+        "returned": 1.5,
+        "looted": 1,
+        "outstanding": 0.5,
+        "sites": 1,
+        "byOwner": {
+          "2": 2.5
+        }
+      }
+    },
+    {
+      "name": "glider-hit",
+      "target": "glider",
+      "altered": true,
+      "paid": 178,
+      "direct": {
+        "deposited": 1,
+        "claimed": 0,
+        "returned": 0,
+        "looted": 0,
+        "outstanding": 1,
+        "sites": 2,
+        "byOwner": {}
+      },
+      "contact": {
+        "deposited": 3,
+        "claimed": 2,
+        "returned": 2,
+        "looted": 0,
+        "outstanding": 1,
+        "sites": 2,
+        "byOwner": {
+          "1": 1,
+          "2": 1
+        }
+      }
+    },
+    {
+      "name": "disruption-without-target-direct-death",
+      "target": "stalk",
+      "altered": true,
+      "paid": 750,
+      "direct": {
+        "deposited": 0.5,
+        "claimed": 0.5,
+        "returned": 0.5,
+        "looted": 0,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {
+          "1": 0.5
+        }
+      },
+      "contact": {
+        "deposited": 1.5,
+        "claimed": 1.5,
+        "returned": 0.5,
+        "looted": 1,
+        "outstanding": 0,
+        "sites": 0,
+        "byOwner": {
+          "1": 0.5,
+          "2": 1
+        }
+      }
+    }
+  ]
+}

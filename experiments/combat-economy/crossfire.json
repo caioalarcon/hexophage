@@ -1,0 +1,125 @@
+{
+  "frequency": 256,
+  "mutual": {
+    "dx": 3,
+    "dy": -36,
+    "period": 20,
+    "from": 200,
+    "through": 220,
+    "live": [
+      64,
+      64,
+      0
+    ],
+    "fundedBirths": [
+      540,
+      540
+    ],
+    "stable": [
+      763,
+      763
+    ],
+    "dead": [
+      540,
+      540
+    ],
+    "adjacent": [
+      3,
+      3
+    ],
+    "direct": [
+      2,
+      2
+    ],
+    "neutral": {
+      "births": 10
+    },
+    "scrapAtBounds": [
+      {
+        "deposited": 24,
+        "claimed": 21,
+        "returned": 21,
+        "looted": 0,
+        "outstanding": 3,
+        "sites": 6,
+        "byOwner": {
+          "1": 10.5,
+          "2": 10.5
+        }
+      },
+      {
+        "deposited": 27,
+        "claimed": 24,
+        "returned": 24,
+        "looted": 0,
+        "outstanding": 3,
+        "sites": 6,
+        "byOwner": {
+          "1": 12,
+          "2": 12
+        }
+      }
+    ]
+  },
+  "noDirect": {
+    "dx": 5,
+    "dy": -36,
+    "period": 20,
+    "from": 200,
+    "through": 220,
+    "live": [
+      64,
+      64,
+      0
+    ],
+    "fundedBirths": [
+      528,
+      528
+    ],
+    "stable": [
+      754,
+      754
+    ],
+    "dead": [
+      528,
+      528
+    ],
+    "adjacent": [
+      2,
+      2
+    ],
+    "direct": [
+      0,
+      0
+    ],
+    "neutral": {
+      "births": 24
+    },
+    "scrapAtBounds": [
+      {
+        "deposited": 16,
+        "claimed": 14,
+        "returned": 14,
+        "looted": 0,
+        "outstanding": 2,
+        "sites": 4,
+        "byOwner": {
+          "1": 7,
+          "2": 7
+        }
+      },
+      {
+        "deposited": 18,
+        "claimed": 16,
+        "returned": 16,
+        "looted": 0,
+        "outstanding": 2,
+        "sites": 4,
+        "byOwner": {
+          "1": 8,
+          "2": 8
+        }
+      }
+    ]
+  }
+}

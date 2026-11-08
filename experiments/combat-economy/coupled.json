@@ -1,0 +1,1267 @@
+{
+  "sphere": 128,
+  "seed": 18427,
+  "horizon": 512,
+  "rows": [
+    {
+      "fee": 0,
+      "mode": "none",
+      "opening": 30,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        0
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2162,
+        2505
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "bounty",
+      "opening": 30,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2162,
+        2548
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "transfer",
+      "opening": 30,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        43,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2119,
+        2548
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "bounty",
+      "opening": 30,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        430
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2162,
+        2935
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "transfer",
+      "opening": 30,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        430
+      ],
+      "paid": [
+        430,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        1732,
+        2935
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "bounty",
+      "opening": 30,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        2580
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2162,
+        5085
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "transfer",
+      "opening": 30,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        2152
+      ],
+      "paid": [
+        2152,
+        0
+      ],
+      "firstZero": [
+        6,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        10,
+        4657
+      ]
+    },
+    {
+      "fee": 0,
+      "mode": "none",
+      "opening": 100,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        0
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2232,
+        2575
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "bounty",
+      "opening": 100,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2232,
+        2618
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "transfer",
+      "opening": 100,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        43,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2189,
+        2618
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "bounty",
+      "opening": 100,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        430
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2232,
+        3005
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "transfer",
+      "opening": 100,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        430
+      ],
+      "paid": [
+        430,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        1802,
+        3005
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "bounty",
+      "opening": 100,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        2580
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        2232,
+        5155
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "transfer",
+      "opening": 100,
+      "remote": false,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        2222
+      ],
+      "paid": [
+        2222,
+        0
+      ],
+      "firstZero": [
+        90,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        10,
+        11,
+        3
+      ],
+      "cash": [
+        10,
+        4797
+      ]
+    },
+    {
+      "fee": 0,
+      "mode": "none",
+      "opening": 30,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        0
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        370,
+        2505
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "bounty",
+      "opening": 30,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        370,
+        2548
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "transfer",
+      "opening": 30,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        43,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        327,
+        2548
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "bounty",
+      "opening": 30,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        430
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        370,
+        2935
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "transfer",
+      "opening": 30,
+      "remote": true,
+      "last": 147,
+      "direct": [
+        12,
+        0
+      ],
+      "received": [
+        0,
+        119
+      ],
+      "paid": [
+        119,
+        0
+      ],
+      "firstZero": [
+        127,
+        null
+      ],
+      "firstErosion": [
+        139,
+        null
+      ],
+      "eroded": [
+        5,
+        0
+      ],
+      "eliminated": [
+        147,
+        null
+      ],
+      "diverged": 139,
+      "live": [
+        0,
+        22,
+        2
+      ],
+      "cash": [
+        0,
+        863
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "bounty",
+      "opening": 30,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        2580
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        370,
+        5085
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "transfer",
+      "opening": 30,
+      "remote": true,
+      "last": 15,
+      "direct": [
+        1,
+        0
+      ],
+      "received": [
+        0,
+        31
+      ],
+      "paid": [
+        31,
+        0
+      ],
+      "firstZero": [
+        6,
+        null
+      ],
+      "firstErosion": [
+        7,
+        null
+      ],
+      "eroded": [
+        5,
+        0
+      ],
+      "eliminated": [
+        15,
+        null
+      ],
+      "diverged": 7,
+      "live": [
+        0,
+        22,
+        2
+      ],
+      "cash": [
+        0,
+        137
+      ]
+    },
+    {
+      "fee": 0,
+      "mode": "none",
+      "opening": 100,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        0
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        440,
+        2575
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "bounty",
+      "opening": 100,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        440,
+        2618
+      ]
+    },
+    {
+      "fee": 1,
+      "mode": "transfer",
+      "opening": 100,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        43
+      ],
+      "paid": [
+        43,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        397,
+        2618
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "bounty",
+      "opening": 100,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        430
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        440,
+        3005
+      ]
+    },
+    {
+      "fee": 10,
+      "mode": "transfer",
+      "opening": 100,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        430
+      ],
+      "paid": [
+        430,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        10,
+        3005
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "bounty",
+      "opening": 100,
+      "remote": true,
+      "last": 512,
+      "direct": [
+        43,
+        0
+      ],
+      "received": [
+        0,
+        2580
+      ],
+      "paid": [
+        0,
+        0
+      ],
+      "firstZero": [
+        null,
+        null
+      ],
+      "firstErosion": [
+        null,
+        null
+      ],
+      "eroded": [
+        0,
+        0
+      ],
+      "eliminated": [
+        null,
+        null
+      ],
+      "diverged": null,
+      "live": [
+        16,
+        11,
+        3
+      ],
+      "cash": [
+        440,
+        5155
+      ]
+    },
+    {
+      "fee": 60,
+      "mode": "transfer",
+      "opening": 100,
+      "remote": true,
+      "last": 27,
+      "direct": [
+        2,
+        0
+      ],
+      "received": [
+        0,
+        109
+      ],
+      "paid": [
+        109,
+        0
+      ],
+      "firstZero": [
+        18,
+        null
+      ],
+      "firstErosion": [
+        19,
+        null
+      ],
+      "eroded": [
+        5,
+        0
+      ],
+      "eliminated": [
+        27,
+        null
+      ],
+      "diverged": 19,
+      "live": [
+        0,
+        22,
+        2
+      ],
+      "cash": [
+        0,
+        343
+      ]
+    }
+  ]
+}

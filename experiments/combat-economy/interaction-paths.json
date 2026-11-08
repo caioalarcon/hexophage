@@ -1,0 +1,1156 @@
+[
+  {
+    "name": "stalk-hit",
+    "horizon": 256,
+    "neutralParents": {
+      "7": 99,
+      "1+2": 3,
+      "2+7": 15,
+      "1+7": 34
+    },
+    "firstNeutralBirth": {
+      "7": 12,
+      "1+2": 10,
+      "2+7": 11,
+      "1+7": 11
+    },
+    "emptyFeeByGeneration": [
+      [
+        12,
+        0,
+        1
+      ]
+    ],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 2,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 10,
+            "death": 11
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 45,
+            "birthSuppressed": 47,
+            "birthBlockedByResident": 4,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "death": 11,
+            "savedSurvivor": 11,
+            "birthSuppressed": 12,
+            "birthBlockedByResident": 21
+          }
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 2,
+            "birthSuppressed": 1,
+            "birthBlockedByResident": 1,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthBlockedByResident": 10,
+            "savedSurvivor": 10,
+            "birthSuppressed": 12
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 19,
+            "birthSuppressed": 16,
+            "birthBlockedByResident": 4,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthBlockedByResident": 12,
+            "savedSurvivor": 12,
+            "birthSuppressed": 13,
+            "death": 14
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "stalk-hit-delayed",
+    "horizon": 256,
+    "neutralParents": {
+      "7": 60,
+      "1+2": 3,
+      "2+7": 36,
+      "1+7": 5
+    },
+    "firstNeutralBirth": {
+      "7": 25,
+      "1+2": 21,
+      "2+7": 22,
+      "1+7": 22
+    },
+    "emptyFeeByGeneration": [
+      [
+        22,
+        2,
+        0
+      ],
+      [
+        24,
+        0,
+        1
+      ],
+      [
+        27,
+        0,
+        2
+      ]
+    ],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 3,
+            "birthSuppressed": 2,
+            "birthBlockedByResident": 1,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthBlockedByResident": 21,
+            "savedSurvivor": 21,
+            "birthSuppressed": 22
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 1,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 23
+          }
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 4,
+            "birthSuppressed": 3,
+            "birthBlockedByResident": 1,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "death": 21,
+            "birthBlockedByResident": 21,
+            "savedSurvivor": 21,
+            "birthSuppressed": 24
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 30,
+            "birthSuppressed": 12,
+            "birthBlockedByResident": 2,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthBlockedByResident": 25,
+            "savedSurvivor": 25,
+            "birthSuppressed": 26
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "stalk-miss",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "stalk-same-owner",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "stalk-alone",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "p4-alone",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "p2-alone",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "gun20-alone",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "reflector-alone",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "reflector-hit",
+    "horizon": 256,
+    "neutralParents": {
+      "1+2": 1
+    },
+    "firstNeutralBirth": {
+      "1+2": 22
+    },
+    "emptyFeeByGeneration": [
+      [
+        22,
+        1,
+        0
+      ],
+      [
+        23,
+        0,
+        1
+      ],
+      [
+        24,
+        1,
+        1
+      ]
+    ],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 1,
+            "birthSuppressed": 2,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 22,
+            "savedSurvivor": 22
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 1,
+            "birthSuppressed": 1,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 23,
+            "savedSurvivor": 23
+          }
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 2,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 23
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "reflector-same-owner",
+    "horizon": 256,
+    "neutralParents": {},
+    "firstNeutralBirth": {},
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "p2-hit",
+    "horizon": 256,
+    "neutralParents": {
+      "1+2": 2,
+      "2+7": 1,
+      "1+7": 1
+    },
+    "firstNeutralBirth": {
+      "1+2": 34,
+      "2+7": 35,
+      "1+7": 37
+    },
+    "emptyFeeByGeneration": [
+      [
+        33,
+        0,
+        1
+      ],
+      [
+        34,
+        1,
+        1
+      ],
+      [
+        35,
+        1,
+        2
+      ]
+    ],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 3,
+            "birthSuppressed": 2,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 32,
+            "birthSuppressed": 34
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 3,
+            "birthSuppressed": 4,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 32,
+            "birthSuppressed": 33
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 0,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {}
+        }
+      }
+    ]
+  },
+  {
+    "name": "gun20-hit",
+    "horizon": 256,
+    "neutralParents": {
+      "1+2": 2,
+      "2+7": 4,
+      "1+7": 4
+    },
+    "firstNeutralBirth": {
+      "1+2": 18,
+      "2+7": 19,
+      "1+7": 19
+    },
+    "emptyFeeByGeneration": [],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 2,
+            "savedSurvivor": 4,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 4,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthBlockedByResident": 18,
+            "savedSurvivor": 18,
+            "death": 20
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 1,
+            "birthSuppressed": 1,
+            "birthBlockedByResident": 1,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 19,
+            "birthBlockedByResident": 20,
+            "savedSurvivor": 20,
+            "death": 20
+          }
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 2,
+            "savedSurvivor": 4,
+            "birthSuppressed": 0,
+            "birthBlockedByResident": 4,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthBlockedByResident": 18,
+            "savedSurvivor": 18,
+            "death": 20
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 1,
+            "birthSuppressed": 1,
+            "birthBlockedByResident": 1,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 19,
+            "birthBlockedByResident": 20,
+            "death": 20,
+            "savedSurvivor": 20
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "glider-hit",
+    "horizon": 256,
+    "neutralParents": {
+      "7": 10,
+      "1+2": 2,
+      "2+7": 9,
+      "1+7": 9
+    },
+    "firstNeutralBirth": {
+      "7": 22,
+      "1+2": 18,
+      "2+7": 19,
+      "1+7": 19
+    },
+    "emptyFeeByGeneration": [
+      [
+        14,
+        2,
+        2
+      ],
+      [
+        15,
+        1,
+        1
+      ]
+    ],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 1,
+            "birthSuppressed": 3,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 14,
+            "savedSurvivor": 15,
+            "death": 24
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 3,
+            "birthSuppressed": 1,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 19,
+            "birthSuppressed": 19
+          }
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 1,
+            "birthSuppressed": 3,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 14,
+            "savedSurvivor": 15,
+            "death": 24
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 3,
+            "birthSuppressed": 1,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "birthSuppressed": 19,
+            "savedSurvivor": 19
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "disruption-without-target-direct-death",
+    "horizon": 96,
+    "neutralParents": {
+      "7": 4,
+      "1+2": 1,
+      "2+7": 2,
+      "1+7": 4
+    },
+    "firstNeutralBirth": {
+      "7": 17,
+      "1+2": 13,
+      "2+7": 14,
+      "1+7": 14
+    },
+    "emptyFeeByGeneration": [
+      [
+        11,
+        1,
+        1
+      ],
+      [
+        12,
+        0,
+        1
+      ],
+      [
+        13,
+        1,
+        1
+      ],
+      [
+        14,
+        0,
+        1
+      ],
+      [
+        15,
+        1,
+        1
+      ],
+      [
+        16,
+        2,
+        1
+      ],
+      [
+        17,
+        0,
+        2
+      ],
+      [
+        19,
+        1,
+        0
+      ],
+      [
+        20,
+        0,
+        1
+      ],
+      [
+        21,
+        1,
+        2
+      ]
+    ],
+    "byPlayer": [
+      {
+        "player": 1,
+        "removeRivals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 8,
+            "birthSuppressed": 7,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 11,
+            "birthSuppressed": 11,
+            "death": 14
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 1,
+            "savedSurvivor": 6,
+            "birthSuppressed": 7,
+            "birthBlockedByResident": 1,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "death": 14,
+            "savedSurvivor": 14,
+            "birthBlockedByResident": 16,
+            "birthSuppressed": 17
+          }
+        }
+      },
+      {
+        "player": 2,
+        "removeRivals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 6,
+            "birthSuppressed": 11,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 11,
+            "birthSuppressed": 11
+          }
+        },
+        "removeNeutrals": {
+          "sums": {
+            "death": 0,
+            "savedSurvivor": 1,
+            "birthSuppressed": 1,
+            "birthBlockedByResident": 0,
+            "birthBecameNeutral": 0,
+            "ownedBirthEnabled": 0
+          },
+          "first": {
+            "savedSurvivor": 15,
+            "birthSuppressed": 17
+          }
+        }
+      }
+    ]
+  }
+]

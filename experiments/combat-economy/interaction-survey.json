@@ -1,0 +1,198 @@
+{
+  "all": {
+    "altered": {
+      "total": 573,
+      "rivalKilled": 47,
+      "birthSuppressed": 456,
+      "blockedByResident": 33,
+      "rescuedByRival": 300,
+      "newMixedNeutral": 350,
+      "rivalKilledOrBlockedBirth": 462,
+      "anyHostileEffect": 496,
+      "anyNeutralEffect": 304
+    },
+    "unaltered": {
+      "total": 975,
+      "rivalKilled": 0,
+      "birthSuppressed": 0,
+      "blockedByResident": 0,
+      "rescuedByRival": 0,
+      "newMixedNeutral": 8,
+      "rivalKilledOrBlockedBirth": 0,
+      "anyHostileEffect": 0,
+      "anyNeutralEffect": 0
+    }
+  },
+  "p2": {
+    "altered": {
+      "total": 72,
+      "rivalKilled": 0,
+      "birthSuppressed": 44,
+      "blockedByResident": 0,
+      "rescuedByRival": 40,
+      "newMixedNeutral": 52,
+      "rivalKilledOrBlockedBirth": 44,
+      "anyHostileEffect": 52,
+      "anyNeutralEffect": 40
+    },
+    "unaltered": {
+      "total": 240,
+      "rivalKilled": 0,
+      "birthSuppressed": 0,
+      "blockedByResident": 0,
+      "rescuedByRival": 0,
+      "newMixedNeutral": 0,
+      "rivalKilledOrBlockedBirth": 0,
+      "anyHostileEffect": 0,
+      "anyNeutralEffect": 0
+    }
+  },
+  "equalSize": {
+    "altered": {
+      "total": 62,
+      "rivalKilled": 2,
+      "birthSuppressed": 37,
+      "blockedByResident": 1,
+      "rescuedByRival": 32,
+      "newMixedNeutral": 45,
+      "rivalKilledOrBlockedBirth": 38,
+      "anyHostileEffect": 49,
+      "anyNeutralEffect": 42
+    },
+    "unaltered": {
+      "total": 975,
+      "rivalKilled": 0,
+      "birthSuppressed": 0,
+      "blockedByResident": 0,
+      "rescuedByRival": 0,
+      "newMixedNeutral": 8,
+      "rivalKilledOrBlockedBirth": 0,
+      "anyHostileEffect": 0,
+      "anyNeutralEffect": 0
+    }
+  },
+  "fieldLoss": {
+    "altered": {
+      "total": 459,
+      "rivalKilled": 44,
+      "birthSuppressed": 381,
+      "blockedByResident": 31,
+      "rescuedByRival": 243,
+      "newMixedNeutral": 278,
+      "rivalKilledOrBlockedBirth": 386,
+      "anyHostileEffect": 401,
+      "anyNeutralEffect": 235
+    },
+    "unaltered": {}
+  },
+  "fieldGain": {
+    "altered": {
+      "total": 52,
+      "rivalKilled": 1,
+      "birthSuppressed": 38,
+      "blockedByResident": 1,
+      "rescuedByRival": 25,
+      "newMixedNeutral": 27,
+      "rivalKilledOrBlockedBirth": 38,
+      "anyHostileEffect": 46,
+      "anyNeutralEffect": 27
+    },
+    "unaltered": {}
+  },
+  "mirror42": {
+    "altered": {
+      "total": 123,
+      "rivalKilled": 14,
+      "birthSuppressed": 107,
+      "blockedByResident": 7,
+      "rescuedByRival": 77,
+      "newMixedNeutral": 82,
+      "rivalKilledOrBlockedBirth": 109,
+      "anyHostileEffect": 114,
+      "anyNeutralEffect": 76
+    },
+    "unaltered": {
+      "total": 189,
+      "rivalKilled": 0,
+      "birthSuppressed": 0,
+      "blockedByResident": 0,
+      "rescuedByRival": 0,
+      "newMixedNeutral": 5,
+      "rivalKilledOrBlockedBirth": 0,
+      "anyHostileEffect": 0,
+      "anyNeutralEffect": 0
+    }
+  },
+  "stalk": {
+    "altered": {
+      "total": 130,
+      "rivalKilled": 15,
+      "birthSuppressed": 110,
+      "blockedByResident": 13,
+      "rescuedByRival": 74,
+      "newMixedNeutral": 73,
+      "rivalKilledOrBlockedBirth": 110,
+      "anyHostileEffect": 120,
+      "anyNeutralEffect": 70
+    },
+    "unaltered": {
+      "total": 182,
+      "rivalKilled": 0,
+      "birthSuppressed": 0,
+      "blockedByResident": 0,
+      "rescuedByRival": 0,
+      "newMixedNeutral": 1,
+      "rivalKilledOrBlockedBirth": 0,
+      "anyHostileEffect": 0,
+      "anyNeutralEffect": 0
+    }
+  },
+  "gun20": {
+    "altered": {
+      "total": 211,
+      "rivalKilled": 14,
+      "birthSuppressed": 161,
+      "blockedByResident": 9,
+      "rescuedByRival": 93,
+      "newMixedNeutral": 125,
+      "rivalKilledOrBlockedBirth": 163,
+      "anyHostileEffect": 174,
+      "anyNeutralEffect": 108
+    },
+    "unaltered": {
+      "total": 89,
+      "rivalKilled": 0,
+      "birthSuppressed": 0,
+      "blockedByResident": 0,
+      "rescuedByRival": 0,
+      "newMixedNeutral": 2,
+      "rivalKilledOrBlockedBirth": 0,
+      "anyHostileEffect": 0,
+      "anyNeutralEffect": 0
+    }
+  },
+  "glider": {
+    "altered": {
+      "total": 37,
+      "rivalKilled": 4,
+      "birthSuppressed": 34,
+      "blockedByResident": 4,
+      "rescuedByRival": 16,
+      "newMixedNeutral": 18,
+      "rivalKilledOrBlockedBirth": 36,
+      "anyHostileEffect": 36,
+      "anyNeutralEffect": 10
+    },
+    "unaltered": {
+      "total": 275,
+      "rivalKilled": 0,
+      "birthSuppressed": 0,
+      "blockedByResident": 0,
+      "rescuedByRival": 0,
+      "newMixedNeutral": 0,
+      "rivalKilledOrBlockedBirth": 0,
+      "anyHostileEffect": 0,
+      "anyNeutralEffect": 0
+    }
+  }
+}

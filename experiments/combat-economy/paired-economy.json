@@ -1,0 +1,278 @@
+{
+  "horizonNamed": 512,
+  "horizonGrid": 96,
+  "grid": {
+    "survival": {
+      "no-change": {
+        "n": 977,
+        "positiveNet": 0,
+        "neutralNet": 977,
+        "negativeNet": 0,
+        "favorableVsNoShot": 0
+      },
+      "rival-gained-income": {
+        "n": 328,
+        "positiveNet": 5,
+        "neutralNet": 319,
+        "negativeNet": 4,
+        "favorableVsNoShot": 0
+      },
+      "rival-lost-income": {
+        "n": 243,
+        "positiveNet": 27,
+        "neutralNet": 212,
+        "negativeNet": 4,
+        "favorableVsNoShot": 211
+      }
+    },
+    "front": {
+      "no-change": {
+        "n": 988,
+        "positiveNet": 0,
+        "neutralNet": 988,
+        "negativeNet": 0,
+        "favorableVsNoShot": 0
+      },
+      "rival-gained-income": {
+        "n": 439,
+        "positiveNet": 21,
+        "neutralNet": 413,
+        "negativeNet": 5,
+        "favorableVsNoShot": 0
+      },
+      "rival-lost-income": {
+        "n": 121,
+        "positiveNet": 11,
+        "neutralNet": 107,
+        "negativeNet": 3,
+        "favorableVsNoShot": 55
+      }
+    }
+  },
+  "examples": [
+    {
+      "id": "stalk-hit",
+      "target": "stalk",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        1,
+        0
+      ],
+      "survival": {
+        "damageToRival": 96597,
+        "shotCostVsNoShot": 54,
+        "advantageVsNoShot": 96543,
+        "ownSavingVsSameShotInIsolation": 1798,
+        "defenderSolo": 111701,
+        "defenderAfter": 15104,
+        "attackerAfter": 6
+      },
+      "front": {
+        "damageToRival": 42448,
+        "shotCostVsNoShot": 160,
+        "advantageVsNoShot": 42288,
+        "ownSavingVsSameShotInIsolation": 2460,
+        "defenderSolo": 40680,
+        "defenderAfter": -1768,
+        "attackerAfter": -100
+      }
+    },
+    {
+      "id": "stalk-hit-delayed",
+      "target": "stalk",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        0,
+        1
+      ],
+      "survival": {
+        "damageToRival": 91976,
+        "shotCostVsNoShot": 81,
+        "advantageVsNoShot": 91895,
+        "ownSavingVsSameShotInIsolation": 1715,
+        "defenderSolo": 111701,
+        "defenderAfter": 19725,
+        "attackerAfter": -21
+      },
+      "front": {
+        "damageToRival": 41531,
+        "shotCostVsNoShot": 95,
+        "advantageVsNoShot": 41436,
+        "ownSavingVsSameShotInIsolation": 2445,
+        "defenderSolo": 40680,
+        "defenderAfter": -851,
+        "attackerAfter": -35
+      }
+    },
+    {
+      "id": "stalk-miss",
+      "target": "stalk",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        0,
+        0
+      ],
+      "survival": {
+        "damageToRival": 0,
+        "shotCostVsNoShot": 1852,
+        "advantageVsNoShot": -1852,
+        "ownSavingVsSameShotInIsolation": 0,
+        "defenderSolo": 111701,
+        "defenderAfter": 111701,
+        "attackerAfter": -1792
+      },
+      "front": {
+        "damageToRival": 0,
+        "shotCostVsNoShot": 2620,
+        "advantageVsNoShot": -2620,
+        "ownSavingVsSameShotInIsolation": 0,
+        "defenderSolo": 40680,
+        "defenderAfter": 40680,
+        "attackerAfter": -2560
+      }
+    },
+    {
+      "id": "reflector-hit",
+      "target": "mirror42",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        0,
+        0
+      ],
+      "survival": {
+        "damageToRival": -82878,
+        "shotCostVsNoShot": 137,
+        "advantageVsNoShot": -83015,
+        "ownSavingVsSameShotInIsolation": 1715,
+        "defenderSolo": 5754,
+        "defenderAfter": 88632,
+        "attackerAfter": -77
+      },
+      "front": {
+        "damageToRival": -39238,
+        "shotCostVsNoShot": 174,
+        "advantageVsNoShot": -39412,
+        "ownSavingVsSameShotInIsolation": 2446,
+        "defenderSolo": -3118,
+        "defenderAfter": 36120,
+        "attackerAfter": -114
+      }
+    },
+    {
+      "id": "p2-hit",
+      "target": "p2",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        0,
+        0
+      ],
+      "survival": {
+        "damageToRival": -482,
+        "shotCostVsNoShot": 176,
+        "advantageVsNoShot": -658,
+        "ownSavingVsSameShotInIsolation": 1676,
+        "defenderSolo": -512,
+        "defenderAfter": -30,
+        "attackerAfter": -116
+      },
+      "front": {
+        "damageToRival": -955,
+        "shotCostVsNoShot": 232,
+        "advantageVsNoShot": -1187,
+        "ownSavingVsSameShotInIsolation": 2388,
+        "defenderSolo": -1024,
+        "defenderAfter": -69,
+        "attackerAfter": -172
+      }
+    },
+    {
+      "id": "gun20-hit",
+      "target": "gun20",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        2,
+        2
+      ],
+      "survival": {
+        "damageToRival": -1734,
+        "shotCostVsNoShot": 118,
+        "advantageVsNoShot": -1852,
+        "ownSavingVsSameShotInIsolation": 1734,
+        "defenderSolo": -14302,
+        "defenderAfter": -12568,
+        "attackerAfter": -58
+      },
+      "front": {
+        "damageToRival": -2469,
+        "shotCostVsNoShot": 151,
+        "advantageVsNoShot": -2620,
+        "ownSavingVsSameShotInIsolation": 2469,
+        "defenderSolo": -42216,
+        "defenderAfter": -39747,
+        "attackerAfter": -91
+      }
+    },
+    {
+      "id": "glider-hit",
+      "target": "glider",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        1,
+        1
+      ],
+      "survival": {
+        "damageToRival": -1739,
+        "shotCostVsNoShot": 113,
+        "advantageVsNoShot": -1852,
+        "ownSavingVsSameShotInIsolation": 1739,
+        "defenderSolo": -1792,
+        "defenderAfter": -53,
+        "attackerAfter": -53
+      },
+      "front": {
+        "damageToRival": -2477,
+        "shotCostVsNoShot": 143,
+        "advantageVsNoShot": -2620,
+        "ownSavingVsSameShotInIsolation": 2477,
+        "defenderSolo": -2560,
+        "defenderAfter": -83,
+        "attackerAfter": -83
+      }
+    },
+    {
+      "id": "disruption-without-target-direct-death",
+      "target": "stalk",
+      "shot": "glider",
+      "stampCost": 60,
+      "strict": [
+        1,
+        0
+      ],
+      "survival": {
+        "damageToRival": 96902,
+        "shotCostVsNoShot": 77,
+        "advantageVsNoShot": 96825,
+        "ownSavingVsSameShotInIsolation": 1773,
+        "defenderSolo": 111701,
+        "defenderAfter": 14799,
+        "attackerAfter": -17
+      },
+      "front": {
+        "damageToRival": 43316,
+        "shotCostVsNoShot": 130,
+        "advantageVsNoShot": 43186,
+        "ownSavingVsSameShotInIsolation": 2486,
+        "defenderSolo": 40680,
+        "defenderAfter": -2636,
+        "attackerAfter": -70
+      }
+    }
+  ]
+}
