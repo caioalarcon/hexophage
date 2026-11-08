@@ -223,7 +223,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  border:2px solid #65cdb2;padding:13px;
 }
 #hexlab.br-economy-open .br-energy-panel .br-energy-sliders {display:grid;gap:10px}
-#hexlab.br-economy-open .br-energy-panel .br-energy-help {display:block;font-size:10px}
+#hexlab.br-economy-open .br-economy-guide {display:block}
+#hexlab.br-economy-open .br-economy-guide[open] .br-energy-help {display:block;font-size:10px}
+#hexlab .br-economy-guide {display:none;border-top:1px solid #355569;margin-top:9px;padding-top:6px}
+#hexlab .br-economy-guide summary {font-size:11px;color:#accbce;cursor:pointer}
+#hexlab .br-energy-extra {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-top:6px}
+#hexlab .br-energy-extra>div {min-width:0;min-height:32px;border:1px solid #2d455c;background:#112334;border-radius:5px;padding:4px 5px}
+#hexlab .br-energy-extra span {display:block;font-size:9px;line-height:1.1;color:#acc5d3;overflow-wrap:break-word}
+#hexlab .br-energy-extra b {display:block;font-size:12px;font-variant-numeric:tabular-nums;color:#e1f7f5}
+#hexlab .br-stats-more {grid-column:1/-1;font-size:10px}
+#hexlab .br-stats-more summary {cursor:pointer;color:#8fc5c0;padding:6px 4px;border-radius:5px}
+#hexlab .br-stats-more summary:hover {background:#223d50}
+
 #hexlab.br-economy-open .br-energy-panel #br-economy-close {display:inline-flex}
 #hexlab.br-economy-open .br-energy-panel h3 {position:sticky;top:-13px;z-index:2;padding:7px 0;background:#152c40}
 #hexlab.br-economy-open .br-energy-panel .br-energy-sliders label {font-size:12px}
@@ -472,7 +483,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-mapbar #br-fps{display:none}
 }
 
-/* An economic role remains visible on each recommended card. */
+#hexlab .br-stampcard .br-stamprole {display:none}
+/* Compact cards: image, full multiline pattern name and price. */
 #hexlab .br-stampcard .br-stamprole{font-size:9px;font-weight:600;line-height:1.2;color:#84cbb9}
 #hexlab .br-stamprole:empty{display:none}
 #hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}
@@ -805,9 +817,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <div class="br-panelhead"><b>Painel de jogo</b><button class="small" id="br-panel-close" aria-label="Fechar painel">Fechar</button></div>
    <div id="br-tabs" class="br-tabs" hidden></div>
 <div class="hl-section br-loadout-manager">
- <div class="hl-subhead">Carimbos da partida</div>
- <div class="hl-muted">A colmeia produz energia. Glider, refletor e guns disputam o campo. Toque em ⋯ em qualquer cartão para escolher entre os 160 padrões do atlas.</div>
- <button type="button" id="br-open-atlas" class="primary">Explorar atlas e configurar slots</button>
+ <div class="hl-subhead">Carimbos</div>
+ <div class="hl-muted">15 slots · 160 padrões no atlas.</div>
+ <button type="button" id="br-open-atlas" class="primary">Escolher padrões</button>
  <div id="br-deck-config" class="br-deck-config"></div>
 </div>
    <div class="br-prep-only">
@@ -826,7 +838,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <div class="br-controls">
   <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
   <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
-  <div class="br-summary">Você pode escolher entre plantar duas colmeias, investir em incursões ou guardar recursos. Iniciar planta uma colmeia paga, caso ainda não tenha colocado uma peça. Mais colmeias são permitidas; abra ⚖ Economia para ajustar as regras em tempo real.</div>
+  <div class="br-summary">Iniciar planta uma colmeia. Você pode posicioná-la manualmente e plantar outras. Ajuste os valores em Economia.</div>
 </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="hl-subhead">Estratégia dos bots</div><div id="br-bots" class="br-bots"></div>
@@ -861,19 +873,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <div class="br-rail-header"><strong id="br-match-heading" aria-live="polite">⬡ HEXOPHAGE</strong><span id="br-rail-gen" title="Geração atual">Geração 0</span></div>
  <div class="br-rail-controls" id="br-rail-controls"></div>
  <div class="br-rail-ranking" id="br-rail-ranking"><div class="br-rail-rankhead"><button type="button" id="br-rank-fold" aria-expanded="false">Classificação · Top 3</button><button type="button" id="br-rank-hide" aria-label="Ocultar ranking" title="Mostrar ou ocultar ranking">−</button></div><div id="br-rail-rank-slot"></div></div>
- <section class="br-energy-panel" id="br-energy-panel" aria-label="Energia por estabilidade">
- <h3>Energia por estabilidade <small>Prévia experimental</small><button type="button" id="br-economy-close" aria-label="Fechar ajustes de economia">✕</button></h3>
+ <section class="br-energy-panel" id="br-energy-panel" aria-label="Economia">
+ <h3>Economia <small>Prévia</small><button type="button" id="br-economy-close" aria-label="Fechar ajustes de economia">✕</button></h3>
  <div class="br-energy-sliders" id="br-energy-sliders">
-  <label for="eco-stable-energy">Renda-base por célula madura / geração <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
-  <label for="eco-scale">Células maduras para meia renda por célula <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="1" max="16000" step="1" value="8000" data-energy="productionScale"></label>
+  <label for="eco-stable-energy">Renda por célula madura <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
+  <label for="eco-scale">Escala de produção <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="1" max="16000" step="1" value="8000" data-energy="productionScale"></label>
   <label for="eco-birth-cost">Custo por nascimento <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
-  <label for="eco-combat-fee">Tributo por morte em combate <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee" aria-describedby="eco-combat-help"></label>
-  <label for="eco-age">Idade para começar a produzir <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
-  <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
+  <label for="eco-combat-fee">Tributo por morte <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee" aria-describedby="eco-combat-help"></label>
+  <label for="eco-age">Maturação (gerações) <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
+  <label for="eco-stamp">Custo por célula <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
   <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">82</output><input id="eco-initial" type="range" min="0" max="300" step="1" value="82" data-energy="initialCells"></label>
  </div>
- <p class="br-energy-help">Uma célula madura permaneceu viva no mesmo lugar pela idade escolhida. A cada geração, ela rende energia. Quando a colônia alcança o número de células maduras indicado, cada uma rende metade da taxa-base. A reserva inicial só muda durante a preparação. O padrão permite financiar duas colmeias ou uma colmeia e armamentos desde a abertura. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
- <p id="eco-combat-help" class="br-energy-help">Se uma célula sobreviveria sem os vizinhos rivais, seu dono transfere o tributo aos responsáveis pela morte, até o saldo disponível. Zero desativa o tributo.</p>
+ <details class="br-economy-guide">
+  <summary>Ajuda sobre as regras</summary>
+  <p class="br-energy-help">Células que continuam vivas amadurecem e produzem energia. A escala reduz o rendimento por célula quando a colônia cresce. Nascimentos gastam energia; carimbos pagam por célula colocada.</p>
+  <p id="eco-combat-help" class="br-energy-help">O tributo transfere energia quando uma célula morre por influência direta do adversário. Valor zero desativa. A reserva inicial muda apenas antes da partida. Clique com o botão direito no slider ou no número para ajustar seu máximo.</p>
+ </details>
  <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
   <form id="eco-limit-form" novalidate>
    <h3 id="eco-limit-title">Definir máximo</h3>
@@ -883,25 +898,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   </form>
  </dialog>
  <div class="br-energy-stats" aria-live="off">
-  <div><span>Energia na reserva</span><b id="eco-reserve">820.000</b></div>
-  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">82</b></div>
+  <div><span>Reserva</span><b id="eco-reserve">820.000</b></div>
+  <div><span>Saldo/ger.</span><b id="eco-flow">+0</b></div>
+  <div><span>Energia/s</span><b id="eco-rate">0/s</b></div>
+  <div><span>Vivas</span><b id="eco-live">0</b></div>
+  <div><span>Maduras</span><b id="eco-stable">0</b></div>
+  <div><span>Carimbáveis</span><b id="eco-can-stamp">82</b></div>
+  <div><span>Corroídas</span><b id="eco-eroded">0</b></div>
   <div><span>Geração</span><b id="eco-generation">0</b></div>
-  <div><span>Células vivas</span><b id="eco-live">0</b></div>
-  <div><span>Células maduras</span><b id="eco-stable">0</b></div>
-  <div><span>Células corroídas · total</span><b id="eco-eroded">0</b></div>
-  <div><span>Nascimentos reais · agora</span><b id="eco-births">0</b></div>
-  <div><span>Nascimentos · acumulados</span><b id="eco-births-total">0</b></div>
-  <div><span>Mortes naturais · total</span><b id="eco-deaths-total">0</b></div>
-  <div><span>Energia das maduras / ger.</span><b id="eco-income">+0</b></div>
-  <div><span>Energia recebida · total</span><b id="eco-income-total">0</b></div>
-  <div><span>Custo dos nascimentos / ger.</span><b id="eco-maintenance">−0</b></div>
-  <div><span>Energia paga por nascimentos</span><b id="eco-maintenance-total">0</b></div>
-  <div><span>Tributos recebidos · total</span><b id="eco-tribute-in">0</b></div>
-  <div><span>Tributos pagos · total</span><b id="eco-tribute-out">0</b></div>
-  <div><span>Energia gasta em carimbos</span><b id="eco-stamped-total">0</b></div>
-  <div><span>Saldo de energia / ger.</span><b id="eco-flow">+0</b></div>
-  <div><span>Energia por segundo · aprox.</span><b id="eco-rate">0/s</b></div>
-  <div><span>Erosão na última geração</span><b id="eco-eroded-last">0</b></div>
+  <details class="br-stats-more">
+   <summary>Mais dados</summary>
+   <div class="br-energy-extra">
+  <div><span>Nascimentos/ger.</span><b id="eco-births">0</b></div>
+  <div><span>Nascimentos (total)</span><b id="eco-births-total">0</b></div>
+  <div><span>Mortes naturais (total)</span><b id="eco-deaths-total">0</b></div>
+  <div><span>Receita/ger.</span><b id="eco-income">+0</b></div>
+  <div><span>Receita (total)</span><b id="eco-income-total">0</b></div>
+  <div><span>Nascimentos: custo/ger.</span><b id="eco-maintenance">−0</b></div>
+  <div><span>Nascimentos: custo total</span><b id="eco-maintenance-total">0</b></div>
+  <div><span>Tributos recebidos</span><b id="eco-tribute-in">0</b></div>
+  <div><span>Tributos pagos</span><b id="eco-tribute-out">0</b></div>
+  <div><span>Carimbos: gasto total</span><b id="eco-stamped-total">0</b></div>
+  <div><span>Erosão/ger.</span><b id="eco-eroded-last">0</b></div>
+   </div>
+  </details>
  </div>
 </section>
  <div class="br-rail-spacer"></div>
@@ -4129,7 +4149,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         b.type = "button";
         b.className = "br-stampcard";
         b.dataset.slot = key2;
-        b.innerHTML = '<canvas width="68" height="38" aria-hidden="true"></canvas><small class="br-stamprole"></small><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span><span class="br-slot-edit" title="Trocar padrão deste slot">⋯</span>';
+        b.innerHTML = '<canvas width="68" height="38" aria-hidden="true"></canvas><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span><span class="br-slot-edit" title="Trocar padrão deste slot">⋯</span>';
         b.onclick = (e) => {
           if (e.target.closest(".br-slot-edit")) {
             e.stopPropagation();
@@ -4148,7 +4168,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const pts = deckPoints(id), name = deckNames[id] || id;
       const price = energyCost(pts.length, game.economy);
       b.querySelector(".br-stampname").textContent = name;
-      b.querySelector(".br-stamprole").textContent = fieldKit[id]?.role || "";
       b.querySelector(".br-stampprice").textContent = price ? "◈" + price : "◈0";
       b.title = [name, fieldKit[id]?.use, "Clique nos três pontos para trocar."].filter(Boolean).join(" · ");
       drawDeckIcon(b.querySelector("canvas"), pts);
