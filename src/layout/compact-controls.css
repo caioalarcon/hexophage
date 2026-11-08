@@ -9,7 +9,7 @@
  #hexlab .br-hotbar{min-height:62px;padding:3px 4px}
  #hexlab .br-stampcard{min-height:56px;flex-basis:69px;width:69px}
  #hexlab .br-stampcard canvas{height:30px;width:60px}
- #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
+ #hexlab .br-transform button{height:17px;width:27px;min-width:27px;font-size:14px}
 }
 
 /* Feedback is announced to assistive technology, never drawn over the world. */

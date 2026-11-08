@@ -14,6 +14,39 @@ const {chromium}=require('playwright');
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto(pathToFileURL(path.resolve(__dirname,'..','index.html')).href);
     await page.waitForFunction(()=>window.__sphereLab?.world?.graph && window.__sphereLab.game.players.length===6,{timeout:90000});
+    const buttons=await page.locator('.br-transform button').evaluateAll(nodes=>nodes.map(node=>{
+      const r=node.getBoundingClientRect();
+      return {x:r.x,y:r.y,width:r.width,height:r.height};
+    }));
+    assert.equal(buttons.length,3);
+    assert(buttons.every(button=>Math.abs(button.x-buttons[0].x)<2&&button.width<=34),'transform controls form one narrow column');
+    assert(buttons[0].y+buttons[0].height<=buttons[1].y+1&&buttons[1].y+buttons[1].height<=buttons[2].y+1,'transform controls are stacked vertically');
+
+    // Formatting is visual only. Restore the exact simulation values afterward.
+    const rankingBefore=await page.evaluate(()=>{
+      const {game}=window.__sphereLab,p=game.players[0];
+      const prior={reserve:p.reserve,lastFlow:p.lastFlow};
+      p.reserve=1234.6;
+      p.lastFlow=17.8;
+      game.lastStats=-1;
+      return prior;
+    });
+    await page.waitForFunction(()=>document.querySelector('#br-player-1 .br-scorevals div:nth-child(2) dd')?.textContent==='1235');
+    assert.equal(await page.locator('#br-player-1 .br-scorevals div:nth-child(3) dd').textContent(),'+18');
+    await page.evaluate(()=>{
+      document.getElementById('br-ledger').showModal();
+      window.__sphereLab.game.lastStats=-1;
+    });
+    await page.waitForFunction(()=>document.querySelector('#br-ranking tr.mine td:nth-child(4)')?.textContent==='1235');
+    assert.equal(await page.locator('#br-ranking tr.mine td:nth-child(5)').textContent(),'+18');
+    await page.evaluate(prior=>{
+      document.getElementById('br-ledger').close();
+      const {game}=window.__sphereLab,p=game.players[0];
+      p.reserve=prior.reserve;
+      p.lastFlow=prior.lastFlow;
+      game.lastStats=-1;
+    },rankingBefore);
+    await page.waitForFunction(()=>document.querySelector('#br-player-1 .br-scorevals div:nth-child(2) dd')?.textContent==='820000');
     // The advanced-slider popover is dismissed by outside clicks, but not by
     // interactions inside it or by an initial press on its own toggle.
     const tuningToggle=page.locator('#br-tuning-toggle');

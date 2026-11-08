@@ -26,3 +26,14 @@ test('slider box dismisses on outside pointerdown without dismissing inside clic
   assert.match(built, /closest\("\.br-advanced-tuning, #br-tuning-toggle"\)/);
   assert.match(built, /closeTuning\(\);\s*\}, true\);/);
 });
+
+test('transform controls use one narrow vertical column at all viewport sizes', () => {
+  const shell = read('src/layout/game-shell.css');
+  const compact = read('src/layout/compact-controls.css');
+  const built = read('index.html');
+  assert.match(shell, /#hexlab \.br-transform\{[^\n]*flex-direction:column/);
+  assert.match(shell, /#hexlab \.br-transform button\{width:32px;[^\n]*height:clamp/);
+  assert.match(compact, /#hexlab \.br-transform button\{height:17px/);
+  assert.ok(built.includes(shell.trimEnd()), 'built HTML must contain the vertical control layout');
+  assert.ok(built.includes(compact.trimEnd()), 'built HTML must contain the narrow-screen control layout');
+});

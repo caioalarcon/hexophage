@@ -590,8 +590,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab #hl-worldbox{min-height:0!important;height:100%;width:100%}
 #hexlab .br-hotbar{flex:0 0 auto;min-height:77px;width:100%;min-width:0;align-items:center;border-top:1px solid #354a61;padding:5px 7px}
 #hexlab .br-deck{flex:1 1 0;min-width:0}
-#hexlab .br-transform{flex:0 0 auto;align-self:center;padding:0;gap:4px}
-#hexlab .br-transform button{width:34px;height:43px;font-size:20px;min-width:34px;padding:0 3px}
+/* One narrow vertical column leaves more width for the fifteen pattern slots. */
+#hexlab .br-transform{flex:0 0 auto;align-self:center;flex-direction:column;justify-content:center;padding:0;gap:2px}
+#hexlab .br-transform button{width:32px;min-width:32px;height:clamp(16px,2vh,20px);font-size:16px;line-height:1;padding:0 2px}
 #hexlab .br-mapbar{display:none!important}
 #hexlab .br-message{position:absolute;bottom:10px;left:10px;z-index:3;display:flex!important;width:min(88%,540px);border:0;min-height:0;background:#0e1b2bd8;padding:3px 7px;border-radius:6px;pointer-events:none}
 #hexlab .br-message button{pointer-events:auto}
@@ -692,7 +693,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-hotbar{min-height:62px;padding:3px 4px}
  #hexlab .br-stampcard{min-height:56px;flex-basis:69px;width:69px}
  #hexlab .br-stampcard canvas{height:30px;width:60px}
- #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
+ #hexlab .br-transform button{height:17px;width:27px;min-width:27px;font-size:14px}
 }
 
 /* Feedback is announced to assistive technology, never drawn over the world. */
@@ -5852,6 +5853,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/match/hud/ranking.js
+  // Ranking values use integers without any locale separators.
+  var rankingInteger = (value) => String(Math.round(value));
+  var rankingSignedInteger = (value) => {
+    const rounded = Math.round(value);
+    return (rounded > 0 ? "+" : "") + String(rounded);
+  };
   function updateGamePanel(force = false) {
     if (!game.players.length) return;
     if (!force && world.gen === game.lastStats) return;
@@ -5887,12 +5894,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const name = card.firstElementChild, values = card.lastElementChild;
       name.firstElementChild.textContent = String(i + 1) + "º";
       name.lastElementChild.textContent = p.symbol + " " + p.name + (p.out ? " ×" : "");
-      values.children[0].lastElementChild.textContent = pop.toLocaleString("pt-BR");
-      values.children[1].lastElementChild.textContent = p.reserve.toLocaleString("pt-BR");
+      values.children[0].lastElementChild.textContent = rankingInteger(pop);
+      values.children[1].lastElementChild.textContent = rankingInteger(p.reserve);
       const balance = values.children[2].lastElementChild;
-      balance.textContent = (rate > 0 ? "+" : "") + rate.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      balance.textContent = rankingSignedInteger(rate);
       balance.className = rate > 0 ? "positive" : rate < 0 ? "negative" : "";
-      card.title = `${i + 1}º ${p.symbol} ${p.name} · Campo ${pop.toLocaleString("pt-BR")} · Reserva ${p.reserve.toLocaleString("pt-BR")} · Saldo ${rate.toFixed(3)} por geração` + (p.out ? " · Eliminado" : "");
+      card.title = `${i + 1}º ${p.symbol} ${p.name} · Campo ${rankingInteger(pop)} · Reserva ${rankingInteger(p.reserve)} · Saldo ${rankingInteger(rate)} por geração` + (p.out ? " · Eliminado" : "");
       if (podium.children[i] !== card) podium.insertBefore(card, podium.children[i] || null);
       if (!details) continue;
       const tr = document.createElement("tr");
@@ -5906,19 +5913,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       };
       cell(String(i + 1));
       cell(`${p.symbol} ${p.name}${p.out ? " · eliminado" : ""}`);
-      cell(pop.toLocaleString("pt-BR"));
-      cell(p.reserve.toLocaleString("pt-BR"));
+      cell(rankingInteger(pop));
+      cell(rankingInteger(p.reserve));
       cell(
-        (rate > 0 ? "+" : "") + rate.toFixed(2),
+        rankingSignedInteger(rate),
         rate > 0 ? "positive" : rate < 0 ? "negative" : "neutral"
       );
       const net = p.received - p.paid;
       cell(
-        (net > 0 ? "+" : "") + net.toLocaleString("pt-BR"),
+        rankingSignedInteger(net),
         net > 0 ? "positive" : net < 0 ? "negative" : "neutral"
       );
-      cell(p.eroded.toLocaleString("pt-BR"), p.eroded ? "negative" : "neutral");
-      cell(p.stamps.toLocaleString("pt-BR"));
+      cell(rankingInteger(p.eroded), p.eroded ? "negative" : "neutral");
+      cell(rankingInteger(p.stamps));
       body.append(tr);
     }
   }
