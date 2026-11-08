@@ -208,6 +208,9 @@ async function replay(browser, url, viewport, gpu) {
   try {
     for (const [width, height, gpu] of [[1366,768,false],[390,844,false],[1366,768,true]]) {
       const args = gpu ? ['--enable-webgl', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : ['--disable-webgl'];
+      // Repaint complete tiles for pixel parity. Chromium's partial raster can round
+      // the same antialiased edge differently on two runs of the unchanged page.
+      args.push('--disable-partial-raster');
       browser = await chromium.launch({executablePath: process.env.CHROMIUM_PATH, args});
       const viewport = {width, height};
       const expected = await replay(browser, host + '/baseline/', viewport, gpu);

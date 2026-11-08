@@ -2,7 +2,7 @@
 
 Six players compete for biomass on a spherical cellular automaton. The player and five bots stamp patterns onto the same hexagonal and pentagonal graph.
 
-[Play on GitHub Pages](https://caioalarcon.github.io/hexophage/) · [Play the development build](https://hexophage-dev.epicpenguin.chatgpt.site)
+[Play on GitHub Pages](https://caioalarcon.github.io/hexophage/) · [Test the private development deployment](https://hexophage-dev.epicpenguin.chatgpt.site) · [Open the current dev branch](https://raw.githack.com/caioalarcon/hexophage/dev/index.html)
 
 ## Playing and developing
 
@@ -58,4 +58,6 @@ The browser differential suite replays the same inputs against the working build
 
 ## Development and promotion
 
-Work on `dev` and publish its tested standalone HTML to the development preview. Review that build before merging `dev` into `main`. GitHub Pages serves the root of `main` at the public game URL.
+Push changes to `dev`. CI rebuilds the HTML, checks for a stale distribution, runs both test suites, and attaches the tested HTML to the workflow run. The branch preview serves the committed HTML and follows future pushes. The private development deployment is a separately published snapshot for playtesting.
+
+After manual approval, merge the reviewed PR into `main`. GitHub Pages serves the root of `main` at the public game URL.
