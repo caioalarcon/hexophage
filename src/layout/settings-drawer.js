@@ -38,8 +38,8 @@ function bindLayoutControls() {
     closeTuning();
   };
   document.addEventListener('pointerdown', (e) => {
-    if (!e.target.closest('.hl-controls')) closeTuning();
-  });
+    if (!e.target.closest('.br-advanced-tuning, #br-tuning-toggle')) closeTuning();
+  }, true);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeTuning();
   });

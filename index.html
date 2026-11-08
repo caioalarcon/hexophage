@@ -442,7 +442,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-worldpick button:disabled,#hexlab .br-worldpick select:disabled{opacity:.5}
 #hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;min-width:0;flex:0 0 auto}
 #hexlab .br-deck{display:flex;gap:5px;align-items:stretch;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scrollbar-width:thin;padding-bottom:3px}
-#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 104px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;min-height:66px;overflow:hidden}
+#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;min-height:66px;overflow:hidden}
 #hexlab .br-stampcard canvas{display:block;width:68px;height:38px;flex:0 0 auto;pointer-events:none}
 #hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:normal;width:100%;overflow-wrap:anywhere;text-align:center}
 #hexlab .br-stampcard .br-stampprice{position:absolute;right:2px;top:1px;background:#0a1926c7;padding:0 2px;border-radius:4px;color:#d0e3ec;font-size:9px}
@@ -740,64 +740,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 @media (orientation:portrait) and (max-width:360px), (orientation:landscape) and (max-height:470px){
  #hexlab .br-rail-controls #hl-play,#hexlab .br-rail-controls #hl-clear{flex:0 0 auto;min-width:30px;min-height:30px;padding:4px 6px}
  #hexlab .br-rail-controls #hl-play span:last-child,#hexlab .br-rail-controls #hl-clear span{display:none}
-}
-
-/* Fifteen-slot palette, fully visible without a horizontal scroll bar.
-   Preserve the original compact card dimensions on wide screens, and
-   wrap into a second/third row only when the stage has less space. */
-#hexlab .br-hotbar{align-items:stretch}
-#hexlab .br-deck{
-  display:grid!important;
-  grid-template-columns:repeat(15,minmax(0,1fr));
-  grid-auto-flow:row;
-  grid-auto-rows:minmax(0,auto);
-  align-items:stretch;
-  gap:3px!important;
-  min-width:0;width:100%;
-  overflow-x:hidden!important;
-  overflow-y:visible!important;
-  scrollbar-width:none!important;
-  scroll-snap-type:none!important;
-  padding:0!important;
-}
-#hexlab .br-deck::-webkit-scrollbar{display:none}
-#hexlab .br-deck .br-stampcard{
-  flex:none!important;
-  width:100%!important;
-  min-width:0!important;
-  max-width:none!important;
-  height:auto;
-  min-height:67px;
-  padding:2px 2px 7px;
-  scroll-snap-align:none;
-}
-#hexlab .br-deck .br-stampcard canvas{
-  display:block;
-  width:min(100%,57px);
-  height:29px;
-  object-fit:contain;
-}
-#hexlab .br-deck .br-stampname{
-  font-size:9px!important;
-  line-height:1.12!important;
-  white-space:normal!important;
-  overflow-wrap:anywhere!important;
-  word-break:normal;
-  hyphens:auto;
-}
-#hexlab .br-deck .br-stampprice{font-size:8px}
-@media(max-width:1399px){
-  #hexlab .br-deck{grid-template-columns:repeat(8,minmax(0,1fr))}
-}
-@media(max-width:700px){
-  #hexlab .br-deck{grid-template-columns:repeat(5,minmax(0,1fr))}
-  #hexlab .br-deck .br-stampcard{min-height:70px}
-  #hexlab .br-deck .br-stampcard canvas{height:24px;width:min(100%,48px)}
-}
-@media (orientation:landscape) and (max-height:470px){
-  #hexlab .br-deck{grid-template-columns:repeat(8,minmax(0,1fr))}
-  #hexlab .br-deck .br-stampcard{min-height:47px}
-  #hexlab .br-deck .br-stampcard canvas{height:21px;width:min(100%,45px)}
 }
 </style>
 </head>
@@ -6395,8 +6337,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       closeTuning();
     };
     document.addEventListener("pointerdown", (e) => {
-      if (!e.target.closest(".hl-controls")) closeTuning();
-    });
+      if (!e.target.closest(".br-advanced-tuning, #br-tuning-toggle")) closeTuning();
+    }, true);
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeTuning();
     });
