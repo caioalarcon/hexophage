@@ -34,12 +34,13 @@ test('atlas cycle ledgers match funded, isolated stamps in the actual game', asy
         if (payback === null && player.reserve >= initialReserve) payback = gen;
       }
       assert.deepEqual(
-        [row.births, row.stableCellTurns, row.income, row.upkeep, row.net, row.cumulative, row.live],
-        [births, stableCellTurns, income, upkeep, income - upkeep, player.reserve - initialReserve, match.world.activeCount],
+        [row.births, row.stableCellTurns, row.income, row.upkeep, row.net, row.live],
+        [births, stableCellTurns, income, upkeep, income - upkeep, match.world.activeCount],
         id + ' at generation ' + row.to,
       );
+      assert(Math.abs(row.cumulative - (player.reserve - initialReserve)) < 1e-6, id);
     }
-    assert.equal(projection.workingCapital, extraReserve, id);
+    assert(Math.abs(projection.workingCapital - extraReserve) < 1e-6, id);
     assert.equal(projection.paybackGeneration, payback, id);
     assert.equal(player.eroded, 0, id);
   }

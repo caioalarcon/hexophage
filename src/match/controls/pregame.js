@@ -3,7 +3,7 @@ import { syncDeckConfig } from '../../deck/configuration.js';
 import { $ } from '../../layout/elements.js';
 
 function syncPregameControls() {
-  const changing = world.gen > 0;
+  const changing = world.matchStarted || world.gen > 0;
   syncDeckConfig();
   $('hl-frequency').disabled = changing;
   $('hl-rebuild').disabled = changing;

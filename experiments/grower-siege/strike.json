@@ -1,0 +1,245 @@
+[
+  {
+    "name": "hold",
+    "rows": [
+      {
+        "g": 256,
+        "field": [
+          {
+            "live": 0,
+            "cash": 370000,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 228,
+            "cash": 8476,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 720,
+        "field": [
+          {
+            "live": 0,
+            "cash": 370000,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 576,
+            "cash": 7356,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 2000,
+        "field": [
+          {
+            "live": 0,
+            "cash": 370000,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 1033,
+            "cash": 14024,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 6000,
+        "field": [
+          {
+            "live": 0,
+            "cash": 370000,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 1034,
+            "cash": 45516,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hit",
+    "rows": [
+      {
+        "g": 256,
+        "field": [
+          {
+            "live": 0,
+            "cash": 309900,
+            "received": 0,
+            "paid": 0.25,
+            "eroded": 0
+          },
+          {
+            "live": 36,
+            "cash": 8784,
+            "received": 0.25,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 720,
+        "field": [
+          {
+            "live": 0,
+            "cash": 309900,
+            "received": 0,
+            "paid": 0.25,
+            "eroded": 0
+          },
+          {
+            "live": 40,
+            "cash": 6925,
+            "received": 0.25,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 2000,
+        "field": [
+          {
+            "live": 0,
+            "cash": 309900,
+            "received": 0,
+            "paid": 0.25,
+            "eroded": 0
+          },
+          {
+            "live": 40,
+            "cash": 1804,
+            "received": 0.25,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 6000,
+        "field": [
+          {
+            "live": 0,
+            "cash": 309900,
+            "received": 0,
+            "paid": 0.25,
+            "eroded": 0
+          },
+          {
+            "live": 0,
+            "cash": 0,
+            "received": 0.25,
+            "paid": 0,
+            "eroded": 21
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "miss",
+    "rows": [
+      {
+        "g": 256,
+        "field": [
+          {
+            "live": 6,
+            "cash": 308720,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 228,
+            "cash": 8476,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 720,
+        "field": [
+          {
+            "live": 6,
+            "cash": 306400,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 576,
+            "cash": 7356,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 2000,
+        "field": [
+          {
+            "live": 6,
+            "cash": 300000,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 1033,
+            "cash": 14024,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      },
+      {
+        "g": 6000,
+        "field": [
+          {
+            "live": 6,
+            "cash": 280000,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          },
+          {
+            "live": 1034,
+            "cash": 45516,
+            "received": 0,
+            "paid": 0,
+            "eroded": 0
+          }
+        ]
+      }
+    ]
+  }
+]

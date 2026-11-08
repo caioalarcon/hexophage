@@ -2,15 +2,26 @@ import { addLive, game, nextTick } from '../../browser/game.js';
 import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
 import { resetGame } from './new-match.js';
+import { prepareOpening } from './opening.js';
+import { updateGamePanel } from '../hud/ranking.js';
 import { setPlay } from './playback.js';
 import { updateStats } from '../hud/status.js';
+
+function beginMatch() {
+  if (world.matchStarted) return true;
+  if (world.gen === 0 && !prepareOpening()) return false;
+  world.matchStarted = true;
+  updateGamePanel(true);
+  return true;
+}
 
 function bindTurnControls() {
   $('hl-play').onclick = () => {
     if (game.ended) resetGame();
-    else setPlay(!world.playing);
+    else if (beginMatch()) setPlay(!world.playing);
   };
   $('hl-step').onclick = () => {
+    if (!beginMatch()) return;
     setPlay(false);
     nextTick();
     updateStats();

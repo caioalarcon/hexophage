@@ -1,0 +1,867 @@
+{
+  "frequency": 96,
+  "launch": 720,
+  "horizon": 2400,
+  "attackerFunds": 700000,
+  "control": {
+    "id": null,
+    "legal": true,
+    "firstAttackErosion": null,
+    "field": [
+      {
+        "cells": 0,
+        "mature": 0,
+        "reserve": 700000,
+        "eroded": 0,
+        "paidTribute": 0,
+        "out": false
+      },
+      {
+        "cells": 1706,
+        "mature": 1702,
+        "reserve": 25088,
+        "eroded": 0,
+        "paidTribute": 0,
+        "out": false
+      }
+    ]
+  },
+  "trials": [
+    {
+      "id": "glider",
+      "zone": "tip",
+      "direction": 0,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639888,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "tip",
+      "direction": 1,
+      "legal": false
+    },
+    {
+      "id": "glider",
+      "zone": "tip",
+      "direction": 2,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639935,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "tip",
+      "direction": 3,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639925,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 585,
+          "mature": 583,
+          "reserve": 15984,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "tip",
+      "direction": 4,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639870,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 589,
+          "mature": 583,
+          "reserve": 15929,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "tip",
+      "direction": 5,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639875,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "base",
+      "direction": 0,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639893,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "base",
+      "direction": 1,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639917,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "base",
+      "direction": 2,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639967,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "base",
+      "direction": 3,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639921,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1718,
+          "mature": 1714,
+          "reserve": 25264,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "base",
+      "direction": 4,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639890,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1715,
+          "mature": 1708,
+          "reserve": 22769,
+          "eroded": 0,
+          "paidTribute": 0.25,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "glider",
+      "zone": "base",
+      "direction": 5,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 0,
+          "mature": 0,
+          "reserve": 639893,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "tip",
+      "direction": 0,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 58,
+          "mature": 27,
+          "reserve": 122172,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "tip",
+      "direction": 1,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 58,
+          "mature": 27,
+          "reserve": 124995,
+          "eroded": 0,
+          "paidTribute": 9.5,
+          "out": false
+        },
+        {
+          "cells": 598,
+          "mature": 592,
+          "reserve": 16685,
+          "eroded": 0,
+          "paidTribute": 28.5,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "tip",
+      "direction": 2,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 63,
+          "mature": 27,
+          "reserve": 117425,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "tip",
+      "direction": 3,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 64,
+          "mature": 27,
+          "reserve": 116008,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "tip",
+      "direction": 4,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 63,
+          "mature": 27,
+          "reserve": 117543,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "tip",
+      "direction": 5,
+      "legal": false
+    },
+    {
+      "id": "gun20",
+      "zone": "base",
+      "direction": 0,
+      "legal": false
+    },
+    {
+      "id": "gun20",
+      "zone": "base",
+      "direction": 1,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 58,
+          "mature": 27,
+          "reserve": 120634,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1722,
+          "mature": 1720,
+          "reserve": 25707,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "base",
+      "direction": 2,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 58,
+          "mature": 27,
+          "reserve": 121600,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1718,
+          "mature": 1712,
+          "reserve": 23510,
+          "eroded": 0,
+          "paidTribute": 0.25,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "base",
+      "direction": 3,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 30,
+          "mature": 18,
+          "reserve": 130496,
+          "eroded": 0,
+          "paidTribute": 0.75,
+          "out": false
+        },
+        {
+          "cells": 1644,
+          "mature": 1639,
+          "reserve": 25300,
+          "eroded": 0,
+          "paidTribute": 0.5,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "base",
+      "direction": 4,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 64,
+          "mature": 27,
+          "reserve": 117486,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1724,
+          "mature": 1718,
+          "reserve": 24588,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun20",
+      "zone": "base",
+      "direction": 5,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 58,
+          "mature": 27,
+          "reserve": 120981,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "tip",
+      "direction": 0,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 77,
+          "mature": 36,
+          "reserve": 6675,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "tip",
+      "direction": 1,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 77,
+          "mature": 36,
+          "reserve": 10428,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 612,
+          "mature": 609,
+          "reserve": 19484,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "tip",
+      "direction": 2,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 49,
+          "mature": 24,
+          "reserve": 30710,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 630,
+          "mature": 625,
+          "reserve": 16820,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "tip",
+      "direction": 3,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 77,
+          "mature": 36,
+          "reserve": 3763,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "tip",
+      "direction": 4,
+      "strikePoint": 44245,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 77,
+          "mature": 36,
+          "reserve": 4435,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25088,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "tip",
+      "direction": 5,
+      "legal": false
+    },
+    {
+      "id": "gun42",
+      "zone": "base",
+      "direction": 0,
+      "legal": false
+    },
+    {
+      "id": "gun42",
+      "zone": "base",
+      "direction": 1,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 77,
+          "mature": 36,
+          "reserve": 6017,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1722,
+          "mature": 1716,
+          "reserve": 25495,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "base",
+      "direction": 2,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 77,
+          "mature": 36,
+          "reserve": 5163,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1693,
+          "mature": 1687,
+          "reserve": 25414,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "base",
+      "direction": 3,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 24,
+          "mature": 12,
+          "reserve": 20246,
+          "eroded": 0,
+          "paidTribute": 0.5,
+          "out": false
+        },
+        {
+          "cells": 1639,
+          "mature": 1636,
+          "reserve": 25218,
+          "eroded": 0,
+          "paidTribute": 0.25,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "base",
+      "direction": 4,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 78,
+          "mature": 36,
+          "reserve": 4386,
+          "eroded": 0,
+          "paidTribute": 4.5,
+          "out": false
+        },
+        {
+          "cells": 1706,
+          "mature": 1702,
+          "reserve": 25578,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    },
+    {
+      "id": "gun42",
+      "zone": "base",
+      "direction": 5,
+      "strikePoint": 2639,
+      "legal": true,
+      "firstAttackErosion": null,
+      "field": [
+        {
+          "cells": 77,
+          "mature": 36,
+          "reserve": 6171,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        },
+        {
+          "cells": 1712,
+          "mature": 1710,
+          "reserve": 24636,
+          "eroded": 0,
+          "paidTribute": 0,
+          "out": false
+        }
+      ]
+    }
+  ]
+}

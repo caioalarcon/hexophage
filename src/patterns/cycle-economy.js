@@ -58,7 +58,9 @@ export function advancePattern(ages, threshold) {
 // fail, before any erosion could perturb the measured trajectory.
 export async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
   const { length, kind } = cycleWindow(pattern);
-  const defaultCycles = Math.max(24, Math.ceil(160 / length));
+  // A grower first has to establish a long mature trail before it can
+  // amortize its births. Ordinary periodic patterns need a shorter horizon.
+  const defaultCycles = Math.max(24, Math.ceil((pattern.id === 'stalk' ? 2000 : 160) / length));
   const maxGenerations = cycles == null ? 8400 : 25200;
   const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
   // Keep one coherent quote even if a slider changes while this pass yields.
@@ -68,6 +70,7 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
   const initialCost = energyCost(ages.size, economy);
   const startingReserve = initialEnergy(economy);
   const rows = [];
+  const unitIncome = new Float64Array(length + 1);
   let operatingBalance = 0, workingCapital = 0;
   let firstPositiveCycle = null, profitableFromCycle = null;
   let paybackGeneration = initialCost === 0 ? 0 : null;
@@ -77,17 +80,24 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
 
   for (let cycle = 1; cycle <= observedCycles; cycle++) {
     const from = (cycle - 1) * length + 1, to = cycle * length;
-    let births = 0, stableCellTurns = 0;
+    let births = 0, stableCellTurns = 0, income = 0, upkeep = 0;
     for (let generation = from; generation <= to; generation++) {
       const turn = advancePattern(ages, stableAfter);
       ages = turn.next;
       births += turn.births;
       stableCellTurns += turn.mature;
       const flow = generationEnergy(turn.births, turn.mature, economy);
+      income += flow.income;
+      upkeep += flow.upkeep;
+      const step = generation - from + 1;
+      // Prefix integral of income per mature site. Historical lab callbacks
+      // can pay births instead, so separate their earnings from mature income.
+      const matureIncome = economy.generationQuote ? generationEnergy(0, turn.mature, economy).income : flow.income;
+      unitIncome[step] = unitIncome[step - 1] + (turn.mature ? matureIncome / turn.mature : 0);
       operatingBalance += flow.income - flow.upkeep;
       workingCapital = Math.max(workingCapital, -operatingBalance);
       if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation;
-      if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < 0) {
+      if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < -1e-9) {
         firstErosionGeneration = generation;
       }
       if (performance.now() - lastYield >= 10) {
@@ -104,9 +114,8 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
       if (age <= length) continue;
       fixedCore++;
       const productiveTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
-      fixedIncome += generationEnergy(0, productiveTurns, economy).income;
+      fixedIncome += unitIncome[length] - unitIncome[length - productiveTurns];
     }
-    const { income, upkeep } = generationEnergy(births, stableCellTurns, economy);
     const net = income - upkeep;
     if (net > 0) {
       firstPositiveCycle ??= cycle;

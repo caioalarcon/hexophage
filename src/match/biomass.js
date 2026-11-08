@@ -1,4 +1,6 @@
 import { DEFAULT_ECONOMY, generationEnergy } from './constructive-economy.js';
+import { recordCombatDeath } from './combat/direct-death.js';
+import { settleCombatTribute } from './combat/tribute.js';
 
 function randomIndex(game, length) {
   let x = game.rngState >>> 0;
@@ -14,12 +16,16 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
   let ageCapacity = 2 ** (8 * ages.BYTES_PER_ELEMENT) - 1;
   // advanceGeneration swaps its buffers: "next" and "nextActive" now hold
   // the exact occupancy immediately before the last physical CA generation.
+  const claims = e.combatFee > 0 ? [] : null;
   const newborn = new Uint32Array(8), naturalDeaths = new Uint32Array(8);
   for (let i = 0; i < world.nextActiveCount; i++) {
     const id = world.nextActive[i], owner = world.nextOwners[id];
     if (!world.cells[id]) {
       ages[id] = 0;
-      if (owner >= 1 && owner <= 6) naturalDeaths[owner]++;
+      if (owner >= 1 && owner <= 6) {
+        naturalDeaths[owner]++;
+        if (claims) recordCombatDeath(world, id, owner, claims);
+      }
     }
   }
   for (let i = 0; i < world.activeCount; i++) {
@@ -56,7 +62,6 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
     p.lastIncome = income;
     p.lastUpkeep = upkeep;
     p.lastFlow = income - upkeep;
-    p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
     p.lastEroded = 0;
     p.reserve = Math.max(0, balance);
     if (balance < -1e-9) {
@@ -76,6 +81,11 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
     }
     p.stable = 0;
     for (const id of world.ownerCells[p.id]) if (ages[id] >= e.stableAfter) p.stable++;
+  }
+  if (claims?.length) settleCombatTribute(game.players, claims, e.combatFee);
+  for (const p of game.players) {
+    if (p.out) continue;
+    p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
     if (p.reserve <= 0 && world.ownerCells[p.id].length === 0) p.out = true;
   }
   const alive = game.players.filter(p => !p.out);

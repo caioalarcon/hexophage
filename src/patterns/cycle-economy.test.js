@@ -5,10 +5,11 @@ import { DEFAULT_ECONOMY } from '../match/constructive-economy.js';
 import { analyzePatternCycles, cycleWindow } from './cycle-economy.js';
 
 const pattern = id => atlasPatterns.find(p => p.id === id);
+const linear = { stableEnergy: 3, birthCost: 1, stampCost: 30, stableAfter: 16, initialCells: 4, productionScale: 0 };
 const measure = (id, settings = {}, options = {}) =>
-  analyzePatternCycles(pattern(id), { ...DEFAULT_ECONOMY, ...settings }, options);
+  analyzePatternCycles(pattern(id), { ...DEFAULT_ECONOMY, ...linear, ...settings }, options);
 
-test('the flipper survives its warm-up, then slowly pays back its stamp', async () => {
+test('the linear comparison tariff lets the flipper pay back its stamp after warm-up', async () => {
   const a = await measure('p2');
   assert.equal(a.initialCost, 90);
   assert.equal(a.firstPositiveCycle, 8);
@@ -76,4 +77,21 @@ test('emission windows are distinct from closed oscillator periods; superseded w
   const controller = new AbortController();
   controller.abort();
   await assert.rejects(measure('gun840', {}, { signal: controller.signal }), { name: 'AbortError' });
+});
+
+test('a nonlinear quote is integrated per generation and distributed to the core at each step', async () => {
+  // This open five-cell oscillator has phases with different mature counts.
+  // Replaying one generation per row gives an independent time partition.
+  const source = pattern('p4f');
+  const tariff = { ...DEFAULT_ECONOMY, stableAfter: 2, stableEnergy: 1, birthCost: 1,
+    generationQuote: (births, mature) => ({ income: mature / (1 + mature / 2), upkeep: births }) };
+  const block = (await analyzePatternCycles(source, tariff, { cycles: 1 })).rows[0];
+  const steps = (await analyzePatternCycles({ ...source, period: 1 }, tariff, { cycles: source.period })).rows;
+  const close = (a, b) => assert(Math.abs(a-b) < 1e-9);
+  close(block.income, steps.reduce((s, r) => s + r.income, 0));
+  close(block.net, steps.reduce((s, r) => s + r.net, 0));
+  // All initially live cells that stay occupied throughout the block qualify on G1.
+  close(block.fixedIncome, block.fixedCore * steps.reduce((s, r) =>
+    s + (r.stableCellTurns ? r.income / r.stableCellTurns : 0), 0));
+  assert(block.income > tariff.generationQuote(block.births, block.stableCellTurns).income);
 });

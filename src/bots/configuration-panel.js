@@ -1,11 +1,11 @@
 import { game } from '../browser/game.js';
 import { $ } from '../layout/elements.js';
 const plans=[
- ['farmer','C5 e C6 · reinvestir cedo'],
- ['cycler','C6 · acelerar crescedor'],
- ['core','C6 e C12 · núcleos densos'],
- ['slow','C12 · poupar para núcleo grande'],
- ['diverse','Crescedor e incursões de glider'],
+ ['farmer','Expandir colmeias rentáveis e atacar'],
+ ['cycler','Incursões com glider P4'],
+ ['core','Guardar para uma colmeia de reserva'],
+ ['slow','Poupar para cerco · Gun P42'],
+ ['diverse','Poupar para cerco · Gun P20'],
 ];
 export function bindBotSelectors() {
   const bots=$('br-bots');bots.replaceChildren();

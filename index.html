@@ -344,7 +344,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-knob output,#hexlab .br-knob span{font-size:10px;white-space:nowrap;font-variant-numeric:tabular-nums}
 #hexlab .br-knob input[type=number],#hexlab .br-knob #br-botturn{height:18px;padding:0 3px;color:#d4e8f2;border:1px solid #34485f;border-radius:4px;background:#152536;font:inherit;text-align:right;appearance:textfield;-moz-appearance:textfield}
 #hexlab .br-knob input[type=number]::-webkit-inner-spin-button{appearance:none}
-#hexlab .br-knob #br-tax{width:57px}#hexlab .br-knob #br-botturn{width:34px}
+#hexlab .br-knob #br-botturn{width:34px}
 #hexlab .br-knob input[type=range]{min-width:0;width:100%;margin:0;accent-color:#4ed8b1;cursor:pointer}
 #hexlab .br-mapbar{flex-wrap:wrap}
 #hexlab .br-worldpick{display:inline-flex;align-items:center;gap:4px}
@@ -357,7 +357,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-builddialog progress{display:block;accent-color:#4ed8b1;width:100%;margin-bottom:14px}
 @media(max-width:1350px){#hexlab .br-mapbar .hl-lower{display:none}}
 @media(max-width:980px){#hexlab .br-live-tuning{order:5;flex-basis:100%;max-width:none;margin:0}#hexlab #br-panel-toggle{margin-left:auto}}
-@media(max-width:540px){#hexlab .br-live-tuning{gap:8px}#hexlab .br-knob>div{font-size:10px}#hexlab .br-knob #br-tax{width:45px}#hexlab .br-mapbar .hl-viewtools{margin-left:auto}#hexlab .br-mapbar .hl-upper,#hexlab .br-worldpick label{display:none}#hexlab .br-worldpick select{max-width:117px}}
+@media(max-width:540px){#hexlab .br-live-tuning{gap:8px}#hexlab .br-knob>div{font-size:10px}#hexlab .br-mapbar .hl-viewtools{margin-left:auto}#hexlab .br-mapbar .hl-upper,#hexlab .br-worldpick label{display:none}#hexlab .br-worldpick select{max-width:117px}}
 #hexlab .br-message {display:flex;align-items:center;justify-content:space-between;gap:8px}
 #hexlab #br-loss-open {flex-shrink:0;font-size:11px}
 #hexlab .br-diagnostic {border-top:1px solid #375069;margin-top:10px}
@@ -405,7 +405,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-worldpick button:disabled,#hexlab .br-worldpick select:disabled{opacity:.5}
 #hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;min-width:0;flex:0 0 auto}
 #hexlab .br-deck{display:flex;gap:5px;align-items:stretch;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scrollbar-width:thin;padding-bottom:3px}
-#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;min-height:66px;overflow:hidden}
+#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 104px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;min-height:66px;overflow:hidden}
 #hexlab .br-stampcard canvas{display:block;width:68px;height:38px;flex:0 0 auto;pointer-events:none}
 #hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:normal;width:100%;overflow-wrap:anywhere;text-align:center}
 #hexlab .br-stampcard .br-stampprice{position:absolute;right:2px;top:1px;background:#0a1926c7;padding:0 2px;border-radius:4px;color:#d0e3ec;font-size:9px}
@@ -421,7 +421,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-mapbar .hl-upper{font-size:10px}
 #hexlab .br-mapbar #hl-modehint{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #hexlab .br-panelgroup summary{font-size:12px}
-#hexlab .br-knob #br-tax{width:58px}
 @media(max-width:1100px){#hexlab .br-scoretitle #br-gamestatus{display:none}#hexlab .br-scoretitle{max-width:100px}}
 @media(max-width:760px){
  #hexlab .br-top{display:flex;flex-direction:column}
@@ -445,11 +444,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-stampcard canvas{width:64px}
  #hexlab .br-transform button{width:30px}
  #hexlab .br-mapbar #br-fps{display:none}
- #hexlab .br-knob label[for="br-tax-slider"]{font-size:0;white-space:nowrap}
- #hexlab .br-knob label[for="br-tax-slider"]::after{content:'Taxa ‰';font-size:10px}
 }
 
-/* Fifteen independently configurable deck slots. */
+/* An economic role remains visible on each recommended card. */
+#hexlab .br-stampcard .br-stamprole{font-size:9px;font-weight:600;line-height:1.2;color:#84cbb9}
+#hexlab .br-stamprole:empty{display:none}
 #hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}
 #hexlab .br-stampcard:focus-visible{outline:2px solid #8beecd;outline-offset:1px}
 #hexlab #br-open-atlas{margin:7px 0 0;width:100%;font-size:11px}
@@ -477,7 +476,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-scorevals{margin:2px 0 0;gap:5px}
  #hexlab .br-scorevals dd{font-size:10px;line-height:1.15}
  #hexlab .hl-controls{display:flex;flex-wrap:nowrap;align-items:center;min-height:38px;height:38px;gap:6px;padding:3px 7px;position:relative;z-index:12}
- #hexlab .hl-controls #hl-step,#hexlab .hl-controls #hl-clear,#hexlab .hl-controls #hl-seed{display:none}
+ #hexlab .hl-controls #hl-step,#hexlab .hl-controls #hl-seed{display:none}
  #hexlab .hl-controls #hl-play{flex:0 0 auto;height:31px;min-height:31px;padding:4px 9px;font-size:12px}
  #hexlab .br-live-tuning{display:flex;order:0;flex:1 1 100px;max-width:210px;min-width:70px;margin-left:auto;align-items:center;gap:0}
  #hexlab .br-speed-knob{display:grid;flex:1 1 auto;width:100%;min-width:0;grid-template-rows:auto 13px;gap:0}
@@ -495,9 +494,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .hl-shell,#hexlab .hl-left,#hexlab .br-stage,#hexlab #hl-worldbox{min-height:0;min-width:0}
  #hexlab .br-hotbar{min-height:59px;gap:5px;padding:3px 6px}
  #hexlab .br-deck{gap:4px;min-width:0;padding-bottom:1px}
- #hexlab .br-stampcard{min-height:52px;flex:0 0 73px;width:73px;padding:1px 3px 5px;border-radius:6px}
+ #hexlab .br-stampcard{min-height:52px;flex:0 0 clamp(80px,10vw,145px);width:auto;padding:1px 3px 5px;border-radius:6px}
  #hexlab .br-stampcard canvas{width:61px;height:29px}
- #hexlab .br-stampcard .br-stampname{font-size:9px;line-height:1.1}
+ #hexlab .br-stampcard .br-stampname{font-size:clamp(9px,.78vw,12px);line-height:1.12}
  #hexlab .br-stampcard .br-stampprice{font-size:8px}
  #hexlab .br-transform{flex-direction:row;gap:3px;align-items:center;justify-content:flex-end;padding:0;max-height:100%;overflow:hidden}
  #hexlab .br-transform button{height:42px;min-width:32px;padding:0 5px;font-size:18px}
@@ -566,6 +565,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-rail-controls{flex:0 0 auto;min-width:0}
 #hexlab .br-rail-controls .hl-controls{min-height:0;height:auto;display:flex;align-items:center;gap:6px;padding:0;border:0;background:transparent;flex-wrap:wrap!important;position:relative;overflow:visible}
 #hexlab .br-rail-controls #hl-play{flex:1 1 70px;min-height:36px;font-size:12px}
+#hexlab .br-rail-controls #hl-clear{min-height:36px;padding:4px 8px;font-size:12px}
 #hexlab .br-rail-controls #br-panel-toggle,#hexlab .br-rail-controls #br-tuning-toggle{flex:0 0 auto;min-height:35px;margin:0;font-size:11px;padding:6px 7px}
 #hexlab .br-rail-controls .br-live-tuning{flex:1 0 100%;order:10;max-width:none;margin:0;min-width:0;display:flex;align-items:center}
 #hexlab .br-rail-controls .br-speed-knob{display:grid!important;width:100%;grid-template-rows:auto 18px;gap:2px}
@@ -621,6 +621,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-rail-controls{margin-left:auto;flex:0 0 auto}
  #hexlab .br-rail-controls .hl-controls{flex-wrap:nowrap!important;gap:4px}
  #hexlab .br-rail-controls #hl-play{flex:0 0 auto;min-height:31px;font-size:11px;padding:4px 7px}
+ #hexlab .br-rail-controls #hl-clear{min-height:31px;padding:4px 8px}
+ #hexlab .br-rail-controls #hl-clear span{display:none}
  #hexlab .br-rail-controls #br-tuning-toggle,#hexlab .br-rail-controls #br-panel-toggle{min-height:30px;padding:4px 7px;font-size:11px}
  #hexlab .br-rail-controls .br-live-tuning{display:none}
  #hexlab .br-rail-ranking{position:absolute;top:56px;left:8px;z-index:5;max-width:min(62%,250px);width:auto;padding:3px 6px;box-shadow:0 2px 14px #0008}
@@ -676,7 +678,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-rail{z-index:25;overflow:visible}
  #hexlab .br-rail-controls .hl-controls{min-width:0;gap:5px}
  #hexlab .br-rail-controls .hl-controls #hl-step,
- #hexlab .br-rail-controls .hl-controls #hl-clear,
  #hexlab .br-rail-controls .hl-controls #hl-seed{display:none!important}
  #hexlab .br-rail-controls .br-live-tuning{display:contents!important}
  #hexlab .br-rail-controls #br-tuning-toggle{display:inline-flex!important;align-items:center;gap:3px;min-width:59px}
@@ -694,6 +695,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-rail .br-energy-panel{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 #hexlab .br-rail .br-rail-spacer{display:none}
 @media (orientation:portrait){#hexlab .br-rail .br-energy-panel{display:none}}
+
+@media (orientation:portrait) and (max-width:360px), (orientation:landscape) and (max-height:470px){
+ #hexlab .br-rail-controls #hl-play,#hexlab .br-rail-controls #hl-clear{flex:0 0 auto;min-width:30px;min-height:30px;padding:4px 6px}
+ #hexlab .br-rail-controls #hl-play span:last-child,#hexlab .br-rail-controls #hl-clear span{display:none}
+}
 </style>
 </head>
 <body><div id="hexlab">
@@ -713,26 +719,26 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <ol class="br-podium" id="br-podium" aria-label="Ranking dos seis jogadores"></ol>
 </section></div>
  <dialog class="br-ledger" id="br-ledger" aria-labelledby="br-ledger-title"><div class="br-boardhead"><strong id="br-ledger-title">Classificação completa</strong><form method="dialog"><button aria-label="Fechar classificação">Fechar</button></form></div>
- <div class="br-boardwrap"><table class="br-table"><thead><tr><th>#</th><th>Jogador</th><th>Células no mundo</th><th>Reserva</th><th>Energia líquida / ger.</th><th>Produção − custo pago por nascimentos</th><th>Erosão no campo</th><th>Carimbos</th></tr></thead><tbody id="br-ranking"></tbody></table></div>
+ <div class="br-boardwrap"><table class="br-table"><thead><tr><th>#</th><th>Jogador</th><th>Células no mundo</th><th>Reserva</th><th>Energia líquida / ger.</th><th>Saldo acumulado com tributos¹</th><th>Erosão no campo</th><th>Carimbos</th></tr></thead><tbody id="br-ranking"></tbody></table></div>
  <section class="br-diagnostic" aria-labelledby="br-diag-label"><h3 id="br-diag-label">Seu campo e sua reserva</h3>
  <p id="br-diag-peak"></p><p id="br-diag-largest"></p><p id="br-diag-end"></p>
 </section>
- <div class="br-note">Uma célula produz energia a cada geração a partir da idade escolhida, mesmo quando os vizinhos mudam. Cada nascimento natural custa energia ao dono. Se a produção e a reserva não cobrirem o custo, a dívida corrói células do próprio jogador.</div>
+ <div class="br-note">¹ O saldo soma a produção e os tributos recebidos e desconta os nascimentos e tributos pagos. O painel de energia mostra separadamente o gasto em carimbos. O ganho por célula madura diminui conforme cresce a população madura do dono. Cada nascimento natural custa energia ao dono. Se a produção e a reserva não cobrirem o custo, a dívida corrói células do próprio jogador.</div>
 </dialog>
  <div class="hl-shell">
   <main class="hl-left">
    <div class="hl-controls">
- <button class="primary" id="hl-play">▶ Iniciar</button>
- <button id="hl-step">+1 geração</button><button id="hl-seed">Semear</button><button id="hl-clear">Reiniciar</button>
+ <button class="primary" id="hl-play"><span aria-hidden="true">▶</span> <span>Iniciar</span></button>
+ <button id="hl-clear" hidden title="Parar e limpar a partida" aria-label="Parar e limpar a partida">■<span> Parar</span></button>
+ <button id="hl-step">+1 geração</button><button id="hl-seed">Semear</button>
  <div class="br-live-tuning" aria-label="Ajustes ao vivo">
   <div class="br-advanced-tuning" id="br-advanced-tuning">
-  <div class="br-knob"><div><label for="br-tax-slider" title="Unidade: por mil. 0,175 ‰ = k 0,000175">Transferência ‰</label><input id="br-tax" aria-label="Taxa de transferência em milésimos" title="Taxa em ‰: 0,175 representa k = 0,000175. Campo aceita até 20 ‰." type="number" min="0" max="20" step="0.001" value="0.175" step="0.001" min="0" max="20"></div><input id="br-tax-slider" aria-label="Taxa de transferência em milésimos" title="1 ‰ equivale a k = 0,001" type="range" min="0" max="2" step="0.005" value="0.175"></div>
   <div class="br-knob"><div><label for="br-difficulty">Dificuldade</label><span><input id="br-botturn" aria-label="Gerações entre carimbadas dos bots" title="Intervalo por bot, em gerações" type="number" min="1" max="1000" step="1" value="10"> ger.</span></div><input id="br-difficulty" type="range" min="0" max="120" step="1" title="À direita, os bots carimbam com mais frequência"></div>
   <div class="br-tuning-actions"><button type="button" id="br-menu-step">+1 geração</button><button type="button" id="br-menu-reset">Reiniciar</button></div>
   </div>
-  <div class="br-knob br-speed-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">15/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="15" step="1"></div>
+  <div class="br-knob br-speed-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">200/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="200" step="1"></div>
  </div>
- <button id="br-tuning-toggle" type="button" aria-expanded="false" aria-controls="br-advanced-tuning" title="Velocidade, taxa, dificuldade e ações" aria-label="Velocidade e ajustes da simulação">⚙ <span class="br-tuning-label">Ajustes</span><span id="br-mobile-speed">15/s</span></button>
+ <button id="br-tuning-toggle" type="button" aria-expanded="false" aria-controls="br-advanced-tuning" title="Velocidade, dificuldade e ações" aria-label="Velocidade e ajustes da simulação">⚙ <span class="br-tuning-label">Ajustes</span><span id="br-mobile-speed">200/s</span></button>
  <button id="br-panel-toggle" class="small" aria-controls="br-sidepanel" aria-expanded="true">Painel</button>
 </div>
    <dialog id="br-building" class="br-builddialog"><strong>Construindo esfera</strong><div id="br-build-msg" role="status"></div><progress id="br-build-progress" max="100"></progress><button id="br-build-cancel" type="button">Cancelar</button></dialog>
@@ -767,8 +773,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <div class="br-panelhead"><b>Painel de jogo</b><button class="small" id="br-panel-close" aria-label="Fechar painel">Fechar</button></div>
    <div id="br-tabs" class="br-tabs" hidden></div>
 <div class="hl-section br-loadout-manager">
- <div class="hl-subhead">15 slots · Catálogo Callahan</div>
- <div class="hl-muted">Troque padrões durante a partida. O Flipper de 3 células abre a partida. O crescedor de colmeia está no quinto slot.</div>
+ <div class="hl-subhead">Carimbos da partida</div>
+ <div class="hl-muted">A colmeia produz energia. Glider, refletor e guns disputam o campo. Toque em ⋯ em qualquer cartão para escolher entre os 160 padrões do atlas.</div>
  <button type="button" id="br-open-atlas" class="primary">Explorar atlas e configurar slots</button>
  <div id="br-deck-config" class="br-deck-config"></div>
 </div>
@@ -788,7 +794,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <div class="br-controls">
   <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
   <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
-  <div class="br-summary">Células que sobrevivem no mesmo lugar começam a produzir energia quando atingem a idade escolhida. Nascimentos gastam energia. Comece com um Flipper e guarde a reserva para o crescedor de colmeia.</div>
+  <div class="br-summary">Iniciar planta um crescedor no seu setor e paga o carimbo com a sua reserva. Você também pode escolher a posição e carimbar antes de iniciar. Proteja a ponta enquanto a colmeia amadurece.</div>
 </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="hl-subhead">Estratégia dos bots</div><div id="br-bots" class="br-bots"></div>
@@ -826,24 +832,27 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <section class="br-energy-panel" id="br-energy-panel" aria-label="Energia por estabilidade">
  <h3>Energia por estabilidade <small>Experimental · dev</small></h3>
  <div class="br-energy-sliders" id="br-energy-sliders">
-  <label for="eco-stable-energy">Ganho por célula madura <output id="eco-stable-energy-val">3</output><input id="eco-stable-energy" type="range" min="0" max="100" step="1" value="3" data-energy="stableEnergy"></label>
+  <label for="eco-stable-energy">Renda-base por célula madura / geração <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
+  <label for="eco-scale">Células maduras para meia renda por célula <output id="eco-scale-val">1500</output><input id="eco-scale" type="range" min="1" max="6000" step="1" value="1500" data-energy="productionScale"></label>
   <label for="eco-birth-cost">Custo por nascimento <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
-  <label for="eco-age">Idade para começar a produzir <output id="eco-age-val">16</output><input id="eco-age" type="range" min="0" max="100" step="1" value="16" data-energy="stableAfter"></label>
-  <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">30</output><input id="eco-stamp" type="range" min="0" max="100" step="1" value="30" data-energy="stampCost"></label>
-  <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">4</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="4" data-energy="initialCells"></label>
+  <label for="eco-combat-fee">Tributo por morte em combate <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee" aria-describedby="eco-combat-help"></label>
+  <label for="eco-age">Idade para começar a produzir <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
+  <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
+  <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">37</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="37" data-energy="initialCells"></label>
  </div>
- <p class="br-energy-help">A reserva inicial só muda antes da primeira ação. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
+ <p class="br-energy-help">Uma célula madura permaneceu viva no mesmo lugar pela idade escolhida. A cada geração, ela rende energia. Quando a colônia alcança o número de células maduras indicado, cada uma rende metade da taxa-base. A reserva inicial só muda durante a preparação. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
+ <p id="eco-combat-help" class="br-energy-help">Se uma célula sobreviveria sem os vizinhos rivais, seu dono transfere o tributo aos responsáveis pela morte, até o saldo disponível. Zero desativa o tributo.</p>
  <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
   <form id="eco-limit-form" novalidate>
    <h3 id="eco-limit-title">Definir máximo</h3>
    <label for="eco-limit" id="eco-limit-name"></label>
-   <input id="eco-limit" type="number" inputmode="numeric" required step="1" autofocus>
+   <input id="eco-limit" type="number" inputmode="decimal" required step="1" autofocus>
    <div><button type="button" id="eco-limit-cancel">Cancelar</button><button type="submit" class="primary">Aplicar</button></div>
   </form>
  </dialog>
  <div class="br-energy-stats" aria-live="off">
-  <div><span>Energia na reserva</span><b id="eco-reserve">120</b></div>
-  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">4</b></div>
+  <div><span>Energia na reserva</span><b id="eco-reserve">370.000</b></div>
+  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">37</b></div>
   <div><span>Geração</span><b id="eco-generation">0</b></div>
   <div><span>Células vivas</span><b id="eco-live">0</b></div>
   <div><span>Células maduras</span><b id="eco-stable">0</b></div>
@@ -855,6 +864,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <div><span>Energia recebida · total</span><b id="eco-income-total">0</b></div>
   <div><span>Custo dos nascimentos / ger.</span><b id="eco-maintenance">−0</b></div>
   <div><span>Energia paga por nascimentos</span><b id="eco-maintenance-total">0</b></div>
+  <div><span>Tributos recebidos · total</span><b id="eco-tribute-in">0</b></div>
+  <div><span>Tributos pagos · total</span><b id="eco-tribute-out">0</b></div>
   <div><span>Energia gasta em carimbos</span><b id="eco-stamped-total">0</b></div>
   <div><span>Saldo de energia / ger.</span><b id="eco-flow">+0</b></div>
   <div><span>Energia por segundo · aprox.</span><b id="eco-rate">0/s</b></div>
@@ -879,7 +890,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <label>Ordem<select id="br-atlas-order"><option value="cost">Menor custo inicial</option><option value="activity">Mais nascimentos/célula</option><option value="core">Maior núcleo fixo</option><option value="period">Menor período</option></select></label>
   </div><div id="br-atlas-results" class="br-atlas-results"></div></section>
   <section class="br-atlas-detail">
-   <div class="br-atlas-title"><h3 id="br-atlas-name">Oscilador mínimo (flipper)</h3><span id="br-atlas-label">P2</span></div>
+   <div class="br-atlas-title"><h3 id="br-atlas-name">Crescedor de colmeia</h3><span id="br-atlas-label">Crescedor</span></div>
    <p id="br-atlas-description">Evolução da estrutura na regra Callahan.</p>
    <canvas id="br-atlas-canvas" width="520" height="300" aria-label="Evolução da estrutura escolhida, geração por geração"></canvas>
    <div class="br-atlas-play"><button type="button" id="br-atlas-play">▶ Simular</button><button type="button" id="br-atlas-step">+1</button><button type="button" id="br-atlas-cycle">+1 ciclo</button><button type="button" id="br-atlas-reset">Reiniciar</button><button type="button" id="br-atlas-show-economy">Economia ↓</button><span id="br-atlas-gen">Geração 0</span></div>
@@ -905,7 +916,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <div class="br-cycle-scroll" role="region" aria-label="Detalhamento econômico" tabindex="0">
     <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Produção</th><th scope="col">Custo dos nascimentos</th><th scope="col">Produção do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
    </div>
-   <p class="br-cycle-muted">¹ Produção das células que permaneceram vivas durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
+   <p class="br-cycle-muted">¹ Parcela da produção recebida pelas células que permaneceram vivas no mesmo lugar durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
   </details>
  </div>
 </section>
@@ -958,7 +969,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     stamp: null,
     stampCount: 0,
     playing: false,
-    speed: 15,
+    matchStarted: false,
+    speed: 200,
     actual: 0,
     accum: 0,
     prev: 0,
@@ -1362,24 +1374,90 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return ids;
   }
 
+  // src/match/constructive-economy.js
+  var DEFAULT_ECONOMY = Object.freeze({
+    combatFee: 0.25,
+    stableEnergy: 0.02,
+    productionScale: 1500,
+    birthCost: 1,
+    stableAfter: 256,
+    stampCost: 1e4,
+    initialCells: 37
+  });
+  var ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
+  function generationEnergy(births, stable, economy) {
+    if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
+    const effective = economy.productionScale > 0 ? stable / (1 + stable / economy.productionScale) : stable;
+    return { income: effective * economy.stableEnergy, upkeep: births * economy.birthCost };
+  }
+  function energyCost(cells3, economy) {
+    return cells3 * economy.stampCost;
+  }
+  function availableCells(reserve, economy) {
+    return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
+  }
+  function parameterValue(value, maximum = 100, step2 = 1) {
+    const units = Math.round((Number(value) || 0) / step2);
+    const places = String(step2).split(".")[1]?.length ?? 0;
+    return Math.max(0, Math.min(maximum, Number((units * step2).toFixed(places))));
+  }
+  function initialEnergy(economy) {
+    return economy.initialCells * economy.stampCost;
+  }
+
   // src/patterns/atlas-data.js
   var rows = "p2|Oscilador mínimo (flipper)|oscilador|2|3|4|4|1|bo$bo$2bo!\ncenso-oscillator-5-p2-1|Oscilador P2 · C5-1|oscilador|2|5|6|6|3|2o$o$b2o!\np4f|Flipper P4|oscilador|4|5|16|16|1|3o$3bo$4bo!\ncenso-oscillator-6-p2-1|Oscilador P2 · C6-1|oscilador|2|6|6|6|6|2o$obo$b2o!\ncenso-oscillator-6-p2-2|Oscilador P2 · C6-2|oscilador|2|6|6|6|3|2bo$3o$2bo$3bo!\np8f|Flipper P8|oscilador|8|6|30|30|2|bo$b2o$3bo$3b2o!\nglider|Glider P4|nave|4|6|20|20|0|2bob$3bo$o2bo$3bo$3bo!\ncenso-oscillator-7-p2-1|Oscilador P2 · C7-1|oscilador|2|7|7|7|4|2bo$obo$b3o$4bo!\ncenso-oscillator-8-p2-1|Oscilador P2 · C8-1|oscilador|2|8|8|8|5|2bo$obo$b3o$4bo$4bo!\ncenso-oscillator-8-p4-1|Oscilador P4 · C8-1|oscilador|4|8|28|28|2|o$bo$2b4o$6bo$7bo!\ncenso-oscillator-9-p2-1|Oscilador P2 · C9-1|oscilador|2|9|8|8|5|o$obo$b4o$4bo$5bo!\ncenso-oscillator-9-p2-2|Oscilador P2 · C9-2|oscilador|2|9|9|9|6|2b2o$obo$b3o$4bo$4bo!\ncenso-oscillator-9-p2-3|Oscilador P2 · C9-3|oscilador|2|9|8|8|5|bo$obo$b4o$4bo$5bo!\ncenso-oscillator-9-p2-4|Oscilador P2 · C9-4|oscilador|2|9|8|8|5|bo$obo$b5o$4bo!\ncenso-oscillator-9-p2-5|Oscilador P2 · C9-5|oscilador|2|9|8|8|5|2bo$obo$b5o$4bo!\ncenso-oscillator-9-p2-6|Oscilador P2 · C9-6|oscilador|2|9|8|8|5|bo$2bo$5o$2bo$3bo!\ncenso-oscillator-9-p2-7|Oscilador P2 · C9-7|oscilador|2|9|8|8|5|2bo$2bo$4o$2bobo$3bo!\ncenso-oscillator-9-p4-1|Oscilador P4 · C9-1|oscilador|4|9|18|18|4|3bo$4o$3bo$3b2o$5bo!\ncenso-oscillator-9-p4-2|Oscilador P4 · C9-2|oscilador|4|9|24|24|3|3bo$3bo$4o$3bo$4bo$5bo!\ncenso-oscillator-9-p5-1|Oscilador P5 · C9-1|oscilador|5|9|24|24|5|2bo$obo$b4o$2bo$3bo!\ncenso-oscillator-9-p5-2|Oscilador P5 · C9-2|oscilador|5|9|24|24|5|bo$obo$b3o$2bobo$3bo!\ncenso-oscillator-9-p6-1|Oscilador P6 · C9-1|oscilador|6|9|26|26|7|ob2o$b2obo$4bo$5b2o!\ncenso-oscillator-9-p10-1|Oscilador P10 · C9-1|oscilador|10|9|44|44|5|bo$obo$b4o$2bo$3bo!\ncenso-oscillator-10-p2-1|Oscilador P2 · C10-1|oscilador|2|10|12|12|6|2o$o$b4o$5bo$4b2o!\ncenso-oscillator-10-p2-10|Oscilador P2 · C10-10|oscilador|2|10|8|8|8|2bo$3o$obo$b3o$4bo!\ncenso-oscillator-10-p2-2|Oscilador P2 · C10-2|oscilador|2|10|9|9|6|o$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-3|Oscilador P2 · C10-3|oscilador|2|10|8|8|8|2o$obo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-4|Oscilador P2 · C10-4|oscilador|2|10|8|8|6|obo$ob3o$b2obo$5bo!\ncenso-oscillator-10-p2-5|Oscilador P2 · C10-5|oscilador|2|10|9|9|6|bo$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-6|Oscilador P2 · C10-6|oscilador|2|10|9|9|6|2bo$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-7|Oscilador P2 · C10-7|oscilador|2|10|9|9|6|bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-8|Oscilador P2 · C10-8|oscilador|2|10|9|9|6|2b2o$obo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-9|Oscilador P2 · C10-9|oscilador|2|10|9|9|6|2bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-10-p4-1|Oscilador P4 · C10-1|oscilador|4|10|19|19|5|3bo$o2bo$b4o$3bo$4b2o!\ncenso-oscillator-10-p4-2|Oscilador P4 · C10-2|oscilador|4|10|19|19|5|3bo$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-10-p5-1|Oscilador P5 · C10-1|oscilador|5|10|24|24|5|2bo$2bo$5o$b2o$2bo!\ncenso-oscillator-10-p6-1|Oscilador P6 · C10-1|oscilador|6|10|26|26|7|ob2o$b2obo$4bo$4b2o$6bo!\ncenso-oscillator-10-p6-2|Oscilador P6 · C10-2|oscilador|6|10|28|28|7|3bo$4bo$ob3o$b2obo$5bo!\ncenso-oscillator-10-p10-1|Oscilador P10 · C10-1|oscilador|10|10|49|49|6|2b2o$obo$b4o$2bo$3bo!\ncenso-oscillator-10-p10-2|Oscilador P10 · C10-2|oscilador|10|10|49|49|6|bo$obobo$b4o$2bo$3bo!\ncenso-oscillator-11-p2-1|Oscilador P2 · C11-1|oscilador|2|11|9|9|9|2o$obo$b5o$4bo$4bo!\ncenso-oscillator-11-p2-10|Oscilador P2 · C11-10|oscilador|2|11|10|10|7|bo$obo$b5o$4bo$5b2o!\ncenso-oscillator-11-p2-11|Oscilador P2 · C11-11|oscilador|2|11|10|10|7|bo$obo$b5o$4bobo$5bo!\ncenso-oscillator-11-p2-12|Oscilador P2 · C11-12|oscilador|2|11|10|10|7|2bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-11-p2-13|Oscilador P2 · C11-13|oscilador|2|11|9|9|9|2b2o$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p2-14|Oscilador P2 · C11-14|oscilador|2|11|8|8|8|2bo$6o$2bobo$3b2o!\ncenso-oscillator-11-p2-15|Oscilador P2 · C11-15|oscilador|2|11|9|9|7|bo$5o$3bobo$3bo$4b2o!\ncenso-oscillator-11-p2-2|Oscilador P2 · C11-2|oscilador|2|11|10|10|7|o$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-3|Oscilador P2 · C11-3|oscilador|2|11|10|10|7|o$obo$b5o$4bo$5b2o!\ncenso-oscillator-11-p2-4|Oscilador P2 · C11-4|oscilador|2|11|10|10|7|o$obo$b4o$4bobo$5b2o!\ncenso-oscillator-11-p2-5|Oscilador P2 · C11-5|oscilador|2|11|10|10|7|o2bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p2-6|Oscilador P2 · C11-6|oscilador|2|11|10|10|7|o$obo$b5o$4bobo$5bo!\ncenso-oscillator-11-p2-7|Oscilador P2 · C11-7|oscilador|2|11|10|10|7|bo$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-8|Oscilador P2 · C11-8|oscilador|2|11|10|10|7|2bo$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-9|Oscilador P2 · C11-9|oscilador|2|11|10|10|7|bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-11-p4-1|Oscilador P4 · C11-1|oscilador|4|11|31|31|4|o$bo4bo$2b5o$6bo$7bo$7bo!\ncenso-oscillator-11-p4-10|Oscilador P4 · C11-10|oscilador|4|11|22|22|5|2bo$3bo$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-11-p4-11|Oscilador P4 · C11-11|oscilador|4|11|20|20|6|o$bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-2|Oscilador P4 · C11-2|oscilador|4|11|40|40|3|o$bo$2b4o$6bo$7bo$8b3o!\ncenso-oscillator-11-p4-3|Oscilador P4 · C11-3|oscilador|4|11|22|22|6|o3bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-4|Oscilador P4 · C11-4|oscilador|4|11|19|19|8|3bo$o2bo$b4o$3bobo$4b2o!\ncenso-oscillator-11-p4-5|Oscilador P4 · C11-5|oscilador|4|11|22|22|5|3bo$o2bo$b4o$3bobo$4bobo!\ncenso-oscillator-11-p4-6|Oscilador P4 · C11-6|oscilador|4|11|21|21|6|2bobo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-7|Oscilador P4 · C11-7|oscilador|4|11|21|21|6|3b2o$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-11-p4-8|Oscilador P4 · C11-8|oscilador|4|11|21|21|6|3b2o$o2bo$b5o$3bo$4bo!\ncenso-oscillator-11-p4-9|Oscilador P4 · C11-9|oscilador|4|11|21|21|6|3bo$o2bobo$b5o$3bo$4bo!\ncenso-oscillator-11-p6-1|Oscilador P6 · C11-1|oscilador|6|11|31|31|8|2b2o$obo$b3o$4bo$4bo$5b2o!\ncenso-oscillator-11-p10-1|Oscilador P10 · C11-1|oscilador|10|11|49|49|9|2b2o$obobo$b4o$2bo$3bo!\ncenso-oscillator-12-p2-1|Oscilador P2 · C12-1|oscilador|2|12|10|10|8|o$obo$b4o$4bo$4bobo$5b2o!\ncenso-oscillator-12-p2-10|Oscilador P2 · C12-10|oscilador|2|12|10|10|7|bo$obobo$b4o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-11|Oscilador P2 · C12-11|oscilador|2|12|10|10|7|bo$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-12|Oscilador P2 · C12-12|oscilador|2|12|10|10|7|bo$obobo$b6o$4bo$4bo!\ncenso-oscillator-12-p2-13|Oscilador P2 · C12-13|oscilador|2|12|10|10|7|2bo$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-14|Oscilador P2 · C12-14|oscilador|2|12|10|10|7|2bo$obobo$b6o$4bo$4bo!\ncenso-oscillator-12-p2-15|Oscilador P2 · C12-15|oscilador|2|12|10|10|10|2b2o$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p2-16|Oscilador P2 · C12-16|oscilador|2|12|10|10|7|2bo$obobo$b6o$4bo$5bo!\ncenso-oscillator-12-p2-17|Oscilador P2 · C12-17|oscilador|2|12|9|9|9|2b2o$obobo$b6o$4bo!\ncenso-oscillator-12-p2-18|Oscilador P2 · C12-18|oscilador|2|12|10|10|8|2bo$3o$obo$3bobo$3b3o$3bo!\ncenso-oscillator-12-p2-19|Oscilador P2 · C12-19|oscilador|2|12|10|10|8|2o$2bo$obo$b5o$4bo$4bo!\ncenso-oscillator-12-p2-2|Oscilador P2 · C12-2|oscilador|2|12|10|10|10|2o$obo$b5o$4bobo$4bo!\ncenso-oscillator-12-p2-20|Oscilador P2 · C12-20|oscilador|2|12|10|10|8|2bo$3o$2bo$3b2o$5bo$5b3o$5bo!\ncenso-oscillator-12-p2-21|Oscilador P2 · C12-21|oscilador|2|12|8|8|8|2bo$5o$2bobo$3b3o$6bo!\ncenso-oscillator-12-p2-22|Oscilador P2 · C12-22|oscilador|2|12|10|10|8|3bo$obobo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-23|Oscilador P2 · C12-23|oscilador|2|12|9|9|8|bob2o$3o2bo$3b3o$5bo$6bo!\ncenso-oscillator-12-p2-24|Oscilador P2 · C12-24|oscilador|2|12|9|9|9|2bo$3o$obo$b4o$4bo$5bo!\ncenso-oscillator-12-p2-25|Oscilador P2 · C12-25|oscilador|2|12|10|10|8|2b2o$obo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-26|Oscilador P2 · C12-26|oscilador|2|12|10|10|8|2bo$obobo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-27|Oscilador P2 · C12-27|oscilador|2|12|9|9|9|2bo$3bo$ob2o$b3o$4bo$4bo$5b2o!\ncenso-oscillator-12-p2-28|Oscilador P2 · C12-28|oscilador|2|12|9|9|9|bo$2bo$6o$2bobo$3b2o!\ncenso-oscillator-12-p2-29|Oscilador P2 · C12-29|oscilador|2|12|10|10|8|b2o$3bo$6o$2bo$3b2o!\ncenso-oscillator-12-p2-3|Oscilador P2 · C12-3|oscilador|2|12|10|10|7|o$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-30|Oscilador P2 · C12-30|oscilador|2|12|10|10|7|4bo$2bobo$6o$2bo3bo$3bo!\ncenso-oscillator-12-p2-31|Oscilador P2 · C12-31|oscilador|2|12|8|8|8|bo$bo$4o$3b4o$5bo$5bo!\ncenso-oscillator-12-p2-32|Oscilador P2 · C12-32|oscilador|2|12|8|8|8|bo$bo$4obo$3b3o$5bo$6bo!\ncenso-oscillator-12-p2-4|Oscilador P2 · C12-4|oscilador|2|12|10|10|7|o3bo$obobo$b5o$4bo$4bo!\ncenso-oscillator-12-p2-5|Oscilador P2 · C12-5|oscilador|2|12|10|10|10|2o$obo$b5o$4bo$5b2o!\ncenso-oscillator-12-p2-6|Oscilador P2 · C12-6|oscilador|2|12|10|10|10|2o$obo$b4o$4bobo$5b2o!\ncenso-oscillator-12-p2-7|Oscilador P2 · C12-7|oscilador|2|12|11|11|8|o2bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p2-8|Oscilador P2 · C12-8|oscilador|2|12|10|10|8|obo$ob4o$b2obo$5b2o!\ncenso-oscillator-12-p2-9|Oscilador P2 · C12-9|oscilador|2|12|10|10|8|obo$ob4o$b2obobo$5bo!\ncenso-oscillator-12-p3-1|Oscilador P3 · C12-1|oscilador|3|12|12|12|12|b2o$2obo$o2bo$b2obo$3b2o!\ncenso-oscillator-12-p4-1|Oscilador P4 · C12-1|oscilador|4|12|30|30|5|o$bo4bo$2b5o$6bo$6b2o$8bo!\ncenso-oscillator-12-p4-10|Oscilador P4 · C12-10|oscilador|4|12|21|21|9|3b2o$o2bo$b4o$3bobo$4b2o!\ncenso-oscillator-12-p4-11|Oscilador P4 · C12-11|oscilador|4|12|23|23|6|3b2o$o2bo$b4o$3bobo$4bobo!\ncenso-oscillator-12-p4-12|Oscilador P4 · C12-12|oscilador|4|12|23|23|6|3b2o$o2bo$b6o$3bo$4bo!\ncenso-oscillator-12-p4-13|Oscilador P4 · C12-13|oscilador|4|12|22|22|7|2bobo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p4-14|Oscilador P4 · C12-14|oscilador|4|12|22|22|8|2b2o$3o$obo$b3o$4b2o!\ncenso-oscillator-12-p4-15|Oscilador P4 · C12-15|oscilador|4|12|23|23|6|o$bo$obo$b6o$4bo$5bo!\ncenso-oscillator-12-p4-2|Oscilador P4 · C12-2|oscilador|4|12|30|30|5|o$bo4bo$2b7o$6bo$6bo!\ncenso-oscillator-12-p4-3|Oscilador P4 · C12-3|oscilador|4|12|32|32|5|o4bo$bo4bo$2b5o$6bo$7bo$7bo!\ncenso-oscillator-12-p4-4|Oscilador P4 · C12-4|oscilador|4|12|35|35|4|o5bo$bo4bo$2b5o$6bo$7bo$8bo!\ncenso-oscillator-12-p4-5|Oscilador P4 · C12-5|oscilador|4|12|22|22|7|obo$ob5o$b2obo$5bo!\ncenso-oscillator-12-p4-6|Oscilador P4 · C12-6|oscilador|4|12|21|21|9|2o$obo2bo$b5o$4bo$4bo!\ncenso-oscillator-12-p4-7|Oscilador P4 · C12-7|oscilador|4|12|23|23|7|o2bo$obobo$b4o$4bo$5bo$5bo!\ncenso-oscillator-12-p4-8|Oscilador P4 · C12-8|oscilador|4|12|24|24|6|2o$o$b4o$4b4o$4bo!\ncenso-oscillator-12-p4-9|Oscilador P4 · C12-9|oscilador|4|12|23|23|7|o3bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p5-1|Oscilador P5 · C12-1|oscilador|5|12|24|24|10|3o$bob2o$2b2obo$4b3o!\ncenso-oscillator-12-p5-2|Oscilador P5 · C12-2|oscilador|5|12|24|24|8|3bo$3bo$ob4o$b3o$2bo$3bo!\ncenso-oscillator-12-p5-3|Oscilador P5 · C12-3|oscilador|5|12|24|24|8|2bo$3bo$ob3o$b3obo$2bo$3bo!\ncenso-oscillator-12-p6-1|Oscilador P6 · C12-1|oscilador|6|12|32|32|9|ob2o$b2obo$4bo$4b2o$6bo$5b2o!\ncenso-oscillator-12-p6-2|Oscilador P6 · C12-2|oscilador|6|12|30|30|9|ob2o$b6o$5bo$4b2o!\ncenso-oscillator-12-p6-3|Oscilador P6 · C12-3|oscilador|6|12|32|32|10|ob2o$b2ob2o$6bo$5b2o$5bo$6bo!\ncenso-oscillator-12-p6-4|Oscilador P6 · C12-4|oscilador|6|12|30|30|8|ob2obo$b2ob2o$5bo$5b2o$5bo!\ncenso-oscillator-12-p6-5|Oscilador P6 · C12-5|oscilador|6|12|26|26|10|2b2o$3obo$2bobo$3b3o$6bo!\ncenso-oscillator-12-p6-6|Oscilador P6 · C12-6|oscilador|6|12|31|31|8|2bo$3o$obo2bo$3b3o$5bo$6bo!\ncenso-oscillator-12-p6-7|Oscilador P6 · C12-7|oscilador|6|12|31|31|8|4bo$4bo$ob4o$b2obobo$5bo!\ncenso-oscillator-12-p6-8|Oscilador P6 · C12-8|oscilador|6|12|31|31|8|3bo$4bo$ob5o$b2obo$5bo!\ncenso-oscillator-12-p6-9|Oscilador P6 · C12-9|oscilador|6|12|31|31|8|2bo$b2o$obo$b3o$4bo$4bo$5b2o!\ncenso-oscillator-12-p10-1|Oscilador P10 · C12-1|oscilador|10|12|44|44|8|2bo$3bo$ob4o$b3o$2bo$3bo!\ncenso-oscillator-12-p30-1|Oscilador P30 · C12-1|oscilador|30|12|167|167|8|bo$obob2o$b4obo$2bo$3bo!\np42rot|Oscilador rotativo P42|oscilador|42|12|300|300|0|2b2ob$b3ob$3bob$4ob$2ob!\np48|Nave P48|nave|48|12|334|334|0|obo4b$b2o4b$b3obob$2b2o2bo$3bo3b!\np42|Oscilador refletor P42|oscilador|42|17|256|256|12|b2o3b$bobo2b$4o2b$o3bob$b5o$3bo2b$3bo2b!\np14|Oscilador P14|oscilador|14|21|88|88|3|b3ob$2obob$o3b2ob$2ob2ob$2b2ob2ob$2bob2ob$4bob!\np11b|Oscilador principal P11 (B)|oscilador|33|24|222|222|20|2obob$o2b2ob$2b2obob$3ob2ob$bob2obob$2b2ob2ob$4b2ob!\np66|Oscilador P66 tentáculo|oscilador|66|25|573|573|19|2b2ob$3obob$obobob$b2ob2ob$bob2obobob$5b2ob3ob$7b2ob!\np29pure26|Oscilador P29 puro (26 células)|oscilador|29|26|272|272|18|2b3o$4obo$bo2b2o$2b4o$2b2o2bo$2bob4o$3b3o!\np15|Nave P15|nave|15|26|150|150|4|bobo5b$2b3o4b$3obo4b$2bobo4b$3b2o4b$9b$4b2o3b$4bobo2b$3b3obob$6b3o$6bobo!\np22|Oscilador principal P22|oscilador|22|27|201|201|14|bob$2bob$5ob$2bobob$2b5ob$3bobob2ob$6b4ob$6b2ob$b$10bob$11b2ob!\nreflect20_demo|Reflexão de glider em estrutura P20 (exemplo publicado)|interação|0|29|0|0|0|2bob$ob$bob$2bob$3b2ob$b$b$b$b$4b3ob$6b2ob$6bobob$7b2ob$7bobob$8b2ob$8bob$9bob$9bob$7b4ob$9bobob$10bob!\np7b|Oscilador principal P7 (B)|oscilador|28|30|261|261|24|ob$ob$b2ob$2b3ob$b2o2b2obob$bo4b3ob$2bo5bob$9bob$8b2ob$8bob$9bobob$8b4ob$11bob$12bob!\nreflect42_demo|Reflexão de glider em estrutura P42 (exemplo publicado)|interação|0|31|0|0|0|2bob$ob$bob$2bob$3b2ob$b$b$b$4bob$5b2ob$4b4ob$6b3ob$6bobob$7b4ob$7bo3bob$7b5ob$10bob$11bob!\np11a|Oscilador principal P11 (A)|oscilador|22|33|164|164|24|2bob$b2ob$2b2obob$3obobob$2bobo2b2ob$2b6ob3ob$2bo3b2o2bob$8b3ob$10bob$11bob!\np46|Oscilador principal P46|oscilador|46|33|364|364|19|3bob$3b3ob$b3obob$obob5ob$b5o2bob$2bobobo2bob$b6ob$4bob$4bob!\np17|Oscilador principal P17|oscilador|102|34|785|785|26|2bob$2bob$6ob$2bob2ob$3b2ob$b$3b2o2bob$2b2ob2ob$2bo2bobob$3b2ob2ob$5b2ob2ob$7b2ob$7bob!\np9|Oscilador P9|oscilador|9|35|73|73|32|2b2ob$3obob$bob2ob$b3obob$4b2ob$4bob$3b3ob$3bo2bob$2b3obob$2bobo2bob$3b2ob2ob$5b2ob$6bob!\nstalk|Crescedor de colmeia (stalk)|crescedor|0|36|0|0|0|ob2o7b$b2obo6b$2ob2o6b$2b2obo5b$2bob2o5b$3b2obo4b$3bob2o4b$3b3obo3b$6b2o3b$6bobo2b$6b3o2b$8b3o!\np18|Oscilador P18|oscilador|18|44|149|149|24|bobob$2b3ob$b2obob$2ob2ob3obob$ob2obobob4ob$b2ob5ob2ob$3b2obob3obob$3bobo4bob!\np29|Oscilador principal P29|oscilador|87|45|669|669|30|3bob$3b2ob$2b2ob2ob$3o4b3ob$bobo3bobob$2b4o2b3ob$4o2b3ob$2o2b4ob$b3obobob$2bo2bob$b$6bob!\np19|Oscilador principal P19|oscilador|95|46|879|879|30|bo3bob$2o2b3obob$ob2obob3ob$b2ob5obob$bob2o2bob2ob$3bobob3ob2ob$7b2ob3ob$8b3o2bob$10bob!\np26|Oscilador principal P26|oscilador|78|48|767|767|35|bob$bobob$5ob$bobob2ob$bo2b2obob$3b2o2bob$5b5ob$7bobob$5b6ob$2b2obobobobob$4bob2obob$8b3ob$8bo2bob$11bob!\np7a|Oscilador principal P7 (A)|oscilador|21|52|157|157|43|3bob$2b2ob$b2ob2obob$3bob3ob$ob2obo2b2ob$b2obo3bob$2ob4o2bob$2b2o3bobob$2bobob2o2bob$2b3ob2ob3ob$5b2ob2ob$7b2ob!\ngun20|Gun P20|gerador|0|52|0|0|0|8b2ob$8bob$b$5b6ob$5bob$2bo5bob$b5ob$2bob2o8bob$3b2o8b3o4bob$2b2o9b2ob2o2bob$3o12b2ob4ob$2bo14bo2bobob$b3o17bob$4bob!\ndup42_demo|Duplicador P42 (exemplo publicado)|interação|0|54|0|0|0|12bobob$4bo8b2obob$11b3ob2ob$8bo3bobobob$5b4o3b4obob$14bob3ob$17bob$2ob3ob$ob6ob$bobob2ob$3ob2obob$3b2ob$4bob!\ndup20_demo|Duplicador P20 (exemplo publicado)|interação|0|55|0|0|0|2bo7bob$5bo2b4ob$5bo3b2ob3ob$5bo5b2obob$bo2b2o7b2ob$obo12b2ob$3bo13b3ob$bobo14bob$2bobo13b3ob$3b2o13bob$3bobob$4b2ob$6bob$6bob$7bobob$6b4ob$9bob$10bob!\ngun42|Gun P42 (catálogo do jogo)|gerador|0|64|0|0|0|17b2o$2bo15b2obo$b2obo13bob2o$2ob3o13b2ob2o$2bobobo13bobo$2b2ob4o3b2o6bob2o$2bob2obo5b3o4b3obo$13bobo6bo$12b4o$12bo3bo$13b5o$15bo$15bo!\ngun43|Gun de pulso P43/86|gerador|0|80|0|0|0|11b2ob$2o11bobob$2bobo8b3ob$2b3o8bobob$2bobo9b4ob$3b3o8bo2bob$2b2o2bo7b5ob$4b3o8b2ob$4b2obo8bob$4bob2ob$2bo2bobob$b3o2b2ob$o5bob$b$b$b$b$b$b$b$b$18bo2bob$19b3ob$20bob3ob$20bobobobob$20b7ob$21bo2bob$25bob!\ngun200|Gun P200|gerador|0|100|0|0|0|5bob$6b3ob$7bob$7b3ob$3bo2b2ob$2b2ob2ob$obob2ob$b3ob2ob$4b2obo11bob$6b4o7b3ob$8bo10bob$9bo9b2ob$18b2obob$17b2ob$16b2ob2ob$5bo8b3ob2ob$6bo9b3obob$6bobo7bo2bob$7bobob$8bo5b2ob$7bo5b3ob$13b3ob$8bo5bobob$8b2o5b2ob$8bobo4bobob$15b3ob$18bob$18bob$19bobob$18b4ob$21bob$22bob!\ngun210|Gun P210 (relé de refletores)|gerador|0|111|0|0|0|49bo$50bo$48b5o$49bo3bo$50b4o$50bobobo$51bob3o$50b2obo$52bo10b2o$2bo50b2o6b3ob3o$b2o45b4o2bo2bo4bobobo$2b2o44bo9bo4b3obo$3ob2o50bo2bo3bo2b3o$bob4o53bobo2b2o$2bobobo53bob4o$2bob2o$56bo$54bobo$53b4o$54bobobo$55b6o$54b2o3bo$56b4o$56bobo$58bo!\ngun840|Gun P840|gerador|0|131|0|0|0|4bob$3bobob$4b4ob$5bob$5bob$6bob$4b3ob$5bobob$5b3o5b2ob$2o5b2o4bob$bo6bo14bob$b2o18b3ob$2bo20bob$23b2ob$22b2obob$2bo18b2ob$2bo17b2obob$2bo2bo14bob3ob$2bo18b2ob$3bo8b2o8bob$14bob$15bob$16bob$10b2o2bob$9b3ob$8b2obo11bo3b2ob$8bob3o11b4obob$9bobo11b3obobob$9b2ob2o3b3o6b2ob2ob$9bob2o6b3o6b2obob$11bo7bobo7bob$20b5ob$19b2o3bob$21b5ob$21bobob$24bob!";
   var atlasPatterns = rows.split("\n").map((row) => {
-    const [id, name, group, period, cells2, birthsCycle, deathsCycle, stableCore, rle] = row.split("|");
+    const [id, name, group, period, cells3, birthsCycle, deathsCycle, stableCore, rle] = row.split("|");
     return {
       id,
       name,
       group,
       period: Number(period),
-      cells: Number(cells2),
+      cells: Number(cells3),
       birthsCycle: Number(birthsCycle),
       deathsCycle: Number(deathsCycle),
       stableCore: Number(stableCore),
       rle,
-      info: group + " · " + cells2 + " células · " + (Number(period) ? "P" + period : "evolução não periódica"),
+      info: group + " · " + cells3 + " células · " + (Number(period) ? "P" + period : "evolução não periódica"),
       origin: id.startsWith("censo-") ? "censo ≤12 células" : "atlas/documentação de Callahan"
     };
   });
+
+  // src/patterns/rle.js
+  function decodeRLE(str) {
+    const out = [], re = /(\d*)([ob$!])/g;
+    let r = 0, c = 0, m;
+    while ((m = re.exec(str)) !== null) {
+      const n = Number(m[1] || 1);
+      if (m[2] === "o") {
+        for (let i = 0; i < n; i++) out.push([c + i - r, r]);
+        c += n;
+      } else if (m[2] === "b") c += n;
+      else if (m[2] === "$") {
+        r += n;
+        c = 0;
+      } else break;
+    }
+    return out;
+  }
+
+  // src/match/founding.js
+  var founderId = "stalk";
+  var cells = decodeRLE(atlasPatterns.find((p) => p.id === founderId).rle);
+  function plantFounder(world2, game2, player, commitStamp2) {
+    if (player.stamps || player.out || player.reserve < cells.length * game2.economy.stampCost) return false;
+    const graph = world2.graph;
+    const neighbors = graph.adj.subarray(6 * player.seed, 6 * player.seed + graph.deg[player.seed]);
+    for (const center of [player.seed, ...neighbors]) {
+      const east = eastAt(graph, center);
+      for (let turn = 0; turn < 6; turn++) {
+        const ids = patchForStamp(world2, center, (east + turn) % 6, cells, true);
+        if (ids && commitStamp2(player.id, ids, false)) return true;
+      }
+    }
+    return false;
+  }
 
   // src/patterns/catalog.js
   var patterns = {
@@ -1434,24 +1512,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     custom: []
   };
 
-  // src/patterns/rle.js
-  function decodeRLE(str) {
-    const out = [], re = /(\d*)([ob$!])/g;
-    let r = 0, c = 0, m;
-    while ((m = re.exec(str)) !== null) {
-      const n = Number(m[1] || 1);
-      if (m[2] === "o") {
-        for (let i = 0; i < n; i++) out.push([c + i - r, r]);
-        c += n;
-      } else if (m[2] === "b") c += n;
-      else if (m[2] === "$") {
-        r += n;
-        c = 0;
-      } else break;
-    }
-    return out;
-  }
-
   // src/bots/spiral.js
   function botSpiralPlan(g, seed) {
     const seen = new Uint8Array(Math.ceil(g.n / 8));
@@ -1496,32 +1556,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       plan.index = 0;
     }
     return plan.order[plan.index++].id;
-  }
-
-  // src/match/constructive-economy.js
-  var DEFAULT_ECONOMY = Object.freeze({
-    stableEnergy: 3,
-    stampCost: 30,
-    birthCost: 1,
-    stableAfter: 16,
-    initialCells: 4
-  });
-  var ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
-  function generationEnergy(births, stable, economy) {
-    if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
-    return { income: stable * economy.stableEnergy, upkeep: births * economy.birthCost };
-  }
-  function energyCost(cells2, economy) {
-    return cells2 * economy.stampCost;
-  }
-  function availableCells(reserve, economy) {
-    return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
-  }
-  function parameterValue(value, maximum = 100) {
-    return Math.max(0, Math.min(maximum, Math.round(Number(value) || 0)));
-  }
-  function initialEnergy(economy) {
-    return economy.initialCells * economy.stampCost;
   }
 
   // src/patterns/cycle-economy.js
@@ -1570,7 +1604,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
     const { length, kind } = cycleWindow(pattern);
-    const defaultCycles = Math.max(24, Math.ceil(160 / length));
+    const defaultCycles = Math.max(24, Math.ceil((pattern.id === "stalk" ? 2e3 : 160) / length));
     const maxGenerations = cycles == null ? 8400 : 25200;
     const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
     economy = { ...economy };
@@ -1579,6 +1613,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const initialCost = energyCost(ages.size, economy);
     const startingReserve = initialEnergy(economy);
     const rows2 = [];
+    const unitIncome = new Float64Array(length + 1);
     let operatingBalance = 0, workingCapital = 0;
     let firstPositiveCycle = null, profitableFromCycle = null;
     let paybackGeneration = initialCost === 0 ? 0 : null;
@@ -1587,17 +1622,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     signal?.throwIfAborted();
     for (let cycle = 1; cycle <= observedCycles; cycle++) {
       const from = (cycle - 1) * length + 1, to = cycle * length;
-      let births = 0, stableCellTurns = 0;
+      let births = 0, stableCellTurns = 0, income = 0, upkeep = 0;
       for (let generation2 = from; generation2 <= to; generation2++) {
         const turn = advancePattern(ages, stableAfter);
         ages = turn.next;
         births += turn.births;
         stableCellTurns += turn.mature;
         const flow = generationEnergy(turn.births, turn.mature, economy);
+        income += flow.income;
+        upkeep += flow.upkeep;
+        const step2 = generation2 - from + 1;
+        const matureIncome = economy.generationQuote ? generationEnergy(0, turn.mature, economy).income : flow.income;
+        unitIncome[step2] = unitIncome[step2 - 1] + (turn.mature ? matureIncome / turn.mature : 0);
         operatingBalance += flow.income - flow.upkeep;
         workingCapital = Math.max(workingCapital, -operatingBalance);
         if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation2;
-        if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < 0) {
+        if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < -1e-9) {
           firstErosionGeneration = generation2;
         }
         if (performance.now() - lastYield >= 10) {
@@ -1611,9 +1651,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if (age <= length) continue;
         fixedCore++;
         const productiveTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
-        fixedIncome += generationEnergy(0, productiveTurns, economy).income;
+        fixedIncome += unitIncome[length] - unitIncome[length - productiveTurns];
       }
-      const { income, upkeep } = generationEnergy(births, stableCellTurns, economy);
       const net = income - upkeep;
       if (net > 0) {
         firstPositiveCycle ?? (firstPositiveCycle = cycle);
@@ -1723,7 +1762,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     let lastSettings;
     return function quote(id) {
       const { stableEnergy, birthCost, stableAfter, stampCost } = economy;
-      const settings = [stableEnergy, birthCost, stableAfter, stampCost].join("/");
+      const settings = [stableEnergy, birthCost, stableAfter, stampCost, economy.productionScale].join("/");
       if (settings !== lastSettings) {
         cache.clear();
         lastSettings = settings;
@@ -1733,42 +1772,72 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       let ages = seedPatternAges(pattern);
       const price = energyCost(ages.size, economy);
       const delayed = Math.max(0, stableAfter - 72);
-      const stationary = pattern.group === "oscilador";
-      const cyclesSkipped = stationary ? Math.floor(delayed / pattern.period) : 0;
-      const turnsSkipped = stationary ? cyclesSkipped * pattern.period : delayed;
+      const cyclesSkipped = Math.floor(delayed / pattern.period);
+      const turnsSkipped = cyclesSkipped * pattern.period;
       const maturity = stableAfter - turnsSkipped;
-      const turns = Math.max(32, maturity + 12);
-      let capital = 0, balance = 0, recent = 0, cycleCost = 0, peakBurn = 0;
+      const turns = Math.max(2 * pattern.period, maturity + pattern.period);
+      let capital = 0, balance = 0, recent = 0, cycleCost = 0;
       for (let gen = 1; gen <= turns; gen++) {
         const { next, births, mature } = advancePattern(ages, maturity);
         ages = next;
         const { income, upkeep } = generationEnergy(births, mature, economy);
         const net = income - upkeep;
         if (gen <= pattern.period) cycleCost += upkeep;
-        peakBurn = Math.max(peakBurn, upkeep);
         balance += net;
         capital = Math.max(capital, -balance);
-        if (gen > turns - 12) recent += net;
+        if (gen > turns - pattern.period) recent += net;
       }
-      const delayedCost = stationary ? cyclesSkipped * cycleCost : pattern.group === "crescedor" ? turnsSkipped * peakBurn : 0;
-      const result = { id, budget: price + capital + delayedCost, yield: recent / 12 };
+      const delayedCost = cyclesSkipped * cycleCost;
+      const result = { id, budget: price + capital + delayedCost, yield: recent / pattern.period };
       cache.set(id, result);
       return result;
     };
   }
 
   // src/bots/raids.js
-  var glider = decodeRLE(atlasPatterns.find((p) => p.id === "glider").rle).map(([q, r]) => [q - 8, r - 2]);
-  function raidMatureCore(world2, game2, player, commitStamp2) {
+  var weapons = /* @__PURE__ */ new Map();
+  var aim = { glider: [-8, -2], gun20: [-3, 16], gun42: [-13, 16] };
+  function weapon(id) {
+    if (weapons.has(id)) return weapons.get(id);
+    const pattern = atlasPatterns.find((p) => p.id === id);
+    const [dq, dr] = aim[id];
+    const offsets = decodeRLE(pattern.rle).map(([q, r]) => [q + dq, r + dr]);
+    const period = id === "glider" ? 4 : Number(id.slice(3));
+    let ages = seedPatternAges(pattern), births = 0, firstCycleBirths = 0;
+    for (let g = 0; g < 256; g++) {
+      const turn = advancePattern(ages, 2);
+      births += turn.births;
+      if (g < period) firstCycleBirths += turn.births;
+      ages = turn.next;
+    }
+    const profile = { offsets, births, period, firstCycleBirths };
+    weapons.set(id, profile);
+    return profile;
+  }
+  function raidBudget(economy, id) {
+    const w = weapon(id);
+    return w.offsets.length * economy.stampCost + w.births * economy.birthCost;
+  }
+  function expectedGunExpense(economy, id) {
+    const { period, firstCycleBirths } = weapon(id);
+    return (firstCycleBirths + 32 * 5) / period * economy.birthCost;
+  }
+  function raidMatureCore(world2, game2, player, commitStamp2, id = "glider") {
     const rivals = game2.players.filter((p) => p !== player && !p.out && p.stable).sort((a, b) => b.stable - a.stable);
+    const { offsets } = weapon(id);
     for (const rival of rivals) {
-      const cells2 = world2.ownerCells[rival.id];
-      const stride2 = Math.max(1, Math.ceil(cells2.length / 8));
-      for (let index = world2.gen % stride2; index < cells2.length; index += stride2) {
-        const target = cells2[index];
-        if (world2.cellAges[target] < game2.economy.stableAfter) continue;
+      const cells3 = world2.ownerCells[rival.id];
+      const targetIds = [];
+      for (const cell of cells3) {
+        if (world2.cellAges[cell] === 1) targetIds.push(cell);
+        if (targetIds.length === 8) break;
+      }
+      const stride2 = Math.max(1, Math.ceil(cells3.length / 8));
+      for (let i = world2.gen % stride2; i < cells3.length; i += stride2)
+        if (world2.cellAges[cells3[i]] >= game2.economy.stableAfter) targetIds.push(cells3[i]);
+      for (const target of targetIds) {
         for (let dir = 0; dir < 6; dir++) {
-          const ids = patchForStamp(world2, target, dir, glider, true);
+          const ids = patchForStamp(world2, target, dir, offsets, true);
           if (ids && commitStamp2(player.id, ids, false)) return true;
         }
       }
@@ -1777,45 +1846,45 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/bots/growth-strategy.js
-  var small = "censo-oscillator-5-p2-1";
-  var medium = "censo-oscillator-6-p2-1";
-  var large = "censo-oscillator-12-p3-1";
-  var plans = {
-    farmer: [medium, small],
-    cycler: [medium],
-    core: [large, medium],
-    slow: [large],
-    diverse: [large, medium]
-  };
+  var farmCandidates = ["censo-oscillator-6-p2-1", "censo-oscillator-12-p3-1", "p7a", "p2"];
+  function growthMargin(economy, stable, fronts) {
+    const before = generationEnergy(0, stable, economy).income;
+    const after = generationEnergy(143 / 24, stable + stable / fronts, economy);
+    return after.income - after.upkeep - before;
+  }
   function createGrowthStrategy(world2, game2, commitStamp2) {
     const plant = createOscillatorStrategy(world2, game2, commitStamp2);
     const quote = createInvestmentQuotes(game2.economy);
     return (player) => {
-      const afford = (q) => q.yield > 0 && player.reserve >= q.budget;
-      const flipper = quote("p2");
-      if (!world2.ownerCells[player.id].length && afford(flipper)) {
-        plant(player, flipper.id);
+      const e = game2.economy, plan = game2.botPlans[player.id - 1];
+      if (!player.stamps) {
+        if (plantFounder(world2, game2, player, commitStamp2)) {
+          plan.fronts = 1;
+        } else {
+          const profitable = farmCandidates.map(quote).filter((q) => q.yield > 0 && player.reserve >= q.budget);
+          profitable.sort((a, b) => a.budget / a.yield - b.budget / b.yield);
+          if (profitable.length) plant(player, profitable[0].id);
+        }
         return;
       }
-      const plan = game2.botPlans[player.id - 1];
-      const grower = quote("stalk");
-      if (player.pattern === "diverse" && plan.nextRaid != null && world2.gen >= plan.nextRaid && player.flowAverage > 5 * game2.economy.birthCost && player.reserve >= grower.budget + quote("glider").budget) {
-        plan.nextRaid = world2.gen + 24;
-        if (raidMatureCore(world2, game2, player, commitStamp2)) return;
+      const growerPrice = 36 * e.stampCost;
+      const growerBudget = growerPrice + (e.stableAfter + 24) * 6 * e.birthCost;
+      const farmer = player.pattern === "farmer" || player.pattern === "core";
+      if (farmer && player.stable && growthMargin(e, player.stable, plan.fronts || 1) > 0) {
+        if (player.reserve < growerBudget) return;
+        if (plant(player, "stalk")) {
+          plan.fronts = (plan.fronts || 0) + 1;
+          return;
+        }
       }
-      if (afford(grower) && plant(player, grower.id)) {
-        plan.nextRaid ?? (plan.nextRaid = world2.gen + 24);
-        return;
+      let weapon2 = player.pattern === "slow" ? "gun42" : player.pattern === "diverse" ? "gun20" : "glider";
+      let savings = player.pattern === "core" ? growerBudget : 0;
+      if (weapon2 !== "glider" && player.flowAverage < expectedGunExpense(e, weapon2)) {
+        savings = raidBudget(e, weapon2) / 2;
+        weapon2 = "glider";
       }
-      const flow = Math.max(0, player.flowAverage);
-      const wait = grower.yield > 0 && flow > 0 && grower.budget > player.reserve ? (grower.budget - player.reserve) / flow : Infinity;
-      const bridges = player.pattern === "core" && player.stamps >= 2 ? [large] : plans[player.pattern] ?? plans.cycler;
-      for (const id of bridges) {
-        const bridge = quote(id);
-        if (!afford(bridge)) continue;
-        if (wait < game2.economy.stableAfter + bridge.budget / bridge.yield) continue;
-        if (plant(player, id)) return;
-      }
+      if (player.flowAverage <= 0 || player.reserve < savings + raidBudget(e, weapon2)) return;
+      raidMatureCore(world2, game2, player, commitStamp2, weapon2);
     };
   }
 
@@ -1920,6 +1989,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       stampedEnergy: 0,
       out: false,
       debtCarry: 0,
+      tributeReceived: 0,
+      tributePaid: 0,
       received: 0,
       paid: 0,
       eroded: 0,
@@ -1973,6 +2044,82 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return { stampAdditions: stampAdditions2, applyStamp: applyStamp2, commitStamp: commitStamp2 };
   }
 
+  // src/match/combat/direct-death.js
+  var population = Uint8Array.from({ length: 128 }, (_, mask) => {
+    let count = 0;
+    for (; mask; mask &= mask - 1) count++;
+    return count;
+  });
+  function survives(world2, degree, mask) {
+    if (world2.rule !== "callahan") return world2.survival[population[mask]];
+    return (degree === 5 ? world2.callSurv5 : world2.callSurv6)[mask];
+  }
+  function recordCombatDeath(world2, id, victim, claims) {
+    const { adj, deg } = world2.graph, degree = deg[id], before = world2.nextOwners;
+    let rivals = 0, background = 0;
+    for (let k = 0; k < degree; k++) {
+      const owner = before[adj[id * 6 + k]];
+      if (owner === victim || owner === 7) background |= 1 << k;
+      else if (owner) rivals |= 1 << owner;
+    }
+    if (!rivals || !survives(world2, degree, background)) return;
+    let credited = rivals;
+    if (population[rivals] > 1) {
+      const masks = new Uint8Array(7);
+      for (let k = 0; k < degree; k++) {
+        const owner = before[adj[id * 6 + k]];
+        if (rivals & 1 << owner) masks[owner] |= 1 << k;
+      }
+      credited = 0;
+      const lethal = [];
+      for (let group = 1; group <= rivals; group++) {
+        if ((group & rivals) !== group || lethal.some((s) => (s & group) === s)) continue;
+        let mask = background;
+        for (let owner = 1; owner <= 6; owner++) if (group & 1 << owner) mask |= masks[owner];
+        if (!survives(world2, degree, mask)) {
+          lethal.push(group);
+          credited |= group;
+        }
+      }
+    }
+    if (!claims[victim]) claims[victim] = new Float64Array(7);
+    for (let owner = 1; owner <= 6; owner++) {
+      if (credited & 1 << owner) claims[victim][owner] += 1 / population[credited];
+    }
+  }
+
+  // src/match/combat/tribute.js
+  function settleCombatTribute(players, claims, fee) {
+    const receipts = new Float64Array(7);
+    for (const payer of players) {
+      const weights = claims[payer.id];
+      if (!weights) continue;
+      const units = weights.reduce((sum, weight) => sum + weight, 0);
+      const payment = Math.min(payer.reserve, units * fee);
+      payer.reserve -= payment;
+      payer.tributePaid += payment;
+      payer.paid += payment;
+      payer.lastFlow -= payment;
+      let remaining = payment;
+      let unitsLeft = units;
+      for (const receiver of players) {
+        const weight = weights[receiver.id];
+        if (!weight) continue;
+        unitsLeft -= weight;
+        const share = unitsLeft < 1e-9 ? remaining : Math.min(remaining, payment * weight / units);
+        receipts[receiver.id] += share;
+        remaining -= share;
+      }
+    }
+    for (const player of players) {
+      const amount = receipts[player.id];
+      player.reserve += amount;
+      player.tributeReceived += amount;
+      player.received += amount;
+      player.lastFlow += amount;
+    }
+  }
+
   // src/match/biomass.js
   function randomIndex(game2, length) {
     let x = game2.rngState >>> 0;
@@ -1987,12 +2134,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const e = game2.economy || DEFAULT_ECONOMY;
     let ages = world2.cellAges || (world2.cellAges = new Uint8Array(world2.graph.n));
     let ageCapacity = 2 ** (8 * ages.BYTES_PER_ELEMENT) - 1;
+    const claims = e.combatFee > 0 ? [] : null;
     const newborn = new Uint32Array(8), naturalDeaths = new Uint32Array(8);
     for (let i = 0; i < world2.nextActiveCount; i++) {
       const id = world2.nextActive[i], owner = world2.nextOwners[id];
       if (!world2.cells[id]) {
         ages[id] = 0;
-        if (owner >= 1 && owner <= 6) naturalDeaths[owner]++;
+        if (owner >= 1 && owner <= 6) {
+          naturalDeaths[owner]++;
+          if (claims) recordCombatDeath(world2, id, owner, claims);
+        }
       }
     }
     for (let i = 0; i < world2.activeCount; i++) {
@@ -2026,7 +2177,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       p.lastIncome = income;
       p.lastUpkeep = upkeep;
       p.lastFlow = income - upkeep;
-      p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
       p.lastEroded = 0;
       p.reserve = Math.max(0, balance);
       if (balance < -1e-9) {
@@ -2046,6 +2196,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       p.stable = 0;
       for (const id of world2.ownerCells[p.id]) if (ages[id] >= e.stableAfter) p.stable++;
+    }
+    if (claims?.length) settleCombatTribute(game2.players, claims, e.combatFee);
+    for (const p of game2.players) {
+      if (p.out) continue;
+      p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
       if (p.reserve <= 0 && world2.ownerCells[p.id].length === 0) p.out = true;
     }
     const alive = game2.players.filter((p) => !p.out);
@@ -2065,8 +2220,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/match/engine.js
   function createMatchEngine(world2, game2, effects2 = {}, strategies = /* @__PURE__ */ new Map()) {
-    const population = createPopulation(world2, effects2);
-    const stamps = createStampCommands(world2, game2, population.addLive, effects2);
+    const population2 = createPopulation(world2, effects2);
+    const stamps = createStampCommands(world2, game2, population2.addLive, effects2);
     const growthStrategy = createGrowthStrategy(world2, game2, stamps.commitStamp);
     const finish = (alive) => finishIfDecided(game2, alive, effects2);
     function nextTick2() {
@@ -2077,7 +2232,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       effects2.populationChanged?.();
       effects2.redraw?.();
       const naturalField = world2.ownerCells[1].length;
-      gameEconomyTick(world2, game2, population.removeLive, finish);
+      gameEconomyTick(world2, game2, population2.removeLive, finish);
       if (world2.gen === 1) effects2.firstGeneration?.();
       if (human && game2.humanHistory) {
         const after = world2.ownerCells[1].length;
@@ -2096,7 +2251,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       else runBotTurns(world2, game2, growthStrategy, strategies);
     }
     return {
-      ...population,
+      ...population2,
       ...stamps,
       nextTick: nextTick2,
       initRuleTables: () => initRuleTables(world2),
@@ -2178,12 +2333,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var grid = $("hl-grid");
 
   // src/bots/configuration-panel.js
-  var plans2 = [
-    ["farmer", "C5 e C6 · reinvestir cedo"],
-    ["cycler", "C6 · acelerar crescedor"],
-    ["core", "C6 e C12 · núcleos densos"],
-    ["slow", "C12 · poupar para núcleo grande"],
-    ["diverse", "Crescedor e incursões de glider"]
+  var plans = [
+    ["farmer", "Expandir colmeias rentáveis e atacar"],
+    ["cycler", "Incursões com glider P4"],
+    ["core", "Guardar para uma colmeia de reserva"],
+    ["slow", "Poupar para cerco · Gun P42"],
+    ["diverse", "Poupar para cerco · Gun P20"]
   ];
   function bindBotSelectors() {
     const bots = $("br-bots");
@@ -2194,7 +2349,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       label.textContent = game.symbols[id] + " " + game.names[id];
       const select = document.createElement("select");
       select.id = "br-bot-" + id;
-      for (const [value, name] of plans2) {
+      for (const [value, name] of plans) {
         const o = document.createElement("option");
         o.value = value;
         o.textContent = name;
@@ -3813,6 +3968,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return rings;
   }
 
+  // src/deck/field-kit.js
+  var fieldKit = {
+    stalk: { role: "Economia", use: "A ponta estende o núcleo produtor. Proteja o crescimento inicial." },
+    glider: { role: "Incursão", use: "Disparo móvel de 6 células para cortar uma ponta ou atingir um alvo próximo." },
+    p42: { role: "Refletor", use: "A orientação e a fase mudam o destino de um glider que o atinge." },
+    gun42: { role: "Cerco", use: "Um disparo a cada 42 gerações. Reserve energia para os projéteis em voo." },
+    gun20: { role: "Assalto", use: "Um disparo a cada 20 gerações. Use perto de um alvo para sustentar o ataque." }
+  };
+
   // src/deck/card-icon.js
   function drawDeckIcon(canvas, points) {
     const c = canvas.getContext("2d"), w = canvas.width, h = canvas.height;
@@ -3853,24 +4017,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var savedPatterns = /* @__PURE__ */ new Map();
 
   // src/deck/slots.js
-  var SLOT_COUNT = 15;
-  var slotIds = [
-    "p2",
-    "censo-oscillator-5-p2-1",
-    "p4f",
-    "censo-oscillator-6-p2-1",
-    "stalk",
-    "p8f",
-    "glider",
-    "censo-oscillator-7-p2-1",
-    "censo-oscillator-8-p2-1",
-    "p48",
-    "p42rot",
-    "p42",
-    "p14",
-    "gun20",
-    "gun42"
-  ];
+  var slotIds = Object.keys(fieldKit);
+  var SLOT_COUNT = slotIds.length;
   var selectedSlot = 0;
   function selectSlot(index) {
     if (!Number.isInteger(index) || index < 0 || index >= SLOT_COUNT) return false;
@@ -3915,7 +4063,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         b.type = "button";
         b.className = "br-stampcard";
         b.dataset.slot = key2;
-        b.innerHTML = '<canvas width="68" height="38" aria-hidden="true"></canvas><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span><span class="br-slot-edit" title="Trocar padrão deste slot">⋯</span>';
+        b.innerHTML = '<canvas width="68" height="38" aria-hidden="true"></canvas><small class="br-stamprole"></small><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span><span class="br-slot-edit" title="Trocar padrão deste slot">⋯</span>';
         b.onclick = (e) => {
           if (e.target.closest(".br-slot-edit")) {
             e.stopPropagation();
@@ -3934,8 +4082,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const pts = deckPoints(id), name = deckNames[id] || id;
       const price = energyCost(pts.length, game.economy);
       b.querySelector(".br-stampname").textContent = name;
+      b.querySelector(".br-stamprole").textContent = fieldKit[id]?.role || "";
       b.querySelector(".br-stampprice").textContent = price ? "◈" + price : "◈0";
-      b.title = "Slot " + (slot + 1) + " · " + name + " · " + price + " energia. Clique nos três pontos para trocar.";
+      b.title = [name, fieldKit[id]?.use, "Clique nos três pontos para trocar."].filter(Boolean).join(" · ");
       drawDeckIcon(b.querySelector("canvas"), pts);
       b.classList.toggle("selected", slot === selectedSlot && id === currentPatternId2);
       b.setAttribute("aria-pressed", String(slot === selectedSlot && id === currentPatternId2));
@@ -3997,28 +4146,28 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/patterns/editor/grid-coordinates.js
-  function readStampOffsets(cells2, size) {
+  function readStampOffsets(cells3, size) {
     const mid = Math.floor(size / 2);
     const origin = mid - Math.floor(mid / 2);
     const offsets = [];
     for (let row = 0; row < size; row++) {
       for (let col = 0; col < size; col++) {
-        if (cells2[row * size + col]) offsets.push([col - Math.floor(row / 2) - origin, row - mid]);
+        if (cells3[row * size + col]) offsets.push([col - Math.floor(row / 2) - origin, row - mid]);
       }
     }
     return offsets;
   }
   function makeStampGrid(size, offsets = []) {
-    const cells2 = new Uint8Array(size * size);
+    const cells3 = new Uint8Array(size * size);
     const mid = Math.floor(size / 2);
     const origin = mid - Math.floor(mid / 2);
     let clipped = 0;
     for (const [q, r] of offsets) {
       const row = mid + r, col = origin + q + Math.floor(row / 2);
-      if (row >= 0 && row < size && col >= 0 && col < size) cells2[row * size + col] = 1;
+      if (row >= 0 && row < size && col >= 0 && col < size) cells3[row * size + col] = 1;
       else clipped++;
     }
-    return { cells: cells2, clipped };
+    return { cells: cells3, clipped };
   }
 
   // src/patterns/editor/fit-pattern.js
@@ -4059,9 +4208,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function newStamp(n, preserve = true) {
     const previous2 = preserve && world.stamp ? stampOffsets() : [];
-    const { cells: cells2, clipped } = makeStampGrid(n, previous2);
+    const { cells: cells3, clipped } = makeStampGrid(n, previous2);
     world.stampN = n;
-    world.stamp = cells2;
+    world.stamp = cells3;
     world.stampCount = 0;
     if (clipped) toast(`Editor reduzido: ${clipped} células ficaram fora da nova grade.`);
     countStamp();
@@ -4393,14 +4542,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       frameLayout.z = z;
       return frameLayout;
     }
-    const cells2 = [];
+    const cells3 = [];
     for (const row of ranges) {
-      row.start = cells2.length;
-      for (let q = row.first; q <= row.last; q++) cells2.push({ q, r: row.r, key: key(q, row.r) });
+      row.start = cells3.length;
+      for (let q = row.first; q <= row.last; q++) cells3.push({ q, r: row.r, key: key(q, row.r) });
     }
-    const firstRow = ranges[0].r, adj = new Int32Array(cells2.length * 6);
-    for (let i = 0; i < cells2.length; i++) {
-      const { q, r } = cells2[i];
+    const firstRow = ranges[0].r, adj = new Int32Array(cells3.length * 6);
+    for (let i = 0; i < cells3.length; i++) {
+      const { q, r } = cells3[i];
       for (let d = 0; d < 6; d++) {
         const row = ranges[r + DIR[d][1] - firstRow], nq = q + DIR[d][0];
         adj[i * 6 + d] = row && nq >= row.first && nq <= row.last ? row.start + nq - row.first : -1;
@@ -4411,7 +4560,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       w,
       h,
       z,
-      cells: cells2,
+      cells: cells3,
       adj,
       ranges,
       origin: middle.start - middle.first,
@@ -5165,7 +5314,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const interval = unit.toLowerCase();
     const frame2 = kind === "emission" ? "Ciclo nominal do emissor" : kind === "window" ? "Janela de observação" : "Período do padrão";
     $("br-cycle-heading").textContent = (kind === "window" ? "Economia por janela" : "Economia por ciclo") + " · " + pattern.name;
-    $("br-cycle-scope").textContent = frame2 + " de " + fmt(cycleLength) + " gerações · " + fmt(rows2.length) + " " + unit.toLowerCase() + "s · " + fmt(generations) + " gerações simuladas. Estrutura isolada em malha plana, com reserva suficiente para evitar erosão." + (kind === "emission" ? " A conta inclui as naves emitidas." : "");
+    $("br-cycle-scope").textContent = frame2 + " de " + fmt(cycleLength) + " gerações · " + fmt(rows2.length) + " " + unit.toLowerCase() + "s · " + fmt(generations) + " gerações simuladas. Estrutura isolada, sem rivais e sem outras fontes de renda do jogador. O cálculo usa malha plana e reserva suficiente para evitar erosão." + (kind === "emission" ? " A conta inclui as naves emitidas." : "");
     $("br-cycle-stamp").textContent = fmt(initialCost);
     $("br-cycle-capital").textContent = fmt(workingCapital);
     $("br-cycle-positive").textContent = report.firstPositiveCycle === null ? "Nenhum no intervalo" : unit + " " + fmt(report.firstPositiveCycle);
@@ -5216,7 +5365,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/patterns/editor/selection.js
-  var currentPatternId = "p2";
+  var currentPatternId = slotIds[0];
   function loadPattern(id) {
     currentPatternId = id;
     const pat = patterns[world.rule].find((p) => p.id === id);
@@ -5253,7 +5402,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var map = new Map(catalog.map((p) => [p.id, p]));
   var targetSlot = 0;
   var current = null;
-  var cells = /* @__PURE__ */ new Set();
+  var cells2 = /* @__PURE__ */ new Set();
   var previous = /* @__PURE__ */ new Set();
   var generation = 0;
   var timer = null;
@@ -5263,13 +5412,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var fmt2 = (v) => Number(v || 0).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
   var el = (id) => $(id);
   function step(paint = true) {
-    if (cells.size > 2e4) {
+    if (cells2.size > 2e4) {
       stop();
       return;
     }
-    previous = cells;
-    const candidate = new Set(cells);
-    for (const pos of cells) {
+    previous = cells2;
+    const candidate = new Set(cells2);
+    for (const pos of cells2) {
       const [q, r] = coords(pos);
       for (const [dq, dr] of DIR) candidate.add(at(q + dq, r + dr));
     }
@@ -5277,16 +5426,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (const pos of candidate) {
       const [q, r] = coords(pos);
       let bits = 0;
-      for (let k = 0; k < 6; k++) if (cells.has(at(q + DIR[k][0], r + DIR[k][1]))) bits |= 1 << k;
-      if ((cells.has(pos) ? world.callSurv6 : world.callBirth6)[bits]) next.add(pos);
+      for (let k = 0; k < 6; k++) if (cells2.has(at(q + DIR[k][0], r + DIR[k][1]))) bits |= 1 << k;
+      if ((cells2.has(pos) ? world.callSurv6 : world.callBirth6)[bits]) next.add(pos);
     }
-    cells = next;
+    cells2 = next;
     generation++;
     if (paint) draw();
   }
   function reset() {
-    cells = new Set(decodeRLE(current?.rle || "!").map(([q, r]) => at(q, r)));
-    previous = new Set(cells);
+    cells2 = new Set(decodeRLE(current?.rle || "!").map(([q, r]) => at(q, r)));
+    previous = new Set(cells2);
     generation = 0;
     draw();
   }
@@ -5299,8 +5448,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const end = generation + cycleWindow(current).length;
     const run = () => {
       const until = performance.now() + 8;
-      while (generation < end && cells.size <= 2e4 && performance.now() < until) step(false);
-      if (generation === end || cells.size > 2e4) {
+      while (generation < end && cells2.size <= 2e4 && performance.now() < until) step(false);
+      if (generation === end || cells2.size > 2e4) {
         stop();
         draw();
         return;
@@ -5327,7 +5476,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     el("br-atlas-play").textContent = "⏸ Pausar";
     timer = setInterval(() => {
       step();
-      if (cells.size > 2e4 || !cells.size || generation > 1800) stop();
+      if (cells2.size > 2e4 || !cells2.size || generation > 1800) stop();
     }, 170);
   }
   function choose(p) {
@@ -5398,7 +5547,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.fillStyle = "#0b1929";
     c.fillRect(0, 0, w, h);
-    const visible = /* @__PURE__ */ new Set([...cells, ...previous]);
+    const visible = /* @__PURE__ */ new Set([...cells2, ...previous]);
     if (!visible.size) {
       c.fillStyle = "#accbd4";
       c.fillText("Sem células vivas", 20, 24);
@@ -5432,13 +5581,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       c.strokeStyle = stroke || "#2b5765";
       c.stroke();
     };
-    for (const pos of previous) if (!cells.has(pos)) hex(pos, null, "#e57869", void 0);
-    for (const pos of cells) hex(pos, null, previous.has(pos) ? "#9bdc83" : "#63e2c7");
-    const born = [...cells].filter((p) => !previous.has(p)).length;
-    const deaths = [...previous].filter((p) => !cells.has(p)).length;
+    for (const pos of previous) if (!cells2.has(pos)) hex(pos, null, "#e57869", void 0);
+    for (const pos of cells2) hex(pos, null, previous.has(pos) ? "#9bdc83" : "#63e2c7");
+    const born = [...cells2].filter((p) => !previous.has(p)).length;
+    const deaths = [...previous].filter((p) => !cells2.has(p)).length;
     c.font = "12px system-ui";
     c.fillStyle = "#9db9ca";
-    c.fillText("Vivas " + cells.size + "   +" + born + " nascimentos   −" + deaths + " mortes", 12, 18);
+    c.fillText("Vivas " + cells2.size + "   +" + born + " nascimentos   −" + deaths + " mortes", 12, 18);
     el("br-atlas-gen").textContent = "Geração " + generation;
   }
   function openAtlasBrowser(slot = 0) {
@@ -5494,7 +5643,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/match/controls/pregame.js
   function syncPregameControls() {
-    const changing = world.gen > 0;
+    const changing = world.matchStarted || world.gen > 0;
     syncDeckConfig();
     $("hl-frequency").disabled = changing;
     $("hl-rebuild").disabled = changing;
@@ -5523,6 +5672,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       active = slider;
       $("eco-limit-name").textContent = slider.labels[0].firstChild.textContent.trim();
       field.min = slider.value;
+      field.step = slider.step;
       field.max = String(Number.MAX_SAFE_INTEGER);
       field.value = slider.max;
       field.setCustomValidity("");
@@ -5552,8 +5702,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     $("eco-limit-form").addEventListener("submit", (event) => {
       event.preventDefault();
       const maximum = field.valueAsNumber;
-      if (!Number.isSafeInteger(maximum) || maximum < Number(active.value)) {
-        field.setCustomValidity("Digite um inteiro entre " + active.value + " e " + Number.MAX_SAFE_INTEGER.toLocaleString("pt-BR") + ".");
+      if (!Number.isFinite(maximum) || maximum > Number.MAX_SAFE_INTEGER || !field.validity.valid || maximum < Number(active.value)) {
+        field.setCustomValidity("Digite um máximo válido entre " + active.value + " e " + Number.MAX_SAFE_INTEGER.toLocaleString("pt-BR") + ".");
         field.reportValidity();
         return;
       }
@@ -5564,11 +5714,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/match/hud/energy-panel.js
-  var compact = (n) => Number(n || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+  var compact = (n) => Number(n || 0).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
   var signed2 = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + compact(Math.abs(n));
-  var controls = { stableEnergy: "eco-stable-energy", birthCost: "eco-birth-cost", stampCost: "eco-stamp", stableAfter: "eco-age", initialCells: "eco-initial" };
+  var controls = { combatFee: "eco-combat-fee", stableEnergy: "eco-stable-energy", productionScale: "eco-scale", birthCost: "eco-birth-cost", stampCost: "eco-stamp", stableAfter: "eco-age", initialCells: "eco-initial" };
   function beforeMatch() {
-    return world.gen === 0 && game.players.every((p) => p.stamps === 0);
+    return !world.matchStarted && world.gen === 0 && game.players.every((p) => p.stamps === 0);
   }
   function bindEnergyPanel() {
     bindSliderLimits(Object.values(controls).map((id) => $(id)));
@@ -5577,9 +5727,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       slider.value = String(game.economy[key2]);
       slider.addEventListener("input", () => {
         if (key2 === "initialCells" && !beforeMatch()) return;
-        const value = parameterValue(slider.value, Number(slider.max));
+        const value = parameterValue(slider.value, Number(slider.max), Number(slider.step));
         game.economy[key2] = value;
-        $(id + "-val").textContent = String(value);
+        $(id + "-val").textContent = compact(value);
         if (beforeMatch() && (key2 === "initialCells" || key2 === "stampCost")) {
           game.init = initialEnergy(game.economy);
           for (const player of game.players) player.reserve = game.init;
@@ -5595,7 +5745,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (const [key2, id] of Object.entries(controls)) {
       const slider = $(id);
       if (slider.value !== String(game.economy[key2])) slider.value = String(game.economy[key2]);
-      $(id + "-val").textContent = String(game.economy[key2]);
+      $(id + "-val").textContent = compact(game.economy[key2]);
     }
     $("eco-initial").disabled = !beforeMatch();
     const e = game.economy;
@@ -5614,7 +5764,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       "eco-income": signed2(human.lastIncome),
       "eco-income-total": compact(human.received),
       "eco-maintenance": "−" + compact(human.lastUpkeep),
-      "eco-maintenance-total": compact(human.paid),
+      "eco-maintenance-total": compact(human.paid - human.tributePaid),
+      "eco-tribute-in": compact(human.tributeReceived),
+      "eco-tribute-out": compact(human.tributePaid),
       "eco-stamped-total": compact(human.stampedEnergy),
       "eco-flow": signed2(human.lastFlow),
       "eco-rate": signed2((human.flowAverage || 0) * (world.actual || world.speed)) + "/s",
@@ -5839,8 +5991,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const result = game.winner === 1 ? "Você venceu" : game.winner ? game.names[game.winner] + " venceu" : "Empate";
     const title = game.ended ? result : "⬡ HEXOPHAGE";
     if (heading.textContent !== title) heading.textContent = title;
-    button.textContent = game.ended ? "Nova partida" : world.playing ? "❚❚ Pausar" : "▶ Iniciar";
-    button.title = game.ended ? "Voltar à preparação com os ajustes atuais" : "";
+    const started = world.matchStarted || world.gen > 0;
+    const label = game.ended ? "Nova partida" : world.playing ? "Pausar" : started ? "Retomar" : "Iniciar";
+    button.firstElementChild.textContent = game.ended ? "↻" : world.playing ? "❚❚" : "▶";
+    button.lastElementChild.textContent = label;
+    button.setAttribute("aria-label", label);
+    $("hl-clear").hidden = !started || game.ended;
+    button.title = game.ended ? "Voltar à preparação com os ajustes atuais" : label;
     button.classList.toggle("primary", !world.playing);
   }
   function setPlay(on) {
@@ -6406,9 +6563,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     game.initializing = true;
     game.symbols[1] = ($("br-myemoji").value.trim() || "🦖").slice(0, 12);
     clearCells();
+    world.actual = 0;
+    world.statCount = 0;
     game.rngState = 1831565813;
     world.rule = "callahan";
     $("hl-rulechoice").value = "callahan";
+    world.matchStarted = false;
     game.winner = 0;
     game.ended = false;
     syncPlayButton();
@@ -6477,13 +6637,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     };
   }
 
+  // src/match/controls/opening.js
+  function prepareOpening() {
+    const player = game.players[0];
+    if (player?.stamps) return true;
+    if (player && plantFounder(world, game, player, commitStamp)) return true;
+    toast("Para começar, financie o crescedor de 36 células ou carimbe sua abertura no mapa.");
+    return false;
+  }
+
   // src/match/controls/turns.js
+  function beginMatch() {
+    if (world.matchStarted) return true;
+    if (world.gen === 0 && !prepareOpening()) return false;
+    world.matchStarted = true;
+    updateGamePanel(true);
+    return true;
+  }
   function bindTurnControls() {
     $("hl-play").onclick = () => {
       if (game.ended) resetGame();
-      else setPlay(!world.playing);
+      else if (beginMatch()) setPlay(!world.playing);
     };
     $("hl-step").onclick = () => {
+      if (!beginMatch()) return;
       setPlay(false);
       nextTick();
       updateStats();
@@ -6899,7 +7076,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   bindEnergyPanel();
   bindPlayerFollow();
   $("hl-pattern").addEventListener("change", refreshTabs);
-  loadPattern("p2");
+  loadPattern(slotIds[0]);
   resetGame();
   refreshTabs();
   requestAnimationFrame(frame);

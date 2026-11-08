@@ -60,11 +60,10 @@ test('each live bot uses its own strategy in player order on the configured turn
 test('investment quotes reprice seed, warm-up and sustained flow after live slider changes', async () => {
   const { DEFAULT_ECONOMY } = await import('../match/constructive-economy.js');
   const { createInvestmentQuotes } = await import('./investments.js');
-  const economy = { ...DEFAULT_ECONOMY };
+  const economy = { ...DEFAULT_ECONOMY, stableEnergy: 3, stableAfter: 16, stampCost: 30, productionScale: 0 };
   const quote = createInvestmentQuotes(economy);
   assert.deepEqual(quote('p2'), { id: 'p2', budget: 118, yield: 1 });
   assert.equal(quote('censo-oscillator-6-p2-1').budget, 222);
-  assert.equal(quote('stalk').budget, 1166);
   economy.birthCost = 2;
   assert.equal(quote('p2').yield, -1);
   economy.stableAfter = 2;
@@ -72,7 +71,8 @@ test('investment quotes reprice seed, warm-up and sustained flow after live slid
   assert.equal(quote('p2').budget, 90);
   economy.stableAfter = 1024;
   assert.deepEqual(quote('p2'), { id: 'p2', budget: 90 + 2 * 1022, yield: 1 });
-  assert(quote('stalk').yield > 0 && quote('stalk').budget > 1166);
+  economy.productionScale = 1;
+  assert(quote('p2').yield < 0);
 });
 
 test('a legal glider raid reaches a mature C6 and cuts its real income', async () => {
@@ -83,7 +83,7 @@ test('a legal glider raid reaches a mature C6 and cuts its real income', async (
   const idle = new Map([2,3,4,5,6].map(id => [id, () => {}]));
   const core = patterns.callahan.find(p => p.id === 'censo-oscillator-6-p2-1');
   const outcome = raiding => {
-    const match = createHeadlessMatch(graph, { init: 1e6, strategies: idle });
+    const match = createHeadlessMatch(graph, { init: 1e6, economy: { stableAfter: 16 }, strategies: idle });
     const { game, world, commitStamp, nextTick, patchForStamp } = match;
     assert(commitStamp(2, patchForStamp(graph.farthest, 0, decodeRLE(core.rle)), false));
     for (let t = 0; t < 32; t++) nextTick();
@@ -96,4 +96,11 @@ test('a legal glider raid reaches a mature C6 and cuts its real income', async (
   };
   assert.equal(outcome(false), 6);
   assert.equal(outcome(true), 0);
+});
+
+test('a saturated mature colony cannot finance another moving front by duplicating its field', async () => {
+  const { growthMargin } = await import('./growth-strategy.js');
+  const { DEFAULT_ECONOMY } = await import('../match/constructive-economy.js');
+  assert(growthMargin(DEFAULT_ECONOMY, 5600, 1) < 0);
+  assert(growthMargin({...DEFAULT_ECONOMY, productionScale: 0}, 5600, 1) > 0);
 });

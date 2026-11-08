@@ -61,7 +61,7 @@ function render(report, economy, pattern) {
   $('br-cycle-heading').textContent = (kind === 'window' ? 'Economia por janela' : 'Economia por ciclo') + ' · ' + pattern.name;
   $('br-cycle-scope').textContent = frame + ' de ' + fmt(cycleLength) + ' gerações · ' +
     fmt(rows.length) + ' ' + unit.toLowerCase() + 's · ' + fmt(generations) + ' gerações simuladas. ' +
-    'Estrutura isolada em malha plana, com reserva suficiente para evitar erosão.' +
+    'Estrutura isolada, sem rivais e sem outras fontes de renda do jogador. O cálculo usa malha plana e reserva suficiente para evitar erosão.' +
     (kind === 'emission' ? ' A conta inclui as naves emitidas.' : '');
   $('br-cycle-stamp').textContent = fmt(initialCost);
   $('br-cycle-capital').textContent = fmt(workingCapital);

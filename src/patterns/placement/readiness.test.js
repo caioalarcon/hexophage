@@ -12,6 +12,7 @@ const { stampReady, updateStampReadiness } = await import('./readiness.js');
 
 test('selected-stamp affordability controls both actions and displays the missing biomass', () => {
   world.stampCount = 3;
+  game.economy.stampCost = 30;
   game.players = [{ reserve: 2, out: false }];
   game.ended = false;
   updateStampReadiness();
@@ -31,6 +32,7 @@ test('selected-stamp affordability controls both actions and displays the missin
 
 test('message precedence distinguishes an empty stamp, an eliminated player and an ended match', () => {
   world.stampCount = 3;
+  game.economy.stampCost = 30;
   game.players = [{ reserve: 10, out: true }];
   game.ended = false;
   updateStampReadiness();

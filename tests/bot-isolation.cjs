@@ -1,33 +1,54 @@
-// Exercise the default production policies in the same spherical engine as the browser.
+// Exercise the actual opening and the purchases of developed rivals using the spherical engine.
 const assert = require('node:assert/strict');
 
 (async () => {
   const { createHeadlessMatch } = await import('../src/match/headless.js');
+  const { plantFounder } = await import('../src/match/founding.js');
   const { buildSphere } = await import('../src/world/sphere.js');
-  const { world, game, nextTick } = createHeadlessMatch(buildSphere(64));
-  const bots = game.players.slice(1);
-  const orders = bots.map(() => []);
-  for (let t = 1; t <= 560; t++) {
-    const previous = bots.map(p => p.stampedEnergy);
-    nextTick();
-    bots.forEach((p, index) => {
-      const cost = p.stampedEnergy - previous[index];
-      if (cost) orders[index].push({ t, cost });
-    });
+  const graph = buildSphere(64);
+  const standard = createHeadlessMatch(graph);
+  assert(plantFounder(standard.world, standard.game, standard.game.players[0], standard.commitStamp));
+  standard.nextTick();
+  const price = standard.game.economy.stampCost;
+  for (const p of standard.game.players.slice(1)) {
+    assert.equal(p.stamps, 1);
+    assert.equal(p.stampedEnergy, 36 * price);
+    assert.equal(p.reserve, standard.game.init - 36 * price);
+    assert.equal(standard.world.ownerCells[p.id].length, 36);
   }
-  const price = game.economy.stampCost;
-  orders.forEach((history, index) => {
-    const bot = bots[index];
-    assert.deepEqual(history[0], { t: 1, cost: 3 * price });
-    assert(history[1].t > 100, 'save the Flipper surplus for a productive core');
-    assert([5, 6, 12].includes(history[1].cost / price), 'buy a bridge farm');
-    assert(history.some(o => o.cost === 36 * price), bot.name + ' bought a grower');
-    assert(bot.eroded === 0 && bot.reserve >= 0, 'budget for maturation');
-    assert(world.ownerCells[bot.id].length > 36 && bot.lastFlow > 1, 'field produces');
-  });
-  const raider = bots.length - 1;
-  const firstGrower = orders[raider].find(o => o.cost === 36 * price).t;
-  assert(orders[raider].some(o => o.t > firstGrower && o.cost === 6 * price), 'fund a raid');
-  console.log('PASS: all five bots funded a Flipper, bridge and grower; first growers at ' +
-    orders.map(h => h.find(o => o.cost === 36 * price).t).join(', '));
-})().catch(error => { console.error(error); process.exitCode = 1; });
+  for (let i = 1; i < 1000; i++) standard.nextTick();
+  for (const p of standard.game.players.slice(1)) {
+    assert.equal(p.stamps, 1, 'keep working capital while the trail matures');
+    assert.equal(p.eroded, 0);
+  }
+
+  // Finance the seeds sooner than the normal savings horizon, keeping actual
+  // map placement, operating costs, erosion and policy decisions intact.
+  function fundedOrders(economy) {
+    const funded = createHeadlessMatch(graph, {init: 150 * price, economy});
+    assert(plantFounder(funded.world, funded.game, funded.game.players[0], funded.commitStamp));
+    const bots = funded.game.players.slice(1), orders = bots.map(() => []);
+    for (let t = 1; t <= 1200; t++) {
+      const before = bots.map(p => p.stampedEnergy);
+      funded.nextTick();
+      bots.forEach((p,i) => {
+        const spent = p.stampedEnergy - before[i];
+        if (spent) orders[i].push(spent/price);
+      });
+    }
+    assert(orders.every(history => history[0] === 36));
+    assert(bots.every(p => p.eroded === 0 && p.reserve >= 0));
+    return orders;
+  }
+  const poor = fundedOrders();
+  for (const history of poor.slice(3)) {
+    assert(history.includes(6), 'a rich treasury with weak income funds sorties');
+    assert(!history.includes(64) && !history.includes(52), 'avoid an unsupported battery');
+  }
+  const rich = fundedOrders({stableEnergy: .4});
+  assert(rich[0].includes(36, 1), 'expand when another front can sustain itself');
+  assert(rich[1].includes(6), 'targeted P4 raid');
+  assert(rich[3].includes(64), 'supported P42 battery');
+  assert(rich[4].includes(52), 'supported P20 battery');
+  console.log('PASS: all five bots opened with funded growers; distinct plans financed P4 raids and P42/P20 batteries');
+})().catch(error => { console.error(error); process.exitCode=1; });

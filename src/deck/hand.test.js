@@ -15,9 +15,9 @@ const {game}=await import('../browser/game.js');
 const {deckPoints}=await import('./cards.js');
 const {slotIds}=await import('./slots.js');
 const {updateDeckAvailability}=await import('./hand.js');
-test('slot zero is 3-cell flipper; all fifteen slots have real patterns',()=>{
-  assert.equal(slotIds.length,15);
-  assert.equal(slotIds[0],'p2');
+test('the opening kit pairs the grower with four combat tools',()=>{
+  assert.deepEqual(slotIds,['stalk','glider','p42','gun42','gun20']);
+  assert.equal(deckPoints(slotIds[0]).length,36);
   assert.equal(deckPoints('p2').length,3);
   for(const id of slotIds)assert(deckPoints(id).length>0,id);
 });

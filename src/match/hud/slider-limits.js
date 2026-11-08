@@ -9,6 +9,7 @@ export function bindSliderLimits(sliders) {
     active = slider;
     $('eco-limit-name').textContent = slider.labels[0].firstChild.textContent.trim();
     field.min = slider.value;
+    field.step = slider.step;
     field.max = String(Number.MAX_SAFE_INTEGER);
     field.value = slider.max;
     field.setCustomValidity('');
@@ -40,8 +41,8 @@ export function bindSliderLimits(sliders) {
   $('eco-limit-form').addEventListener('submit', event => {
     event.preventDefault();
     const maximum = field.valueAsNumber;
-    if (!Number.isSafeInteger(maximum) || maximum < Number(active.value)) {
-      field.setCustomValidity('Digite um inteiro entre ' + active.value + ' e ' +
+    if (!Number.isFinite(maximum) || maximum > Number.MAX_SAFE_INTEGER || !field.validity.valid || maximum < Number(active.value)) {
+      field.setCustomValidity('Digite um máximo válido entre ' + active.value + ' e ' +
         Number.MAX_SAFE_INTEGER.toLocaleString('pt-BR') + '.');
       field.reportValidity();
       return;

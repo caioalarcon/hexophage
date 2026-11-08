@@ -7,6 +7,8 @@
  #hexlab .br-rail-controls{margin-left:auto;flex:0 0 auto}
  #hexlab .br-rail-controls .hl-controls{flex-wrap:nowrap!important;gap:4px}
  #hexlab .br-rail-controls #hl-play{flex:0 0 auto;min-height:31px;font-size:11px;padding:4px 7px}
+ #hexlab .br-rail-controls #hl-clear{min-height:31px;padding:4px 8px}
+ #hexlab .br-rail-controls #hl-clear span{display:none}
  #hexlab .br-rail-controls #br-tuning-toggle,#hexlab .br-rail-controls #br-panel-toggle{min-height:30px;padding:4px 7px;font-size:11px}
  #hexlab .br-rail-controls .br-live-tuning{display:none}
  #hexlab .br-rail-ranking{position:absolute;top:56px;left:8px;z-index:5;max-width:min(62%,250px);width:auto;padding:3px 6px;box-shadow:0 2px 14px #0008}

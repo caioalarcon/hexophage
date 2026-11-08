@@ -31,6 +31,8 @@ export function resetPlayers(world, game) {
     stampedEnergy: 0,
     out: false,
     debtCarry: 0,
+    tributeReceived: 0,
+    tributePaid: 0,
     received: 0,
     paid: 0,
     eroded: 0,
