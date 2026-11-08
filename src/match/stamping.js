@@ -1,4 +1,5 @@
 import { rememberHumanPeak } from './field-history.js';
+import { energyCost } from './constructive-economy.js';
 
 export function createStampCommands(world, game, addLive, effects) {
   // The same placement check drives the in-world ghost and the final click/drop.
@@ -9,7 +10,7 @@ export function createStampCommands(world, game, addLive, effects) {
       !player ||
       player.out ||
       game.ended ||
-      player.reserve < ids.length ||
+      player.reserve + 1e-9 < energyCost(ids.length, game.economy) ||
       new Set(ids).size !== ids.length
     )
       return null;
@@ -30,7 +31,8 @@ export function createStampCommands(world, game, addLive, effects) {
   }
   function applyStamp(player, fresh, notify) {
     for (const id of fresh) addLive(id, player.id);
-    player.reserve -= fresh.length;
+    player.reserve -= energyCost(fresh.length, game.economy);
+    for (const id of fresh) if (world.cellAges) world.cellAges[id] = 1;
     player.stamps++;
     if (player.id === 1 && game.humanHistory) {
       game.humanHistory.placed += fresh.length;

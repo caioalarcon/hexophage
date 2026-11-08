@@ -7,10 +7,10 @@ import { createFootprintLookup } from './oscillator-footprint.js';
 
 export function createOscillatorStrategy(world, game, commitStamp) {
   const { botProtectedOffsets } = createFootprintLookup(world);
-  return function plantOscillator(player) {
-    const pat = patterns.callahan.find((x) => x.id === player.pattern);
+  return function plantOscillator(player, chosenId = player.pattern) {
+    const pat = patterns.callahan.find((x) => x.id === chosenId);
     if (!pat) return;
-    const offsets = player.cachedOffsets || (player.cachedOffsets = decodeRLE(pat.rle));
+    const offsets = decodeRLE(pat.rle);
     const protectedOffsets = botProtectedOffsets(pat);
     const plan = game.botPlans[player.id - 1];
     if (!plan || player.reserve < offsets.length) return;
