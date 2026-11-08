@@ -30,7 +30,9 @@ export function createStampCommands(world, game, addLive, effects) {
   }
   function applyStamp(player, fresh, notify) {
     for (const id of fresh) addLive(id, player.id);
-    player.reserve -= energyCost(fresh.length, game.economy);
+    const cost = energyCost(fresh.length, game.economy);
+    player.reserve -= cost;
+    player.stampedEnergy = (player.stampedEnergy || 0) + cost;
     for (const id of fresh) if (world.cellAges) world.cellAges[id] = 1;
     player.stamps++;
     if (player.id === 1 && game.humanHistory) {

@@ -44,3 +44,8 @@
  #hexlab .br-globe-top b{font-size:12px}
  #hexlab .br-globe-zoom{right:10px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 }
+
+/* Keep the mini-mundo 3D docked while the detailed energy metrics scroll in the free rail space. */
+#hexlab .br-rail .br-energy-panel{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#hexlab .br-rail .br-rail-spacer{display:none}
+@media (orientation:portrait){#hexlab .br-rail .br-energy-panel{display:none}}

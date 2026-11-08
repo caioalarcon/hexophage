@@ -28,6 +28,7 @@ export function resetPlayers(world, game) {
     lastEroded: 0,
     flowAverage: 0,
     stamps: 0,
+    stampedEnergy: 0,
     out: false,
     debtCarry: 0,
     received: 0,
