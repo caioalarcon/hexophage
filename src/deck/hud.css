@@ -81,3 +81,8 @@
  #hexlab .br-knob label[for="br-tax-slider"]{font-size:0;white-space:nowrap}
  #hexlab .br-knob label[for="br-tax-slider"]::after{content:'Taxa ‰';font-size:10px}
 }
+
+/* Fifteen independently configurable deck slots. */
+#hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}
+#hexlab .br-stampcard:focus-visible{outline:2px solid #8beecd;outline-offset:1px}
+#hexlab #br-open-atlas{margin:7px 0 0;width:100%;font-size:11px}

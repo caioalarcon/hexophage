@@ -1,3 +1,5 @@
+import { atlasPatterns } from './atlas-data.js';
+
 export const patterns = {
   bays: [
     {
@@ -9,17 +11,12 @@ export const patterns = {
     { id: 'osc2', name: 'Oscilador · P2', rle: '2o!', info: 'Oscilador simples, período 2.' },
   ],
   callahan: [
+    ...atlasPatterns,
     {
       id: 'gun',
       name: 'Glider gun · P42',
       rle: '17b2o$2bo15b2obo$b2obo13bob2o$2ob3o13b2ob2o$2bobobo13bobo$2b2ob4o3b2o6bob2o$2bob2obo5b3o4b3obo$13bobo6bo$12b4o$12bo3bo$13b5o$15bo$15bo!',
       info: 'Paul Callahan. 64 células; gera um glider a cada 42 gerações.',
-    },
-    {
-      id: 'glider',
-      name: 'Glider · P4',
-      rle: '2bob$3bo$o2bo$3bo$3bo!',
-      info: 'Glider de Paul Callahan; período 4.',
     },
     {
       id: 'osc42',

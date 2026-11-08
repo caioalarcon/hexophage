@@ -24,7 +24,7 @@ export function createMatchState() {
     ],
     symbols: ['', '🦖', '🦊', '🐙', '🦂', '👾', '🤖', '⚪'],
     names: ['', 'Você', 'Raposa', 'Polvo', 'Escorpião', 'Alien', 'Robô'],
-    bots: ['p2', 'p4f', 'censo-oscillator-5-p2-1', 'p8f', 'p2'],
+    bots: ['farmer', 'cycler', 'core', 'slow', 'diverse'],
     players: [],
     economy: { ...DEFAULT_ECONOMY },
     init: initialEnergy(DEFAULT_ECONOMY),
