@@ -10,7 +10,6 @@ export function createStampCommands(world, game, addLive, effects) {
       !player ||
       player.out ||
       game.ended ||
-      player.reserve + 1e-9 < energyCost(ids.length, game.economy) ||
       new Set(ids).size !== ids.length
     )
       return null;
@@ -27,7 +26,7 @@ export function createStampCommands(world, game, addLive, effects) {
       }
       fresh.push(id);
     }
-    return fresh.length ? fresh : null;
+    return fresh.length && player.reserve + 1e-9 >= energyCost(fresh.length, game.economy) ? fresh : null;
   }
   function applyStamp(player, fresh, notify) {
     for (const id of fresh) addLive(id, player.id);

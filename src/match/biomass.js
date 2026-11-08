@@ -66,7 +66,8 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
         }
       }
     }
-    p.stable = stable - Math.min(stable, p.lastEroded);
+    p.stable = 0;
+    for (const id of world.ownerCells[p.id]) if (ages[id] >= e.stableAfter) p.stable++;
     if (p.reserve <= 0 && world.ownerCells[p.id].length === 0) p.out = true;
   }
   const alive = game.players.filter(p => !p.out);

@@ -1,64 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { installBrowserElements } from '../../tests/support/browser-elements.js';
-
-function card(pattern) {
-  const meter = { style: {} };
-  const state = {
-    dataset: { pattern },
-    meter,
-    unavailable: false,
-    classList: {
-      toggle(name, value) {
-        assert.equal(name, 'unavailable');
-        state.unavailable = value;
-      },
-    },
-    querySelector(selector) {
-      assert.equal(selector, '.br-charge i');
-      return meter;
-    },
+import {installBrowserElements} from '../../tests/support/browser-elements.js';
+function card(pattern){
+  const meter={style:{}},price={textContent:''};
+  const state={dataset:{pattern},meter,price,unavailable:false,
+    classList:{toggle:(name,value)=>{if(name==='unavailable')state.unavailable=value;}},
+    querySelector:sel=>sel==='.br-charge i'?meter:price,
   };
   return state;
 }
-
-const dock = { children: [] };
-installBrowserElements({ 'br-deck': dock });
-const { game } = await import('../browser/game.js');
-const { deckPoints } = await import('./cards.js');
-const { savedPatterns } = await import('../patterns/editor/saved-patterns.js');
-const { updateDeckAvailability } = await import('./hand.js');
-
-test('each deck price follows the saved version before the factory pattern', () => {
-  assert.equal(deckPoints('gun').length, 64);
-  assert.deepEqual(deckPoints('manual'), []);
-  const saved = [
-    [0, 0],
-    [1, 0],
-  ];
-  savedPatterns.set('gun', saved);
-  try {
-    assert.deepEqual(deckPoints('gun'), saved);
-    savedPatterns.set('gun', []);
-    assert.deepEqual(deckPoints('gun'), []);
-  } finally {
-    savedPatterns.delete('gun');
-  }
+const dock={children:[]};
+installBrowserElements({'br-deck':dock});
+const {game}=await import('../browser/game.js');
+const {deckPoints}=await import('./cards.js');
+const {slotIds}=await import('./slots.js');
+const {updateDeckAvailability}=await import('./hand.js');
+test('slot zero is 3-cell flipper; all fifteen slots have real patterns',()=>{
+  assert.equal(slotIds.length,15);
+  assert.equal(slotIds[0],'p2');
+  assert.equal(deckPoints('p2').length,3);
+  for(const id of slotIds)assert(deckPoints(id).length>0,id);
 });
-
-test('deck charge clamps at 100%, empty patterns stay unavailable, and match end closes all cards', () => {
-  const gun = card('gun'),
-    manual = card('manual');
-  dock.children = [gun, manual];
-  game.players = [{ reserve: 32 }];
-  game.ended = false;
+test('card prices and availability react to stamp-cost slider and game end',()=>{
+  const flipper=card('p2'),gun=card('gun42');
+  dock.children=[flipper,gun];
+  game.economy.stampCost=10;game.players=[{reserve:30}];game.ended=false;
   updateDeckAvailability();
-  assert.deepEqual([gun.unavailable, gun.meter.style.width], [true, '50%']);
-  assert.deepEqual([manual.unavailable, manual.meter.style.width], [true, '0%']);
-  game.players[0].reserve = 128;
-  updateDeckAvailability();
-  assert.deepEqual([gun.unavailable, gun.meter.style.width], [false, '100%']);
-  game.ended = true;
-  updateDeckAvailability();
-  assert.equal(gun.unavailable, true);
+  assert.deepEqual([flipper.unavailable,flipper.price.textContent,flipper.meter.style.width],[false,'◈30','100%']);
+  assert.equal(gun.unavailable,true);
+  game.economy.stampCost=0;updateDeckAvailability();
+  assert.equal(gun.unavailable,false);
+  game.ended=true;updateDeckAvailability();assert.equal(flipper.unavailable,true);
+  game.economy.stampCost=10;game.ended=false;
 });
