@@ -18,7 +18,7 @@ const assert = require('node:assert/strict');
   }
   for (let i = 1; i < 1000; i++) standard.nextTick();
   for (const p of standard.game.players.slice(1)) {
-    assert.equal(p.stamps, 1, 'keep working capital while the trail matures');
+    assert(p.stamps >= 1, 'the bot can invest once the mature trail can afford it');
     assert.equal(p.eroded, 0);
   }
 

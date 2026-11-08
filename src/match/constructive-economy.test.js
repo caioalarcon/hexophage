@@ -17,14 +17,23 @@ function plantFlipper(m){
   assert(m.commitStamp(1,ids));
   return p;
 }
-test('the opening pays for one grower and keeps working capital',()=>{
+test('the opening can fund two growers or a grower plus a combat reserve',()=>{
   const m=fresh(), p=m.game.players[0];
-  assert.equal(initialEnergy(m.game.economy),370000);
-  assert.equal(availableCells(p.reserve,m.game.economy),37);
+  assert.equal(initialEnergy(m.game.economy),820000);
+  assert.equal(availableCells(p.reserve,m.game.economy),82);
   assert(plantFounder(m.world,m.game,p,m.commitStamp));
   assert.equal(m.world.ownerCells[1].length,36);
-  assert.equal(p.reserve,10000);
-  assert(!plantFounder(m.world,m.game,p,m.commitStamp));
+  assert.equal(p.reserve,460000);
+  assert(!plantFounder(m.world,m.game,p,m.commitStamp),'opening helper plants at most one automatically');
+  const grower=patterns.callahan.find(x=>x.id==='stalk');
+  let second=null;
+  for(let id=0;id<m.world.graph.n&&!second;id++) {
+    if(m.world.graph.deg[id]!==6||m.world.graph.distance[id]<20)continue;
+    second=m.patchForStamp(id,0,decodeRLE(grower.rle),true);
+  }
+  assert(second?.length===36);
+  assert(m.commitStamp(1,second),'the player can stamp another grower');
+  assert.equal(p.reserve,100000);
   assert.equal(availableCells(0,{stampCost:0}),Infinity);
 });
 test('slider steps support fractional energy and independent maxima',()=>{
@@ -34,9 +43,9 @@ test('slider steps support fractional energy and independent maxima',()=>{
 });
 test('colony production reaches half at scale, and a large colony has diminishing returns',()=>{
   const e=DEFAULT_ECONOMY, f=s=>generationEnergy(0,s,e).income;
-  assert.equal(f(0),0); assert.equal(f(1500),15);
-  assert(f(18000)<30);
-  assert(f(11468)-f(5734)<14/3, 'a second equivalent mature trunk costs more to operate than its additional income');
+  assert.equal(f(0),0); assert.equal(f(8000),80);
+  assert(f(180000)<160);
+  assert(f(240000)-f(120000)<14/3, 'a second equivalent mature trunk costs more to operate than its additional income');
   assert.equal(generationEnergy(5,0,e).upkeep,5);
 });
 test('the minimum flipper stays a net consumer after its core matures',()=>{

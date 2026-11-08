@@ -101,6 +101,6 @@ test('a legal glider raid reaches a mature C6 and cuts its real income', async (
 test('a saturated mature colony cannot finance another moving front by duplicating its field', async () => {
   const { growthMargin } = await import('./growth-strategy.js');
   const { DEFAULT_ECONOMY } = await import('../match/constructive-economy.js');
-  assert(growthMargin(DEFAULT_ECONOMY, 5600, 1) < 0);
-  assert(growthMargin({...DEFAULT_ECONOMY, productionScale: 0}, 5600, 1) > 0);
+  assert(growthMargin(DEFAULT_ECONOMY, 120000, 1) < 0);
+  assert(growthMargin({...DEFAULT_ECONOMY, productionScale: 0}, 120000, 1) > 0);
 });

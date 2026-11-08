@@ -48,3 +48,5 @@
 @media (orientation:portrait) {
  #hexlab.br-economy-open .br-rail .br-energy-panel {top:clamp(8px,6vh,48px);right:8px}
 }
+
+#hexlab.br-economy-open .br-rail{z-index:65!important;overflow:visible}

@@ -15,8 +15,9 @@ const {game}=await import('../browser/game.js');
 const {deckPoints}=await import('./cards.js');
 const {slotIds}=await import('./slots.js');
 const {updateDeckAvailability}=await import('./hand.js');
-test('the opening kit pairs the grower with four combat tools',()=>{
-  assert.deepEqual(slotIds,['stalk','glider','p42','gun42','gun20']);
+test('fifteen unrestricted atlas slots restore the experimental kit',()=>{
+  assert.equal(slotIds.length,15);
+  assert.deepEqual(slotIds.slice(0,5),['stalk','glider','gun20','gun42','p42']);
   assert.equal(deckPoints(slotIds[0]).length,36);
   assert.equal(deckPoints('p2').length,3);
   for(const id of slotIds)assert(deckPoints(id).length>0,id);
