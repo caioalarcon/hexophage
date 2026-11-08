@@ -14,6 +14,18 @@ const {chromium}=require('playwright');
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto(pathToFileURL(path.resolve(__dirname,'..','index.html')).href);
     await page.waitForFunction(()=>window.__sphereLab?.world?.graph && window.__sphereLab.game.players.length===6,{timeout:90000});
+    // The advanced-slider popover is dismissed by outside clicks, but not by
+    // interactions inside it or by an initial press on its own toggle.
+    const tuningToggle=page.locator('#br-tuning-toggle');
+    await tuningToggle.click();
+    assert.equal(await tuningToggle.getAttribute('aria-expanded'),'true');
+    await page.locator('#br-advanced-tuning').click({position:{x:12,y:12}});
+    assert.equal(await tuningToggle.getAttribute('aria-expanded'),'true');
+    await page.locator('.br-rail-header').click();
+    assert.equal(await tuningToggle.getAttribute('aria-expanded'),'false');
+    await tuningToggle.click();
+    await page.keyboard.press('Escape');
+    assert.equal(await tuningToggle.getAttribute('aria-expanded'),'false');
     const cards=page.locator('.br-stampcard');
     assert.deepEqual((await cards.evaluateAll(nodes=>nodes.map(n=>n.dataset.pattern))).slice(0,5),['stalk','glider','gun20','gun42','p42']);
     assert.equal(await cards.count(),15);
