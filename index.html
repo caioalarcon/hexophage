@@ -200,6 +200,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-energy-stats b.negative{color:#ffa8a3}
 #hexlab .br-rail{overflow-y:auto;overscroll-behavior:contain}
 @media (orientation:portrait){#hexlab .br-energy-panel{display:none}}
+
+#hexlab .br-energy-sliders output { cursor: pointer }
+#hexlab .br-limit-dialog { width: min(280px,92vw); padding: 15px; background: #182e40; color: #dfebf3; border: 1px solid #4b6c83; border-radius: 8px }
+#hexlab .br-limit-dialog::backdrop { background: #030b14a8 }
+#hexlab .br-limit-dialog form { display: grid; gap: 8px }
+#hexlab .br-limit-dialog h3 { margin: 0; font-size: 14px }
+#hexlab .br-limit-dialog input { width: 100%; min-height: 30px; padding: 4px 6px; border: 1px solid #496579; border-radius: 4px; background: #0f2130; color: inherit }
+#hexlab .br-limit-dialog form > div { display: flex; justify-content: flex-end; gap: 6px }
 #hexlab .br-atlas-dialog{box-sizing:border-box;width:min(1150px,96vw);max-width:96vw;max-height:min(92vh,980px);overflow:hidden;background:#101e2d;border:1px solid #4b6c83;color:#e8f3fa;padding:0;border-radius:12px}
 #hexlab .br-atlas-dialog::backdrop{background:#020910d9}
 #hexlab .br-atlas-dialog *{box-sizing:border-box}
@@ -824,7 +832,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <label for="eco-age">Idade mínima para manutenção <output id="eco-age-val">2</output><input id="eco-age" type="range" min="0" max="100" step="1" value="2" data-energy="stableAfter"></label>
   <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">3</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="3" data-energy="initialCells"></label>
  </div>
- <p class="br-energy-help">A reserva inicial só muda antes da primeira ação. Os demais parâmetros atuam na próxima geração.</p>
+ <p class="br-energy-help">A reserva inicial só muda antes da primeira ação. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
+ <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
+  <form id="eco-limit-form" novalidate>
+   <h3 id="eco-limit-title">Definir máximo</h3>
+   <label for="eco-limit" id="eco-limit-name"></label>
+   <input id="eco-limit" type="number" inputmode="numeric" required step="1" autofocus>
+   <div><button type="button" id="eco-limit-cancel">Cancelar</button><button type="submit" class="primary">Aplicar</button></div>
+  </form>
+ </dialog>
  <div class="br-energy-stats" aria-live="off">
   <div><span>Energia na reserva</span><b id="eco-reserve">30</b></div>
   <div><span>Células que pode carimbar</span><b id="eco-can-stamp">3</b></div>
@@ -1541,8 +1557,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function availableCells(reserve, economy) {
     return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
   }
-  function parameterValue(value) {
-    return Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+  function parameterValue(value, maximum = 100) {
+    return Math.max(0, Math.min(maximum, Math.round(Number(value) || 0)));
   }
   function initialEnergy(economy) {
     return economy.initialCells * economy.stampCost;
@@ -1773,7 +1789,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function gameEconomyTick(world2, game2, removeLive, finishIfDecided2) {
     if (!game2.players.length || game2.initializing || game2.ended) return;
     const e = game2.economy || DEFAULT_ECONOMY;
-    const ages = world2.cellAges || (world2.cellAges = new Uint8Array(world2.graph.n));
+    let ages = world2.cellAges || (world2.cellAges = new Uint8Array(world2.graph.n));
+    let ageCapacity = 2 ** (8 * ages.BYTES_PER_ELEMENT) - 1;
     const newborn = new Uint32Array(8), naturalDeaths = new Uint32Array(8);
     for (let i = 0; i < world2.nextActiveCount; i++) {
       const id = world2.nextActive[i], owner = world2.nextOwners[id];
@@ -1784,8 +1801,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     for (let i = 0; i < world2.activeCount; i++) {
       const id = world2.active[i], owner = world2.owners[id];
-      if (world2.next[id]) ages[id] = Math.min(101, (ages[id] || 1) + 1);
-      else {
+      if (world2.next[id]) {
+        const age = (ages[id] || 1) + 1;
+        if (age > ageCapacity) {
+          const Wider = ages.BYTES_PER_ELEMENT === 1 ? Uint16Array : ages.BYTES_PER_ELEMENT === 2 ? Uint32Array : Float64Array;
+          world2.cellAges = ages = new Wider(ages);
+          ageCapacity = 2 ** (8 * ages.BYTES_PER_ELEMENT) - 1;
+        }
+        ages[id] = age;
+      } else {
         ages[id] = 1;
         if (owner >= 1 && owner <= 6) newborn[owner]++;
       }
@@ -5411,6 +5435,55 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     $("br-diag-end").textContent = h.eliminated !== null ? `Eliminação na geração ${fmt3(h.eliminated)}, com zero no campo e zero na reserva.` : p.reserve === 0 && field > 0 ? `Você continua em jogo com ${fmt3(field)} células em campo e reserva zero.` : "";
   }
 
+  // src/match/hud/slider-limits.js
+  function bindSliderLimits(sliders) {
+    const dialog = $("eco-limit-dialog");
+    const field = $("eco-limit");
+    let active;
+    function open(slider) {
+      active = slider;
+      $("eco-limit-name").textContent = slider.labels[0].firstChild.textContent.trim();
+      field.min = slider.value;
+      field.max = String(Number.MAX_SAFE_INTEGER);
+      field.value = slider.max;
+      field.setCustomValidity("");
+      dialog.showModal();
+      field.select();
+    }
+    for (const slider of sliders) {
+      const label = slider.labels[0];
+      label.title = "Definir máximo com o botão direito, Shift+F10 ou tocando no valor";
+      slider.setAttribute("aria-keyshortcuts", "Shift+F10");
+      label.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+        open(slider);
+      });
+      slider.addEventListener("keydown", (event) => {
+        if (event.key === "ContextMenu" || event.shiftKey && event.key === "F10") {
+          event.preventDefault();
+          open(slider);
+        }
+      });
+      label.querySelector("output").addEventListener("click", (event) => {
+        event.preventDefault();
+        open(slider);
+      });
+    }
+    field.addEventListener("input", () => field.setCustomValidity(""));
+    $("eco-limit-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const maximum = field.valueAsNumber;
+      if (!Number.isSafeInteger(maximum) || maximum < Number(active.value)) {
+        field.setCustomValidity("Digite um inteiro entre " + active.value + " e " + Number.MAX_SAFE_INTEGER.toLocaleString("pt-BR") + ".");
+        field.reportValidity();
+        return;
+      }
+      active.max = String(maximum);
+      dialog.close();
+    });
+    $("eco-limit-cancel").addEventListener("click", () => dialog.close());
+  }
+
   // src/match/hud/energy-panel.js
   var compact = (n) => Number(n || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
   var signed2 = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + compact(Math.abs(n));
@@ -5419,12 +5492,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return world.gen === 0 && game.players.every((p) => p.stamps === 0);
   }
   function bindEnergyPanel() {
+    bindSliderLimits(Object.values(controls).map((id) => $(id)));
     for (const [key2, id] of Object.entries(controls)) {
       const slider = $(id);
       slider.value = String(game.economy[key2]);
       slider.addEventListener("input", () => {
         if (key2 === "initialCells" && !beforeMatch()) return;
-        const value = parameterValue(slider.value);
+        const value = parameterValue(slider.value, Number(slider.max));
         game.economy[key2] = value;
         $(id + "-val").textContent = String(value);
         if (beforeMatch() && (key2 === "initialCells" || key2 === "stampCost")) {
