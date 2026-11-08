@@ -12,7 +12,8 @@ function randomIndex(game, length) {
 export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
   if (!game.players.length || game.initializing || game.ended) return;
   const e = game.economy || DEFAULT_ECONOMY;
-  const ages = world.cellAges || (world.cellAges = new Uint8Array(world.graph.n));
+  let ages = world.cellAges || (world.cellAges = new Uint8Array(world.graph.n));
+  let ageCapacity = 2 ** (8 * ages.BYTES_PER_ELEMENT) - 1;
   // advanceGeneration swaps its buffers: "next" and "nextActive" now hold
   // the exact occupancy immediately before the last physical CA generation.
   const newborn = new Uint32Array(8), naturalDeaths = new Uint32Array(8);
@@ -25,8 +26,18 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
   }
   for (let i = 0; i < world.activeCount; i++) {
     const id = world.active[i], owner = world.owners[id];
-    if (world.next[id]) ages[id] = Math.min(101, (ages[id] || 1) + 1);
-    else {
+    if (world.next[id]) {
+      const age = (ages[id] || 1) + 1;
+      if (age > ageCapacity) {
+        // Keep the history when a player raises the threshold during a running match.
+        // Only pay for a wider world buffer once an actual survivor needs it.
+        const Wider = ages.BYTES_PER_ELEMENT === 1 ? Uint16Array :
+          ages.BYTES_PER_ELEMENT === 2 ? Uint32Array : Float64Array;
+        world.cellAges = ages = new Wider(ages);
+        ageCapacity = 2 ** (8 * ages.BYTES_PER_ELEMENT) - 1;
+      }
+      ages[id] = age;
+    } else {
       ages[id] = 1;
       if (owner >= 1 && owner <= 6) newborn[owner]++;
     }

@@ -10,9 +10,9 @@ export function energyCost(cells, economy) {
 export function availableCells(reserve, economy) {
   return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
 }
-// The slider has an inclusive 0..100 domain; fractional values are never saved.
-export function parameterValue(value) {
-  return Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+// Slider settings use whole units. Each control owns its upper bound.
+export function parameterValue(value, maximum = 100) {
+  return Math.max(0, Math.min(maximum, Math.round(Number(value) || 0)));
 }
 export function initialEnergy(economy) {
   return economy.initialCells * economy.stampCost;

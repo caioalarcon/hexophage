@@ -21,6 +21,7 @@ const {chromium}=require('playwright');
       assert.equal(await slider.getAttribute('min'),'0');
       assert.equal(await slider.getAttribute('max'),'100');
     }
+    await require('./support/slider-limits.cjs')(page);
     assert.equal(await page.locator('#eco-reserve').textContent(),'30');
     assert.equal(await page.locator('#eco-can-stamp').textContent(),'3');
     const sample=await page.evaluate(()=>{

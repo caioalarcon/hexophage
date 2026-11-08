@@ -22,7 +22,7 @@ test('games start with 3-cell flipper affordable, not previous tax transfer',()=
   assert.equal(initialEnergy(m.game.economy),30);
   assert.equal(availableCells(30,m.game.economy),3);
   assert.equal(availableCells(0,{stampCost:0}),Infinity);
-  assert.deepEqual([-20,0,2.5,100,123].map(parameterValue),[0,0,3,100,100]);
+  assert.deepEqual([-20,0,2.5,100,123].map(v => parameterValue(v,100)),[0,0,3,100,100]);
 });
 test('spherical P2 flipper has two natural births and one charged survivor per generation',()=>{
   const m=fresh(),p=plantFlipper(m);
@@ -53,4 +53,21 @@ test('unaffordable maintenance randomly erodes own cells, not a rival',()=>{
   assert.equal(p.reserve,0);
   assert.equal(m.world.ownerCells[rival.id].length,rivalBefore);
   for(const id of m.world.ownerCells[p.id])assert.equal(m.world.owners[id],p.id);
+});
+
+test('raising the upkeep threshold mid-match retains the true age of the flipper core',()=>{
+  const m=createHeadlessMatch(buildSphere(24),{strategies:new Map([2,3,4,5,6].map(id=>[id,()=>{}]))});
+  const p=plantFlipper(m);
+  for(let gen=1;gen<=280;gen++)m.nextTick();
+  assert.equal(p.stable,1);
+  assert(m.world.cellAges instanceof Uint16Array);
+  m.game.economy.stableAfter=300;
+  for(let gen=281;gen<299;gen++) {
+    m.nextTick();
+    assert.equal(p.lastUpkeep,0);
+  }
+  m.nextTick();
+  assert.equal(p.lastUpkeep,1,'stamped generation 0 already counts as age one');
+  assert.equal(parameterValue(1234,5000),1234);
+  assert.equal(parameterValue(6000,5000),5000);
 });

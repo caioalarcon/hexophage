@@ -7,7 +7,15 @@
   <label for="eco-age">Idade mínima para manutenção <output id="eco-age-val">2</output><input id="eco-age" type="range" min="0" max="100" step="1" value="2" data-energy="stableAfter"></label>
   <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">3</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="3" data-energy="initialCells"></label>
  </div>
- <p class="br-energy-help">A reserva inicial só muda antes da primeira ação. Os demais parâmetros atuam na próxima geração.</p>
+ <p class="br-energy-help">A reserva inicial só muda antes da primeira ação. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
+ <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
+  <form id="eco-limit-form" novalidate>
+   <h3 id="eco-limit-title">Definir máximo</h3>
+   <label for="eco-limit" id="eco-limit-name"></label>
+   <input id="eco-limit" type="number" inputmode="numeric" required step="1" autofocus>
+   <div><button type="button" id="eco-limit-cancel">Cancelar</button><button type="submit" class="primary">Aplicar</button></div>
+  </form>
+ </dialog>
  <div class="br-energy-stats" aria-live="off">
   <div><span>Energia na reserva</span><b id="eco-reserve">30</b></div>
   <div><span>Células que pode carimbar</span><b id="eco-can-stamp">3</b></div>

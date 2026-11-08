@@ -1,6 +1,7 @@
 import { game } from '../../browser/game.js';
 import { world } from '../../browser/world-state.js';
 import { availableCells, initialEnergy, parameterValue } from '../constructive-economy.js';
+import { bindSliderLimits } from './slider-limits.js';
 import { $ } from '../../layout/elements.js';
 
 const compact = n => Number(n || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
@@ -10,12 +11,13 @@ function beforeMatch() {
   return world.gen === 0 && game.players.every(p => p.stamps === 0);
 }
 export function bindEnergyPanel() {
+  bindSliderLimits(Object.values(controls).map(id => $(id)));
   for (const [key,id] of Object.entries(controls)) {
     const slider = $(id);
     slider.value = String(game.economy[key]);
     slider.addEventListener('input', () => {
       if (key === 'initialCells' && !beforeMatch()) return;
-      const value = parameterValue(slider.value);
+      const value = parameterValue(slider.value, Number(slider.max));
       game.economy[key] = value;
       $(id+'-val').textContent = String(value);
       if (beforeMatch() && (key === 'initialCells' || key === 'stampCost')) {

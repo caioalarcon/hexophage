@@ -16,3 +16,11 @@
 #hexlab .br-energy-stats b.negative{color:#ffa8a3}
 #hexlab .br-rail{overflow-y:auto;overscroll-behavior:contain}
 @media (orientation:portrait){#hexlab .br-energy-panel{display:none}}
+
+#hexlab .br-energy-sliders output { cursor: pointer }
+#hexlab .br-limit-dialog { width: min(280px,92vw); padding: 15px; background: #182e40; color: #dfebf3; border: 1px solid #4b6c83; border-radius: 8px }
+#hexlab .br-limit-dialog::backdrop { background: #030b14a8 }
+#hexlab .br-limit-dialog form { display: grid; gap: 8px }
+#hexlab .br-limit-dialog h3 { margin: 0; font-size: 14px }
+#hexlab .br-limit-dialog input { width: 100%; min-height: 30px; padding: 4px 6px; border: 1px solid #496579; border-radius: 4px; background: #0f2130; color: inherit }
+#hexlab .br-limit-dialog form > div { display: flex; justify-content: flex-end; gap: 6px }
