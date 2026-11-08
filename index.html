@@ -1836,13 +1836,24 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const offsets = decodeRLE(pattern.rle).map(([q, r]) => [q + dq, r + dr]);
     const period = id === "glider" ? 4 : Number(id.slice(3));
     let ages = seedPatternAges(pattern), births = 0, firstCycleBirths = 0;
+    const trajectories = /* @__PURE__ */ new Map();
+    const earliest = id === "glider" ? 6 : id === "gun20" ? 24 : 50;
+    const latest = id === "glider" ? 30 : id === "gun20" ? 100 : 140;
     for (let g = 0; g < 256; g++) {
       const turn = advancePattern(ages, 2);
       births += turn.births;
       if (g < period) firstCycleBirths += turn.births;
       ages = turn.next;
+      if (g + 1 >= earliest && g + 1 <= latest) {
+        for (const pos of ages.keys()) {
+          const [q, r] = patternOffset(pos), x = q + dq, y = r + dr;
+          if (Math.max(Math.abs(x), Math.abs(y), Math.abs(x + y)) > 5) continue;
+          const key2 = x + "," + y;
+          if (!trajectories.has(key2)) trajectories.set(key2, { offset: [x, y], generation: g + 1 });
+        }
+      }
     }
-    const profile = { offsets, births, period, firstCycleBirths };
+    const profile = { offsets, births, period, firstCycleBirths, trace: [...trajectories.values()] };
     weapons.set(id, profile);
     return profile;
   }
@@ -1854,27 +1865,40 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const { period, firstCycleBirths } = weapon(id);
     return (firstCycleBirths + 32 * 5) / period * economy.birthCost;
   }
+  function projectedRaidScore(world2, rival, attacker, target, dir, trace, maturity) {
+    const predicted = patchForStamp(world2, target, dir, trace.map((v) => v.offset), false);
+    if (!predicted) return -Infinity;
+    let score = 0, earliest = Infinity;
+    for (let i = 0; i < predicted.length; i++) {
+      const owner = world2.owners[predicted[i]], age = world2.cellAges[predicted[i]];
+      if (owner === rival.id) {
+        score += age === 1 ? 6 : age >= maturity ? 2 : 1;
+        earliest = Math.min(earliest, trace[i].generation);
+      } else if (owner === attacker.id) score -= 4;
+    }
+    return earliest === Infinity ? -Infinity : score / (1 + earliest / 100);
+  }
   function raidMatureCore(world2, game2, player, commitStamp2, id = "glider") {
-    const rivals = game2.players.filter((p) => p !== player && !p.out && p.stable).sort((a, b) => b.stable - a.stable);
-    const { offsets } = weapon(id);
+    const rivals = game2.players.filter((p) => p !== player && !p.out && p.stable).sort((a, b) => b.stable - a.stable).slice(0, 2);
+    const { offsets, trace } = weapon(id);
+    let best = null;
     for (const rival of rivals) {
-      const cells3 = world2.ownerCells[rival.id];
-      const targetIds = [];
+      const cells3 = world2.ownerCells[rival.id], targetIds = [];
       for (const cell of cells3) {
         if (world2.cellAges[cell] === 1) targetIds.push(cell);
-        if (targetIds.length === 8) break;
+        if (targetIds.length === 4) break;
       }
-      const stride2 = Math.max(1, Math.ceil(cells3.length / 8));
+      const stride2 = Math.max(1, Math.ceil(cells3.length / 4));
       for (let i = world2.gen % stride2; i < cells3.length; i += stride2)
         if (world2.cellAges[cells3[i]] >= game2.economy.stableAfter) targetIds.push(cells3[i]);
-      for (const target of targetIds) {
-        for (let dir = 0; dir < 6; dir++) {
-          const ids = patchForStamp(world2, target, dir, offsets, true);
-          if (ids && commitStamp2(player.id, ids, false)) return true;
-        }
+      for (const target of targetIds) for (let dir = 0; dir < 6; dir++) {
+        const score = projectedRaidScore(world2, rival, player, target, dir, trace, game2.economy.stableAfter);
+        if (score <= 0 || best && score <= best.score) continue;
+        const ids = patchForStamp(world2, target, dir, offsets, true);
+        if (ids && ids.every((site) => !world2.cells[site])) best = { score, ids };
       }
     }
-    return false;
+    return best ? commitStamp2(player.id, best.ids, false) : false;
   }
 
   // src/bots/growth-strategy.js
