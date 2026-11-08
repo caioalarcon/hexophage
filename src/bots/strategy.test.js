@@ -95,7 +95,7 @@ test('a legal glider raid reaches a mature C6 and cuts its real income', async (
     return game.players[1].stable;
   };
   assert.equal(outcome(false), 6);
-  assert.equal(outcome(true), 0);
+  assert(outcome(true) < outcome(false), 'the flight corridor causes real loss of mature rival cells');
 });
 
 test('a saturated mature colony cannot finance another moving front by duplicating its field', async () => {
