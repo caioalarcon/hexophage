@@ -61,3 +61,7 @@ The browser differential suite replays the same inputs against the working build
 Push changes to `dev`. CI rebuilds the HTML, checks for a stale distribution, runs both test suites, and attaches the tested HTML to the workflow run. The branch preview serves the committed HTML and follows future pushes. The private development deployment is a separately published snapshot for playtesting.
 
 After manual approval, merge the reviewed PR into `main`. GitHub Pages serves the root of `main` at the public game URL.
+
+## Economic experiments
+
+Play with the offline two-hour economy model and compare a glider attack against a control in [the experimental lab](experiments/economy/README.md).

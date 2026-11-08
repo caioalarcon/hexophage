@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Laboratório de economia · Hexophage</title><style>/* INLINE_CSS */</style>
+<body><main>
+<header><p class="eyebrow">HEXOPHAGE <span>/</span> EXPERIMENTOS</p><h1>Laboratório de economia</h1><p class="lead">Quanto tempo a expansão continua difícil? Experimente um preço, escolha o que construir e acompanhe quanto a reserva ainda compra.</p>
+<div class="badges"><span>2 horas</span><span>200 gerações/s</span><span>1.440.000 gerações</span></div></header>
+<div class="workspace">
+<form id="settings">
+<h2>Cenário</h2>
+<label>Regra econômica<select id="rule"></select></label><p id="formula" class="hint"></p>
+<label>Estratégia de construção<select id="policy"></select></label>
+<div id="custom" hidden>
+<label>Flippers P2 antes da sequência<input type="number" id="seeds" value="1" min="0" max="1000" required></label>
+<label>Repetir este padrão<select id="pattern"></select></label>
+<label>Alternar com<select id="second"></select></label>
+<p id="profile-note" class="hint"></p>
+<label class="check"><input type="checkbox" id="fund" checked>Juntar também a reserva de partida das guns</label>
+</div>
+<label>Sobrevida das naves<select id="life"><option value="1200">6 segundos · 1.200 gerações</option><option value="12000" selected>1 minuto · 12.000 gerações</option><option value="120000">10 minutos · 120.000 gerações</option><option value="Infinity">Toda a partida</option></select></label>
+<label>Uso da reserva<select id="buy"><option value="120">Reinvestir por 2 horas</option><option value="110">Poupar nos 10 minutos finais</option><option value="60">Poupar na segunda hora</option><option value="0">Poupar após a abertura</option></select></label>
+<details id="coefs"><summary>Ajustar os coeficientes</summary><div id="params"></div></details>
+<button id="run">Rodar simulação</button><p id="changes" class="hint" aria-live="polite"></p></form>
+<section class="results" aria-label="Resultados"><p class="eyebrow">CADERNO DE SIMULAÇÃO</p><h2 id="caption">Trajetória da economia</h2><p id="scenario"></p>
+<div id="status" role="status"></div><div class="metrics" id="metrics"></div>
+<div class="visual"><div class="chart-head"><h3>Progressão</h3><label>Indicador<select id="metric"><option value="orders">Carimbadas realizadas</option><option value="burst">Flippers compráveis de uma vez</option><option value="gunBurst">Guns P20 compráveis de uma vez</option><option value="bank">Energia guardada</option><option value="mana">Mana guardada</option></select></label></div>
+<svg id="chart" viewBox="0 0 640 235" role="img" aria-label="Indicador selecionado ao longo dos minutos"></svg>
+<p class="hint">Cada ponto é uma observação. O eixo vertical usa log₁₀(1 + valor) para mostrar a abertura e o fim da partida juntos.</p>
+<label id="show-parked" class="check" hidden><input type="checkbox" id="parked">Incluir projeção de poupança após 10.000 compras</label></div>
+<div class="records"><h3>Reservas e poder de compra</h3><p class="hint">As duas colunas de padrões mostram alternativas para a mesma reserva. Cada uma simula gastar tudo naquele padrão na mesma geração, recalculando o preço após cada carimbada. O custo de sustentar uma gun depois da compra aparece na estratégia de reinvestimento.</p>
+<div class="table-scroll" tabindex="0"><table><thead><tr><th>Tempo</th><th>Compras</th><th>Energia</th><th>Mana</th><th>Flippers</th><th>Guns P20</th><th>Fase</th></tr></thead><tbody id="records"></tbody></table></div></div>
+<details class="assumptions"><summary>Como interpretar a simulação</summary><p>A reserva inicial paga três células e, quando a regra usa mana, inclui uma carga. O modelo mede uma linhagem por carimbo. A renda vem dos nascimentos e a manutenção começa no segundo turno consecutivo de vida. A mana remunera o núcleo imóvel estimado por janela. O efeito da sobrevida também vale para naves emitidas por guns.</p><p>Os perfis foram calibrados em isolamento. Os ciclos entram como médias. O combate, a erosão e as colisões individuais ficam fora da partida simulada. Um primeiro déficit encerra a trajetória porque a erosão do jogo mudaria os padrões. A geração de mana começa imediatamente para núcleos reconhecidos.</p><p>A marca de 10.000 compras encerra o teste de expansão. Depois dela o simulador suspende as compras e pode calcular quanta reserva se acumularia. Os resultados dessa poupança hipotética aparecem apenas quando selecionados.</p></details>
+</section></div></main><script>/* INLINE_JS */</script></body></html>

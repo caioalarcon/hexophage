@@ -23,6 +23,13 @@ jobs:
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - name: Verify the offline economic experiments
+        run: |
+          node --test "experiments/economy/*.test.js"
+          node experiments/economy/build-lab.js
+          git diff --exit-code --stat -- experiments/economy/lab.html
+          node experiments/economy/lab/browser.test.js
+          node experiments/economy/incoming-glider-replay.mjs
       - name: Update only the dev preview HTML after successful checks
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
         run: |
