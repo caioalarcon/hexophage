@@ -191,7 +191,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-energy-sliders output{font-weight:700;color:#73e9c3;font-size:11px;font-variant-numeric:tabular-nums}
 #hexlab .br-energy-sliders input{grid-column:1/-1;display:block;width:100%;height:13px;cursor:pointer;accent-color:#52d8b7;margin:0}
 #hexlab .br-energy-sliders input:disabled{opacity:.35;cursor:not-allowed}
-#hexlab .br-energy-help{font-size:9px;color:#91adbf;line-height:1.35;margin:6px 0 8px}
 #hexlab .br-energy-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
 #hexlab .br-energy-stats>div{min-width:0;min-height:36px;border:1px solid #2d455c;background:#112334;border-radius:5px;padding:4px 5px}
 #hexlab .br-energy-stats span{display:block;font-size:9px;line-height:1.1;color:#acc5d3;overflow-wrap:break-word}
@@ -221,10 +220,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-energy-panel .br-energy-sliders label{font-size:11px;line-height:1.2}
 #hexlab .br-energy-panel .br-energy-sliders output{font-size:11px}
 #hexlab .br-energy-panel .br-energy-sliders input{height:18px;touch-action:manipulation}
-#hexlab .br-economy-guide{display:block;border-top:1px solid #355569;margin-top:7px;padding-top:6px}
-#hexlab .br-economy-guide summary{font-size:10px;color:#accbce;cursor:pointer}
-#hexlab .br-economy-guide[open] .br-energy-help{display:block;font-size:10px}
-#hexlab .br-energy-panel .br-energy-help{display:none}
 #hexlab .br-energy-extra{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-top:6px}
 #hexlab .br-energy-extra>div{min-width:0;min-height:32px;border:1px solid #2d455c;background:#112334;border-radius:5px;padding:4px 5px}
 #hexlab .br-energy-extra span{display:block;font-size:9px;line-height:1.1;color:#acc5d3;overflow-wrap:break-word}
@@ -876,16 +871,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <label for="eco-stable-energy">Renda por célula madura <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
   <label for="eco-scale">Escala de produção <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="1" max="16000" step="1" value="8000" data-energy="productionScale"></label>
   <label for="eco-birth-cost">Custo por nascimento <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
-  <label for="eco-combat-fee">Tributo por morte <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee" aria-describedby="eco-combat-help"></label>
+  <label for="eco-combat-fee">Tributo por morte <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee"></label>
   <label for="eco-age">Maturação (gerações) <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
   <label for="eco-stamp">Custo por célula <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
   <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">82</output><input id="eco-initial" type="range" min="0" max="300" step="1" value="82" data-energy="initialCells"></label>
  </div>
- <details class="br-economy-guide">
-  <summary>Ajuda sobre as regras</summary>
-  <p class="br-energy-help">Células que continuam vivas amadurecem e produzem energia. A escala reduz o rendimento por célula quando a colônia cresce. Nascimentos gastam energia; carimbos pagam por célula colocada.</p>
-  <p id="eco-combat-help" class="br-energy-help">O tributo transfere energia quando uma célula morre por influência direta do adversário. Valor zero desativa. A reserva inicial muda apenas antes da partida. Clique com o botão direito no slider ou no número para ajustar seu máximo.</p>
- </details>
  <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
   <form id="eco-limit-form" novalidate>
    <h3 id="eco-limit-title">Definir máximo</h3>

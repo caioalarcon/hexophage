@@ -37,9 +37,8 @@ const {chromium}=require('playwright');
     for (const id of ['eco-stable-energy','eco-scale','eco-birth-cost','eco-combat-fee','eco-age','eco-stamp','eco-initial']) {
       assert(await page.locator('#'+id).isVisible(),id+' must remain directly visible');
     }
-    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),false,'help stays collapsed');
-    await page.locator('.br-economy-guide summary').click();
-    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),true);
+    assert.equal(await page.locator('.br-economy-guide').count(),0,'long rule explanations stay out of the HUD');
+    assert.equal(await page.locator('#eco-combat-fee').getAttribute('aria-describedby'),null);
     await require('./support/slider-limits.cjs')(page);
     assert.equal(await page.locator('#eco-tribute-in').isVisible(),false,'secondary statistics stay collapsed');
     await page.locator('.br-stats-more summary').click();
