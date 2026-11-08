@@ -719,7 +719,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    </div></details>
   </aside>
   <aside class="br-rail" id="br-rail" aria-label="Ferramentas de simulação">
-   <div class="br-rail-header"><strong>⬡ HEXOPHAGE</strong><span id="br-rail-gen" title="Geração atual">Geração 0</span></div>
+   <div class="br-rail-header"><strong id="br-match-heading" aria-live="polite">⬡ HEXOPHAGE</strong><span id="br-rail-gen" title="Geração atual">Geração 0</span></div>
    <div class="br-rail-controls" id="br-rail-controls"></div>
    <div class="br-rail-ranking" id="br-rail-ranking"><div class="br-rail-rankhead"><button type="button" id="br-rank-fold" aria-expanded="false">Classificação · Top 3</button><button type="button" id="br-rank-hide" aria-label="Ocultar ranking" title="Mostrar ou ocultar ranking">−</button></div><div id="br-rail-rank-slot"></div></div>
    <div class="br-rail-spacer"></div>
@@ -2131,7 +2131,16 @@ function nextTick(){
  if(game.ended)updateGamePanel(true);
  else gameBotsTick();
 }
-function setPlay(on){on=!!on&&!game.ended;world.playing=on;world.accum=0;$('hl-play').textContent=on?'❚❚ Pausar':'▶ Iniciar';$('hl-play').classList.toggle('primary',!on);}
+function syncPlayButton(){
+ const button=$('hl-play'),heading=$('br-match-heading');
+ const result=game.winner===1?'Você venceu':game.winner?game.names[game.winner]+' venceu':'Empate';
+ const title=game.ended?result:'⬡ HEXOPHAGE';
+ if(heading.textContent!==title)heading.textContent=title;
+ button.textContent=game.ended?'Nova partida':world.playing?'❚❚ Pausar':'▶ Iniciar';
+ button.title=game.ended?'Voltar à preparação com os ajustes atuais':'';
+ button.classList.toggle('primary',!world.playing);
+}
+function setPlay(on){world.playing=!!on&&!game.ended;world.accum=0;syncPlayButton();}
 function decodeRLE(str){
  const out=[],re=/(\d*)([ob$!])/g;let r=0,c=0,m;
  while((m=re.exec(str))!==null){const n=Number(m[1]||1);
@@ -3054,7 +3063,7 @@ function resetGame(){
  game.symbols[1]=($('br-myemoji').value.trim()||'🦖').slice(0,12);
  clearCells();game.rngState=0x6d2b79f5;
  world.rule='callahan';$('hl-rulechoice').value='callahan';
- game.winner=0;game.ended=false;
+ game.winner=0;game.ended=false;syncPlayButton();
  game.humanHistory={births:0,deaths:0,placed:0,peak:null,largest:null,eliminated:null};
  const seedIds=farSpawns();
  game.players=Array.from({length:6},(_,i)=>({
@@ -3304,7 +3313,7 @@ function updateGamePanel(force=false){
  game.average=avg;
  $('br-mean').textContent='μ '+avg.toLocaleString('pt-BR',{maximumFractionDigits:0});
  $('br-neutral').textContent=world.ownerCells[7].length.toLocaleString('pt-BR');
- $('hl-play').disabled=$('hl-step').disabled=game.ended;
+ $('hl-step').disabled=game.ended;
  syncPregameControls();
  const status=$('br-gamestatus');status.textContent=game.winner?'Vencedor: '+game.symbols[game.winner]+' '+game.names[game.winner]:
   game.ended?'Empate · todos eliminados':`${alive.length} em jogo`;
@@ -3621,7 +3630,7 @@ function bind(){
   world.editorDrag=null;world.needsDraw=true;
  });
  ev.addEventListener('pointercancel',()=>{world.editorDrag=null;world.hover=null;});
- $('hl-play').onclick=()=>setPlay(!world.playing);
+ $('hl-play').onclick=()=>{if(game.ended)resetGame();else setPlay(!world.playing);};
  $('hl-step').onclick=()=>{setPlay(false);nextTick();updateStats();};
  $('hl-clear').onclick=resetGame;
  $('hl-seed').onclick=()=>{
