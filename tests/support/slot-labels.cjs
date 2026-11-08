@@ -6,11 +6,22 @@ module.exports = async function checkSlotLabels(page) {
   const names = patterns.callahan.filter(p => p.group).map(p => p.name);
   const originalViewport = page.viewportSize();
   try {
-    for (const viewport of [{ width: 1902, height: 986 }, { width: 390, height: 844 }, { width: 844, height: 390 }]) {
+    for (const viewport of [
+      { width: 1902, height: 986 }, { width: 1440, height: 900 },
+      { width: 1366, height: 768 }, { width: 1024, height: 768 },
+      { width: 390, height: 844 }, { width: 844, height: 390 }
+    ]) {
       await page.setViewportSize(viewport);
       const failures = await page.evaluate(names => {
         const cards = [...document.querySelectorAll('#br-deck .br-stampcard')];
-        if (!cards.length) throw new Error('No pattern slots to verify');
+        if (cards.length !== 15) throw new Error('Expected exactly 15 visible pattern slots');
+        const dock = document.querySelector('#br-deck'), bounds = dock.getBoundingClientRect();
+        if (dock.scrollWidth > dock.clientWidth + 1) throw new Error('Horizontal scroll on 15-card palette');
+        for (const card of cards) {
+          const b = card.getBoundingClientRect();
+          if (b.left < bounds.left - 1 || b.right > bounds.right + 1)
+            throw new Error('Card outside deck: ' + card.dataset.slot);
+        }
         const labels = cards.map(card => card.querySelector('.br-stampname'));
         const original = labels.map(label => label.textContent);
         const errors = [];
@@ -29,6 +40,7 @@ module.exports = async function checkSlotLabels(page) {
             });
             const bar = document.querySelector('.br-hotbar').getBoundingClientRect();
             if (bar.bottom > innerHeight + 1) errors.push('hotbar outside the viewport');
+            if (dock.scrollWidth > dock.clientWidth + 1) errors.push('palette requires horizontal scroll');
             if (innerHeight > innerWidth && document.querySelector('#br-mini-panel').getBoundingClientRect().bottom > bar.top) {
               errors.push('globe obscures the cards');
             }
