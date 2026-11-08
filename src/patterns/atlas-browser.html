@@ -1,0 +1,18 @@
+<dialog class="br-atlas-dialog" id="br-atlas-dialog" aria-labelledby="br-atlas-heading">
+ <div class="br-atlas-head"><div><h2 id="br-atlas-heading">Atlas Callahan · 160 estruturas</h2><p>Selecione um padrão para cada slot. Clique para pesquisar e simular sua evolução.</p></div><button type="button" id="br-atlas-close" aria-label="Fechar atlas">✕</button></div>
+ <div class="br-atlas-body">
+  <section class="br-atlas-search"><div class="br-atlas-filters">
+   <label>Buscar<input id="br-atlas-query" placeholder="Nome, período, classe, custo…" type="search"></label>
+   <label>Tipo<select id="br-atlas-class"><option value="">Todos</option><option value="oscilador">Osciladores</option><option value="nave">Naves</option><option value="gerador">Geradores</option><option value="crescedor">Crescedores</option><option value="interação">Interações</option></select></label>
+   <label>Ordem<select id="br-atlas-order"><option value="cost">Menor custo inicial</option><option value="activity">Mais nascimentos/célula</option><option value="core">Maior núcleo fixo</option><option value="period">Menor período</option></select></label>
+  </div><div id="br-atlas-results" class="br-atlas-results"></div></section>
+  <section class="br-atlas-detail">
+   <div class="br-atlas-title"><h3 id="br-atlas-name">Oscilador mínimo (flipper)</h3><span id="br-atlas-label">P2</span></div>
+   <p id="br-atlas-description">Evolução da estrutura na regra Callahan.</p>
+   <canvas id="br-atlas-canvas" width="520" height="300" aria-label="Evolução da estrutura escolhida, geração por geração"></canvas>
+   <div class="br-atlas-play"><button type="button" id="br-atlas-play">▶ Simular</button><button type="button" id="br-atlas-step">+1</button><button type="button" id="br-atlas-cycle">+1 ciclo</button><button type="button" id="br-atlas-reset">Reiniciar</button><span id="br-atlas-gen">Geração 0</span></div>
+   <div id="br-atlas-metrics" class="br-atlas-metrics"></div>
+   <div class="br-atlas-action"><span id="br-atlas-slot-label">Slot 1</span><button type="button" class="primary" id="br-atlas-choose">Usar neste slot</button></div>
+  </section>
+ </div>
+</dialog>
