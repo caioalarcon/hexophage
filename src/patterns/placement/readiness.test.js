@@ -18,14 +18,14 @@ test('selected-stamp affordability controls both actions and displays the missin
   assert.equal(stampReady(), false);
   assert.deepEqual(
     [tag.textContent, tag.style.color, mode.disabled, demo.disabled],
-    ['3 de biomassa · faltam 1', '#ffb99b', true, true],
+    ['3 células · 30 energia · faltam 28', '#ffb99b', true, true],
   );
-  game.players[0].reserve++;
+  game.players[0].reserve=30;
   updateStampReadiness();
   assert.equal(stampReady(), true);
   assert.deepEqual(
     [tag.textContent, tag.style.color, mode.disabled, demo.disabled],
-    ['3 de biomassa · pronto', '', false, false],
+    ['3 células · 30 energia · pronto', '', false, false],
   );
 });
 

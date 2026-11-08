@@ -7,7 +7,7 @@ import { savedPatterns } from './saved-patterns.js';
 import { decodeRLE } from '../rle.js';
 
 // Pattern selection is independent of simulation state and owner identity.
-let currentPatternId = 'gun';
+let currentPatternId = 'p2';
 
 function loadPattern(id) {
   currentPatternId = id;

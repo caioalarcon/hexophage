@@ -18,7 +18,17 @@ export function resetPlayers(world, game) {
     symbol: game.symbols[i + 1],
     seed: seedIds[i],
     reserve: game.init,
+    stable: 0,
+    totalBirths: 0,
+    totalDeaths: 0,
+    lastBirths: 0,
+    lastDeaths: 0,
+    lastIncome: 0,
+    lastUpkeep: 0,
+    lastEroded: 0,
+    flowAverage: 0,
     stamps: 0,
+    stampedEnergy: 0,
     out: false,
     debtCarry: 0,
     received: 0,
@@ -27,6 +37,7 @@ export function resetPlayers(world, game) {
     lastFlow: 0,
     pattern: i === 0 ? 'manual' : game.bots[i - 1],
   }));
+  world.cellAges = new Uint8Array(world.graph.n);
   game.botPlans = game.players.map((p) => (p.id === 1 ? null : botSpiralPlan(world.graph, p.seed)));
   // Each bot owns a compact reservation mask for its established oscillators.
   // Keep the mask even if one is destroyed by combat: new stamps must not

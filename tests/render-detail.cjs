@@ -15,16 +15,18 @@ const {chromium} = require('playwright');
       lab.newWorld(320);
       lab.resetGame();
       const w = lab.world, g = w.graph, xyz = g.coords, origin = xyz.subarray(w.center * 3, w.center * 3 + 3);
-      document.querySelector('[data-pattern="gun"]').click();
+      document.querySelector('[data-pattern="gun42"]').click();
       const gun = lab.patchForStamp(w.center, w.orient, lab.stampOffsets());
       const [scout] = lab.patchForStamp(w.center, w.orient, [[26, 5]]);
+      lab.game.players[0].reserve = 100000;
+      lab.game.players[2].reserve = 100;
       if (!lab.commitStamp(1, gun) || !lab.commitStamp(3, [scout])) throw new Error('Invalid test setup');
       const far = [];
       for (let id = 0; id < g.n && far.length + w.activeCount < 205065; id++) {
         const j = id * 3;
         if (xyz[j]*origin[0] + xyz[j+1]*origin[1] + xyz[j+2]*origin[2] < .2) far.push(id);
       }
-      lab.game.players[1].reserve = far.length;
+      lab.game.players[1].reserve = far.length * 100;
       if (!lab.commitStamp(2, far)) throw new Error('Failed to create distant population');
       // Compute the projection independently from the graph and the public zoom API.
       const vector = id => Array.from(xyz.subarray(3*id, 3*id+3));

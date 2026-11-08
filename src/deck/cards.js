@@ -1,25 +1,15 @@
 import { patterns } from '../patterns/catalog.js';
 import { savedPatterns } from '../patterns/editor/saved-patterns.js';
 import { decodeRLE } from '../patterns/rle.js';
-
-const deckIds = new Set(['gun', 'glider', 'osc42', 'osc9', 'osc14', 'manual']);
-const deckNames = {
-  gun: 'Gun P42',
-  glider: 'Glider',
-  osc42: 'P42',
-  osc66: 'P66',
-  osc9: 'P9',
-  osc14: 'P14',
-  osc18: 'P18',
-  manual: 'Livre',
-};
+import { slotIds } from './slots.js';
+// Backwards compatible read-only set; slot allocation is driven by slotIds.
+const deckIds = new Set(slotIds);
+const deckNames = Object.fromEntries(patterns.callahan.map(p=>[p.id,p.name]));
+deckNames.manual='Livre';
 function deckPoints(id) {
   const saved = savedPatterns.get(id);
-  return saved
-    ? saved
-    : patterns.callahan.find((p) => p.id === id)?.rle
-      ? decodeRLE(patterns.callahan.find((p) => p.id === id).rle)
-      : [];
+  if (saved) return saved;
+  const pat=patterns.callahan.find(p=>p.id===id);
+  return pat?decodeRLE(pat.rle):[];
 }
-
-export { deckIds, deckNames, deckPoints };
+export {deckIds,deckNames,deckPoints};

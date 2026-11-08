@@ -19,7 +19,8 @@ const bundle = async (entry, define = {}) => {
 const worker = await bundle('src/world/planet.worker.js');
 const game = await bundle('src/start.js', { HEXOPHAGE_PLANET_WORKER: JSON.stringify(worker) });
 let html = await readFile('src/shell.html', 'utf8');
-for (const [marker, path] of html.matchAll(/<!-- include ([\w./-]+) -->/g)) {
+while (/<!-- include ([\w./-]+) -->/.test(html)) {
+  const [marker, path] = html.match(/<!-- include ([\w./-]+) -->/);
   const partial = await readFile('src/' + path, 'utf8');
   html = html.replace(marker, () => partial.trimEnd());
 }

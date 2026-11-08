@@ -1,76 +1,78 @@
-export function transferProportional(total, players, weights) {
-  // Exact integer allocation by largest remainders; source of truth is the actually paid integer amount.
-  if (!total || !players.length) return;
-  const sum = weights.reduce((a, b) => a + b, 0);
-  if (sum <= 0) return;
-  const entitlements = weights.map((w) => (total * w) / sum);
-  const prizes = entitlements.map((v) => Math.floor(v));
-  let remaining = total - prizes.reduce((a, b) => a + b, 0);
-  const rank = entitlements
-    .map((v, i) => ({ i, frac: v - Math.floor(v) }))
-    .sort((a, b) => b.frac - a.frac || players[a.i].id - players[b.i].id);
-  for (let k = 0; k < remaining; k++) prizes[rank[k].i]++;
-  for (let i = 0; i < players.length; i++) {
-    const amount = prizes[i];
-    players[i].reserve += amount;
-    players[i].received += amount;
-    players[i].lastFlow += amount;
-  }
-}
+import { DEFAULT_ECONOMY } from './constructive-economy.js';
 
-function rng(game) {
-  let x = game.rngState;
-  x ^= x << 13;
-  x ^= x >>> 17;
-  x ^= x << 5;
+// The old transfer model is intentionally absent: each player earns directly
+// from its own newborn cells and pays to maintain its own continuously living ones.
+function randomIndex(game, length) {
+  let x = game.rngState >>> 0;
+  x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
   game.rngState = x >>> 0;
-  return game.rngState / 4294967296;
+  return Math.floor((game.rngState / 4294967296) * length);
 }
 
 export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
   if (!game.players.length || game.initializing || game.ended) return;
-  let alive = game.players.filter((p) => !p.out);
-  for (const p of alive) if (p.reserve <= 0 && world.ownerCells[p.id].length === 0) p.out = true;
-  alive = alive.filter((p) => !p.out);
-  if (finishIfDecided(alive)) return;
-  let sum = 0;
-  for (const p of alive) sum += world.ownerCells[p.id].length;
-  const avg = sum / alive.length;
-  game.average = avg;
-  const winners = [],
-    weights = [];
-  let totalPaid = 0;
-  for (const p of alive) {
-    p.lastFlow = 0;
-    const diff = world.ownerCells[p.id].length - avg;
-    if (diff > 1e-9) {
-      winners.push(p);
-      weights.push(diff);
+  const e = game.economy || DEFAULT_ECONOMY;
+  const ages = world.cellAges || (world.cellAges = new Uint8Array(world.graph.n));
+  // advanceGeneration swaps its buffers: "next" and "nextActive" now hold
+  // the exact occupancy immediately before the last physical CA generation.
+  const newborn = new Uint32Array(8), naturalDeaths = new Uint32Array(8);
+  for (let i = 0; i < world.nextActiveCount; i++) {
+    const id = world.nextActive[i], owner = world.nextOwners[id];
+    if (!world.cells[id]) {
+      ages[id] = 0;
+      if (owner >= 1 && owner <= 6) naturalDeaths[owner]++;
     }
   }
-  for (const p of alive) {
-    const deficit = avg - world.ownerCells[p.id].length;
-    if (deficit <= 1e-9) continue;
-    const amountExact = p.debtCarry + deficit * game.tax;
-    const due = Math.floor(amountExact + 1e-9);
-    p.debtCarry = Math.max(0, amountExact - due);
-    let payment = Math.min(due, p.reserve);
-    p.reserve -= payment;
-    let unpaid = due - payment;
-    const owned = world.ownerCells[p.id];
-    const vanish = Math.min(unpaid, owned.length);
-    for (let j = 0; j < vanish; j++) {
-      const id = owned[Math.floor(rng(game) * owned.length)];
-      removeLive(id);
+  for (let i = 0; i < world.activeCount; i++) {
+    const id = world.active[i], owner = world.owners[id];
+    if (world.next[id]) ages[id] = Math.min(101, (ages[id] || 1) + 1);
+    else {
+      ages[id] = 1;
+      if (owner >= 1 && owner <= 6) newborn[owner]++;
     }
-    payment += vanish;
-    p.eroded += vanish;
-    p.paid += payment;
-    p.lastFlow -= payment;
-    totalPaid += payment;
-    if (payment < due) p.debtCarry = 0;
   }
-  transferProportional(totalPaid, winners, weights);
-  for (const p of alive) if (p.reserve <= 0 && world.ownerCells[p.id].length === 0) p.out = true;
-  finishIfDecided(alive.filter((p) => !p.out));
+  for (const p of game.players) {
+    p.lastBirths = newborn[p.id];
+    p.lastDeaths = naturalDeaths[p.id];
+    p.totalBirths = (p.totalBirths || 0) + p.lastBirths;
+    p.totalDeaths = (p.totalDeaths || 0) + p.lastDeaths;
+    if (p.out) continue;
+    let stable = 0;
+    for (const id of world.ownerCells[p.id])
+      if (ages[id] >= e.stableAfter) stable++;
+    const income = p.lastBirths * e.birthEnergy;
+    const upkeep = stable * e.upkeep;
+    const balance = p.reserve + income - upkeep;
+    p.received += income;
+    p.paid += Math.min(upkeep, Math.max(0, p.reserve + income));
+    p.lastIncome = income;
+    p.lastUpkeep = upkeep;
+    p.lastFlow = income - upkeep;
+    p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
+    p.lastEroded = 0;
+    p.reserve = Math.max(0, balance);
+    if (balance < -1e-9) {
+      // A lost living cell repays one stamp-cell cost toward the deficit.
+      // With a zero-cost slider, one erosion unit repays one energy.
+      const count = Math.min(world.ownerCells[p.id].length,
+        Math.ceil((-balance - 1e-9) / Math.max(1, e.stampCost)));
+      for (let j = 0; j < count; j++) {
+        const owned = world.ownerCells[p.id];
+        const id = owned[randomIndex(game, owned.length)];
+        if (removeLive(id)) {
+          ages[id] = 0;
+          p.eroded++;
+          p.lastEroded++;
+        }
+      }
+    }
+    p.stable = 0;
+    for (const id of world.ownerCells[p.id]) if (ages[id] >= e.stableAfter) p.stable++;
+    if (p.reserve <= 0 && world.ownerCells[p.id].length === 0) p.out = true;
+  }
+  const alive = game.players.filter(p => !p.out);
+  game.average = alive.length
+    ? alive.reduce((sum,p) => sum + world.ownerCells[p.id].length, 0) / alive.length
+    : 0;
+  finishIfDecided(alive);
 }

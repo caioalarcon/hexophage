@@ -1,3 +1,5 @@
+import { DEFAULT_ECONOMY, initialEnergy } from './constructive-economy.js';
+
 export function createMatchState() {
   return {
     colors: [
@@ -22,11 +24,12 @@ export function createMatchState() {
     ],
     symbols: ['', '🦖', '🦊', '🐙', '🦂', '👾', '🤖', '⚪'],
     names: ['', 'Você', 'Raposa', 'Polvo', 'Escorpião', 'Alien', 'Robô'],
-    bots: ['osc42', 'osc66', 'osc14', 'osc9', 'osc18'],
+    bots: ['farmer', 'cycler', 'core', 'slow', 'diverse'],
     players: [],
-    init: 8000,
-    tax: 0.000175,
-    interval: 28,
+    economy: { ...DEFAULT_ECONOMY },
+    init: initialEnergy(DEFAULT_ECONOMY),
+    tax: 0,
+    interval: 10,
     average: 0,
     winner: 0,
     ended: false,

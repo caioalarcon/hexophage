@@ -4,16 +4,17 @@ import { decodeRLE } from '../patterns/rle.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
 import { nextBotAnchor } from './spiral.js';
 import { createFootprintLookup } from './oscillator-footprint.js';
+import { energyCost } from '../match/constructive-economy.js';
 
 export function createOscillatorStrategy(world, game, commitStamp) {
   const { botProtectedOffsets } = createFootprintLookup(world);
-  return function plantOscillator(player) {
-    const pat = patterns.callahan.find((x) => x.id === player.pattern);
+  return function plantOscillator(player, chosenId = player.pattern) {
+    const pat = patterns.callahan.find((x) => x.id === chosenId);
     if (!pat) return;
-    const offsets = player.cachedOffsets || (player.cachedOffsets = decodeRLE(pat.rle));
+    const offsets = decodeRLE(pat.rle);
     const protectedOffsets = botProtectedOffsets(pat);
     const plan = game.botPlans[player.id - 1];
-    if (!plan || player.reserve < offsets.length) return;
+    if (!plan || player.reserve + 1e-9 < energyCost(offsets.length, game.economy)) return;
     let tried = 0;
     while (tried++ < 100) {
       const anchor = nextBotAnchor(world.graph, plan);

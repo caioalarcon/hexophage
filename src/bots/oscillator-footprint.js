@@ -10,7 +10,7 @@ export function createFootprintLookup(world) {
   function botProtectedOffsets(pattern) {
     const cached = botProtectedCache.get(pattern.id);
     if (cached) return cached;
-    const period = Number(pattern.id.slice(3));
+    const period = pattern.period ?? Number(pattern.id.slice(3));
     if (!Number.isInteger(period) || period < 1 || period > 256)
       throw Error('Período inválido: ' + pattern.id);
     const initial = decodeRLE(pattern.rle),

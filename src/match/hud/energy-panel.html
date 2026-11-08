@@ -1,0 +1,30 @@
+<section class="br-energy-panel" id="br-energy-panel" aria-label="Economia construtiva">
+ <h3>Economia construtiva <small>Experimental · dev</small></h3>
+ <div class="br-energy-sliders" id="br-energy-sliders">
+  <label for="eco-birth">Energia por nascimento <output id="eco-birth-val">1</output><input id="eco-birth" type="range" min="0" max="100" step="1" value="1" data-energy="birthEnergy"></label>
+  <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">10</output><input id="eco-stamp" type="range" min="0" max="100" step="1" value="10" data-energy="stampCost"></label>
+  <label for="eco-upkeep">Manutenção por célula contínua <output id="eco-upkeep-val">1</output><input id="eco-upkeep" type="range" min="0" max="100" step="1" value="1" data-energy="upkeep"></label>
+  <label for="eco-age">Idade mínima para manutenção <output id="eco-age-val">2</output><input id="eco-age" type="range" min="0" max="100" step="1" value="2" data-energy="stableAfter"></label>
+  <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">3</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="3" data-energy="initialCells"></label>
+ </div>
+ <p class="br-energy-help">A reserva inicial só muda antes da primeira ação. Os demais parâmetros atuam na próxima geração.</p>
+ <div class="br-energy-stats" aria-live="off">
+  <div><span>Energia na reserva</span><b id="eco-reserve">30</b></div>
+  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">3</b></div>
+  <div><span>Geração</span><b id="eco-generation">0</b></div>
+  <div><span>Células vivas</span><b id="eco-live">0</b></div>
+  <div><span>Continuamente vivas</span><b id="eco-stable">0</b></div>
+  <div><span>Células corroídas · total</span><b id="eco-eroded">0</b></div>
+  <div><span>Nascimentos reais · agora</span><b id="eco-births">0</b></div>
+  <div><span>Nascimentos · acumulados</span><b id="eco-births-total">0</b></div>
+  <div><span>Mortes naturais · total</span><b id="eco-deaths-total">0</b></div>
+  <div><span>Energia recebida / ger.</span><b id="eco-income">+0</b></div>
+  <div><span>Energia recebida · total</span><b id="eco-income-total">0</b></div>
+  <div><span>Manutenção / ger.</span><b id="eco-maintenance">−0</b></div>
+  <div><span>Manutenção acumulada</span><b id="eco-maintenance-total">0</b></div>
+  <div><span>Energia gasta em carimbos</span><b id="eco-stamped-total">0</b></div>
+  <div><span>Saldo de energia / ger.</span><b id="eco-flow">+0</b></div>
+  <div><span>Energia por segundo · aprox.</span><b id="eco-rate">0/s</b></div>
+  <div><span>Erosão na última geração</span><b id="eco-eroded-last">0</b></div>
+ </div>
+</section>

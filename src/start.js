@@ -14,6 +14,7 @@ import { bindMapGestures } from './map/camera/pointer.js';
 import { resetGame } from './match/controls/new-match.js';
 import { chooseRule, bindRuleChoice, bindRuleInput } from './match/controls/rule.js';
 import { bindTuning } from './match/controls/tuning.js';
+import { bindEnergyPanel } from './match/hud/energy-panel.js';
 import { bindTurnControls } from './match/controls/turns.js';
 import { bindStampControls } from './patterns/editor/controls.js';
 import { bindEditorGestures } from './patterns/editor/gestures.js';
@@ -23,6 +24,7 @@ import { bindPatternTabs } from './patterns/editor/tabs.js';
 import { newWorld } from './world/load-planet.js';
 import { bindWorldSize } from './world/size-selector.js';
 import { exposeSphereLab } from './browser/inspection.js';
+import { bindAtlasBrowser } from './patterns/atlas-browser.js';
 
 attachMatchEffects(browserMatchEffects);
 initRuleTables();
@@ -46,15 +48,17 @@ chooseRule('callahan');
 bindWireBenchmark();
 bindLayoutControls();
 bindPatternTabs();
+bindAtlasBrowser();
 buildDeckConfig();
 bindBotSelectors();
 $('br-reset').onclick = resetGame;
 bindTuning();
+bindEnergyPanel();
 
 bindPlayerFollow();
 $('hl-pattern').addEventListener('change', refreshTabs);
 
-loadPattern('gun');
+loadPattern('p2');
 resetGame();
 refreshTabs();
 requestAnimationFrame(frame);

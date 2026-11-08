@@ -7,6 +7,8 @@ import { syncPregameControls } from '../match/controls/pregame.js';
 import { updateGamePanel } from '../match/hud/ranking.js';
 import { markRender, updateStats } from '../match/hud/status.js';
 import { updateStampReadiness } from '../patterns/placement/readiness.js';
+import { energyCost } from '../match/constructive-economy.js';
+import { game } from './game.js';
 
 export const browserMatchEffects = {
   redraw() {
@@ -28,7 +30,7 @@ export const browserMatchEffects = {
   stampApplied(player, count) {
     updateGamePanel(true);
     updateStampReadiness();
-    toast(`Carimbo aplicado · −${count} de biomassa · ${player.reserve} na reserva.`);
+    toast(`Carimbo aplicado · −${energyCost(count, game.economy)} de energia · ${player.reserve} na reserva.`);
     markRender();
   },
   matchDecided(winner) {

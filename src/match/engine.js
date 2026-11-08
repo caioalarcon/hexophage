@@ -3,6 +3,7 @@ import { createPopulation } from '../simulation/population.js';
 import { advanceGeneration } from '../simulation/generation.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
 import { createOscillatorStrategy } from '../bots/oscillator-strategy.js';
+import { createGrowthStrategy } from '../bots/growth-strategy.js';
 import { runBotTurns } from '../bots/turns.js';
 import { recordHumanTurn } from './field-history.js';
 import { resetPlayers } from './players.js';
@@ -15,6 +16,7 @@ export function createMatchEngine(world, game, effects = {}, strategies = new Ma
   const population = createPopulation(world, effects);
   const stamps = createStampCommands(world, game, population.addLive, effects);
   const plantOscillator = createOscillatorStrategy(world, game, stamps.commitStamp);
+  const growthStrategy = createGrowthStrategy(game, plantOscillator);
   const finish = (alive) => finishIfDecided(game, alive, effects);
 
   function nextTick() {
@@ -43,7 +45,7 @@ export function createMatchEngine(world, game, effects = {}, strategies = new Ma
       );
     }
     if (game.ended) effects.showResults?.();
-    else runBotTurns(world, game, plantOscillator, strategies);
+    else runBotTurns(world, game, growthStrategy, strategies);
   }
 
   return {

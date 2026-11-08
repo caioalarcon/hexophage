@@ -6,8 +6,8 @@
  #hexlab .br-rail-ranking .br-podium li{padding:2px 4px}
  #hexlab .br-mini-caption{display:none}
  #hexlab .br-globe-slot{max-height:24vh}
- #hexlab .br-hotbar{min-height:62px;max-height:66px;padding:3px 4px}
- #hexlab .br-stampcard{height:56px;flex-basis:69px;width:69px}
+ #hexlab .br-hotbar{min-height:62px;padding:3px 4px}
+ #hexlab .br-stampcard{min-height:56px;flex-basis:69px;width:69px}
  #hexlab .br-stampcard canvas{height:30px;width:60px}
  #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
 }
@@ -44,3 +44,8 @@
  #hexlab .br-globe-top b{font-size:12px}
  #hexlab .br-globe-zoom{right:10px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 }
+
+/* Keep the mini-mundo 3D docked while the detailed energy metrics scroll in the free rail space. */
+#hexlab .br-rail .br-energy-panel{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#hexlab .br-rail .br-rail-spacer{display:none}
+@media (orientation:portrait){#hexlab .br-rail .br-energy-panel{display:none}}

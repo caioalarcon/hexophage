@@ -36,11 +36,11 @@
 #hexlab .br-worldpick{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 #hexlab .br-worldpick select{font-size:12px;max-width:200px}
 #hexlab .br-worldpick button:disabled,#hexlab .br-worldpick select:disabled{opacity:.5}
-#hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;max-height:84px;min-width:0;flex:0 0 auto}
+#hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;min-width:0;flex:0 0 auto}
 #hexlab .br-deck{display:flex;gap:5px;align-items:stretch;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scrollbar-width:thin;padding-bottom:3px}
-#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;height:66px;overflow:hidden}
+#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;min-height:66px;overflow:hidden}
 #hexlab .br-stampcard canvas{display:block;width:68px;height:38px;flex:0 0 auto;pointer-events:none}
-#hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:nowrap}
+#hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:normal;width:100%;overflow-wrap:anywhere;text-align:center}
 #hexlab .br-stampcard .br-stampprice{position:absolute;right:2px;top:1px;background:#0a1926c7;padding:0 2px;border-radius:4px;color:#d0e3ec;font-size:9px}
 #hexlab .br-stampcard.selected{border-color:#57f5c4;box-shadow:inset 0 0 0 1px #3de5bb;background:#173b37}
 #hexlab .br-stampcard.unavailable canvas{opacity:.55}
@@ -63,7 +63,7 @@
  #hexlab .br-scoretitle{flex-direction:row;max-width:80px}
  #hexlab .br-podium{display:flex;grid-template-columns:none;gap:4px}
  #hexlab .br-podium li{flex:0 0 91px;min-width:91px;max-width:91px;padding:2px 4px}
- #hexlab .br-hotbar{padding:5px 5px;gap:4px;min-height:74px;max-height:80px}
+ #hexlab .br-hotbar{padding:5px 5px;gap:4px;min-height:74px}
  #hexlab .br-stampcard{flex-basis:77px;width:77px}
  #hexlab .br-transform{flex-direction:column;gap:3px;justify-content:center}
  #hexlab .br-transform button{font-size:16px;min-width:28px;width:33px;height:21px;padding:0 4px}
@@ -81,3 +81,8 @@
  #hexlab .br-knob label[for="br-tax-slider"]{font-size:0;white-space:nowrap}
  #hexlab .br-knob label[for="br-tax-slider"]::after{content:'Taxa ‰';font-size:10px}
 }
+
+/* Fifteen independently configurable deck slots. */
+#hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}
+#hexlab .br-stampcard:focus-visible{outline:2px solid #8beecd;outline-offset:1px}
+#hexlab #br-open-atlas{margin:7px 0 0;width:100%;font-size:11px}
