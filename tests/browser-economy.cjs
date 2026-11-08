@@ -42,6 +42,7 @@ const {chromium}=require('playwright');
       return {reserve:p.reserve,income:p.lastIncome,upkeep:p.lastUpkeep};
     });
     assert.deepEqual(changed,{reserve:13,income:4,upkeep:1});
+    await page.waitForFunction(() => document.getElementById('eco-reserve')?.textContent === '13');
     assert.equal(await page.locator('#eco-reserve').textContent(),'13');
     await page.locator('.br-slot-edit').first().click();
     assert.equal(await page.locator('#br-atlas-dialog').evaluate(d=>d.open),true);
