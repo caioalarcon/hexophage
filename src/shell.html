@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hexophage — Battle Royale de Autômatos Celulares</title>
+<style>
+<!-- include layout/base.css -->
+<!-- include match/hud/ledger.css -->
+<!-- include match/hud/scoreboard.css -->
+<!-- include layout/breakpoints.css -->
+<!-- include map/toolbar.css -->
+<!-- include match/controls/live-tuning.css -->
+<!-- include deck/hud.css -->
+<!-- include layout/landscape.css -->
+<!-- include layout/game-shell.css -->
+<!-- include layout/portrait.css -->
+<!-- include layout/compact-controls.css -->
+</style>
+</head>
+<body><div id="hexlab">
+ <!-- include match/hud/header.html -->
+ <!-- include match/hud/ledger.html -->
+ <div class="hl-shell">
+  <main class="hl-left">
+   <!-- include match/controls/toolbar.html -->
+   <!-- include world/build-dialog.html -->
+   <!-- include map/surface.html -->
+   <!-- include deck/hotbar.html -->
+   <!-- include map/toolbar.html -->
+   <div class="br-message" aria-live="polite" aria-atomic="true"><span class="hl-feedback" id="hl-feedback" role="status"></span></div>
+  </main>
+  <div class="br-panel-overlay" id="br-panel-overlay" hidden aria-hidden="true"></div>
+  <aside class="hl-right" id="br-sidepanel" aria-label="Painel de carimbos e configurações">
+   <div class="br-panelhead"><b>Painel de jogo</b><button class="small" id="br-panel-close" aria-label="Fechar painel">Fechar</button></div>
+   <!-- include deck/configuration.html -->
+   <!-- include patterns/editor/panel.html -->
+   <!-- include match/controls/preparation.html -->
+   <!-- include globe/navigator/inspection-panel.html -->
+  </aside>
+  <!-- include layout/rail.html -->
+  <!-- include globe/navigator/fullscreen.html -->
+ </div>
+
+</div>
+<script>
+<!-- game -->
+</script>
+</body>
+</html>

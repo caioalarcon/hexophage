@@ -1,0 +1,10 @@
+  <details class="br-panelgroup"><summary>Partida e bots</summary><div class="br-groupitems">
+<div class="br-controls">
+  <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
+  <label>Biomassa inicial<input id="br-initial" type="number" min="20" max="200000" step="20" value="8000"></label>
+  <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
+  <div class="br-summary">Saldo teórico por geração: <strong>k × (suas células − média)</strong>.<br>Devedores pagam da reserva; sem reserva, perdem células aleatórias. Todo pagamento chega aos vencedores.</div>
+</div>
+  <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
+  <div class="hl-subhead">Carimbo fixo dos bots</div><div id="br-bots" class="br-bots"></div>
+  </div></details>

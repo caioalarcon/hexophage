@@ -1,0 +1,49 @@
+/* Match HUD and independently sized playing surface. */
+#hexlab {height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+#hexlab .hl-head {flex:0 0 auto;padding:6px 14px;min-height:38px}
+#hexlab .hl-headright {gap:12px;font-size:11px}
+#hexlab .br-scoreboard {display:flex;align-items:stretch;gap:12px;padding:8px 12px;background:#101d2b;border-bottom:1px solid #34475b}
+#hexlab .br-scoretitle {display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2px;flex:0 0 auto;font-size:11px;color:#adc1d1}
+#hexlab .br-link {padding:0;border:0;border-radius:2px;font-size:13px;color:#e6f2fb;background:none}
+#hexlab .br-link:hover {color:#7fedcd}
+#hexlab #br-gamestatus {font-size:10px;color:#a0b6c4}
+#hexlab .br-podium {flex:1;min-width:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;padding:0;margin:0;list-style:none}
+#hexlab .br-podium li {border:1px solid #314253;border-top:2px solid var(--player);border-radius:5px;background:#172737;padding:4px 7px 5px;min-width:0}
+#hexlab .br-podium li.mine {background:#15332f}
+#hexlab .br-podium li.out {opacity:.65}
+#hexlab .br-player {display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;white-space:nowrap}
+#hexlab .br-player small {font-size:10px;font-weight:600;color:#a9b8c9}
+#hexlab .br-scorevals {display:flex;align-items:start;justify-content:space-between;gap:3px;margin:3px 0 0;font-variant-numeric:tabular-nums}
+#hexlab .br-scorevals div {min-width:0}
+#hexlab .br-scorevals dt {font-size:9px;line-height:1.2;color:#b0bfce}
+#hexlab .br-scorevals dd {margin:0;font-weight:650;font-size:12px;line-height:1.35}
+#hexlab .positive {color:#73edba}
+#hexlab .negative {color:#ffaaa4}
+#hexlab .br-ledger {max-width:96vw;width:max-content;max-height:90vh;overflow:auto;background:#152435;color:var(--txt);border:1px solid #45617b;border-radius:10px;padding:16px}
+#hexlab .br-ledger::backdrop {background:#060d17bd}
+#hexlab .hl-shell {flex:1;min-height:0;position:relative;grid-template-columns:minmax(0,1fr) clamp(250px,22%,372px);overflow:hidden}
+#hexlab .hl-left {display:flex;min-height:0;overflow:hidden}
+#hexlab .hl-right {display:flex;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#hexlab .hl-right > * {flex-shrink:0}
+#hexlab .hl-controls {padding:6px 10px;flex:0 0 auto;min-height:38px}
+#hexlab .br-difficulty {display:flex;align-items:center;gap:4px;color:var(--muted);font-size:11px}
+#hexlab #br-botturn {width:46px;background:#15283a;border:1px solid #3c5368;border-radius:5px;color:var(--txt);padding:5px;font:inherit}
+#hexlab .br-stage {flex:1;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#080e17}
+#hexlab #hl-worldbox {position:relative;flex:1;width:100%;height:100%;min-width:0;min-height:0}
+#hexlab #hl-world {display:block;position:absolute;inset:0}
+#hexlab .hl-viewtools {right:28px;bottom:8px}
+#hexlab .hl-navbar {padding:5px 9px;flex:0 0 auto}
+#hexlab .hl-navbar button,#hexlab .hl-controls button {font-size:12px;padding:5px 8px}
+#hexlab .br-message {flex:0 0 auto;padding:3px 10px 5px;min-height:21px;background:#101c2d}
+#hexlab .br-panelhead {display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:6px;border-bottom:1px solid #2f4356}
+#hexlab .br-panelhead b {font-size:14px}
+#hexlab .br-panelhead button {font-size:10px;padding:4px 6px}
+#hexlab .br-panelgroup {border-top:1px solid #304359;padding-top:8px}
+#hexlab .br-panelgroup summary {font-weight:650;cursor:pointer;color:#bfd5e6}
+#hexlab .br-groupitems {display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:8px}
+#hexlab .br-groupitems .hl-section, #hexlab .br-groupitems .hl-footer,#hexlab .br-groupitems .br-bots,#hexlab .br-groupitems .hl-subhead {width:100%}
+#hexlab .br-groupitems .br-controls,#hexlab .br-groupitems .hl-footer {background:transparent;border:0;padding:0}
+#hexlab .br-tabs {flex-wrap:wrap;overflow:visible}
+#hexlab .br-tabs button {padding:4px 7px}
+#hexlab .hl-panel-closed .hl-right {display:none}
+#hexlab .hl-panel-closed {grid-template-columns:minmax(0,1fr)}

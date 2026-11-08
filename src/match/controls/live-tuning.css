@@ -1,0 +1,28 @@
+#hexlab .br-live-tuning{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:14px;flex:1 1 360px;max-width:760px;margin-left:auto}
+#hexlab .br-knob{min-width:0;display:grid;grid-template-rows:auto 16px;gap:0}
+#hexlab .br-knob>div{display:flex;align-items:center;justify-content:space-between;gap:2px;line-height:1.2;font-size:11px;color:#b6c9dc}
+#hexlab .br-knob label{font-weight:650;color:#e3edf6}
+#hexlab .br-knob output,#hexlab .br-knob span{font-size:10px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#hexlab .br-knob input[type=number],#hexlab .br-knob #br-botturn{height:18px;padding:0 3px;color:#d4e8f2;border:1px solid #34485f;border-radius:4px;background:#152536;font:inherit;text-align:right;appearance:textfield;-moz-appearance:textfield}
+#hexlab .br-knob input[type=number]::-webkit-inner-spin-button{appearance:none}
+#hexlab .br-knob #br-tax{width:57px}#hexlab .br-knob #br-botturn{width:34px}
+#hexlab .br-knob input[type=range]{min-width:0;width:100%;margin:0;accent-color:#4ed8b1;cursor:pointer}
+#hexlab .br-mapbar{flex-wrap:wrap}
+#hexlab .br-worldpick{display:inline-flex;align-items:center;gap:4px}
+#hexlab .br-worldpick label{font-size:11px;color:#acc4d4}
+#hexlab .br-worldpick select,#hexlab .br-worldpick button{font-size:11px;padding:4px 6px}
+#hexlab #br-fps{font-size:10px;font-variant-numeric:tabular-nums;color:#a8c8c8;white-space:nowrap}
+#hexlab .br-builddialog{color:#e7f4f3;background:#142331;border:1px solid #496170;border-radius:10px;min-width:min(360px,92vw);max-width:92vw;padding:18px;line-height:1.5}
+#hexlab .br-builddialog::backdrop{background:#050b14a6}
+#hexlab #br-build-msg{font-size:12px;min-height:22px;margin:6px 0}
+#hexlab .br-builddialog progress{display:block;accent-color:#4ed8b1;width:100%;margin-bottom:14px}
+@media(max-width:1350px){#hexlab .br-mapbar .hl-lower{display:none}}
+@media(max-width:980px){#hexlab .br-live-tuning{order:5;flex-basis:100%;max-width:none;margin:0}#hexlab #br-panel-toggle{margin-left:auto}}
+@media(max-width:540px){#hexlab .br-live-tuning{gap:8px}#hexlab .br-knob>div{font-size:10px}#hexlab .br-knob #br-tax{width:45px}#hexlab .br-mapbar .hl-viewtools{margin-left:auto}#hexlab .br-mapbar .hl-upper,#hexlab .br-worldpick label{display:none}#hexlab .br-worldpick select{max-width:117px}}
+#hexlab .br-message {display:flex;align-items:center;justify-content:space-between;gap:8px}
+#hexlab #br-loss-open {flex-shrink:0;font-size:11px}
+#hexlab .br-diagnostic {border-top:1px solid #375069;margin-top:10px}
+#hexlab .br-diagnostic h3 {font-size:14px;margin:8px 0 4px}
+#hexlab .br-diagnostic p {max-width:76ch;font-size:12px;line-height:1.5;margin:4px 0}
+#hexlab .br-diagnostic p:empty {display:none}
+#hexlab #br-wire-preview[hidden]{display:none}

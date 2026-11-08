@@ -1,0 +1,93 @@
+/* Landscape game UX: keep the 3D/atlas viewport primary. Portrait uses the existing layout. */
+#hexlab .br-advanced-tuning{display:contents}
+/* Open editor drawer must be above the control toolbar. */
+#hexlab .hl-right{z-index:42!important}
+#hexlab .br-panel-overlay{z-index:20}
+#hexlab .br-tuning-actions,#hexlab #br-tuning-toggle{display:none}
+@media (orientation: landscape) {
+ #hexlab .br-top{display:flex;flex-direction:row;align-items:stretch;flex-wrap:nowrap;height:37px;min-height:37px;overflow:hidden}
+ #hexlab .hl-head{flex:0 0 auto;display:flex;align-items:center;min-height:0;height:100%;padding:3px 8px;border:0}
+ #hexlab .hl-brand{font-size:12px;letter-spacing:.3px;gap:5px}
+ #hexlab .hl-logo{font-size:17px}
+ #hexlab .hl-tag{display:none}
+ #hexlab .br-scoreboard{display:flex;flex-direction:row;align-items:center;flex:1 1 auto;min-width:0;gap:5px;height:100%;padding:2px 7px 2px 0;border:0;overflow:hidden}
+ #hexlab .br-scoretitle{flex:0 0 33px;max-width:33px;min-width:33px;align-items:center;justify-content:center;gap:0}
+ #hexlab .br-scoretitle #br-mean,#hexlab .br-scoretitle #br-gamestatus{display:none}
+ #hexlab #br-ledger-open{display:grid;place-items:center;font-size:0;width:29px;height:29px;padding:0;border-radius:7px;background:#233448}
+ #hexlab #br-ledger-open::before{content:'🏆';font-size:15px}
+ #hexlab .br-podium{flex:1 1 auto;display:flex;grid-template-columns:none;overflow:hidden;align-items:center;gap:3px;padding:0;min-width:0}
+ #hexlab .br-podium li{flex:1 1 105px;min-width:0;max-width:170px;height:32px;padding:2px 5px 3px;overflow:hidden;border-top-width:2px}
+ #hexlab .br-player{font-size:10px;line-height:1.1;gap:3px;white-space:nowrap}
+ #hexlab .br-player span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+ #hexlab .br-scorevals{margin:2px 0 0;gap:5px}
+ #hexlab .br-scorevals dd{font-size:10px;line-height:1.15}
+ #hexlab .hl-controls{display:flex;flex-wrap:nowrap;align-items:center;min-height:38px;height:38px;gap:6px;padding:3px 7px;position:relative;z-index:12}
+ #hexlab .hl-controls #hl-step,#hexlab .hl-controls #hl-clear,#hexlab .hl-controls #hl-seed{display:none}
+ #hexlab .hl-controls #hl-play{flex:0 0 auto;height:31px;min-height:31px;padding:4px 9px;font-size:12px}
+ #hexlab .br-live-tuning{display:flex;order:0;flex:1 1 100px;max-width:210px;min-width:70px;margin-left:auto;align-items:center;gap:0}
+ #hexlab .br-speed-knob{display:grid;flex:1 1 auto;width:100%;min-width:0;grid-template-rows:auto 13px;gap:0}
+ #hexlab .br-speed-knob>div{font-size:10px;gap:3px;line-height:1.1}
+ #hexlab .br-speed-knob input[type=range]{height:13px;margin:0;width:100%;touch-action:manipulation}
+ #hexlab .br-advanced-tuning{display:none}
+ #hexlab.br-tuning-open .br-advanced-tuning{display:flex;position:absolute;top:calc(100% + 3px);right:6px;z-index:35;width:min(305px,calc(100vw - 12px));max-height:min(75vh,390px);overflow-y:auto;padding:12px;border:1px solid #4b7284;border-radius:9px;background:#15283b;box-shadow:0 12px 32px #000b;flex-direction:column;gap:11px}
+ #hexlab.br-tuning-open .br-advanced-tuning .br-knob{display:grid;gap:5px;grid-template-rows:auto 20px}
+ #hexlab.br-tuning-open .br-advanced-tuning .br-knob>div{font-size:12px}
+ #hexlab.br-tuning-open .br-advanced-tuning .br-knob input[type=range]{height:20px}
+ #hexlab.br-tuning-open .br-tuning-actions{display:flex;gap:7px;border-top:1px solid #375065;padding-top:10px;flex-wrap:wrap}
+ #hexlab #br-tuning-toggle{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;gap:4px;height:31px;min-height:31px;font-size:12px;padding:4px 9px}
+ #hexlab #br-tuning-toggle[aria-expanded=true]{background:#175746;border-color:#52c6a5}
+ #hexlab #br-panel-toggle{flex:0 0 auto;min-height:31px;height:31px;font-size:12px;padding:4px 9px;margin-left:0}
+ #hexlab .hl-shell,#hexlab .hl-left,#hexlab .br-stage,#hexlab #hl-worldbox{min-height:0;min-width:0}
+ #hexlab .br-hotbar{height:59px;min-height:59px;max-height:59px;gap:5px;padding:3px 6px}
+ #hexlab .br-deck{gap:4px;min-width:0;padding-bottom:1px}
+ #hexlab .br-stampcard{height:52px;flex:0 0 73px;width:73px;padding:1px 3px 5px;border-radius:6px}
+ #hexlab .br-stampcard canvas{width:61px;height:29px}
+ #hexlab .br-stampcard .br-stampname{font-size:9px;line-height:1.1}
+ #hexlab .br-stampcard .br-stampprice{font-size:8px}
+ #hexlab .br-transform{flex-direction:row;gap:3px;align-items:center;justify-content:flex-end;padding:0;max-height:100%;overflow:hidden}
+ #hexlab .br-transform button{height:42px;min-width:32px;padding:0 5px;font-size:18px}
+ #hexlab .br-mapbar{height:27px;min-height:27px;padding:2px 7px;gap:5px;flex-wrap:nowrap;overflow:hidden}
+ #hexlab .br-mapbar .hl-viewtools{flex:0 0 auto;margin-left:auto;gap:3px}
+ #hexlab .br-mapbar .hl-viewtools button,#hexlab .br-mapbar>button{padding:2px 6px;font-size:11px;min-width:24px}
+ #hexlab .br-mapbar .hl-lower{display:none}
+ #hexlab .br-mapbar #hl-topstatus{font-size:10px}
+ #hexlab .br-message{min-height:16px;height:16px;padding:1px 7px 2px;line-height:1.1}
+ #hexlab .br-message,#hexlab .br-message button{font-size:10px}
+}
+@media (orientation: landscape) and (max-width:1150px){
+ #hexlab .br-podium li:not(.mine):not(.rival){display:none}
+ #hexlab .br-podium li{flex:0 1 132px;max-width:132px}
+ #hexlab .br-scoreboard{padding-left:2px}
+ #hexlab .br-tuning-label{display:none}
+ #hexlab #br-tuning-toggle{min-width:32px;padding:4px 6px}
+ #hexlab #br-panel-toggle{font-size:11px;padding:4px 6px}
+}
+@media (orientation: landscape) and (max-height:650px){
+ #hexlab .br-top{height:33px;min-height:33px}
+ #hexlab .hl-head{padding:2px 6px}
+ #hexlab .br-scoreboard{padding-top:1px;padding-bottom:1px}
+ #hexlab .br-podium li{height:29px}
+ #hexlab .hl-controls{height:35px;min-height:35px;padding:2px 5px}
+ #hexlab .hl-controls #hl-play,#hexlab #br-tuning-toggle,#hexlab #br-panel-toggle{height:30px;min-height:30px}
+ #hexlab .br-hotbar{height:52px;min-height:52px;max-height:52px;padding:2px 5px}
+ #hexlab .br-stampcard{height:47px;flex-basis:68px;width:68px;padding:1px 2px 5px}
+ #hexlab .br-stampcard canvas{width:57px;height:25px}
+ #hexlab .br-transform button{height:40px;min-width:30px;padding:0 4px}
+ #hexlab .br-mapbar{height:24px;min-height:24px;padding:1px 6px}
+ #hexlab .br-message{display:none}
+ #hexlab .br-mapbar #hl-overview{display:none}
+}
+@media (orientation: landscape) and (max-width:690px){
+ #hexlab .hl-brand{font-size:10px;letter-spacing:0;gap:3px}
+ #hexlab .hl-logo{font-size:14px}
+ #hexlab .br-scoretitle{flex-basis:28px;min-width:28px;max-width:28px}
+ #hexlab #br-ledger-open{width:25px;height:25px}
+ #hexlab .br-podium li{max-width:110px;flex-basis:110px;padding:2px 4px}
+ #hexlab .br-scorevals dd{font-size:9px}
+ #hexlab .br-live-tuning{max-width:120px}
+ #hexlab .br-speed-knob>div{font-size:9px}
+ #hexlab .br-speed-knob output{font-size:9px}
+ #hexlab #br-panel-toggle{font-size:0;min-width:30px;width:30px;padding:0}
+ #hexlab #br-panel-toggle::before{content:'☷';font-size:17px;line-height:1}
+ #hexlab .br-mapbar #br-fps{display:none}
+}
