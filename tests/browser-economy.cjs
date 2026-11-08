@@ -21,13 +21,14 @@ const {chromium}=require('playwright');
     assert.equal(await cards.first().locator('.br-stampprice').textContent(),'◈360000');
     assert(!(await cards.first().evaluate(card=>card.classList.contains('unavailable'))));
     assert.equal(await page.locator('#br-energy-sliders input[type=range]').count(),7);
-    await page.locator('#br-economy-toggle').click();
-    assert(await page.locator('#eco-combat-fee').isVisible(),'combat tribute must be directly accessible');
-    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),false,'help stays collapsed until requested');
+    // The entire economic tuning panel must be reachable without opening anything.
+    for (const id of ['eco-stable-energy','eco-scale','eco-birth-cost','eco-combat-fee','eco-age','eco-stamp','eco-initial']) {
+      assert(await page.locator('#'+id).isVisible(),id+' must remain directly visible');
+    }
+    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),false,'help stays collapsed');
     await page.locator('.br-economy-guide summary').click();
-    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),true,'help appears only on demand');
+    assert.equal(await page.locator('.br-economy-guide p').first().isVisible(),true);
     await require('./support/slider-limits.cjs')(page);
-    await page.locator('#br-economy-close').click();
     assert.equal(await page.locator('#eco-tribute-in').isVisible(),false,'secondary statistics stay collapsed');
     await page.locator('.br-stats-more summary').click();
     assert.equal(await page.locator('#eco-tribute-in').isVisible(),true,'secondary statistics available on demand');
