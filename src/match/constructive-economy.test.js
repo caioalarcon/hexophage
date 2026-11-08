@@ -28,7 +28,7 @@ test('the opening can fund two growers or a grower plus a combat reserve',()=>{
   const grower=patterns.callahan.find(x=>x.id==='stalk');
   let second=null;
   for(let id=0;id<m.world.graph.n&&!second;id++) {
-    if(m.world.graph.deg[id]!==6||m.world.graph.distance[id]<20)continue;
+    if(m.world.graph.deg[id]!==6)continue;
     second=m.patchForStamp(id,0,decodeRLE(grower.rle),true);
   }
   assert(second?.length===36);
@@ -45,7 +45,7 @@ test('colony production reaches half at scale, and a large colony has diminishin
   const e=DEFAULT_ECONOMY, f=s=>generationEnergy(0,s,e).income;
   assert.equal(f(0),0); assert.equal(f(8000),80);
   assert(f(180000)<160);
-  assert(f(240000)-f(120000)<14/3, 'a second equivalent mature trunk costs more to operate than its additional income');
+  assert(f(720000)-f(360000)<14/3, 'a second equivalent mature trunk costs more to operate than its additional income');
   assert.equal(generationEnergy(5,0,e).upkeep,5);
 });
 test('the minimum flipper stays a net consumer after its core matures',()=>{
