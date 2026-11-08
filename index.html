@@ -656,6 +656,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-globe-top b{font-size:12px}
  #hexlab .br-globe-zoom{right:10px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 }
+
+/* Keep the mini-mundo 3D docked while the detailed energy metrics scroll in the free rail space. */
+#hexlab .br-rail .br-energy-panel{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#hexlab .br-rail .br-rail-spacer{display:none}
+@media (orientation:portrait){#hexlab .br-rail .br-energy-panel{display:none}}
 </style>
 </head>
 <body><div id="hexlab">
@@ -806,7 +811,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <div><span>Nascimentos · acumulados</span><b id="eco-births-total">0</b></div>
   <div><span>Mortes naturais · total</span><b id="eco-deaths-total">0</b></div>
   <div><span>Energia recebida / ger.</span><b id="eco-income">+0</b></div>
+  <div><span>Energia recebida · total</span><b id="eco-income-total">0</b></div>
   <div><span>Manutenção / ger.</span><b id="eco-maintenance">−0</b></div>
+  <div><span>Manutenção acumulada</span><b id="eco-maintenance-total">0</b></div>
+  <div><span>Energia gasta em carimbos</span><b id="eco-stamped-total">0</b></div>
   <div><span>Saldo de energia / ger.</span><b id="eco-flow">+0</b></div>
   <div><span>Energia por segundo · aprox.</span><b id="eco-rate">0/s</b></div>
   <div><span>Erosão na última geração</span><b id="eco-eroded-last">0</b></div>
@@ -1648,6 +1656,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       lastEroded: 0,
       flowAverage: 0,
       stamps: 0,
+      stampedEnergy: 0,
       out: false,
       debtCarry: 0,
       received: 0,
@@ -1683,7 +1692,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     function applyStamp2(player, fresh, notify) {
       for (const id of fresh) addLive2(id, player.id);
-      player.reserve -= energyCost(fresh.length, game2.economy);
+      const cost = energyCost(fresh.length, game2.economy);
+      player.reserve -= cost;
+      player.stampedEnergy = (player.stampedEnergy || 0) + cost;
       for (const id of fresh) if (world2.cellAges) world2.cellAges[id] = 1;
       player.stamps++;
       if (player.id === 1 && game2.humanHistory) {
@@ -5127,7 +5138,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       "eco-births-total": compact(human.totalBirths),
       "eco-deaths-total": compact(human.totalDeaths),
       "eco-income": signed(human.lastIncome),
+      "eco-income-total": compact(human.received),
       "eco-maintenance": "−" + compact(human.lastUpkeep),
+      "eco-maintenance-total": compact(human.paid),
+      "eco-stamped-total": compact(human.stampedEnergy),
       "eco-flow": signed(human.lastFlow),
       "eco-rate": signed((human.flowAverage || 0) * (world.actual || world.speed)) + "/s",
       "eco-eroded-last": compact(human.lastEroded)
