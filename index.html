@@ -491,9 +491,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-stampcard:focus-visible{outline:2px solid #8beecd;outline-offset:1px}
 #hexlab #br-open-atlas{margin:7px 0 0;width:100%;font-size:11px}
 
-/* A complete fifteen-card laboratory palette, horizontally scrollable. */
-#hexlab .br-deck {scrollbar-width:thin;scrollbar-color:#55bca7 #0d1a2a;scroll-snap-type:x proximity}
-#hexlab .br-stampcard {scroll-snap-align:start;flex-shrink:0}
+/* All fifteen cards remain accessible at once; size is managed by the layout. */
 #hexlab .br-stampcard .br-stampname {white-space:normal;overflow-wrap:anywhere}
 /* Landscape game UX: keep the 3D/atlas viewport primary. Portrait uses the existing layout. */
 #hexlab .br-advanced-tuning{display:contents}
@@ -537,9 +535,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .hl-shell,#hexlab .hl-left,#hexlab .br-stage,#hexlab #hl-worldbox{min-height:0;min-width:0}
  #hexlab .br-hotbar{min-height:59px;gap:5px;padding:3px 6px}
  #hexlab .br-deck{gap:4px;min-width:0;padding-bottom:1px}
- #hexlab .br-stampcard{min-height:52px;flex:0 0 clamp(80px,10vw,145px);width:auto;padding:1px 3px 5px;border-radius:6px}
+ #hexlab .br-stampcard{min-height:52px;flex:0 0 73px;width:73px;padding:1px 3px 5px;border-radius:6px}
  #hexlab .br-stampcard canvas{width:61px;height:29px}
- #hexlab .br-stampcard .br-stampname{font-size:clamp(9px,.78vw,12px);line-height:1.12}
+ #hexlab .br-stampcard .br-stampname{font-size:9px;line-height:1.1}
  #hexlab .br-stampcard .br-stampprice{font-size:8px}
  #hexlab .br-transform{flex-direction:row;gap:3px;align-items:center;justify-content:flex-end;padding:0;max-height:100%;overflow:hidden}
  #hexlab .br-transform button{height:42px;min-width:32px;padding:0 5px;font-size:18px}
@@ -742,6 +740,64 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 @media (orientation:portrait) and (max-width:360px), (orientation:landscape) and (max-height:470px){
  #hexlab .br-rail-controls #hl-play,#hexlab .br-rail-controls #hl-clear{flex:0 0 auto;min-width:30px;min-height:30px;padding:4px 6px}
  #hexlab .br-rail-controls #hl-play span:last-child,#hexlab .br-rail-controls #hl-clear span{display:none}
+}
+
+/* Fifteen-slot palette, fully visible without a horizontal scroll bar.
+   Preserve the original compact card dimensions on wide screens, and
+   wrap into a second/third row only when the stage has less space. */
+#hexlab .br-hotbar{align-items:stretch}
+#hexlab .br-deck{
+  display:grid!important;
+  grid-template-columns:repeat(15,minmax(0,1fr));
+  grid-auto-flow:row;
+  grid-auto-rows:minmax(0,auto);
+  align-items:stretch;
+  gap:3px!important;
+  min-width:0;width:100%;
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+  scrollbar-width:none!important;
+  scroll-snap-type:none!important;
+  padding:0!important;
+}
+#hexlab .br-deck::-webkit-scrollbar{display:none}
+#hexlab .br-deck .br-stampcard{
+  flex:none!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:auto;
+  min-height:67px;
+  padding:2px 2px 7px;
+  scroll-snap-align:none;
+}
+#hexlab .br-deck .br-stampcard canvas{
+  display:block;
+  width:min(100%,57px);
+  height:29px;
+  object-fit:contain;
+}
+#hexlab .br-deck .br-stampname{
+  font-size:9px!important;
+  line-height:1.12!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal;
+  hyphens:auto;
+}
+#hexlab .br-deck .br-stampprice{font-size:8px}
+@media(max-width:1399px){
+  #hexlab .br-deck{grid-template-columns:repeat(8,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  #hexlab .br-deck{grid-template-columns:repeat(5,minmax(0,1fr))}
+  #hexlab .br-deck .br-stampcard{min-height:70px}
+  #hexlab .br-deck .br-stampcard canvas{height:24px;width:min(100%,48px)}
+}
+@media (orientation:landscape) and (max-height:470px){
+  #hexlab .br-deck{grid-template-columns:repeat(8,minmax(0,1fr))}
+  #hexlab .br-deck .br-stampcard{min-height:47px}
+  #hexlab .br-deck .br-stampcard canvas{height:21px;width:min(100%,45px)}
 }
 </style>
 </head>
