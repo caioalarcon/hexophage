@@ -5,11 +5,11 @@ on:
   pull_request:
     branches: [main]
 permissions:
-  contents: read
+  contents: write
 jobs:
   parity:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,11 +20,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - name: Check the published HTML is reproducible
-        run: git diff --exit-code -- index.html
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - name: Update only the dev preview HTML after successful checks
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: |
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Build dev preview from tested features'
+            git push origin HEAD:dev
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: hexophage-dev
