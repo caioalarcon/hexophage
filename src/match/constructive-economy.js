@@ -1,9 +1,13 @@
-// Constructive economy: actual CA births produce energy; living cells of sufficient
-// uninterrupted age consume energy. Only a player's own living cells can erode.
+// Each mature coordinate produces energy each generation. Natural births cost
+// energy; stamping pays once for each cell placed.
 export const DEFAULT_ECONOMY = Object.freeze({
-  birthEnergy: 1, stampCost: 10, upkeep: 1, stableAfter: 2, initialCells: 3,
+  stableEnergy: 3, stampCost: 30, birthCost: 1, stableAfter: 16, initialCells: 4,
 });
 export const ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
+export function generationEnergy(births, stable, economy) {
+  if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
+  return { income: stable * economy.stableEnergy, upkeep: births * economy.birthCost };
+}
 export function energyCost(cells, economy) {
   return cells * economy.stampCost;
 }

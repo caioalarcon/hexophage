@@ -16,25 +16,28 @@ const {chromium}=require('playwright');
     await page.waitForFunction(()=>window.__sphereLab?.world?.graph && window.__sphereLab.game.players.length===6,{timeout:90000});
     assert.equal(await page.locator('.br-stampcard').count(),15,'15 hotbar slots');
     assert.equal(await page.locator('.br-stampcard').first().getAttribute('data-pattern'),'p2');
-    for(const id of ['eco-birth','eco-stamp','eco-upkeep','eco-age','eco-initial']){
+    const grower=page.locator('.br-stampcard[data-pattern="stalk"]');
+    assert.equal(await grower.locator('.br-stampprice').textContent(),'◈1080');
+    assert(await grower.evaluate(card => card.classList.contains('unavailable')));
+    for(const id of ['eco-birth-cost','eco-stamp','eco-stable-energy','eco-age','eco-initial']){
       const slider=page.locator('#'+id);
       assert.equal(await slider.getAttribute('min'),'0');
       assert.equal(await slider.getAttribute('max'),'100');
     }
     await require('./support/slider-limits.cjs')(page);
-    assert.equal(await page.locator('#eco-reserve').textContent(),'30');
-    assert.equal(await page.locator('#eco-can-stamp').textContent(),'3');
+    assert.equal(await page.locator('#eco-reserve').textContent(),'120');
+    assert.equal(await page.locator('#eco-can-stamp').textContent(),'4');
     const sample=await page.evaluate(()=>{
       const lab=window.__sphereLab,p=lab.game.players[0],world=lab.world;
       const ids=lab.patchForStamp(p.seed,world.orient,lab.stampOffsets(),true);
       const okay=lab.commitStamp(1,ids,true);
-      for(let i=0;i<10;i++)lab.nextTick();
+      for(let i=0;i<20;i++)lab.nextTick();
       return {okay,cells:ids?.length,reserve:p.reserve,births:p.totalBirths,eroded:p.eroded,
         stable:p.stable,gen:world.gen};
     });
-    assert.deepEqual(sample,{okay:true,cells:3,reserve:10,births:20,eroded:0,stable:1,gen:10});
+    assert.deepEqual(sample,{okay:true,cells:3,reserve:8,births:40,eroded:0,stable:1,gen:20});
     assert.equal(await page.locator('#eco-initial').isDisabled(),true,'initial reserve locked');
-    await page.locator('#eco-birth').evaluate(el=>{
+    await page.locator('#eco-birth-cost').evaluate(el=>{
       el.value='2';el.dispatchEvent(new Event('input',{bubbles:true}));
     });
     const changed=await page.evaluate(()=>{
@@ -42,9 +45,9 @@ const {chromium}=require('playwright');
       const p=__sphereLab.game.players[0];
       return {reserve:p.reserve,income:p.lastIncome,upkeep:p.lastUpkeep};
     });
-    assert.deepEqual(changed,{reserve:13,income:4,upkeep:1});
-    await page.waitForFunction(() => document.getElementById('eco-reserve')?.textContent === '13');
-    assert.equal(await page.locator('#eco-reserve').textContent(),'13');
+    assert.deepEqual(changed,{reserve:7,income:3,upkeep:4});
+    await page.waitForFunction(() => document.getElementById('eco-reserve')?.textContent === '7');
+    assert.equal(await page.locator('#eco-reserve').textContent(),'7');
     await page.locator('.br-slot-edit').first().click();
     assert.equal(await page.locator('#br-atlas-dialog').evaluate(d=>d.open),true);
     assert.equal(await page.locator('#br-atlas-results button').count(),160);

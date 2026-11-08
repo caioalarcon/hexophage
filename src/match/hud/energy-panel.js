@@ -6,7 +6,7 @@ import { $ } from '../../layout/elements.js';
 
 const compact = n => Number(n || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
 const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + compact(Math.abs(n));
-const controls = {birthEnergy:'eco-birth',stampCost:'eco-stamp',upkeep:'eco-upkeep',stableAfter:'eco-age',initialCells:'eco-initial'};
+const controls = {stableEnergy:'eco-stable-energy',birthCost:'eco-birth-cost',stampCost:'eco-stamp',stableAfter:'eco-age',initialCells:'eco-initial'};
 function beforeMatch() {
   return world.gen === 0 && game.players.every(p => p.stamps === 0);
 }

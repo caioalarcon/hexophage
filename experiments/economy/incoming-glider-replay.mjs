@@ -7,6 +7,7 @@ import {DIR} from '../../src/world/geometry.js';
 import {stepPose} from '../../src/map/local/oriented-step.js';
 import {createHeadlessMatch} from '../../src/match/headless.js';
 import {decodeRLE} from '../../src/patterns/rle.js';
+import {studyEconomy} from './study-baseline.js';
 import {atlasPatterns} from '../../src/patterns/atlas-data.js';
 
 const graph=buildSphere(256);
@@ -38,7 +39,7 @@ for(let i=0;i<queue.length;i++){
 }
 const pack=(q,r)=>((q+256)<<9)+(r+256);
 function run(budget,attacked,defenderSeed=target,end=768){
-  const match=createHeadlessMatch(graph,{init:budget,strategies});
+  const match=createHeadlessMatch(graph,{init:budget,strategies,economy:studyEconomy});
   if(defenderSeed.length)assert(match.commitStamp(2,match.patchForStamp(origin.id,0,defenderSeed),false));
   if(attacked)assert(match.commitStamp(1,match.patchForStamp(origin.id,0,glider),false));
   let previous=new Map(),firstErosion=null;

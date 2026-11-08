@@ -2,7 +2,6 @@ import { initRuleTables, parseRule } from '../simulation/rules.js';
 import { createPopulation } from '../simulation/population.js';
 import { advanceGeneration } from '../simulation/generation.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
-import { createOscillatorStrategy } from '../bots/oscillator-strategy.js';
 import { createGrowthStrategy } from '../bots/growth-strategy.js';
 import { runBotTurns } from '../bots/turns.js';
 import { recordHumanTurn } from './field-history.js';
@@ -15,8 +14,7 @@ import { finishIfDecided } from './outcome.js';
 export function createMatchEngine(world, game, effects = {}, strategies = new Map()) {
   const population = createPopulation(world, effects);
   const stamps = createStampCommands(world, game, population.addLive, effects);
-  const plantOscillator = createOscillatorStrategy(world, game, stamps.commitStamp);
-  const growthStrategy = createGrowthStrategy(game, plantOscillator);
+  const growthStrategy = createGrowthStrategy(world, game, stamps.commitStamp);
   const finish = (alive) => finishIfDecided(game, alive, effects);
 
   function nextTick() {

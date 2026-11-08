@@ -8,68 +8,65 @@ const pattern = id => atlasPatterns.find(p => p.id === id);
 const measure = (id, settings = {}, options = {}) =>
   analyzePatternCycles(pattern(id), { ...DEFAULT_ECONOMY, ...settings }, options);
 
-test('the flipper earns two per P2 cycle; the stamp itself earns no birth credit', async () => {
+test('the flipper survives its warm-up, then slowly pays back its stamp', async () => {
   const a = await measure('p2');
-  assert.equal(a.initialCost, 30);
-  assert.equal(a.firstPositiveCycle, 1);
-  assert.equal(a.paybackGeneration, 30);
-  assert.equal(a.workingCapital, 0);
+  assert.equal(a.initialCost, 90);
+  assert.equal(a.firstPositiveCycle, 8);
+  assert.equal(a.paybackGeneration, 132);
+  assert.equal(a.workingCapital, 28);
   assert.equal(a.firstErosionGeneration, null);
   assert.deepEqual(a.rows[0], {
-    cycle: 1, from: 1, to: 2, births: 4, maintenanceCellTurns: 2,
-    income: 4, upkeep: 2, fixedCore: 1, fixedUpkeep: 2, net: 2, cumulative: -28, live: 3,
+    cycle: 1, from: 1, to: 2, births: 4, stableCellTurns: 0,
+    income: 0, upkeep: 4, fixedCore: 1, fixedIncome: 0, net: -4, cumulative: -94, live: 3,
   });
+  assert.deepEqual(a.rows.slice(7).map(r => r.net), Array(a.rows.length - 7).fill(2));
 });
 
-test('the moving glider repays between cycle boundaries, with no fixed core', async () => {
-  const a = await measure('glider');
-  assert.equal(a.paybackGeneration, 17);
-  assert.equal(a.firstErosionGeneration, 0); // Cannot stamp with the starting allowance.
-  assert.deepEqual(a.rows.slice(0, 5).map(r => r.cumulative), [-46, -32, -18, -4, 10]);
-  for (const row of a.rows) {
-    assert.equal(row.fixedCore, 0);
-    assert.equal(row.maintenanceCellTurns, 6);
-    assert.equal(row.net, 14);
+test('all three translating ships consume more energy than their surviving cells produce', async () => {
+  for (const [id, netPerCycle] of [['glider', -20], ['p15', -48], ['p48', -208]]) {
+    const a = await measure(id, {}, { cycles: 5 });
+    assert.equal(a.paybackGeneration, null);
+    assert.equal(a.firstErosionGeneration, 0); // Cannot stamp with the starting allowance.
+    assert(a.rows.every(r => r.net < 0), id);
+    assert.equal(a.rows.at(-1).net, netPerCycle);
+    if (id === 'glider') assert(a.rows.every(r => r.income === 0));
   }
 });
 
-test('the age threshold applies every generation, including warm-up and age-zero settings', async () => {
+test('the age and energy sliders apply to the very next quote', async () => {
   const warm = await measure('p2', { stableAfter: 3 }, { cycles: 2 });
-  assert.deepEqual(warm.rows.map(r => [r.fixedCore, r.fixedUpkeep, r.net]), [[1, 1, 3], [1, 2, 2]]);
+  assert.deepEqual(warm.rows.map(r => [r.fixedCore, r.fixedIncome, r.net]), [[1, 3, -1], [1, 6, 2]]);
   const young = await measure('p2', { stableAfter: 0 }, { cycles: 2 });
-  assert.deepEqual(young.rows.map(r => r.upkeep), [6, 6]);
-  assert.equal(young.workingCapital, 4);
-  assert.equal(young.firstErosionGeneration, 1);
-  const bothZero = await measure('p2', { stampCost: 0, upkeep: 0, birthEnergy: 0 });
+  assert.deepEqual(young.rows.map(r => r.income), [18, 18]);
+  assert.equal(young.workingCapital, 0);
+  assert.equal(young.firstErosionGeneration, null);
+  const bothZero = await measure('p2', { stampCost: 0, birthCost: 0, stableEnergy: 0 });
   assert.equal(bothZero.paybackGeneration, 0);
   assert.equal(bothZero.firstPositiveCycle, null);
   assert.equal(bothZero.profitableFromCycle, null);
   assert.equal(bothZero.firstErosionGeneration, null);
 });
 
-test('a P20 emission cycle counts its detached offspring and its funded startup deficit', async () => {
-  const a = await measure('gun20');
+test('emitting ships eventually costs the P20 gun more than its core produces', async () => {
+  const a = await measure('gun20', {}, { cycles: 15 });
   assert.equal(a.cycleLength, 20);
   assert.equal(a.kind, 'emission');
-  assert.deepEqual(a.rows.slice(0, 6).map(r => r.net), [-302, -232, -162, -92, -22, 48]);
-  assert.equal(a.profitableFromCycle, 6);
-  assert.equal(a.initialCost, 520);
-  assert.equal(a.workingCapital, 829);
-  assert.equal(a.paybackGeneration, 219);
-  assert(a.rows.every(r => r.fixedUpkeep === 540));
-  const funded = await measure('gun20', { stampCost: 25, initialCells: 85 });
-  assert.equal(funded.firstErosionGeneration, 94); // Still positive at both preceding cycle boundaries.
-  assert.equal(funded.workingCapital, 829);
-  assert.equal(funded.paybackGeneration, 251);
+  assert.deepEqual(a.rows.slice(11, 15).map(r => r.net), [113, 13, -87, -187]);
+  assert.equal(a.profitableFromCycle, null);
+  assert.equal(a.initialCost, 1560);
+  assert.equal(a.paybackGeneration, 48);
+  assert(a.rows.slice(1).every(r => r.fixedIncome === 1620));
 });
 
-test('growth adds continuously living positions and increases the bill in comparable windows', async () => {
+test('the grower requires savings, then earns more as its stable core expands', async () => {
   const a = await measure('stalk', {}, { cycles: 3 });
   assert.equal(a.kind, 'window');
-  assert.deepEqual(a.rows.map(r => [r.births, r.fixedCore, r.fixedUpkeep, r.upkeep]),
-    [[121, 30, 600, 793], [117, 47, 940, 1092], [121, 60, 1200, 1393]]);
-  assert.equal(a.firstPositiveCycle, null);
-  assert.equal(a.paybackGeneration, null);
+  assert.deepEqual(a.rows.map(r => [r.births, r.fixedCore, r.fixedIncome, r.net]),
+    [[121, 30, 540, 488], [117, 47, 2574, 2478], [121, 60, 3441, 3389]]);
+  assert.equal(a.initialCost, 1080);
+  assert.equal(a.workingCapital, 86);
+  assert.equal(a.firstErosionGeneration, 0);
+  assert.equal(a.paybackGeneration, 26);
 });
 
 test('emission windows are distinct from closed oscillator periods; superseded work can abort', async () => {

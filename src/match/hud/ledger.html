@@ -1,7 +1,7 @@
 <dialog class="br-ledger" id="br-ledger" aria-labelledby="br-ledger-title"><div class="br-boardhead"><strong id="br-ledger-title">Classificação completa</strong><form method="dialog"><button aria-label="Fechar classificação">Fechar</button></form></div>
- <div class="br-boardwrap"><table class="br-table"><thead><tr><th>#</th><th>Jogador</th><th>Células no mundo</th><th>Reserva</th><th>Energia líquida / ger.</th><th>Energia recebida − manutenção</th><th>Erosão no campo</th><th>Carimbos</th></tr></thead><tbody id="br-ranking"></tbody></table></div>
+ <div class="br-boardwrap"><table class="br-table"><thead><tr><th>#</th><th>Jogador</th><th>Células no mundo</th><th>Reserva</th><th>Energia líquida / ger.</th><th>Produção − custo pago por nascimentos</th><th>Erosão no campo</th><th>Carimbos</th></tr></thead><tbody id="br-ranking"></tbody></table></div>
  <section class="br-diagnostic" aria-labelledby="br-diag-label"><h3 id="br-diag-label">Seu campo e sua reserva</h3>
  <p id="br-diag-peak"></p><p id="br-diag-largest"></p><p id="br-diag-end"></p>
 </section>
- <div class="br-note">Cada nascimento real gera energia para o dono; células vivas há pelo menos N gerações cobram manutenção. Sem reserva, a própria população sofre erosão aleatória. Células neutras não recebem energia para um jogador.</div>
+ <div class="br-note">Uma célula produz energia a cada geração a partir da idade escolhida, mesmo quando os vizinhos mudam. Cada nascimento natural custa energia ao dono. Se a produção e a reserva não cobrirem o custo, a dívida corrói células do próprio jogador.</div>
 </dialog>

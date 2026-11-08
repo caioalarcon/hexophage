@@ -13,7 +13,7 @@ test('two matches share graph but not energy, population, strategy state',()=>{
   assert.equal(second.world.gen,0);
   second.nextTick();
   assert.equal(second.game.players[1].stamps,1);
-  assert.equal(second.game.players[1].reserve,0);
+  assert.equal(second.game.players[1].reserve,30);
   assert.notEqual(first.world.cellAges,second.world.cellAges);
 });
 test('stamp charges energy only for newly placed cells; ghost and commit share legality',()=>{
@@ -22,11 +22,11 @@ test('stamp charges energy only for newly placed cells; ghost and commit share l
   const a=game.players[0].seed,b=world.graph.adj[6*a];
   assert.deepEqual(engine.stampAdditions(1,[a]),[a]);
   assert(engine.commitStamp(1,[a]));
-  assert.deepEqual(changes,[[1,1,20]]);
+  assert.deepEqual(changes,[[1,1,90]]);
   assert.equal(engine.commitStamp(2,[a]),false);
   assert.equal(engine.commitStamp(2,[b]),false);
   assert.equal(engine.commitStamp(1,[a,a,b]),false);
-  game.players[0].reserve=10;
+  game.players[0].reserve=30;
   assert.deepEqual(engine.stampAdditions(1,[a,b]),[b]);
   assert(engine.commitStamp(1,[a,b],false));
   assert.equal(game.players[0].reserve,0);

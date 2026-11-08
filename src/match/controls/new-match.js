@@ -48,7 +48,7 @@ function resetGame() {
   game.average = 0;
   updateGamePanel(true);
   markRender();
-  toast('Economia construtiva: seis jogadores, ' + game.init + ' de energia inicial cada.');
+  toast('Seis jogadores · ' + game.init + ' de energia inicial cada.');
 }
 
 export { resetGame };

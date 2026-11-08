@@ -1,7 +1,5 @@
-import { DEFAULT_ECONOMY } from './constructive-economy.js';
+import { DEFAULT_ECONOMY, generationEnergy } from './constructive-economy.js';
 
-// The old transfer model is intentionally absent: each player earns directly
-// from its own newborn cells and pays to maintain its own continuously living ones.
 function randomIndex(game, length) {
   let x = game.rngState >>> 0;
   x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
@@ -51,8 +49,7 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
     let stable = 0;
     for (const id of world.ownerCells[p.id])
       if (ages[id] >= e.stableAfter) stable++;
-    const income = p.lastBirths * e.birthEnergy;
-    const upkeep = stable * e.upkeep;
+    const { income, upkeep } = generationEnergy(p.lastBirths, stable, e);
     const balance = p.reserve + income - upkeep;
     p.received += income;
     p.paid += Math.min(upkeep, Math.max(0, p.reserve + income));

@@ -1,11 +1,11 @@
 import { game } from '../browser/game.js';
 import { $ } from '../layout/elements.js';
 const plans=[
- ['farmer','Flippers P2 · cultivo barato'],
- ['cycler','Ciclos P4 · atividade'],
- ['core','Núcleo P2 · estabilidade'],
- ['slow','Flippers P8 · ciclos longos'],
- ['diverse','Cultivo variado'],
+ ['farmer','C5 e C6 · reinvestir cedo'],
+ ['cycler','C6 · acelerar crescedor'],
+ ['core','C6 e C12 · núcleos densos'],
+ ['slow','C12 · poupar para núcleo grande'],
+ ['diverse','Crescedor e incursões de glider'],
 ];
 export function bindBotSelectors() {
   const bots=$('br-bots');bots.replaceChildren();

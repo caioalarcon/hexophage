@@ -713,11 +713,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <ol class="br-podium" id="br-podium" aria-label="Ranking dos seis jogadores"></ol>
 </section></div>
  <dialog class="br-ledger" id="br-ledger" aria-labelledby="br-ledger-title"><div class="br-boardhead"><strong id="br-ledger-title">Classificação completa</strong><form method="dialog"><button aria-label="Fechar classificação">Fechar</button></form></div>
- <div class="br-boardwrap"><table class="br-table"><thead><tr><th>#</th><th>Jogador</th><th>Células no mundo</th><th>Reserva</th><th>Energia líquida / ger.</th><th>Energia recebida − manutenção</th><th>Erosão no campo</th><th>Carimbos</th></tr></thead><tbody id="br-ranking"></tbody></table></div>
+ <div class="br-boardwrap"><table class="br-table"><thead><tr><th>#</th><th>Jogador</th><th>Células no mundo</th><th>Reserva</th><th>Energia líquida / ger.</th><th>Produção − custo pago por nascimentos</th><th>Erosão no campo</th><th>Carimbos</th></tr></thead><tbody id="br-ranking"></tbody></table></div>
  <section class="br-diagnostic" aria-labelledby="br-diag-label"><h3 id="br-diag-label">Seu campo e sua reserva</h3>
  <p id="br-diag-peak"></p><p id="br-diag-largest"></p><p id="br-diag-end"></p>
 </section>
- <div class="br-note">Cada nascimento real gera energia para o dono; células vivas há pelo menos N gerações cobram manutenção. Sem reserva, a própria população sofre erosão aleatória. Células neutras não recebem energia para um jogador.</div>
+ <div class="br-note">Uma célula produz energia a cada geração a partir da idade escolhida, mesmo quando os vizinhos mudam. Cada nascimento natural custa energia ao dono. Se a produção e a reserva não cobrirem o custo, a dívida corrói células do próprio jogador.</div>
 </dialog>
  <div class="hl-shell">
   <main class="hl-left">
@@ -768,7 +768,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <div id="br-tabs" class="br-tabs" hidden></div>
 <div class="hl-section br-loadout-manager">
  <div class="hl-subhead">15 slots · Catálogo Callahan</div>
- <div class="hl-muted">Troque padrões durante a partida. Comece pelo flipper de 3 células e cultive energia.</div>
+ <div class="hl-muted">Troque padrões durante a partida. O Flipper de 3 células abre a partida. O crescedor de colmeia está no quinto slot.</div>
  <button type="button" id="br-open-atlas" class="primary">Explorar atlas e configurar slots</button>
  <div id="br-deck-config" class="br-deck-config"></div>
 </div>
@@ -788,10 +788,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <div class="br-controls">
   <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
   <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
-  <div class="br-summary">Cada nascimento gera energia para seu dono; células continuamente vivas cobram manutenção. Sem energia, a própria construção corrói células aleatórias. Ajuste os cinco parâmetros abaixo da classificação.</div>
+  <div class="br-summary">Células que sobrevivem no mesmo lugar começam a produzir energia quando atingem a idade escolhida. Nascimentos gastam energia. Comece com um Flipper e guarde a reserva para o crescedor de colmeia.</div>
 </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
-  <div class="hl-subhead">Estratégia de cultivo dos bots</div><div id="br-bots" class="br-bots"></div>
+  <div class="hl-subhead">Estratégia dos bots</div><div id="br-bots" class="br-bots"></div>
   </div></details>
    <details class="br-panelgroup"><summary>Planeta e inspeção</summary><div class="br-groupitems">
  <button id="hl-rotateccw" title="Girar a visão 60 graus">↶ 60°</button><button id="hl-rotatecw" title="Girar a visão 60 graus">↷ 60°</button><button id="hl-sideflip">Espelhar / <span id="hl-side">Exterior</span></button><button id="hl-pentagon">Ir até anomalia</button>
@@ -823,14 +823,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <div class="br-rail-header"><strong id="br-match-heading" aria-live="polite">⬡ HEXOPHAGE</strong><span id="br-rail-gen" title="Geração atual">Geração 0</span></div>
  <div class="br-rail-controls" id="br-rail-controls"></div>
  <div class="br-rail-ranking" id="br-rail-ranking"><div class="br-rail-rankhead"><button type="button" id="br-rank-fold" aria-expanded="false">Classificação · Top 3</button><button type="button" id="br-rank-hide" aria-label="Ocultar ranking" title="Mostrar ou ocultar ranking">−</button></div><div id="br-rail-rank-slot"></div></div>
- <section class="br-energy-panel" id="br-energy-panel" aria-label="Economia construtiva">
- <h3>Economia construtiva <small>Experimental · dev</small></h3>
+ <section class="br-energy-panel" id="br-energy-panel" aria-label="Energia por estabilidade">
+ <h3>Energia por estabilidade <small>Experimental · dev</small></h3>
  <div class="br-energy-sliders" id="br-energy-sliders">
-  <label for="eco-birth">Energia por nascimento <output id="eco-birth-val">1</output><input id="eco-birth" type="range" min="0" max="100" step="1" value="1" data-energy="birthEnergy"></label>
-  <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">10</output><input id="eco-stamp" type="range" min="0" max="100" step="1" value="10" data-energy="stampCost"></label>
-  <label for="eco-upkeep">Manutenção por célula contínua <output id="eco-upkeep-val">1</output><input id="eco-upkeep" type="range" min="0" max="100" step="1" value="1" data-energy="upkeep"></label>
-  <label for="eco-age">Idade mínima para manutenção <output id="eco-age-val">2</output><input id="eco-age" type="range" min="0" max="100" step="1" value="2" data-energy="stableAfter"></label>
-  <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">3</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="3" data-energy="initialCells"></label>
+  <label for="eco-stable-energy">Ganho por célula madura <output id="eco-stable-energy-val">3</output><input id="eco-stable-energy" type="range" min="0" max="100" step="1" value="3" data-energy="stableEnergy"></label>
+  <label for="eco-birth-cost">Custo por nascimento <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
+  <label for="eco-age">Idade para começar a produzir <output id="eco-age-val">16</output><input id="eco-age" type="range" min="0" max="100" step="1" value="16" data-energy="stableAfter"></label>
+  <label for="eco-stamp">Custo por célula carimbada <output id="eco-stamp-val">30</output><input id="eco-stamp" type="range" min="0" max="100" step="1" value="30" data-energy="stampCost"></label>
+  <label for="eco-initial">Reserva inicial (células) <output id="eco-initial-val">4</output><input id="eco-initial" type="range" min="0" max="100" step="1" value="4" data-energy="initialCells"></label>
  </div>
  <p class="br-energy-help">A reserva inicial só muda antes da primeira ação. Os demais parâmetros atuam na próxima geração. Clique com o botão direito no controle ou toque no valor para ajustar o máximo.</p>
  <dialog class="br-limit-dialog" id="eco-limit-dialog" aria-labelledby="eco-limit-title">
@@ -842,19 +842,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   </form>
  </dialog>
  <div class="br-energy-stats" aria-live="off">
-  <div><span>Energia na reserva</span><b id="eco-reserve">30</b></div>
-  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">3</b></div>
+  <div><span>Energia na reserva</span><b id="eco-reserve">120</b></div>
+  <div><span>Células que pode carimbar</span><b id="eco-can-stamp">4</b></div>
   <div><span>Geração</span><b id="eco-generation">0</b></div>
   <div><span>Células vivas</span><b id="eco-live">0</b></div>
-  <div><span>Continuamente vivas</span><b id="eco-stable">0</b></div>
+  <div><span>Células maduras</span><b id="eco-stable">0</b></div>
   <div><span>Células corroídas · total</span><b id="eco-eroded">0</b></div>
   <div><span>Nascimentos reais · agora</span><b id="eco-births">0</b></div>
   <div><span>Nascimentos · acumulados</span><b id="eco-births-total">0</b></div>
   <div><span>Mortes naturais · total</span><b id="eco-deaths-total">0</b></div>
-  <div><span>Energia recebida / ger.</span><b id="eco-income">+0</b></div>
+  <div><span>Energia das maduras / ger.</span><b id="eco-income">+0</b></div>
   <div><span>Energia recebida · total</span><b id="eco-income-total">0</b></div>
-  <div><span>Manutenção / ger.</span><b id="eco-maintenance">−0</b></div>
-  <div><span>Manutenção acumulada</span><b id="eco-maintenance-total">0</b></div>
+  <div><span>Custo dos nascimentos / ger.</span><b id="eco-maintenance">−0</b></div>
+  <div><span>Energia paga por nascimentos</span><b id="eco-maintenance-total">0</b></div>
   <div><span>Energia gasta em carimbos</span><b id="eco-stamped-total">0</b></div>
   <div><span>Saldo de energia / ger.</span><b id="eco-flow">+0</b></div>
   <div><span>Energia por segundo · aprox.</span><b id="eco-rate">0/s</b></div>
@@ -891,21 +891,21 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <div id="br-cycle-report" hidden>
   <dl class="br-cycle-summary">
    <div><dt>Carimbo inicial</dt><dd id="br-cycle-stamp"></dd></div>
-   <div><dt>Reserva adicional para manutenção</dt><dd id="br-cycle-capital"></dd></div>
+   <div><dt>Reserva para cobrir déficits</dt><dd id="br-cycle-capital"></dd></div>
    <div><dt>Primeiro saldo positivo</dt><dd id="br-cycle-positive"></dd></div>
    <div><dt>Recuperação do carimbo</dt><dd id="br-cycle-payback"></dd></div>
   </dl>
   <p id="br-cycle-trend"></p>
   <figure class="br-cycle-figure">
-   <figcaption><span>Energia por <span id="br-cycle-unit">ciclo</span></span><span class="br-cycle-income">Receita</span><span class="br-cycle-upkeep">Manutenção</span></figcaption>
-   <svg id="br-cycle-plot" viewBox="0 0 570 92" role="img" aria-label="Evolução da receita e da manutenção; valores na tabela abaixo"></svg>
+   <figcaption><span>Energia por <span id="br-cycle-unit">ciclo</span></span><span class="br-cycle-income">Produção</span><span class="br-cycle-upkeep">Custo dos nascimentos</span></figcaption>
+   <svg id="br-cycle-plot" viewBox="0 0 570 92" role="img" aria-label="Energia produzida e custo dos nascimentos por intervalo"></svg>
   </figure>
   <p class="br-cycle-muted" id="br-cycle-solvency"></p>
   <details class="br-cycle-ledger"><summary>Ver valores por intervalo</summary>
    <div class="br-cycle-scroll" role="region" aria-label="Detalhamento econômico" tabindex="0">
-    <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Receita</th><th scope="col">Manutenção</th><th scope="col">Do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
+    <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Produção</th><th scope="col">Custo dos nascimentos</th><th scope="col">Produção do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
    </div>
-   <p class="br-cycle-muted">¹ Parcela da manutenção cobrada de células vivas durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
+   <p class="br-cycle-muted">¹ Produção das células que permaneceram vivas durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
   </details>
  </div>
 </section>
@@ -1498,59 +1498,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return plan.order[plan.index++].id;
   }
 
-  // src/bots/oscillator-footprint.js
-  function createFootprintLookup(world2) {
-    const botProtectedCache = /* @__PURE__ */ new Map();
-    function botProtectedOffsets(pattern) {
-      const cached = botProtectedCache.get(pattern.id);
-      if (cached) return cached;
-      const period = pattern.period ?? Number(pattern.id.slice(3));
-      if (!Number.isInteger(period) || period < 1 || period > 256)
-        throw Error("Período inválido: " + pattern.id);
-      const initial = decodeRLE(pattern.rle), position = ([q, r]) => key(q, r);
-      let alive = new Set(initial.map(position)), footprint = new Set(alive);
-      const beginning = new Set(alive);
-      for (let generation2 = 0; generation2 < period; generation2++) {
-        const candidates = new Set(alive);
-        for (const coord of alive) {
-          const [q, r] = coord.split(",").map(Number);
-          for (const [dq, dr] of DIR) candidates.add(key(q + dq, r + dr));
-        }
-        const after = /* @__PURE__ */ new Set();
-        for (const coord of candidates) {
-          const [q, r] = coord.split(",").map(Number);
-          let mask = 0;
-          for (let d = 0; d < 6; d++)
-            if (alive.has(key(q + DIR[d][0], r + DIR[d][1]))) mask |= 1 << d;
-          const survives = alive.has(coord) ? world2.callSurv6[mask] : world2.callBirth6[mask];
-          if (survives) after.add(coord);
-        }
-        alive = after;
-        for (const coord of alive) footprint.add(coord);
-      }
-      if (alive.size !== beginning.size || [...alive].some((c) => !beginning.has(c)))
-        throw Error("O padrão do bot não é estacionário em " + period + " gerações: " + pattern.id);
-      const guarded = new Set(footprint);
-      for (const coord of footprint) {
-        const [q, r] = coord.split(",").map(Number);
-        for (const [dq, dr] of DIR) guarded.add(key(q + dq, r + dr));
-      }
-      const offsets = [...guarded].map((c) => c.split(",").map(Number));
-      botProtectedCache.set(pattern.id, offsets);
-      return offsets;
-    }
-    return { botProtectedOffsets };
-  }
-
   // src/match/constructive-economy.js
   var DEFAULT_ECONOMY = Object.freeze({
-    birthEnergy: 1,
-    stampCost: 10,
-    upkeep: 1,
-    stableAfter: 2,
-    initialCells: 3
+    stableEnergy: 3,
+    stampCost: 30,
+    birthCost: 1,
+    stableAfter: 16,
+    initialCells: 4
   });
   var ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
+  function generationEnergy(births, stable, economy) {
+    if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
+    return { income: stable * economy.stableEnergy, upkeep: births * economy.birthCost };
+  }
   function energyCost(cells2, economy) {
     return cells2 * economy.stampCost;
   }
@@ -1564,19 +1524,176 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return economy.initialCells * economy.stampCost;
   }
 
+  // src/patterns/cycle-economy.js
+  var emissionWindows = /* @__PURE__ */ new Map([
+    ["gun20", 20],
+    ["gun42", 42],
+    ["gun43", 86],
+    ["gun200", 200],
+    ["gun210", 210],
+    ["gun840", 840]
+  ]);
+  function cycleWindow(pattern) {
+    if (pattern.period > 0) return { length: pattern.period, kind: "period" };
+    if (emissionWindows.has(pattern.id)) return { length: emissionWindows.get(pattern.id), kind: "emission" };
+    return { length: 20, kind: "window" };
+  }
+  var stride = 65536;
+  var adjacent = DIR.map(([q, r]) => q * stride + r);
+  var rules = createSimulationState();
+  initRuleTables(rules);
+  function patternOffset(id) {
+    const q = Math.round(id / stride);
+    return [q, id - q * stride];
+  }
+  function seedPatternAges(pattern) {
+    return new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
+  }
+  function advancePattern(ages, threshold) {
+    const masks = /* @__PURE__ */ new Map();
+    for (const id of ages.keys()) {
+      for (let k = 0; k < adjacent.length; k++) {
+        const target = id - adjacent[k];
+        masks.set(target, (masks.get(target) || 0) | 1 << k);
+      }
+    }
+    const next = /* @__PURE__ */ new Map();
+    let births = 0, mature = 0;
+    for (const [id, mask] of masks) {
+      const age = ages.get(id) || 0;
+      if (!(age ? rules.callSurv6 : rules.callBirth6)[mask]) continue;
+      next.set(id, age + 1);
+      if (age === 0) births++;
+      if (age + 1 >= threshold) mature++;
+    }
+    return { next, births, mature };
+  }
+  async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
+    const { length, kind } = cycleWindow(pattern);
+    const defaultCycles = Math.max(24, Math.ceil(160 / length));
+    const maxGenerations = cycles == null ? 8400 : 25200;
+    const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
+    economy = { ...economy };
+    const { stableAfter } = economy;
+    let ages = seedPatternAges(pattern);
+    const initialCost = energyCost(ages.size, economy);
+    const startingReserve = initialEnergy(economy);
+    const rows2 = [];
+    let operatingBalance = 0, workingCapital = 0;
+    let firstPositiveCycle = null, profitableFromCycle = null;
+    let paybackGeneration = initialCost === 0 ? 0 : null;
+    let firstErosionGeneration = startingReserve < initialCost ? 0 : null;
+    let lastYield = performance.now();
+    signal?.throwIfAborted();
+    for (let cycle = 1; cycle <= observedCycles; cycle++) {
+      const from = (cycle - 1) * length + 1, to = cycle * length;
+      let births = 0, stableCellTurns = 0;
+      for (let generation2 = from; generation2 <= to; generation2++) {
+        const turn = advancePattern(ages, stableAfter);
+        ages = turn.next;
+        births += turn.births;
+        stableCellTurns += turn.mature;
+        const flow = generationEnergy(turn.births, turn.mature, economy);
+        operatingBalance += flow.income - flow.upkeep;
+        workingCapital = Math.max(workingCapital, -operatingBalance);
+        if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation2;
+        if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < 0) {
+          firstErosionGeneration = generation2;
+        }
+        if (performance.now() - lastYield >= 10) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+          signal?.throwIfAborted();
+          lastYield = performance.now();
+        }
+      }
+      let fixedCore = 0, fixedIncome = 0;
+      for (const age of ages.values()) {
+        if (age <= length) continue;
+        fixedCore++;
+        const productiveTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
+        fixedIncome += generationEnergy(0, productiveTurns, economy).income;
+      }
+      const { income, upkeep } = generationEnergy(births, stableCellTurns, economy);
+      const net = income - upkeep;
+      if (net > 0) {
+        firstPositiveCycle ?? (firstPositiveCycle = cycle);
+        profitableFromCycle ?? (profitableFromCycle = cycle);
+      } else profitableFromCycle = null;
+      rows2.push({
+        cycle,
+        from,
+        to,
+        births,
+        stableCellTurns,
+        income,
+        upkeep,
+        fixedCore,
+        fixedIncome,
+        net,
+        cumulative: operatingBalance - initialCost,
+        live: ages.size
+      });
+    }
+    return {
+      cycleLength: length,
+      kind,
+      generations: observedCycles * length,
+      initialCost,
+      workingCapital,
+      firstPositiveCycle,
+      profitableFromCycle,
+      paybackGeneration,
+      firstErosionGeneration,
+      rows: rows2
+    };
+  }
+
+  // src/bots/oscillator-footprint.js
+  function createFootprintLookup() {
+    const cache = /* @__PURE__ */ new Map();
+    function botProtectedOffsets(pattern) {
+      if (cache.has(pattern.id)) return cache.get(pattern.id);
+      const grower = pattern.group === "crescedor";
+      const turns = grower ? 32 : pattern.period ?? Number(pattern.id.slice(3));
+      if (!Number.isInteger(turns) || turns < 1 || turns > 256)
+        throw Error("Período inválido: " + pattern.id);
+      let ages = seedPatternAges(pattern);
+      const initial = new Set(ages.keys()), footprint = new Set(initial);
+      for (let gen = 0; gen < turns; gen++) {
+        ages = advancePattern(ages, 2).next;
+        for (const id of ages.keys()) footprint.add(id);
+      }
+      if (!grower && (ages.size !== initial.size || [...ages.keys()].some((id) => !initial.has(id))))
+        throw Error("O padrão do bot não é estacionário em " + turns + " gerações: " + pattern.id);
+      const guarded = /* @__PURE__ */ new Set();
+      for (const id of footprint) {
+        const [q, r] = patternOffset(id);
+        guarded.add(key(q, r));
+        for (const [dq, dr] of DIR) guarded.add(key(q + dq, r + dr));
+      }
+      const offsets = [...guarded].map((c) => c.split(",").map(Number));
+      cache.set(pattern.id, offsets);
+      return offsets;
+    }
+    return { botProtectedOffsets };
+  }
+
   // src/bots/oscillator-strategy.js
   function createOscillatorStrategy(world2, game2, commitStamp2) {
-    const { botProtectedOffsets } = createFootprintLookup(world2);
+    const { botProtectedOffsets } = createFootprintLookup();
+    const seeds = /* @__PURE__ */ new Map();
     return function plantOscillator(player, chosenId = player.pattern) {
       const pat = patterns.callahan.find((x) => x.id === chosenId);
       if (!pat) return;
-      const offsets = decodeRLE(pat.rle);
+      if (!seeds.has(chosenId)) seeds.set(chosenId, decodeRLE(pat.rle));
+      const offsets = seeds.get(chosenId);
       const protectedOffsets = botProtectedOffsets(pat);
       const plan = game2.botPlans[player.id - 1];
       if (!plan || player.reserve + 1e-9 < energyCost(offsets.length, game2.economy)) return;
+      const spiral = pat.group === "crescedor" ? plan.growerSpiral ?? (plan.growerSpiral = botSpiralPlan(world2.graph, player.seed)) : plan;
       let tried = 0;
       while (tried++ < 100) {
-        const anchor = nextBotAnchor(world2.graph, plan);
+        const anchor = nextBotAnchor(world2.graph, spiral);
         if (anchor === -1) break;
         const orientation = eastAt(world2.graph, anchor);
         const ids = patchForStamp(world2, anchor, orientation, offsets, true);
@@ -1593,35 +1710,113 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if (!independent) continue;
         if (commitStamp2(player.id, ids, false)) {
           for (const id of protectedIds) game2.botReserved[id] = player.id;
-          break;
+          return true;
         }
       }
+      return false;
     };
   }
 
-  // src/bots/growth-strategy.js
-  var choices = ["p2", "p4f", "censo-oscillator-5-p2-1", "p8f"];
-  function growthChoice(player, game2) {
-    if (player.stamps === 0) return "p2";
-    switch (player.pattern) {
-      case "farmer":
-        return "p2";
-      // rapid, repeated cheap flippers
-      case "cycler":
-        return "p4f";
-      // save for higher turnover
-      case "core":
-        return "censo-oscillator-5-p2-1";
-      // save for larger fixed core
-      case "slow":
-        return "p8f";
-      // save for slower oscillator with lower fixed fraction
-      default:
-        return choices[player.stamps % choices.length];
-    }
+  // src/bots/investments.js
+  function createInvestmentQuotes(economy) {
+    const cache = /* @__PURE__ */ new Map();
+    let lastSettings;
+    return function quote(id) {
+      const { stableEnergy, birthCost, stableAfter, stampCost } = economy;
+      const settings = [stableEnergy, birthCost, stableAfter, stampCost].join("/");
+      if (settings !== lastSettings) {
+        cache.clear();
+        lastSettings = settings;
+      }
+      if (cache.has(id)) return cache.get(id);
+      const pattern = atlasPatterns.find((p) => p.id === id);
+      let ages = seedPatternAges(pattern);
+      const price = energyCost(ages.size, economy);
+      const delayed = Math.max(0, stableAfter - 72);
+      const stationary = pattern.group === "oscilador";
+      const cyclesSkipped = stationary ? Math.floor(delayed / pattern.period) : 0;
+      const turnsSkipped = stationary ? cyclesSkipped * pattern.period : delayed;
+      const maturity = stableAfter - turnsSkipped;
+      const turns = Math.max(32, maturity + 12);
+      let capital = 0, balance = 0, recent = 0, cycleCost = 0, peakBurn = 0;
+      for (let gen = 1; gen <= turns; gen++) {
+        const { next, births, mature } = advancePattern(ages, maturity);
+        ages = next;
+        const { income, upkeep } = generationEnergy(births, mature, economy);
+        const net = income - upkeep;
+        if (gen <= pattern.period) cycleCost += upkeep;
+        peakBurn = Math.max(peakBurn, upkeep);
+        balance += net;
+        capital = Math.max(capital, -balance);
+        if (gen > turns - 12) recent += net;
+      }
+      const delayedCost = stationary ? cyclesSkipped * cycleCost : pattern.group === "crescedor" ? turnsSkipped * peakBurn : 0;
+      const result = { id, budget: price + capital + delayedCost, yield: recent / 12 };
+      cache.set(id, result);
+      return result;
+    };
   }
-  function createGrowthStrategy(game2, plantOscillator) {
-    return (player) => plantOscillator(player, growthChoice(player, game2));
+
+  // src/bots/raids.js
+  var glider = decodeRLE(atlasPatterns.find((p) => p.id === "glider").rle).map(([q, r]) => [q - 8, r - 2]);
+  function raidMatureCore(world2, game2, player, commitStamp2) {
+    const rivals = game2.players.filter((p) => p !== player && !p.out && p.stable).sort((a, b) => b.stable - a.stable);
+    for (const rival of rivals) {
+      const cells2 = world2.ownerCells[rival.id];
+      const stride2 = Math.max(1, Math.ceil(cells2.length / 8));
+      for (let index = world2.gen % stride2; index < cells2.length; index += stride2) {
+        const target = cells2[index];
+        if (world2.cellAges[target] < game2.economy.stableAfter) continue;
+        for (let dir = 0; dir < 6; dir++) {
+          const ids = patchForStamp(world2, target, dir, glider, true);
+          if (ids && commitStamp2(player.id, ids, false)) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // src/bots/growth-strategy.js
+  var small = "censo-oscillator-5-p2-1";
+  var medium = "censo-oscillator-6-p2-1";
+  var large = "censo-oscillator-12-p3-1";
+  var plans = {
+    farmer: [medium, small],
+    cycler: [medium],
+    core: [large, medium],
+    slow: [large],
+    diverse: [large, medium]
+  };
+  function createGrowthStrategy(world2, game2, commitStamp2) {
+    const plant = createOscillatorStrategy(world2, game2, commitStamp2);
+    const quote = createInvestmentQuotes(game2.economy);
+    return (player) => {
+      const afford = (q) => q.yield > 0 && player.reserve >= q.budget;
+      const flipper = quote("p2");
+      if (!world2.ownerCells[player.id].length && afford(flipper)) {
+        plant(player, flipper.id);
+        return;
+      }
+      const plan = game2.botPlans[player.id - 1];
+      const grower = quote("stalk");
+      if (player.pattern === "diverse" && plan.nextRaid != null && world2.gen >= plan.nextRaid && player.flowAverage > 5 * game2.economy.birthCost && player.reserve >= grower.budget + quote("glider").budget) {
+        plan.nextRaid = world2.gen + 24;
+        if (raidMatureCore(world2, game2, player, commitStamp2)) return;
+      }
+      if (afford(grower) && plant(player, grower.id)) {
+        plan.nextRaid ?? (plan.nextRaid = world2.gen + 24);
+        return;
+      }
+      const flow = Math.max(0, player.flowAverage);
+      const wait = grower.yield > 0 && flow > 0 && grower.budget > player.reserve ? (grower.budget - player.reserve) / flow : Infinity;
+      const bridges = player.pattern === "core" && player.stamps >= 2 ? [large] : plans[player.pattern] ?? plans.cycler;
+      for (const id of bridges) {
+        const bridge = quote(id);
+        if (!afford(bridge)) continue;
+        if (wait < game2.economy.stableAfter + bridge.budget / bridge.yield) continue;
+        if (plant(player, id)) return;
+      }
+    };
   }
 
   // src/bots/turns.js
@@ -1644,6 +1839,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         births: h.births,
         deaths: h.deaths,
         placed: h.placed,
+        stampedEnergy: p.stampedEnergy,
         received: p.received,
         paid: p.paid,
         eroded: p.eroded
@@ -1823,8 +2019,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       let stable = 0;
       for (const id of world2.ownerCells[p.id])
         if (ages[id] >= e.stableAfter) stable++;
-      const income = p.lastBirths * e.birthEnergy;
-      const upkeep = stable * e.upkeep;
+      const { income, upkeep } = generationEnergy(p.lastBirths, stable, e);
       const balance = p.reserve + income - upkeep;
       p.received += income;
       p.paid += Math.min(upkeep, Math.max(0, p.reserve + income));
@@ -1872,8 +2067,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function createMatchEngine(world2, game2, effects2 = {}, strategies = /* @__PURE__ */ new Map()) {
     const population = createPopulation(world2, effects2);
     const stamps = createStampCommands(world2, game2, population.addLive, effects2);
-    const plantOscillator = createOscillatorStrategy(world2, game2, stamps.commitStamp);
-    const growthStrategy = createGrowthStrategy(game2, plantOscillator);
+    const growthStrategy = createGrowthStrategy(world2, game2, stamps.commitStamp);
     const finish = (alive) => finishIfDecided(game2, alive, effects2);
     function nextTick2() {
       if (game2.ended) return;
@@ -1984,12 +2178,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var grid = $("hl-grid");
 
   // src/bots/configuration-panel.js
-  var plans = [
-    ["farmer", "Flippers P2 · cultivo barato"],
-    ["cycler", "Ciclos P4 · atividade"],
-    ["core", "Núcleo P2 · estabilidade"],
-    ["slow", "Flippers P8 · ciclos longos"],
-    ["diverse", "Cultivo variado"]
+  var plans2 = [
+    ["farmer", "C5 e C6 · reinvestir cedo"],
+    ["cycler", "C6 · acelerar crescedor"],
+    ["core", "C6 e C12 · núcleos densos"],
+    ["slow", "C12 · poupar para núcleo grande"],
+    ["diverse", "Crescedor e incursões de glider"]
   ];
   function bindBotSelectors() {
     const bots = $("br-bots");
@@ -2000,7 +2194,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       label.textContent = game.symbols[id] + " " + game.names[id];
       const select = document.createElement("select");
       select.id = "br-bot-" + id;
-      for (const [value, name] of plans) {
+      for (const [value, name] of plans2) {
         const o = document.createElement("option");
         o.value = value;
         o.textContent = name;
@@ -3665,7 +3859,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     "censo-oscillator-5-p2-1",
     "p4f",
     "censo-oscillator-6-p2-1",
-    "censo-oscillator-6-p2-2",
+    "stalk",
     "p8f",
     "glider",
     "censo-oscillator-7-p2-1",
@@ -4387,14 +4581,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (let n = 0; n < 256; n++) {
       const target = axialFromPixels(x, y);
       if (!target.q && !target.r) break;
-      const choices2 = [];
+      const choices = [];
       for (let d = 0; d < 6; d++) {
         const [q, r] = DIR[d], sx = DX * (q + r / 2), sy = DY * r, score = sx * x + sy * y;
-        if (score > edge) choices2.push({ d, sx, sy, score });
+        if (score > edge) choices.push({ d, sx, sy, score });
       }
-      choices2.sort((a, b) => b.score - a.score);
+      choices.sort((a, b) => b.score - a.score);
       let advanced = false;
-      for (const { d, sx, sy } of choices2) {
+      for (const { d, sx, sy } of choices) {
         const pose = stepPose(g, world.center, world.orient, d, world.side);
         const chart = pose && makeChart(pose.id, pose.ori);
         if (!chart) continue;
@@ -4407,7 +4601,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         break;
       }
       if (!advanced) {
-        const dir = choices2[0];
+        const dir = choices[0];
         if (dir) {
           if (Math.abs(x) > Math.abs(y) * 2) x = 0;
           else if (Math.abs(y) > Math.abs(x) * 2) y = 0;
@@ -4904,121 +5098,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world.needsGrid = false;
   }
 
-  // src/patterns/cycle-economy.js
-  var emissionWindows = /* @__PURE__ */ new Map([
-    ["gun20", 20],
-    ["gun42", 42],
-    ["gun43", 86],
-    ["gun200", 200],
-    ["gun210", 210],
-    ["gun840", 840]
-  ]);
-  function cycleWindow(pattern) {
-    if (pattern.period > 0) return { length: pattern.period, kind: "period" };
-    if (emissionWindows.has(pattern.id)) return { length: emissionWindows.get(pattern.id), kind: "emission" };
-    return { length: 20, kind: "window" };
-  }
-  var stride = 65536;
-  var adjacent = DIR.map(([q, r]) => q * stride + r);
-  var rules = createSimulationState();
-  initRuleTables(rules);
-  function advance(ages, threshold) {
-    const masks = /* @__PURE__ */ new Map();
-    for (const id of ages.keys()) {
-      for (let k = 0; k < adjacent.length; k++) {
-        const target = id - adjacent[k];
-        masks.set(target, (masks.get(target) || 0) | 1 << k);
-      }
-    }
-    const next = /* @__PURE__ */ new Map();
-    let births = 0, charged = 0;
-    for (const [id, mask] of masks) {
-      const age = ages.get(id) || 0;
-      if (!(age ? rules.callSurv6 : rules.callBirth6)[mask]) continue;
-      next.set(id, age + 1);
-      if (age === 0) births++;
-      if (age + 1 >= threshold) charged++;
-    }
-    return { next, births, charged };
-  }
-  async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
-    const { length, kind } = cycleWindow(pattern);
-    const defaultCycles = Math.max(24, Math.ceil(128 / length));
-    const maxGenerations = cycles == null ? 8400 : 25200;
-    const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
-    const { birthEnergy, upkeep: upkeepRate, stableAfter } = economy;
-    let ages = new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
-    const initialCost = energyCost(ages.size, economy);
-    const startingReserve = initialEnergy(economy);
-    const rows2 = [];
-    let operatingBalance = 0, workingCapital = 0;
-    let firstPositiveCycle = null, profitableFromCycle = null;
-    let paybackGeneration = initialCost === 0 ? 0 : null;
-    let firstErosionGeneration = startingReserve < initialCost ? 0 : null;
-    let lastYield = performance.now();
-    signal?.throwIfAborted();
-    for (let cycle = 1; cycle <= observedCycles; cycle++) {
-      const from = (cycle - 1) * length + 1, to = cycle * length;
-      let births = 0, maintenanceCellTurns = 0;
-      for (let generation2 = from; generation2 <= to; generation2++) {
-        const turn = advance(ages, stableAfter);
-        ages = turn.next;
-        births += turn.births;
-        maintenanceCellTurns += turn.charged;
-        operatingBalance += turn.births * birthEnergy - turn.charged * upkeepRate;
-        workingCapital = Math.max(workingCapital, -operatingBalance);
-        if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation2;
-        if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < 0) {
-          firstErosionGeneration = generation2;
-        }
-        if (performance.now() - lastYield >= 10) {
-          await new Promise((resolve) => setTimeout(resolve, 0));
-          signal?.throwIfAborted();
-          lastYield = performance.now();
-        }
-      }
-      let fixedCore = 0, fixedUpkeep = 0;
-      for (const age of ages.values()) {
-        if (age <= length) continue;
-        fixedCore++;
-        const chargedTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
-        fixedUpkeep += chargedTurns * upkeepRate;
-      }
-      const income = births * birthEnergy, upkeep = maintenanceCellTurns * upkeepRate;
-      const net = income - upkeep;
-      if (net > 0) {
-        firstPositiveCycle ?? (firstPositiveCycle = cycle);
-        profitableFromCycle ?? (profitableFromCycle = cycle);
-      } else profitableFromCycle = null;
-      rows2.push({
-        cycle,
-        from,
-        to,
-        births,
-        maintenanceCellTurns,
-        income,
-        upkeep,
-        fixedCore,
-        fixedUpkeep,
-        net,
-        cumulative: operatingBalance - initialCost,
-        live: ages.size
-      });
-    }
-    return {
-      cycleLength: length,
-      kind,
-      generations: observedCycles * length,
-      initialCost,
-      workingCapital,
-      firstPositiveCycle,
-      profitableFromCycle,
-      paybackGeneration,
-      firstErosionGeneration,
-      rows: rows2
-    };
-  }
-
   // src/patterns/atlas-cycle-panel.js
   var format = new Intl.NumberFormat("pt-BR");
   var fmt = (n) => format.format(n);
@@ -5065,7 +5144,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         fmt(r.births),
         fmt(r.income),
         fmt(r.upkeep),
-        fmt(r.fixedUpkeep) + " (" + fmt(r.fixedCore) + " cél.)",
+        fmt(r.fixedIncome) + " (" + fmt(r.fixedCore) + " cél.)",
         signed(r.net),
         signed(r.cumulative)
       ];
@@ -5091,8 +5170,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     $("br-cycle-capital").textContent = fmt(workingCapital);
     $("br-cycle-positive").textContent = report.firstPositiveCycle === null ? "Nenhum no intervalo" : unit + " " + fmt(report.firstPositiveCycle);
     $("br-cycle-payback").textContent = report.paybackGeneration === null ? "Sem retorno no intervalo" : "Geração " + fmt(report.paybackGeneration);
-    const charge = rows2.every((row) => row.upkeep === first.upkeep) ? "A manutenção custou " + fmt(first.upkeep) + " de energia por " + interval + "." : "A manutenção custou " + fmt(first.upkeep) + " no primeiro intervalo e " + fmt(last.upkeep) + " no último.";
-    const core = rows2.every((row) => row.fixedUpkeep === first.fixedUpkeep) ? " A parcela do núcleo ficou em " + fmt(first.fixedUpkeep) + " por " + interval + "." : " A parcela do núcleo passou de " + fmt(first.fixedUpkeep) + " para " + fmt(last.fixedUpkeep) + ".";
+    const charge = rows2.every((row) => row.upkeep === first.upkeep) ? "Os nascimentos custaram " + fmt(first.upkeep) + " de energia por " + interval + "." : "Os nascimentos custaram " + fmt(first.upkeep) + " no primeiro intervalo e " + fmt(last.upkeep) + " no último.";
+    const core = rows2.every((row) => row.fixedIncome === first.fixedIncome) ? " O núcleo produziu " + fmt(first.fixedIncome) + " por " + interval + "." : " A produção do núcleo passou de " + fmt(first.fixedIncome) + " para " + fmt(last.fixedIncome) + ".";
     const positive = report.profitableFromCycle;
     const streak = positive === null ? "" : positive === 1 ? " Todos os intervalos deram saldo positivo." : positive === last.cycle ? " O último intervalo deu saldo positivo." : " O saldo ficou positivo do " + positive + "º ao " + last.cycle + "º intervalo.";
     $("br-cycle-trend").textContent = charge + core + streak;
@@ -5430,7 +5509,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const e = h.largest, fmt3 = (n) => n.toLocaleString("pt-BR");
     if (!showDetails) return;
     const p = game.players[0], peak = h.peak, field = world.ownerCells[1].length;
-    $("br-diag-peak").textContent = peak && peak.field > 0 ? `Desde o pico de ${fmt3(peak.field)} células na geração ${fmt3(peak.gen)}, seu campo chegou a ${fmt3(field)}. Carimbadas +${fmt3(h.placed - peak.placed)}, nascidas +${fmt3(h.births - peak.births)}, mortas pelo autômato −${fmt3(h.deaths - peak.deaths)}, removidas por dívida −${fmt3(p.eroded - peak.eroded)}. Reserva ${fmt3(peak.reserve)} → ${fmt3(p.reserve)}, com ${fmt3(p.received - peak.received)} recebidas, ${fmt3(p.paid - peak.paid - (p.eroded - peak.eroded))} pagas da reserva e ${fmt3(h.placed - peak.placed)} gastas em carimbos.` : "Aguardando o primeiro carimbo.";
+    $("br-diag-peak").textContent = peak && peak.field > 0 ? `Desde o pico de ${fmt3(peak.field)} células na geração ${fmt3(peak.gen)}, seu campo chegou a ${fmt3(field)}. Carimbadas +${fmt3(h.placed - peak.placed)}, nascidas +${fmt3(h.births - peak.births)}, mortas pelo autômato −${fmt3(h.deaths - peak.deaths)}, removidas por dívida −${fmt3(p.eroded - peak.eroded)}. Reserva ${fmt3(peak.reserve)} → ${fmt3(p.reserve)}, com ${fmt3(p.received - peak.received)} recebidas, ${fmt3(p.paid - peak.paid)} pagas da reserva e ${fmt3(p.stampedEnergy - peak.stampedEnergy)} gastas em carimbos.` : "Aguardando o primeiro carimbo.";
     $("br-diag-largest").textContent = e ? `Maior queda em uma geração (${fmt3(e.gen)}). Campo ${fmt3(e.before)} → ${fmt3(e.after)}. Nasceram ${fmt3(e.births)}, o autômato matou ${fmt3(e.deaths)} e a dívida removeu ${fmt3(e.erosion)}. Reserva ${fmt3(e.reserveBefore)} → ${fmt3(e.reserve)}.` : "";
     $("br-diag-end").textContent = h.eliminated !== null ? `Eliminação na geração ${fmt3(h.eliminated)}, com zero no campo e zero na reserva.` : p.reserve === 0 && field > 0 ? `Você continua em jogo com ${fmt3(field)} células em campo e reserva zero.` : "";
   }
@@ -5487,7 +5566,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   // src/match/hud/energy-panel.js
   var compact = (n) => Number(n || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
   var signed2 = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + compact(Math.abs(n));
-  var controls = { birthEnergy: "eco-birth", stampCost: "eco-stamp", upkeep: "eco-upkeep", stableAfter: "eco-age", initialCells: "eco-initial" };
+  var controls = { stableEnergy: "eco-stable-energy", birthCost: "eco-birth-cost", stampCost: "eco-stamp", stableAfter: "eco-age", initialCells: "eco-initial" };
   function beforeMatch() {
     return world.gen === 0 && game.players.every((p) => p.stamps === 0);
   }
@@ -6358,7 +6437,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     game.average = 0;
     updateGamePanel(true);
     markRender();
-    toast("Economia construtiva: seis jogadores, " + game.init + " de energia inicial cada.");
+    toast("Seis jogadores · " + game.init + " de energia inicial cada.");
   }
 
   // src/match/controls/rule.js

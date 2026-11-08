@@ -3,7 +3,7 @@
 export const SLOT_COUNT=15;
 export const slotIds=[
   'p2','censo-oscillator-5-p2-1','p4f','censo-oscillator-6-p2-1',
-  'censo-oscillator-6-p2-2','p8f','glider','censo-oscillator-7-p2-1',
+  'stalk','p8f','glider','censo-oscillator-7-p2-1',
   'censo-oscillator-8-p2-1','p48','p42rot','p42','p14','gun20','gun42',
 ];
 export let selectedSlot=0;

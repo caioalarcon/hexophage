@@ -1,11 +1,11 @@
 import { atlasPatterns } from '../../src/patterns/atlas-data.js';
 import { analyzePatternCycles, cycleWindow } from '../../src/patterns/cycle-economy.js';
-import { DEFAULT_ECONOMY } from '../../src/match/constructive-economy.js';
+import { studyEconomy } from './study-baseline.js';
 
 // Rates describe an isolated, funded lineage. A live cell is either a newborn
-// or a survivor charged at the game's default age threshold of two.
+// or a survivor charged at the study's age threshold of two.
 function sample(row, length) {
-  const births = row.births / length, upkeep = row.maintenanceCellTurns / length;
+  const births = row.births / length, upkeep = row.stableCellTurns / length;
   return [births, upkeep, row.fixedCore, births + upkeep];
 }
 
@@ -38,7 +38,7 @@ export async function generateProfiles() {
     const { id, name, group, period, cells } = pattern;
     const window = cycleWindow(pattern).length;
     const cycles = period ? 8 : group === 'interação' || id === 'stalk' ? 128 : 24;
-    const { rows, workingCapital, paybackGeneration } = await analyzePatternCycles(pattern, DEFAULT_ECONOMY, { cycles });
+    const { rows, workingCapital, paybackGeneration } = await analyzePatternCycles(pattern, studyEconomy, { cycles });
     const observations = rows.map(r => sample(r, window));
     const fit = project(observations, window);
     const [births, upkeep, windowCore, live] = fit?.base ?? average(observations);
