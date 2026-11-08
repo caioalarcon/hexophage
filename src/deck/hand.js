@@ -1,8 +1,7 @@
 import { game } from '../browser/game.js';
 import { drawDeckIcon } from './card-icon.js';
 import { deckNames, deckPoints } from './cards.js';
-import { slotIds, selectedSlot, selectSlot } from './slots.js';
-import { openAtlasBrowser } from '../patterns/atlas-browser.js';
+import { slotIds, selectedSlot, selectSlot, requestSlotPicker } from './slots.js';
 import { $ } from '../layout/elements.js';
 import { energyCost } from '../match/constructive-economy.js';
 function renderDeck(currentPatternId, loadPattern) {
@@ -16,10 +15,10 @@ function renderDeck(currentPatternId, loadPattern) {
       b.className='br-stampcard';b.dataset.slot=key;
       b.innerHTML='<canvas width="68" height="38" aria-hidden="true"></canvas><span class="br-stampname"></span><span class="br-stampprice"></span><span class="br-charge"><i></i></span><span class="br-slot-edit" title="Trocar padrão deste slot">⋯</span>';
       b.onclick=e=>{
-        if(e.target.closest('.br-slot-edit')){e.stopPropagation();openAtlasBrowser(Number(b.dataset.slot));return;}
+        if(e.target.closest('.br-slot-edit')){e.stopPropagation();requestSlotPicker(Number(b.dataset.slot));return;}
         selectSlot(Number(b.dataset.slot));loadPattern(b.dataset.pattern);
       };
-      b.addEventListener('contextmenu',e=>{e.preventDefault();openAtlasBrowser(Number(b.dataset.slot))});
+      b.addEventListener('contextmenu',e=>{e.preventDefault();requestSlotPicker(Number(b.dataset.slot))});
     }
     b.dataset.pattern=id;
     const pts=deckPoints(id),name=deckNames[id]||id;

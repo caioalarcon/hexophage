@@ -16,3 +16,7 @@ export function assignSlot(index,patternId,allPatterns) {
       !allPatterns.some(p=>p.id===patternId)) return false;
   slotIds[index]=patternId;return true;
 }
+
+let slotPicker = () => {};
+export function registerSlotPicker(open) { slotPicker = open; }
+export function requestSlotPicker(slot) { slotPicker(slot); }

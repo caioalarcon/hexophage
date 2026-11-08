@@ -47,6 +47,7 @@ test('unaffordable maintenance randomly erodes own cells, not a rival',()=>{
   const rival=m.game.players[1],rivalBefore=m.world.ownerCells[rival.id].length;
   m.game.economy.upkeep=100;
   p.reserve=0;
+  rival.reserve=100000;
   m.nextTick();
   assert(p.eroded>0);
   assert.equal(p.reserve,0);

@@ -4,7 +4,7 @@ import { DIR } from '../world/geometry.js';
 import { game } from '../browser/game.js';
 import { world } from '../browser/world-state.js';
 import { $ } from '../layout/elements.js';
-import { slotIds, assignSlot, selectSlot } from '../deck/slots.js';
+import { slotIds, assignSlot, selectSlot, registerSlotPicker } from '../deck/slots.js';
 import { loadPattern, currentPatternId } from './editor/selection.js';
 import { renderDeck } from '../deck/hand.js';
 
@@ -132,6 +132,7 @@ export function openAtlasBrowser(slot=0) {
   requestAnimationFrame(draw);
 }
 export function bindAtlasBrowser() {
+  registerSlotPicker(openAtlasBrowser);
   el('br-atlas-close').onclick=()=>el('br-atlas-dialog').close();
   for(const id of ['br-atlas-query','br-atlas-class','br-atlas-order'])el(id).addEventListener('input',renderList);
   el('br-atlas-play').onclick=play;
