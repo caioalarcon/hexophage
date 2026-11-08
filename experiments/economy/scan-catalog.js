@@ -12,9 +12,10 @@ for (const id of ['current','battery']) {
   for (const [pattern,p] of profiles) {
     const policy = {id:pattern,start:['p2'],repeat:[pattern],fundGun:true};
     const r = simulate(profiles,rule,policy);
-    const last = r.checkpoints.at(-1);
-    rows.push({rule:id,pattern,name:p.name,orders:r.orders,firstOrder:r.marks[2]??null,
-      secondHalf:r.firstInsolvent || r.stop != null ? null :r.orders - r.atHalf,
+    const end = r.stop ?? r.firstInsolvent ?? r.checkpoints.at(-1).g;
+    const last = r.checkpoints.find(point => point.g === end);
+    rows.push({rule:id,pattern,name:p.name,orders:last.orders,secondOrderG:r.marks[2]??null,observedG:end,status:last.status,
+      secondHalf:r.firstInsolvent != null || r.stop != null ? null : r.orders - r.atHalf,
       stop:r.stop,deficit:r.firstInsolvent,exceedsF320:r.breachedMap,bank:last.bank,burst:last.burst});
   }
 }

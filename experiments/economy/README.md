@@ -2,7 +2,7 @@
 
 **O que melhor separou energia de mana foi dar ao núcleo vivo capacidade de armazenamento e fazer o preço em energia reagir ao plantio recente do jogador.** Na carteira mista, esse arranjo permitiu 1.172 carimbadas em duas horas. Depois de poupar nos dez minutos finais, a mesma reserva comprava dez flippers ou três guns P20 de uma vez. Sem a bateria, comprava dez de qualquer um dos dois. Em ambos os casos, os disparos saem na mesma geração.
 
-[Laboratório econômico](lab.html) · [Replay da colisão](colisao.html) · [Resultados das estratégias em CSV](resultados.csv) · [Varredura dos 160 padrões em CSV](catalogo.csv)
+[Laboratório econômico](https://raw.githack.com/caioalarcon/hexophage/dev/experiments/economy/lab.html) · [Replay da colisão](https://raw.githack.com/caioalarcon/hexophage/dev/experiments/economy/colisao.html) · [Resultados das estratégias em CSV](resultados.csv) · [Varredura dos 160 padrões em CSV](catalogo.csv)
 
 ## Por que só aumentar o preço falha
 
@@ -51,7 +51,7 @@ No preset **Núcleo com reserva de energia e mana**, cada ordem consome **uma ma
 
 A cotação soma o preço marginal sobre todo o trecho de H até H+s, por integração. Assim plantar seis células em duas ordens consecutivas custa a mesma energia que plantar seis em uma, se a geração for a mesma. A ordem dividida ainda gasta duas manas. As células nascidas pelo autômato não aumentam H. Uma bateria cheia descarta excedentes, e poupar permite várias ações simultâneas.
 
-A primeira compra após a fundação ocorre em **45 s** na carteira mista. Houve 13 carimbadas até 5 min, 188 até 30 min, 481 até 1 h e 1.172 até 2 h. No último minuto foram 12. A bateria praticamente não muda o número de compras pequenas nessa carteira. Ela muda a composição da rajada. Depois da poupança, **9.072 de energia e 10,04 manas** financiam 10 flippers ou 3 P20, somente para plantá-las. Sem o limite de energia eram **567 milhões de energia**, com as mesmas 10,04 manas. Essa diferença permite que energia importe quando se escolhe uma estrutura grande.
+A primeira compra após a fundação ocorre em **45 s** na carteira mista. Houve 13 carimbadas até 5 min, 188 até 30 min, 481 até 1 h e 1.172 até 2 h. No último minuto foram 12. A bateria praticamente não muda o número de compras pequenas nessa carteira. Ela muda a composição da rajada. Depois da poupança, **9.072 de energia e 10,04 manas** financiam 10 flippers ou 3 P20, somente para plantá-las. Sem o limite de energia eram **567 milhões de energia**, com as mesmas 10,04 manas. Essa diferença permite que energia importe quando se escolhe uma estrutura grande. Existe uma desvantagem mensurável. Reinvestindo por duas horas, a carteira mista descartou **574,86 milhões de energia** por falta de armazenamento. Sua produção bruta continuou abundante. Se o jogador sente que gerar mais energia raramente muda suas decisões, a bateria apenas deslocou o gargalo para a mana. No playtest, vale observar quantas compras desejadas ele adia por cada moeda e se ainda tem motivo para proteger um corredor de gliders.
 
 Se uma ação a cada cinco segundos no fim ainda for rápida demais, ajustar o denominador de mana de 9.000 para **18.000** reduz a mesma carteira de 1.172 para **481 compras**, com uma rajada de **8** e 90 s até a segunda compra. A política de guns passa de 140 para 137. Naquela estratégia o limitante é outro. A sensibilidade também revelou um limite inferior ruim para a bateria. Com 600 de energia por unidade logarítmica do núcleo, a política conservadora de quatro flippers nunca juntou a cotação da primeira gun **mais** seu capital de giro.
 
@@ -72,7 +72,7 @@ O relato de Paul Callahan contém uma síntese de crescedor com três gliders e 
 | 5.000 | Primeira erosão na G136. Nenhuma célula em G256 | Primeira erosão na G430. Na G256 tinha 22 células e 1.955 de energia |
 | 1 bilhão | Na G256 tinha 186 células e pagava 179 de manutenção | Na G256 tinha 22 células e pagava 15 |
 
-O refletor já tinha saldo negativo isoladamente. O controle mede o prejuízo adicional provocado pelo disparo. O replay usa as regras oficiais de nascimento, propriedade e erosão. [Abrir replay lado a lado](colisao.html)
+O refletor já tinha saldo negativo isoladamente. O controle mede o prejuízo adicional provocado pelo disparo. O replay usa as regras oficiais de nascimento, propriedade e erosão. [Abrir replay lado a lado](https://raw.githack.com/caioalarcon/hexophage/dev/experiments/economy/colisao.html)
 
 ## Alcance das simulações
 
