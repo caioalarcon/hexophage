@@ -1,0 +1,14 @@
+{
+  "name": "hexophage",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test \"src/**/*.test.js\" \"tests/*.test.js\" && node tests/bot-isolation.cjs",
+    "test:browser": "node tests/browser-parity.cjs && node tests/render-detail.cjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright": "1.56.1"
+  }
+}

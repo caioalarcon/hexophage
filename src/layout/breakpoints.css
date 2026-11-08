@@ -1,0 +1,57 @@
+@media(max-width:1100px) and (min-width:761px){
+ #hexlab .br-scoreboard {gap:6px;padding:6px}
+ #hexlab .br-podium {gap:3px}
+ #hexlab .br-podium li {padding:3px 4px}
+ #hexlab .br-scoretitle {max-width:105px}
+ #hexlab .hl-tag {display:none}
+ #hexlab .hl-range input {width:80px}
+}
+@media(max-width:760px){
+ #hexlab .hl-head {min-height:30px;padding:3px 8px;gap:3px}
+ #hexlab .hl-brand {font-size:12px;gap:5px}
+ #hexlab .hl-logo {font-size:16px}
+ #hexlab .hl-tag,#hexlab .hl-headright .hl-stat:nth-child(3),#hexlab .hl-headright .hl-stat:nth-child(5) {display:none}
+ #hexlab .hl-headright {font-size:10px;gap:7px}
+ #hexlab .br-scoreboard {flex-direction:column;gap:4px;padding:4px 6px}
+ #hexlab .br-scoretitle {flex-direction:row;align-items:baseline;justify-content:space-between;gap:5px;font-size:10px}
+ #hexlab .br-link {font-size:11px}
+ #hexlab .br-podium {grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+ #hexlab .br-podium li {padding:2px 4px}
+ #hexlab .br-player {font-size:11px}
+ #hexlab .br-scorevals {margin-top:0}
+ #hexlab .br-scorevals dd {font-size:11px}
+ #hexlab .hl-shell {grid-template-columns:minmax(0,1fr)}
+ #hexlab .hl-right {position:absolute;inset:0 0 0 auto;width:min(350px,94%);z-index:8;box-shadow:-8px 0 24px #0009}
+ #hexlab .hl-left {border:0}
+ #hexlab .hl-controls {gap:4px;padding:4px 6px}
+ #hexlab .hl-controls button,#hexlab .hl-navbar button {padding:4px 6px;font-size:11px}
+ #hexlab .hl-range {min-width:0;gap:3px;margin-left:auto}
+ #hexlab .hl-range input {width:60px}
+ #hexlab .hl-range label {font-size:10px}
+ #hexlab .hl-navbar {gap:4px;padding:4px 6px}
+ #hexlab .hl-navtitle {display:none}
+ #hexlab .hl-lower {max-width:50%;bottom:6px;left:6px;padding:3px 5px;line-height:1.25}
+ #hexlab .hl-viewtools button {min-width:25px;padding:4px}
+ #hexlab .br-message {font-size:10px;padding:2px 6px;min-height:18px}
+}
+@media(min-width:1120px){
+ #hexlab .br-top {display:grid;grid-template-columns:clamp(210px,18vw,290px) minmax(0,1fr);background:#111c2d;border-bottom:1px solid #34475b}
+ #hexlab .hl-head {border:0;align-content:center;justify-content:flex-start;gap:5px;padding:7px 13px}
+ #hexlab .hl-brand {font-size:14px;gap:6px}
+ #hexlab .hl-tag {display:none}
+ #hexlab .hl-headright {gap:2px 9px;font-size:10px}
+ #hexlab .hl-headright .hl-stat {gap:3px}
+ #hexlab .br-scoreboard {gap:8px;padding:6px 10px 6px 0;border:0;background:transparent}
+}
+@media(min-width:761px) and (max-width:940px) and (max-height:500px){
+ #hexlab .hl-shell {grid-template-columns:minmax(0,1fr)}
+ #hexlab .hl-right {position:absolute;inset:0 0 0 auto;width:min(330px,90%);z-index:8;box-shadow:-8px 0 24px #0009}
+ #hexlab .hl-left {border:0}
+}
+@media(max-width:375px){#hexlab .hl-headright .hl-stat:nth-child(2){display:none}}
+@media(max-height:460px) and (orientation:landscape){
+ #hexlab .br-scoreboard {flex-direction:row}
+ #hexlab .br-scoretitle {flex-direction:column;justify-content:center}
+ #hexlab .br-podium {grid-template-columns:repeat(6,minmax(0,1fr))}
+ #hexlab .hl-headright {display:none}
+}

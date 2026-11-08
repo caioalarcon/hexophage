@@ -1,0 +1,83 @@
+/* Hexophage gameplay HUD (existing engine and the Callahan physics are unchanged). */
+#hexlab .br-top{display:grid;grid-template-columns:minmax(150px,205px) minmax(0,1fr);align-items:stretch}
+#hexlab .hl-head{padding:4px 9px;min-height:36px}
+#hexlab .hl-brand{font-size:13px;letter-spacing:.6px}
+#hexlab .hl-headright{display:none}
+#hexlab .br-scoreboard{min-width:0;display:flex;gap:6px;align-items:center;padding:3px 8px;overflow:hidden}
+#hexlab .br-scoretitle{display:flex;flex-direction:row;align-items:center;gap:7px;flex:0 0 auto;max-width:160px;white-space:nowrap}
+#hexlab .br-scoretitle #br-mean{display:none}
+#hexlab .br-scoretitle #br-gamestatus{font-size:9px}
+#hexlab .br-link{font-size:11px}
+#hexlab .br-podium{display:flex;flex:1;overflow-x:auto;min-width:0;flex-wrap:nowrap;gap:4px;padding:0 0 2px;scrollbar-width:thin}
+#hexlab .br-podium li{min-width:94px;flex:1 0 94px;max-width:170px;padding:2px 6px 3px;border-top-width:2px}
+#hexlab .br-player{font-size:10px;gap:3px;line-height:1.2;overflow:hidden}
+#hexlab .br-player span{overflow:hidden;text-overflow:ellipsis}
+#hexlab .br-player small{font-size:9px}
+#hexlab .br-scorevals{margin:1px 0 0;gap:4px;justify-content:flex-start}
+#hexlab .br-scorevals div{flex:0 0 auto}
+#hexlab .br-scorevals dt{display:none}
+#hexlab .br-scorevals dd{font-size:10px;line-height:1.2}
+#hexlab .br-scorevals div:first-child dd::before{content:'▣ ';font-size:9px;color:#90a8c0}
+#hexlab .br-scorevals div:nth-child(2) dd::before{content:'◈ ';font-size:9px;color:#d8b979}
+#hexlab .br-scorevals div:nth-child(3){display:none}
+#hexlab .hl-shell{grid-template-columns:minmax(0,1fr)!important;overflow:hidden}
+#hexlab .hl-right{position:absolute!important;right:0!important;left:auto!important;top:0!important;bottom:0!important;width:min(370px,94vw)!important;display:flex;z-index:9;box-shadow:-12px 0 30px #000a;overflow-y:auto;background:#101e2d}
+#hexlab .hl-panel-closed .hl-right{display:none!important}
+#hexlab .br-panel-overlay{position:absolute;inset:0;background:#03080c70;z-index:8;cursor:pointer}
+#hexlab .br-panel-overlay[hidden]{display:none!important}
+#hexlab #br-tabs{display:none!important}
+#hexlab .br-in-progress .br-loadout-manager, #hexlab .br-in-progress .br-prep-only{display:none!important}
+#hexlab .br-prep-only{display:flex;flex-direction:column;gap:10px}
+#hexlab .br-loadout-manager{border:1px solid #2d4658;padding:9px;border-radius:8px;background:#0b1827}
+#hexlab .br-deck-config{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px;margin-top:6px}
+#hexlab .br-deck-choice{font-size:11px;color:#b8d4df;cursor:pointer;display:flex;align-items:center;gap:3px}
+#hexlab .br-deck-choice input{margin:0;accent-color:#35cfa6}
+#hexlab .br-deck-choice input:disabled{opacity:.5}
+#hexlab .br-worldpick{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#hexlab .br-worldpick select{font-size:12px;max-width:200px}
+#hexlab .br-worldpick button:disabled,#hexlab .br-worldpick select:disabled{opacity:.5}
+#hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;max-height:84px;min-width:0;flex:0 0 auto}
+#hexlab .br-deck{display:flex;gap:5px;align-items:stretch;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scrollbar-width:thin;padding-bottom:3px}
+#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;height:66px;overflow:hidden}
+#hexlab .br-stampcard canvas{display:block;width:68px;height:38px;flex:0 0 auto;pointer-events:none}
+#hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:nowrap}
+#hexlab .br-stampcard .br-stampprice{position:absolute;right:2px;top:1px;background:#0a1926c7;padding:0 2px;border-radius:4px;color:#d0e3ec;font-size:9px}
+#hexlab .br-stampcard.selected{border-color:#57f5c4;box-shadow:inset 0 0 0 1px #3de5bb;background:#173b37}
+#hexlab .br-stampcard.unavailable canvas{opacity:.55}
+#hexlab .br-stampcard.unavailable .br-stampname{color:#8da5ba}
+#hexlab .br-charge{position:absolute;height:3px;background:#0b141f;left:4px;right:4px;bottom:2px;border-radius:10px;overflow:hidden}
+#hexlab .br-charge i{display:block;background:#48e2b5;height:100%;width:0}
+#hexlab .br-transform{display:flex;flex:0 0 auto;gap:4px;align-items:center;padding:0 0 4px}
+#hexlab .br-transform button{font-size:21px;font-weight:700;min-width:35px;height:48px;padding:0 8px;touch-action:manipulation}
+#hexlab .br-mapbar{gap:6px;min-height:28px;padding:3px 8px}
+#hexlab .br-mapbar .hl-viewtools{margin-left:auto}
+#hexlab .br-mapbar .hl-upper{font-size:10px}
+#hexlab .br-mapbar #hl-modehint{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hexlab .br-panelgroup summary{font-size:12px}
+#hexlab .br-knob #br-tax{width:58px}
+@media(max-width:1100px){#hexlab .br-scoretitle #br-gamestatus{display:none}#hexlab .br-scoretitle{max-width:100px}}
+@media(max-width:760px){
+ #hexlab .br-top{display:flex;flex-direction:column}
+ #hexlab .hl-head{min-height:27px;padding:3px 9px}
+ #hexlab .br-scoreboard{padding:2px 5px;gap:6px;flex-direction:row}
+ #hexlab .br-scoretitle{flex-direction:row;max-width:80px}
+ #hexlab .br-podium{display:flex;grid-template-columns:none;gap:4px}
+ #hexlab .br-podium li{flex:0 0 91px;min-width:91px;max-width:91px;padding:2px 4px}
+ #hexlab .br-hotbar{padding:5px 5px;gap:4px;min-height:74px;max-height:80px}
+ #hexlab .br-stampcard{flex-basis:77px;width:77px}
+ #hexlab .br-transform{flex-direction:column;gap:3px;justify-content:center}
+ #hexlab .br-transform button{font-size:16px;min-width:28px;width:33px;height:21px;padding:0 4px}
+ #hexlab .br-mapbar #hl-modehint{display:none}
+ #hexlab .hl-controls{min-height:36px}
+}
+@media(max-width:420px){
+ #hexlab .br-scoretitle{max-width:27px}
+ #hexlab #br-ledger-open{font-size:0}
+ #hexlab #br-ledger-open::before{content:'🏆';font-size:16px}
+ #hexlab .br-stampcard{flex-basis:72px;width:72px}
+ #hexlab .br-stampcard canvas{width:64px}
+ #hexlab .br-transform button{width:30px}
+ #hexlab .br-mapbar #br-fps{display:none}
+ #hexlab .br-knob label[for="br-tax-slider"]{font-size:0;white-space:nowrap}
+ #hexlab .br-knob label[for="br-tax-slider"]::after{content:'Taxa ‰';font-size:10px}
+}

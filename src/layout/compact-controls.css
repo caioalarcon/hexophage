@@ -1,0 +1,46 @@
+@media (orientation:landscape) and (max-height:470px){
+ #hexlab .br-rail{padding:5px;gap:5px}
+ #hexlab .br-rail-header{font-size:10px;min-height:17px}
+ #hexlab .br-rail-controls #hl-play{min-height:27px}
+ #hexlab .br-rail-controls #br-panel-toggle,#hexlab .br-rail-controls #br-tuning-toggle{min-height:27px}
+ #hexlab .br-rail-ranking .br-podium li{padding:2px 4px}
+ #hexlab .br-mini-caption{display:none}
+ #hexlab .br-globe-slot{max-height:24vh}
+ #hexlab .br-hotbar{min-height:62px;max-height:66px;padding:3px 4px}
+ #hexlab .br-stampcard{height:56px;flex-basis:69px;width:69px}
+ #hexlab .br-stampcard canvas{height:30px;width:60px}
+ #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
+}
+
+/* Feedback is announced to assistive technology, never drawn over the world. */
+#hexlab .br-message {
+ position:absolute!important;width:1px!important;height:1px!important;
+ padding:0!important;margin:0!important;border:0!important;
+ overflow:hidden!important;clip-path:inset(50%)!important;
+ white-space:nowrap!important;background:transparent!important;
+ pointer-events:none!important;
+}
+/* Mobile navigation fixes: keep the sim controls reachable and the globe interactive. */
+#hexlab .br-globe-overlay{isolation:isolate}
+#hexlab .br-globe-zoom{position:absolute;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:5px;padding:5px;border:1px solid #38586c;border-radius:10px;background:#11273be8;box-shadow:0 6px 18px #0008}
+#hexlab .br-globe-zoom button{height:38px;min-width:40px;border:1px solid #466178;border-radius:7px;background:#2b4359;color:#e2eff6;font-size:19px;font-weight:650;touch-action:manipulation}
+#hexlab .br-globe-zoom #br-globe-zoom-reset{font-size:12px;min-width:58px}
+#hexlab #br-globe-target{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#hexlab #br-mobile-speed{display:none}
+@media (orientation:portrait){
+ #hexlab .br-rail{z-index:25;overflow:visible}
+ #hexlab .br-rail-controls .hl-controls{min-width:0;gap:5px}
+ #hexlab .br-rail-controls .hl-controls #hl-step,
+ #hexlab .br-rail-controls .hl-controls #hl-clear,
+ #hexlab .br-rail-controls .hl-controls #hl-seed{display:none!important}
+ #hexlab .br-rail-controls .br-live-tuning{display:contents!important}
+ #hexlab .br-rail-controls #br-tuning-toggle{display:inline-flex!important;align-items:center;gap:3px;min-width:59px}
+ #hexlab #br-tuning-toggle .br-tuning-label{display:none!important}
+ #hexlab #br-mobile-speed{display:inline;font-size:11px;white-space:nowrap}
+ #hexlab.br-tuning-open .br-rail-controls .br-advanced-tuning{position:absolute;top:calc(100% + 7px);right:0;width:min(320px,calc(100vw - 14px));max-height:min(70dvh,490px);overflow-y:auto;z-index:65;display:flex!important;box-shadow:0 10px 32px #000d}
+ #hexlab.br-tuning-open .br-rail-controls .br-advanced-tuning .br-speed-knob{display:grid!important;grid-template-rows:auto 28px;gap:8px;border-bottom:1px solid #3b566a;padding-bottom:10px}
+ #hexlab.br-tuning-open .br-rail-controls .br-speed-knob input[type=range]{height:28px;min-height:28px;touch-action:manipulation}
+ #hexlab .br-globe-top{position:absolute;left:10px;right:10px;top:10px;z-index:50;width:auto}
+ #hexlab .br-globe-top b{font-size:12px}
+ #hexlab .br-globe-zoom{right:10px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+}

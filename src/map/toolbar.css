@@ -1,0 +1,14 @@
+#hexlab .br-mapbar {display:flex;align-items:center;gap:10px;min-height:30px;padding:2px 9px;
+ background:#101c2d;border-top:1px solid var(--edge);flex:0 0 auto}
+#hexlab .br-mapbar .hl-float {position:static;background:none;border:0;border-radius:0;padding:0;
+ backdrop-filter:none;font-size:11px;line-height:1.2;max-width:none}
+#hexlab .br-mapbar .hl-upper {font-weight:650;color:#b7d0dc}
+#hexlab .br-mapbar .hl-viewtools {position:static;margin-left:auto;display:flex}
+#hexlab .br-mapbar .hl-viewtools button {font-size:11px;padding:3px 8px;min-width:26px}
+@media(max-width:960px){#hexlab .br-mapbar .hl-upper{display:none}}
+#hexlab .br-mapbar {min-height:37px}
+#hexlab .br-mapbar>button {font-size:11px;padding:4px 8px}
+#hexlab .br-mapbar .hl-upper {white-space:nowrap}
+#hexlab .hl-viewtools #hl-fit {min-width:46px;font-variant-numeric:tabular-nums}
+#hexlab .hl-viewtools button:disabled {opacity:.48;cursor:default}
+@media(max-width:640px){#hexlab .br-mapbar .hl-lower{display:none}#hexlab .br-mapbar {gap:4px}}

@@ -1,0 +1,31 @@
+@media (orientation:portrait){
+ #hexlab .hl-shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important}
+ #hexlab .br-rail{grid-row:1;grid-column:1;display:flex;flex-direction:row;align-items:center;gap:6px;padding:5px 8px;min-height:45px;max-height:64px;overflow:visible;border:0;border-bottom:1px solid #30495e}
+ #hexlab .br-rail-header{font-size:11px;flex:0 1 auto;min-width:0}
+ #hexlab .br-rail-header strong{white-space:nowrap}
+ #hexlab .br-rail-header>span{display:none}
+ #hexlab .br-rail-controls{margin-left:auto;flex:0 0 auto}
+ #hexlab .br-rail-controls .hl-controls{flex-wrap:nowrap!important;gap:4px}
+ #hexlab .br-rail-controls #hl-play{flex:0 0 auto;min-height:31px;font-size:11px;padding:4px 7px}
+ #hexlab .br-rail-controls #br-tuning-toggle,#hexlab .br-rail-controls #br-panel-toggle{min-height:30px;padding:4px 7px;font-size:11px}
+ #hexlab .br-rail-controls .br-live-tuning{display:none}
+ #hexlab .br-rail-ranking{position:absolute;top:56px;left:8px;z-index:5;max-width:min(62%,250px);width:auto;padding:3px 6px;box-shadow:0 2px 14px #0008}
+ #hexlab .br-rail-ranking .br-rail-rankhead{margin:0}
+ #hexlab .br-rail-ranking .br-rail-rankhead button{font-size:10px;padding:2px 4px}
+ #hexlab .br-rail-ranking .br-scoreboard{display:none!important}
+ #hexlab .br-rail-ranking.expanded .br-scoreboard{display:flex!important;max-height:155px;overflow:auto}
+ #hexlab .br-rail-spacer{display:none}
+ #hexlab .br-mini-panel{position:fixed!important;right:7px;bottom:85px;width:min(170px,48vw);z-index:13;box-shadow:0 5px 16px #0008;padding:5px}
+ #hexlab .br-mini-panel.collapsed{width:auto;background:#20364a}
+ #hexlab .br-mini-panel.collapsed .br-mini-heading b{display:none}
+ #hexlab .br-mini-panel.collapsed #br-mini-max{display:none}
+ #hexlab .br-mini-caption{font-size:9px}
+ #hexlab .br-globe-slot{max-height:min(160px,30vh)}
+ #hexlab .hl-left{display:contents!important}
+ #hexlab .br-stage{grid-row:2;grid-column:1;min-height:0}
+ #hexlab .br-hotbar{grid-row:3;grid-column:1;min-height:75px;max-height:79px;width:100%;padding:5px}
+ #hexlab .br-transform{flex-direction:column;gap:2px}
+ #hexlab .br-transform button{height:21px;width:29px;min-width:29px;font-size:15px;padding:0}
+ #hexlab .br-message{bottom:84px;max-width:68%;font-size:10px}
+ #hexlab .br-globe-top>span{display:none}
+}

@@ -1,0 +1,32 @@
+/* Battle royale layer */
+#hexlab .br-controls{display:flex;flex-wrap:wrap;gap:9px;align-items:end;padding:11px 13px;background:#16283a;border-bottom:1px solid #37516a}
+#hexlab .br-controls label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#b8cee5}
+#hexlab .br-controls input{width:100px;border:1px solid #39536e;border-radius:6px;padding:7px;color:#e9f7ff;background:#0d1e2d;font:inherit}
+#hexlab .br-controls .br-summary{font-size:11px;line-height:1.6;color:#a5c5db;flex:1;min-width:170px}
+#hexlab .br-board{background:#101c2b;border-top:1px solid #30435c;padding:10px 12px}
+#hexlab .br-boardhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:7px}
+#hexlab .br-boardhead strong{font-size:14px}
+#hexlab .br-boardhead span{font-size:11px;color:#a5b8cd}
+#hexlab .br-table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+#hexlab .br-table th{font-size:10px;color:#93a7bc;text-align:right;padding:5px 7px;border-bottom:1px solid #33455a;white-space:nowrap}
+#hexlab .br-table th:nth-child(2){text-align:left}
+#hexlab .br-table td{padding:6px 7px;text-align:right;border-bottom:1px solid #213247;white-space:nowrap}
+#hexlab .br-table td:nth-child(2){text-align:left}
+#hexlab .br-table tr.mine{background:#153d3c}
+#hexlab .br-table tr.out{opacity:.42}
+#hexlab .br-table .positive{color:#60e6ae}
+#hexlab .br-table .negative{color:#ff9c9f}
+#hexlab .br-table .neutral{color:#b1c1d7}
+#hexlab .br-note{font-size:11px;line-height:1.55;color:#9eb5ce;margin-top:7px}
+#hexlab .br-tabs{display:flex;overflow:auto;gap:5px;padding-bottom:4px;scrollbar-width:thin}
+#hexlab .br-tabs button{font-size:11px;padding:6px 9px;flex:0 0 auto}
+#hexlab .br-botlabel{font-size:10px;color:#b2d6de}
+#hexlab .br-botlabel select{font-size:11px;max-width:100%;width:100%}
+#hexlab .br-bots{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#0e1a29;border-radius:7px;padding:8px}
+#hexlab .br-status{padding:5px 9px;border-radius:6px;color:#bcddff;background:#152c43;border:1px solid #29425d;font-size:11px}
+#hexlab .br-boardwrap{overflow:auto}
+#hexlab .br-sidegutter{display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap}
+#hexlab .br-sidegutter button{font-size:11px}
+#hexlab #hl-rulechoice, #hexlab #hl-ruleconfig {display:none!important}
+#hexlab #hl-demo, #hexlab #hl-seed, #hexlab #hl-mode {display:none!important}
+@media(max-width:720px){#hexlab .br-table{font-size:11px}#hexlab .br-table th,#hexlab .br-table td{padding:5px 4px}#hexlab .br-controls input{width:78px}}

@@ -1,0 +1,95 @@
+* { box-sizing: border-box; }
+body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+#hexlab { --bg:#0b111e; --panel:#121c2d; --edge:#29364e; --txt:#ecf3ff; --muted:#99abc2; --accent:#54e1bd; color:var(--txt); width:100%; font-size:13px; }
+#hexlab .hl-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:13px 16px; background:#111b2c; border-bottom:1px solid var(--edge); }
+#hexlab .hl-brand { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:750; letter-spacing:.1px; }
+#hexlab .hl-logo { font-size:23px; color:var(--accent); }
+#hexlab .hl-tag { display:inline-flex; align-items:center; background:#263c49; color:#a8f3dc; border:1px solid #326b66; padding:3px 7px; border-radius:20px; font-size:10px; letter-spacing:.4px; }
+#hexlab .hl-headright { color:var(--muted); font-variant-numeric:tabular-nums; display:flex; gap:16px; flex-wrap:wrap; }
+#hexlab .hl-headright strong { color:#eef4ff; }
+#hexlab .hl-shell { display:grid; grid-template-columns:minmax(0,1fr) 268px; min-height:570px; }
+#hexlab .hl-left { min-width:0; border-right:1px solid var(--edge); display:flex; flex-direction:column; }
+#hexlab .hl-controls { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 12px; border-bottom:1px solid var(--edge); background:#111a29; }
+#hexlab button { border-radius:7px; border:1px solid #3b4e65; background:#243248; color:#e9f2ff; font:inherit; font-weight:600; padding:7px 10px; cursor:pointer; white-space:nowrap; transition:background .12s; }
+#hexlab button:hover { background:#354963; }
+#hexlab button:focus-visible, #hexlab input:focus-visible, #hexlab select:focus-visible { outline:2px solid #64e9d1; outline-offset:1px; }
+#hexlab button.primary { background:#2ac69b; color:#061e19; border-color:#2ac69b; }
+#hexlab button.primary:hover { background:#70eecb; }
+#hexlab button.active { color:#a8ffe7; background:#163d3a; border-color:#2f9d81; }
+#hexlab button.small { font-size:12px; padding:6px 8px; }
+#hexlab .hl-range { display:flex; align-items:center; gap:7px; min-width:140px; margin-left:auto; color:var(--muted); }
+#hexlab .hl-range input { width:112px; accent-color:var(--accent); cursor:pointer; }
+#hexlab .hl-range output { font-size:12px; width:30px; text-align:right; color:#dffaf1; font-variant-numeric:tabular-nums; }
+#hexlab .hl-worldbox { flex:1; min-height:465px; position:relative; overflow:hidden; background:#0c1421; }
+#hexlab canvas { display:block; width:100%; height:100%; touch-action:none; }
+#hexlab #hl-grid { position:absolute; inset:0; z-index:0; pointer-events:none; background-color:#0c1421; background-repeat:repeat; }
+#hexlab #hl-world { position:relative; z-index:1; cursor:crosshair; }
+#hexlab #hl-globe-gpu { position:absolute; inset:0; z-index:2; pointer-events:none; display:none; }
+#hexlab .hl-worldbox .hl-float, #hexlab .hl-worldbox .hl-viewtools { z-index:3; }
+#hexlab .hl-worldbox .hl-float, #hexlab .hl-worldbox .hl-viewtools { z-index:2; }
+#hexlab .hl-float { position:absolute; pointer-events:none; background:#0d1828df; color:#b3c6dd; border:1px solid #34465f; border-radius:8px; padding:7px 9px; font-size:11px; backdrop-filter:blur(3px); }
+#hexlab .hl-upper { left:12px; top:12px; }
+#hexlab .hl-lower { left:12px; bottom:12px; }
+#hexlab .hl-viewtools { position:absolute; right:12px; bottom:12px; display:flex; gap:5px; }
+#hexlab .hl-viewtools button { font-size:13px; min-width:34px; padding:7px 7px; background:#192a40de; }
+#hexlab .hl-footer { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 12px; background:#111a29; border-top:1px solid var(--edge); color:var(--muted); }
+#hexlab .hl-footer input[type=number] { width:62px; padding:6px; border-radius:6px; border:1px solid #3a4c62; background:#1b2a40; color:var(--txt); font:inherit; }
+#hexlab .hl-footer .hl-note { flex:1; min-width:145px; font-size:11px; text-align:right; }
+#hexlab .hl-right { padding:12px; background:#111b2b; display:flex; flex-direction:column; gap:10px; min-width:0; }
+#hexlab .hl-side-head { display:flex; justify-content:space-between; align-items:baseline; gap:5px; }
+#hexlab .hl-side-head strong { font-size:15px; }
+#hexlab .hl-side-head span { color:var(--muted); font-size:11px; }
+#hexlab .hl-editorbox { position:relative; width:100%; height:254px; overflow:hidden; background:#0b1523; border-radius:9px; border:1px solid #34465b; cursor:grab; }
+#hexlab #hl-editor { cursor:crosshair; }
+#hexlab .hl-helptxt { padding:9px 10px; font-size:12px; line-height:1.6; color:#aec1d8; background:#18283d; border-radius:7px; border:1px solid #2d4058; }
+#hexlab .hl-editorctrls { display:flex; flex-wrap:wrap; gap:6px; }
+#hexlab .hl-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+#hexlab select, #hexlab .hl-rule { background:#1b2a40; color:var(--txt); border:1px solid #3b4d63; border-radius:7px; padding:7px; font:inherit; }
+#hexlab .hl-rule { width:100%; }
+#hexlab .hl-section-label { color:#b8cbe0; font-size:12px; font-weight:650; }
+#hexlab .hl-muted { color:var(--muted); font-size:11px; line-height:1.45; }
+#hexlab .hl-dot { color:var(--accent); }
+#hexlab .hl-right .hl-pick { display:flex; flex-direction:column; gap:5px; }
+#hexlab .hl-pick select { display:block; width:100%; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+#hexlab .hl-right .hl-smallhelp { color:#89cbbd; font-size:11px; line-height:1.5; }
+#hexlab .hl-right .hl-demo { width:100%; }
+#hexlab .hl-ruleconfig { display:none; flex-direction:column; gap:5px; }
+#hexlab .hl-ruleconfig.show { display:flex; }
+#hexlab .hl-editorbox { height:278px; }
+#hexlab .hl-rule-select { background:#1b2a40; }
+#hexlab .hl-helptxt { font-size:11px; }
+
+@media(max-width:720px){
+ #hexlab .hl-shell { grid-template-columns:1fr; }
+ #hexlab .hl-left { border-right:0; border-bottom:1px solid var(--edge); }
+ #hexlab .hl-worldbox { min-height:340px; height:340px; flex:auto; }
+ #hexlab .hl-right { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; }
+ #hexlab .hl-editorbox { grid-row:span 5; height:260px; }
+ #hexlab .hl-helptxt { grid-column:1/-1; }
+ #hexlab .hl-range { margin-left:0; }
+}
+@media(max-width:435px){
+ #hexlab .hl-right {display:flex;}
+ #hexlab .hl-editorbox {height:255px;}
+ #hexlab .hl-footer .hl-note {text-align:left;}
+}
+
+#hexlab .hl-shell { min-height:590px; grid-template-columns:minmax(0,1fr) 282px; }
+#hexlab #hl-worldbox { min-height:500px; }
+#hexlab .hl-controls { gap:7px; }
+#hexlab .hl-right .hl-row { gap:5px; }
+#hexlab .hl-right .hl-helptxt { padding:7px 9px; }
+#hexlab .hl-smallline { font-size:11px; color:#a8c0d7; line-height:1.35; }
+#hexlab .hl-navbar { display:flex; gap:6px; align-items:center; flex-wrap:wrap; padding:8px 11px; background:#101c2d; border-top:1px solid #28364e; }
+#hexlab .hl-navtitle {color:#a6bcd7; font-weight:650; margin-right:3px}
+#hexlab .hl-feedback { color:#fbdba8; font-size:11px; min-height:14px; }
+#hexlab .hl-stat {display:flex; gap:5px; align-items:baseline;}
+#hexlab #hl-editorbox { height:235px; }
+#hexlab #hl-grid {background-color:#0c1421}
+#hexlab .hl-section {display:flex;flex-direction:column;gap:5px}
+#hexlab .hl-right select {font-size:12px}
+#hexlab .hl-subhead {color:#76e6c2;font-size:12px;font-weight:700;letter-spacing:.3px}
+#hexlab .hl-inspect { display:flex; flex-wrap:wrap;gap:6px;align-items:center; }
+#hexlab .hl-inspect label {cursor:pointer;}
+#hexlab input[type=checkbox] {accent-color:#2ac69b;}
+@media(max-width:720px){#hexlab .hl-shell{grid-template-columns:1fr} #hexlab .hl-right{display:flex;} #hexlab .hl-worldbox{min-height:380px}}

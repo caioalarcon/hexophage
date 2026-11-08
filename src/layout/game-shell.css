@@ -1,0 +1,66 @@
+/* Hexophage integrated adaptive layout — the map stays on screen while the 3D globe is a navigator. */
+#hexlab {height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+#hexlab .br-top{display:none!important}
+#hexlab .hl-shell{flex:1 1 auto;min-height:0;min-width:0;display:grid!important;grid-template-columns:minmax(0,1fr) clamp(184px,19vw,255px)!important;grid-template-rows:minmax(0,1fr)!important;overflow:hidden}
+#hexlab .hl-left{grid-column:1;grid-row:1;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;border:0}
+#hexlab .br-stage{flex:1 1 auto;min-height:0;width:100%;position:relative}
+#hexlab #hl-worldbox{min-height:0!important;height:100%;width:100%}
+#hexlab .br-hotbar{flex:0 0 auto;min-height:77px;max-height:82px;width:100%;min-width:0;align-items:center;border-top:1px solid #354a61;padding:5px 7px}
+#hexlab .br-deck{flex:1 1 0;min-width:0}
+#hexlab .br-transform{flex:0 0 auto;align-self:center;padding:0;gap:4px}
+#hexlab .br-transform button{width:34px;height:43px;font-size:20px;min-width:34px;padding:0 3px}
+#hexlab .br-mapbar{display:none!important}
+#hexlab .br-message{position:absolute;bottom:10px;left:10px;z-index:3;display:flex!important;width:min(88%,540px);border:0;min-height:0;background:#0e1b2bd8;padding:3px 7px;border-radius:6px;pointer-events:none}
+#hexlab .br-message button{pointer-events:auto}
+#hexlab .br-rail{grid-column:2;grid-row:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px;padding:9px;background:#142336;border-left:1px solid #31475d;overflow:visible;position:relative;z-index:24}
+#hexlab .br-rail-header{display:flex;align-items:center;justify-content:space-between;gap:3px;color:#66e4bc;font-size:13px;white-space:nowrap;min-height:23px}
+#hexlab .br-rail-header>span{font-size:10px;color:#b6cbdc;font-variant-numeric:tabular-nums}
+#hexlab .br-rail-controls{flex:0 0 auto;min-width:0}
+#hexlab .br-rail-controls .hl-controls{min-height:0;height:auto;display:flex;align-items:center;gap:6px;padding:0;border:0;background:transparent;flex-wrap:wrap!important;position:relative;overflow:visible}
+#hexlab .br-rail-controls #hl-play{flex:1 1 70px;min-height:36px;font-size:12px}
+#hexlab .br-rail-controls #br-panel-toggle,#hexlab .br-rail-controls #br-tuning-toggle{flex:0 0 auto;min-height:35px;margin:0;font-size:11px;padding:6px 7px}
+#hexlab .br-rail-controls .br-live-tuning{flex:1 0 100%;order:10;max-width:none;margin:0;min-width:0;display:flex;align-items:center}
+#hexlab .br-rail-controls .br-speed-knob{display:grid!important;width:100%;grid-template-rows:auto 18px;gap:2px}
+#hexlab .br-rail-controls .br-speed-knob>div{font-size:11px}
+#hexlab .br-rail-controls .br-speed-knob input[type=range]{width:100%;height:16px}
+#hexlab .br-rail-controls .br-advanced-tuning{display:none!important}
+#hexlab.br-tuning-open .br-rail-controls .br-advanced-tuning{display:flex!important;position:absolute;top:calc(100% + 6px);right:0;z-index:45;width:min(300px,calc(100vw - 12px));max-height:55vh;overflow:auto;flex-direction:column;padding:10px;gap:10px;border:1px solid #46667c;border-radius:8px;background:#1b3144;box-shadow:0 12px 30px #000b}
+#hexlab.br-tuning-open .br-rail-controls .br-tuning-actions{display:flex;gap:6px}
+#hexlab .br-rail-ranking{border:1px solid #30485d;background:#192c3e;border-radius:7px;min-width:0;flex:0 0 auto;padding:6px}
+#hexlab .br-rail-rankhead{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:5px}
+#hexlab .br-rail-rankhead button{font-size:11px;padding:3px 6px;background:#243950;border:1px solid #435b70;border-radius:5px}
+#hexlab .br-rail-ranking.collapsed .br-scoreboard{display:none!important}
+#hexlab .br-rail-ranking.collapsed .br-rail-rankhead{margin-bottom:0}
+#hexlab .br-rail-ranking .br-scoreboard{display:flex!important;flex-direction:column;align-items:stretch;gap:3px;background:transparent;border:0;padding:0;min-width:0;max-height:none;overflow:hidden}
+#hexlab .br-rail-ranking .br-scoretitle{display:none}
+#hexlab .br-rail-ranking .br-podium{display:grid;grid-template-columns:minmax(0,1fr);min-width:0;overflow:visible;gap:3px;padding:0;margin:0}
+#hexlab .br-rail-ranking .br-podium li{display:block!important;min-width:0;max-width:none;height:auto;flex:initial;padding:4px 6px;border-radius:5px}
+#hexlab .br-rail-ranking:not(.expanded) .br-podium li:nth-child(n+4){display:none!important}
+#hexlab .br-rail-ranking .br-player{font-size:11px}
+#hexlab .br-rail-ranking .br-scorevals{font-size:10px}
+#hexlab .br-rail-ranking .br-scorevals dd{font-size:10px}
+#hexlab .br-rail-spacer{flex:1 1 auto;min-height:0}
+#hexlab .br-mini-panel{background:#192d40;border:1px solid #39566e;border-radius:8px;padding:7px;flex:0 0 auto;min-width:0}
+#hexlab .br-mini-heading{display:flex;justify-content:space-between;align-items:center;gap:5px;min-height:23px}
+#hexlab .br-mini-heading b{font-size:11px;color:#d4e9ef}
+#hexlab .br-mini-heading>div{display:flex;gap:4px}
+#hexlab .br-mini-heading button{border:1px solid #455e73;background:#294257;border-radius:5px;padding:2px 7px;font-size:13px;min-width:27px;min-height:25px}
+#hexlab .br-mini-panel.collapsed .br-mini-body{display:none}
+#hexlab .br-mini-body{display:flex;align-items:center;flex-direction:column;gap:2px;margin-top:4px;min-height:0}
+#hexlab .br-mini-caption{font-size:9px;color:#9ab7c7;text-align:center;white-space:nowrap}
+#hexlab .br-globe-slot{width:100%;aspect-ratio:1;max-height:min(28vh,225px);height:auto;position:relative;display:block;overflow:hidden;border-radius:50%;touch-action:none;cursor:grab;background:transparent}
+#hexlab .br-globe-slot:active{cursor:grabbing}
+#hexlab .br-globe-slot canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hexlab #hl-globe-gpu{pointer-events:none!important;position:absolute!important;inset:0;width:100%;height:100%;z-index:2}
+#hexlab #br-mini-fallback{pointer-events:none;z-index:1}
+#hexlab .br-globe-overlay[hidden]{display:none!important}
+#hexlab .br-globe-overlay{position:absolute;inset:0;display:flex;flex-direction:column;z-index:40;background:#07121bf7;backdrop-filter:blur(5px);padding:12px;align-items:center;gap:10px}
+#hexlab .br-globe-top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:900px;font-size:12px}
+#hexlab .br-globe-top>span{color:#a7c3d4;font-size:11px}
+#hexlab .br-globe-top button{padding:7px 10px;border-radius:7px;background:#263e53;border:1px solid #48647c}
+#hexlab .br-full-slot{flex:1;min-height:0;min-width:0;width:min(100%,900px);position:relative;touch-action:none;cursor:grab;background:transparent}
+#hexlab .br-full-slot:active{cursor:grabbing}
+#hexlab .br-full-slot .br-globe-slot{width:100%;height:100%;max-height:none;border-radius:0;aspect-ratio:auto;background:transparent}
+#hexlab .hl-right{z-index:46!important}
+#hexlab .br-panel-overlay{z-index:44!important}
+#hexlab .br-rail .br-rank-open{display:none}

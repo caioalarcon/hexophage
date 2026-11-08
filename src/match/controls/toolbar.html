@@ -1,0 +1,14 @@
+<div class="hl-controls">
+ <button class="primary" id="hl-play">▶ Iniciar</button>
+ <button id="hl-step">+1 geração</button><button id="hl-seed">Semear</button><button id="hl-clear">Reiniciar</button>
+ <div class="br-live-tuning" aria-label="Ajustes ao vivo">
+  <div class="br-advanced-tuning" id="br-advanced-tuning">
+  <div class="br-knob"><div><label for="br-tax-slider" title="Unidade: por mil. 0,175 ‰ = k 0,000175">Transferência ‰</label><input id="br-tax" aria-label="Taxa de transferência em milésimos" title="Taxa em ‰: 0,175 representa k = 0,000175. Campo aceita até 20 ‰." type="number" min="0" max="20" step="0.001" value="0.175" step="0.001" min="0" max="20"></div><input id="br-tax-slider" aria-label="Taxa de transferência em milésimos" title="1 ‰ equivale a k = 0,001" type="range" min="0" max="2" step="0.005" value="0.175"></div>
+  <div class="br-knob"><div><label for="br-difficulty">Dificuldade</label><span><input id="br-botturn" aria-label="Gerações entre carimbadas dos bots" title="Intervalo por bot, em gerações" type="number" min="1" max="1000" step="1" value="28"> ger.</span></div><input id="br-difficulty" type="range" min="0" max="120" step="1" title="À direita, os bots carimbam com mais frequência"></div>
+  <div class="br-tuning-actions"><button type="button" id="br-menu-step">+1 geração</button><button type="button" id="br-menu-reset">Reiniciar</button></div>
+  </div>
+  <div class="br-knob br-speed-knob"><div><label for="hl-speed">Velocidade</label><output id="hl-speed-val">15/s</output></div><input id="hl-speed" type="range" min="1" max="400" value="15" step="1"></div>
+ </div>
+ <button id="br-tuning-toggle" type="button" aria-expanded="false" aria-controls="br-advanced-tuning" title="Velocidade, taxa, dificuldade e ações" aria-label="Velocidade e ajustes da simulação">⚙ <span class="br-tuning-label">Ajustes</span><span id="br-mobile-speed">15/s</span></button>
+ <button id="br-panel-toggle" class="small" aria-controls="br-sidepanel" aria-expanded="true">Painel</button>
+</div>

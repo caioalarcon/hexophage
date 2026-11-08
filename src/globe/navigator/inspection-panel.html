@@ -1,0 +1,25 @@
+<details class="br-panelgroup"><summary>Planeta e inspeção</summary><div class="br-groupitems">
+ <button id="hl-rotateccw" title="Girar a visão 60 graus">↶ 60°</button><button id="hl-rotatecw" title="Girar a visão 60 graus">↷ 60°</button><button id="hl-sideflip">Espelhar / <span id="hl-side">Exterior</span></button><button id="hl-pentagon">Ir até anomalia</button>
+<div class="hl-section">
+ <label class="hl-section-label" for="hl-rulechoice">Regra do autômato</label>
+ <select id="hl-rulechoice"><option value="callahan" selected>B2o/S2m34 · Callahan</option><option value="bays">B2/S35 · Bays</option><option value="custom">B/S personalizada</option></select>
+ <div class="hl-muted" id="hl-rulehelp"></div>
+</div>
+<div id="hl-ruleconfig" class="hl-ruleconfig"><label class="hl-section-label" for="hl-rule">Regra personalizada</label><input id="hl-rule" class="hl-rule" value="B2/S35"></div>
+ <label class="hl-smallline"><input type="checkbox" id="hl-debug"> Mostrar pentágonos (inspeção)</label>
+ <label class="hl-smallline" for="hl-meshdetail">Malha 3D:</label>
+ <select id="hl-meshdetail" title="Somente os contornos visuais: não altera o grafo nem a simulação" style="max-width:140px;font-size:12px;padding:5px"><option value="auto">Adaptativa</option><option value="full">Detalhe máximo visível</option><option value="none">Sem contornos</option></select>
+ <span id="hl-renderstatus" class="hl-smallline" title="Renderizador 3D utilizado">Render: 2D</span>
+<div class="hl-section">
+ <button class="small" id="br-wire-bench">Medir malha integral</button>
+ <span class="hl-smallline" role="status" id="br-wire-report">Um quadro da esfera com todas as arestas em WebGL 2.</span>
+ <canvas hidden id="br-wire-preview" aria-label="Resultado da medição da malha integral" style="max-width:100%;height:auto;align-self:start"></canvas>
+</div>
+
+<div class="hl-footer" style="border-top:0;padding-top:0">
+ <span class="hl-smallline">Planeta: <b id="hl-dims">—</b></span>
+ <span class="hl-smallline">Centro: <b id="hl-current">—</b></span>
+ <span class="hl-smallline">Pentágono mais próximo: <b id="hl-nearest">—</b></span>
+ <span class="hl-smallline" id="hl-mesh">—</span>
+</div>
+</div></details>
