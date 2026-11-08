@@ -1,0 +1,263 @@
+[
+  {
+    "name": "order-trained",
+    "rule": {
+      "id": "order-trained",
+      "price": 119.222026202,
+      "pressureHalfLife": 17554.98486944,
+      "sizePower": 1.54829365315,
+      "orderPressureDoubling": 0.36602649835
+    },
+    "expected": {
+      "second_s": 41.115,
+      "mixed5": 8.0,
+      "mixed30": 44.0,
+      "mixed60": 94.0,
+      "mixed120": 203.0,
+      "guns_first_min": 12.063083,
+      "gun120": 235.0,
+      "flipper120": 250.0,
+      "glider120": 125.0,
+      "burst10": 6.0,
+      "savedE": 16801878.0,
+      "mixed15": 21
+    }
+  },
+  {
+    "name": "order-rounded",
+    "rule": {
+      "id": "order-rounded",
+      "price": 450.0,
+      "pressureHalfLife": 27000.0,
+      "sizePower": 0.0,
+      "orderPressureDoubling": 0.430676558073
+    },
+    "expected": {
+      "second_s": 47.615,
+      "mixed5": 6.0,
+      "mixed30": 31.0,
+      "mixed60": 65.0,
+      "mixed120": 141.0,
+      "guns_first_min": 5.041583,
+      "gun120": 263.0,
+      "flipper120": 158.0,
+      "glider120": 90.0,
+      "burst10": 6.0,
+      "savedE": 12094190.0,
+      "mixed15": 15
+    }
+  },
+  {
+    "name": "order-long-relaxed",
+    "rule": {
+      "id": "order-long-relaxed",
+      "price": 500.0,
+      "pressureHalfLife": 21000.0,
+      "sizePower": 0.0,
+      "orderPressureDoubling": 0.333333333333
+    },
+    "expected": {
+      "second_s": 60.51,
+      "mixed5": 5.0,
+      "mixed30": 31.0,
+      "mixed60": 65.0,
+      "mixed120": 142.0,
+      "guns_first_min": 5.384333,
+      "gun120": 262.0,
+      "flipper120": 158.0,
+      "glider120": 91.0,
+      "burst10": 5.0,
+      "savedE": 11705664.0,
+      "mixed15": 15
+    }
+  },
+  {
+    "name": "order-short",
+    "rule": {
+      "id": "order-short",
+      "price": 2000.0,
+      "pressureHalfLife": 9000.0,
+      "sizePower": 0.0,
+      "orderPressureDoubling": 0.5
+    },
+    "expected": {
+      "second_s": 86.5,
+      "mixed5": 7.0,
+      "mixed30": 63.0,
+      "mixed60": 148.0,
+      "mixed120": 344.0,
+      "guns_first_min": 4.971417,
+      "gun120": 762.0,
+      "flipper120": 401.0,
+      "glider120": 165.0,
+      "burst10": 6.0,
+      "savedE": 28381388.0,
+      "mixed15": 27
+    }
+  },
+  {
+    "name": "order-closest-trained",
+    "rule": {
+      "id": "order-closest-trained",
+      "price": 119.222026202,
+      "pressureHalfLife": 17554.98486944,
+      "sizePower": 1.54829365315,
+      "orderPressureDoubling": 0.36602649835
+    },
+    "expected": {
+      "second_s": 41.115,
+      "mixed5": 8.0,
+      "mixed30": 44.0,
+      "mixed60": 94.0,
+      "mixed120": 203.0,
+      "guns_first_min": 12.063083,
+      "gun120": 235.0,
+      "flipper120": 250.0,
+      "glider120": 125.0,
+      "burst10": 6.0,
+      "savedE": 16801878.0,
+      "mixed15": 21
+    }
+  },
+  {
+    "name": "mass-long-relaxed",
+    "rule": {
+      "id": "mass-long-relaxed",
+      "price": 350.0,
+      "pressureHalfLife": 60000.0,
+      "massPressureDoubling": 2.0
+    },
+    "expected": {
+      "second_s": 17.68,
+      "mixed5": 12.0,
+      "mixed30": 43.0,
+      "mixed60": 85.0,
+      "mixed120": 176.0,
+      "guns_first_min": 23.002667,
+      "gun120": 27.0,
+      "flipper120": 330.0,
+      "glider120": 89.0,
+      "burst10": 20.0,
+      "savedE": 14954725.0,
+      "mixed15": 24
+    }
+  },
+  {
+    "name": "mass-short",
+    "rule": {
+      "id": "mass-short",
+      "price": 1500.0,
+      "pressureHalfLife": 33000.0,
+      "massPressureDoubling": 3.0
+    },
+    "expected": {
+      "second_s": 60.815,
+      "mixed5": 12.0,
+      "mixed30": 67.0,
+      "mixed60": 147.0,
+      "mixed120": 331.0,
+      "guns_first_min": 20.533,
+      "gun120": 61.0,
+      "flipper120": 648.0,
+      "glider120": 127.0,
+      "burst10": 30.0,
+      "savedE": 27308704.0,
+      "mixed15": 32
+    }
+  },
+  {
+    "name": "mass-closest-trained",
+    "rule": {
+      "id": "mass-closest-trained",
+      "price": 364.690814497,
+      "pressureHalfLife": 82221.10964160001,
+      "massPressureDoubling": 2.07627018796
+    },
+    "expected": {
+      "second_s": 18.125,
+      "mixed5": 11.0,
+      "mixed30": 36.0,
+      "mixed60": 68.0,
+      "mixed120": 137.0,
+      "guns_first_min": 21.961417,
+      "gun120": 22.0,
+      "flipper120": 256.0,
+      "glider120": 70.0,
+      "burst10": 17.0,
+      "savedE": 11421245.0,
+      "mixed15": 21
+    }
+  },
+  {
+    "name": "poly-long-relaxed",
+    "rule": {
+      "id": "poly-long-relaxed",
+      "price": 2500.0,
+      "pressureHalfLife": 960000.0,
+      "massPressurePower": 2,
+      "massPressureScale": 14.0
+    },
+    "expected": {
+      "second_s": 76.515,
+      "mixed5": 21.0,
+      "mixed30": 60.0,
+      "mixed60": 93.0,
+      "mixed120": 153.0,
+      "guns_first_min": 6.387083,
+      "gun120": 230.0,
+      "flipper120": 371.0,
+      "glider120": 37.0,
+      "burst10": 18.0,
+      "savedE": 13767544.0,
+      "mixed15": 41
+    }
+  },
+  {
+    "name": "poly-short",
+    "rule": {
+      "id": "poly-short",
+      "price": 1750.0,
+      "pressureHalfLife": 24000.0,
+      "massPressurePower": 2,
+      "massPressureScale": 3.0
+    },
+    "expected": {
+      "second_s": 68.27,
+      "mixed5": 10.0,
+      "mixed30": 77.0,
+      "mixed60": 193.0,
+      "mixed120": 509.0,
+      "guns_first_min": 23.29775,
+      "gun120": 566.0,
+      "flipper120": 1217.0,
+      "glider120": 129.0,
+      "burst10": 59.0,
+      "savedE": 40653214.0,
+      "mixed15": 33
+    }
+  },
+  {
+    "name": "poly-closest-trained",
+    "rule": {
+      "id": "poly-closest-trained",
+      "price": 2500.0,
+      "pressureHalfLife": "inf",
+      "massPressurePower": 2,
+      "massPressureScale": 22.0
+    },
+    "expected": {
+      "second_s": 75.62,
+      "mixed5": 33.0,
+      "mixed30": 87.0,
+      "mixed60": 123.0,
+      "mixed120": 174.0,
+      "guns_first_min": 4.918417,
+      "gun120": 267.0,
+      "flipper120": 423.0,
+      "glider120": 39.0,
+      "burst10": 12.0,
+      "savedE": 15205897.0,
+      "mixed15": 61
+    }
+  }
+]

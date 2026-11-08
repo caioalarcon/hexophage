@@ -1,0 +1,176 @@
+{
+  "p20FirstCycleMeanBirths": 20.95,
+  "birthSlope": 0.25,
+  "results": [
+    {
+      "reward": 8,
+      "incomePerGeneration": 0.04166666666666696,
+      "positive": [
+        "stalk"
+      ],
+      "gunSupport": [
+        {
+          "seconds": 1,
+          "gunBirths": 70.95,
+          "requiredGrowingFronts": 1703
+        },
+        {
+          "seconds": 5,
+          "gunBirths": 270.95,
+          "requiredGrowingFronts": 6503
+        },
+        {
+          "seconds": 6,
+          "gunBirths": 320.95,
+          "requiredGrowingFronts": 7703
+        },
+        {
+          "seconds": 60,
+          "gunBirths": 3020.95,
+          "requiredGrowingFronts": 72503
+        },
+        {
+          "seconds": 600,
+          "gunBirths": 30020.95,
+          "requiredGrowingFronts": 720503
+        }
+      ]
+    },
+    {
+      "reward": 12,
+      "incomePerGeneration": 3.041666666666667,
+      "positive": [
+        "stalk"
+      ],
+      "gunSupport": [
+        {
+          "seconds": 1,
+          "gunBirths": 70.95,
+          "requiredGrowingFronts": 24
+        },
+        {
+          "seconds": 5,
+          "gunBirths": 270.95,
+          "requiredGrowingFronts": 90
+        },
+        {
+          "seconds": 6,
+          "gunBirths": 320.95,
+          "requiredGrowingFronts": 106
+        },
+        {
+          "seconds": 60,
+          "gunBirths": 3020.95,
+          "requiredGrowingFronts": 994
+        },
+        {
+          "seconds": 600,
+          "gunBirths": 30020.95,
+          "requiredGrowingFronts": 9870
+        }
+      ]
+    },
+    {
+      "reward": 32,
+      "incomePerGeneration": 18.041666666666668,
+      "positive": [
+        "stalk"
+      ],
+      "gunSupport": [
+        {
+          "seconds": 1,
+          "gunBirths": 70.95,
+          "requiredGrowingFronts": 4
+        },
+        {
+          "seconds": 5,
+          "gunBirths": 270.95,
+          "requiredGrowingFronts": 16
+        },
+        {
+          "seconds": 6,
+          "gunBirths": 320.95,
+          "requiredGrowingFronts": 18
+        },
+        {
+          "seconds": 60,
+          "gunBirths": 3020.95,
+          "requiredGrowingFronts": 168
+        },
+        {
+          "seconds": 600,
+          "gunBirths": 30020.95,
+          "requiredGrowingFronts": 1664
+        }
+      ]
+    },
+    {
+      "reward": 129,
+      "incomePerGeneration": 90.79166666666667,
+      "positive": [
+        "stalk"
+      ],
+      "gunSupport": [
+        {
+          "seconds": 1,
+          "gunBirths": 70.95,
+          "requiredGrowingFronts": 1
+        },
+        {
+          "seconds": 5,
+          "gunBirths": 270.95,
+          "requiredGrowingFronts": 3
+        },
+        {
+          "seconds": 6,
+          "gunBirths": 320.95,
+          "requiredGrowingFronts": 4
+        },
+        {
+          "seconds": 60,
+          "gunBirths": 3020.95,
+          "requiredGrowingFronts": 34
+        },
+        {
+          "seconds": 600,
+          "gunBirths": 30020.95,
+          "requiredGrowingFronts": 331
+        }
+      ]
+    },
+    {
+      "reward": 384,
+      "incomePerGeneration": 282.0416666666667,
+      "positive": [
+        "stalk"
+      ],
+      "gunSupport": [
+        {
+          "seconds": 1,
+          "gunBirths": 70.95,
+          "requiredGrowingFronts": 1
+        },
+        {
+          "seconds": 5,
+          "gunBirths": 270.95,
+          "requiredGrowingFronts": 1
+        },
+        {
+          "seconds": 6,
+          "gunBirths": 320.95,
+          "requiredGrowingFronts": 2
+        },
+        {
+          "seconds": 60,
+          "gunBirths": 3020.95,
+          "requiredGrowingFronts": 11
+        },
+        {
+          "seconds": 600,
+          "gunBirths": 30020.95,
+          "requiredGrowingFronts": 107
+        }
+      ]
+    }
+  ]
+}

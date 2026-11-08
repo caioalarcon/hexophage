@@ -1,0 +1,147 @@
+{
+  "current": {
+    "orders": 10000,
+    "seconds": 1.22,
+    "status": "order-limit",
+    "fiveMinuteRates": null,
+    "overflow": 0
+  },
+  "size": {
+    "orders": 10000,
+    "seconds": 1.315,
+    "status": "order-limit",
+    "fiveMinuteRates": null,
+    "overflow": 0
+  },
+  "order-energy": {
+    "orders": 143,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      21.6,
+      1.4,
+      0.8,
+      0.6,
+      0.6
+    ],
+    "overflow": 0
+  },
+  "field": {
+    "orders": 191,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      23,
+      4.4,
+      2.2,
+      1.4,
+      1
+    ],
+    "overflow": 0
+  },
+  "fixed-tax": {
+    "orders": 241,
+    "seconds": 1.905,
+    "status": "first-deficit",
+    "fiveMinuteRates": null,
+    "overflow": 0
+  },
+  "mana": {
+    "orders": 10000,
+    "seconds": 272.85,
+    "status": "order-limit",
+    "fiveMinuteRates": null,
+    "overflow": 0
+  },
+  "mana-gems": {
+    "orders": 42,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      3.4,
+      1.2,
+      0.8,
+      0.4,
+      0.4
+    ],
+    "overflow": 0
+  },
+  "field-mana": {
+    "orders": 191,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      20.6,
+      6,
+      2.6,
+      1.4,
+      1.2
+    ],
+    "overflow": 0
+  },
+  "core-wallet": {
+    "orders": 1172,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      2.6,
+      4.8,
+      6.4,
+      7.2,
+      8
+    ],
+    "overflow": 0
+  },
+  "core-field": {
+    "orders": 730,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      2.6,
+      4.8,
+      6.4,
+      7.2,
+      8
+    ],
+    "overflow": 0
+  },
+  "recent-mana": {
+    "orders": 1172,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      2.6,
+      4.8,
+      6.4,
+      7.2,
+      8
+    ],
+    "overflow": 0
+  },
+  "battery": {
+    "orders": 1172,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      2.6,
+      4.8,
+      6.4,
+      7.2,
+      8
+    ],
+    "overflow": 574859441.302755
+  },
+  "field-mana-decay": {
+    "orders": 185,
+    "seconds": 7200,
+    "status": "investing",
+    "fiveMinuteRates": [
+      20.6,
+      6,
+      2.4,
+      1.6,
+      1.2
+    ],
+    "overflow": 0
+  }
+}

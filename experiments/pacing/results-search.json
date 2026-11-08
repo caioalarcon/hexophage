@@ -1,0 +1,214 @@
+{
+  "stage1": {
+    "order_vectors": 262144,
+    "mass_vectors": 131072,
+    "poly_vectors": 196608,
+    "trajectories_per_vector": 5,
+    "clock_generations": 1000,
+    "order_strict": 1340,
+    "order_strict_linear_size": 181,
+    "mass_strict": 0,
+    "poly_strict": 0
+  },
+  "refinement": {
+    "order": {
+      "one_second": 1448,
+      "exact": 53,
+      "exact_feasible": 39
+    },
+    "empirical": {
+      "order": {
+        "broad_counts_strict_relaxed_short": [
+          181,
+          181,
+          3058
+        ],
+        "refine": 2992,
+        "exact": 56
+      },
+      "mass": {
+        "broad_counts_strict_relaxed_short": [
+          0,
+          111,
+          4486
+        ],
+        "refine": 4320,
+        "exact": 56
+      },
+      "poly": {
+        "broad_counts_strict_relaxed_short": [
+          0,
+          37,
+          4873
+        ],
+        "refine": 7996,
+        "exact": 55
+      }
+    }
+  },
+  "aoe_median_reference": [
+    0.8,
+    1.8,
+    2.2,
+    2.2,
+    3.7
+  ],
+  "empirical_selected": {
+    "order": {
+      "long-strict": {
+        "id": "601810",
+        "p": "500",
+        "beta": "0",
+        "d": "0.333333333333",
+        "T": "105",
+        "rates": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_abs_error": 1.2200000000000002
+      },
+      "long-relaxed": {
+        "id": "601810",
+        "p": "500",
+        "beta": "0",
+        "d": "0.333333333333",
+        "T": "105",
+        "rates": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_abs_error": 1.2200000000000002
+      },
+      "short": {
+        "id": "602661",
+        "p": "2000",
+        "beta": "0",
+        "d": "0.5",
+        "T": "45",
+        "rates": [
+          1.4,
+          1.8,
+          2.2,
+          2.2,
+          2.4
+        ],
+        "mean_abs_error": 0.38
+      },
+      "closest-trained": {
+        "id": "215681",
+        "p": "119.222026202",
+        "beta": "1.54829365315",
+        "d": "0.36602649835",
+        "T": "87.7749243472",
+        "rates": [
+          1.6,
+          1.4,
+          1.2,
+          1.6,
+          1.4
+        ],
+        "mean_abs_error": 1.02
+      }
+    },
+    "mass": {
+      "long-relaxed": {
+        "id": "601894",
+        "p": "350",
+        "beta": "0",
+        "d": "2",
+        "T": "300",
+        "rates": [
+          2.4,
+          1.2,
+          1.2,
+          1.4,
+          1.2
+        ],
+        "mean_abs_error": 1.3
+      },
+      "short": {
+        "id": "603752",
+        "p": "1500",
+        "beta": "0",
+        "d": "3",
+        "T": "165",
+        "rates": [
+          2.4,
+          1.8,
+          2.2,
+          2.2,
+          2.4
+        ],
+        "mean_abs_error": 0.5800000000000001
+      },
+      "closest-trained": {
+        "id": "23064",
+        "p": "364.690814497",
+        "beta": "0",
+        "d": "2.07627018796",
+        "T": "411.105548208",
+        "rates": [
+          2.2,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_abs_error": 1.4600000000000002
+      }
+    },
+    "poly": {
+      "long-relaxed": {
+        "id": "704715",
+        "p": "2500",
+        "beta": "2",
+        "d": "14",
+        "T": "4800",
+        "rates": [
+          4.2,
+          2.2,
+          1.8,
+          1.4,
+          1.2
+        ],
+        "mean_abs_error": 1.5000000000000002
+      },
+      "short": {
+        "id": "704050",
+        "p": "1750",
+        "beta": "2",
+        "d": "3",
+        "T": "120",
+        "rates": [
+          2.0,
+          2.2,
+          2.4,
+          2.6,
+          3.0
+        ],
+        "mean_abs_error": 0.58
+      },
+      "closest-trained": {
+        "id": "704759",
+        "p": "2500",
+        "beta": "2",
+        "d": "22",
+        "T": "inf",
+        "rates": [
+          6.6,
+          3.2,
+          2.4,
+          2.0,
+          1.6
+        ],
+        "mean_abs_error": 1.94
+      }
+    }
+  }
+}

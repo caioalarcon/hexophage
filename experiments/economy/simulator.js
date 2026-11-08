@@ -20,6 +20,21 @@ export function fieldQuote(field, cells, price, doubling) {
 
 export function energyQuote(rule, field, cells, orders = 0) {
   const price = rule.energyOrderDoubling ? rule.price * 2 ** (orders / rule.energyOrderDoubling) : rule.price;
+  if (rule.massPressureScale) {
+    const x = cells / 3, h = field, k = rule.massPressureScale, a = rule.massPressurePower;
+    // Integral of 1+(h/k)^a, expanded to avoid subtracting two nearly equal
+    // treasury-sized values. The founding 3 cells always cost 3*price.
+    const poly = a === 1 ? h+x/2 : a === 2 ? h*h+h*x+x*x/3
+      : h*h*h+1.5*h*h*x+h*x*x+x*x*x/4;
+    return 3*price*x*(1+poly/k**a)/(1+1/((a+1)*k**a));
+  }
+  if (rule.massPressureDoubling) {
+    const k = Math.LN2 / rule.massPressureDoubling;
+    return 3 * price * Math.exp(k * field) * Math.expm1(k * cells / 3) / Math.expm1(k);
+  }
+  if (rule.orderPressureDoubling) {
+    return 3 * price * (cells / 3) ** (1 + (rule.sizePower || 0)) * 2 ** (field / rule.orderPressureDoubling);
+  }
   if (rule.sizeDoubling) return fieldQuote(0, cells, price, rule.sizeDoubling);
   return fieldQuote(field, cells, price, rule.fieldDoubling);
 }
@@ -35,11 +50,11 @@ export function burst(rule, bank, mana, field, orders, cells = 3) {
   if (bank < 0 || mana < 0) return 0;
   const affordable = n => {
     if (!n) return true;
-    let energy = rule.fieldDoubling
-      ? fieldQuote(field, n * cells, rule.price, rule.fieldDoubling)
+    let energy = (rule.fieldDoubling || rule.massPressureDoubling || rule.massPressureScale)
+      ? energyQuote(rule, field, n * cells, orders)
       : n * energyQuote(rule, field, cells);
-    if (rule.energyOrderDoubling) {
-      const k = Math.LN2 / rule.energyOrderDoubling;
+    if (rule.energyOrderDoubling || rule.orderPressureDoubling) {
+      const k = Math.LN2 / (rule.energyOrderDoubling || rule.orderPressureDoubling);
       energy = energyQuote(rule, field, cells, orders) * Math.expm1(n * k) / Math.expm1(k);
     }
     let magic = manaQuote(rule, orders) * n;
@@ -81,12 +96,13 @@ export function simulate(profiles, rule, policy, options = {}) {
   const decay = rule.halfLife ? 2 ** (-1 / rule.halfLife) : 1;
   const energyDecay = rule.energyHalfLife ? 2 ** (-1 / rule.energyHalfLife) : decay;
   const idAt = n => n < policy.start.length ? policy.start[n] : policy.repeat[(n-policy.start.length) % policy.repeat.length];
+  let sequenceStart = 0;
   let target = profiles.get(idAt(orders));
   const byType = {};
   function commission(p, t) {
     bank = Math.max(0, bank - energyQuote(rule, priceBasis(), p.cells, orders));
     mana = Math.max(0, mana - manaQuote(rule, orders));
-    if (rule.pressureHalfLife) paidPressure += p.cells;
+    if (rule.pressureHalfLife) paidPressure += rule.orderPressureDoubling ? 1 : (rule.massPressureDoubling || rule.massPressureScale) ? p.cells/3 : p.cells;
     energyFlow += p.net; fixed += p.core; field += p.cells;
     de += p.netSlope; df += p.coreSlope; dl += p.liveSlope;
     if (p.meanLive !== p.cells) change(t+1, 0, 0, p.meanLive-p.cells, 0, 0, 0);
@@ -101,7 +117,8 @@ export function simulate(profiles, rule, policy, options = {}) {
     byType[p.id] ??= t;
     orders++; counts[p.id] = (counts[p.id] || 0) + 1;
     if ([2, 10, 100, 1000, limit].includes(orders)) marks[orders] = t;
-    target = profiles.get(idAt(orders));
+    options.onOrder?.(t, p.id);
+    target = profiles.get(idAt(orders - sequenceStart));
   }
   const netAfterUpkeep = () => energyFlow - (rule.fixedTaxScale
     ? Math.max(0, fixed * (fixed - 1) / rule.fixedTaxScale) : 0);
@@ -140,10 +157,23 @@ export function simulate(profiles, rule, policy, options = {}) {
       field = Math.max(0, field);
       fixed = Math.max(0, fixed);
     }
+    // Optional research controls: a one-off loss of all producing assets and
+    // periodic opportunities to issue orders. Cash and the posted price history
+    // survive a wipe. A rebuilding player retries the original opening.
+    if (t === options.wipeAt) {
+      energyFlow = fixed = field = de = df = dl = 0;
+      schedule.clear();
+      sequenceStart = orders;
+      target = profiles.get(idAt(0));
+    }
     const startOrders = orders;
-    if (t <= buyThrough && stop == null) {
+    if (t <= buyThrough && stop == null && (!options.reviewEvery || t % options.reviewEvery === 0)) {
       for (;;) {
-        const p = target;
+        // Research policies can review the observable ledger and choose to save.
+        const p = options.chooseOrder ? profiles.get(options.chooseOrder({
+          t, bank, pressure: priceBasis(), orders, energyFlow: netAfterUpkeep()
+        })) : target;
+        if (!p) break;
         const price = energyQuote(rule, priceBasis(), p.cells, orders);
         // Optionally retain the measured startup deficit before buying a gun.
         if (bank + EPS < price + (policy.fundGun && p.emitter ? p.runway : 0)

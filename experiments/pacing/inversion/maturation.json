@@ -1,0 +1,8470 @@
+{
+ "maturity": 64,
+ "reward": 8,
+ "patterns": [
+  {
+   "id": "p2",
+   "name": "Oscilador mínimo (flipper)",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 2,
+   "lateNet": -2,
+   "stampedAt63": 1,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -30,
+     "generation": 0
+    },
+    "12": {
+     "energy": -30,
+     "generation": 0
+    },
+    "32": {
+     "energy": -30,
+     "generation": 0
+    },
+    "129": {
+     "energy": -30,
+     "generation": 0
+    },
+    "384": {
+     "energy": -30,
+     "generation": 0
+    }
+   },
+   "earlyNet": -120,
+   "blocks": [
+    {
+     "start": 1,
+     "end": 2,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 3,
+     "end": 4,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 5,
+     "end": 6,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 7,
+     "end": 8,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 9,
+     "end": 10,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 11,
+     "end": 12,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 13,
+     "end": 14,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 15,
+     "end": 16,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 17,
+     "end": 18,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 19,
+     "end": 20,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 21,
+     "end": 22,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 23,
+     "end": 24,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 25,
+     "end": 26,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 27,
+     "end": 28,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 29,
+     "end": 30,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 31,
+     "end": 32,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 33,
+     "end": 34,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 35,
+     "end": 36,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 37,
+     "end": 38,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 39,
+     "end": 40,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 41,
+     "end": 42,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 43,
+     "end": 44,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 45,
+     "end": 46,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 47,
+     "end": 48,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 49,
+     "end": 50,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 51,
+     "end": 52,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 53,
+     "end": 54,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 55,
+     "end": 56,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 57,
+     "end": 58,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 59,
+     "end": 60,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 61,
+     "end": 62,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 63,
+     "end": 64,
+     "matured": 1,
+     "births": 4,
+     "net": 4
+    },
+    {
+     "start": 65,
+     "end": 66,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 67,
+     "end": 68,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 69,
+     "end": 70,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 71,
+     "end": 72,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 73,
+     "end": 74,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 75,
+     "end": 76,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 77,
+     "end": 78,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 79,
+     "end": 80,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 81,
+     "end": 82,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 83,
+     "end": 84,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 85,
+     "end": 86,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 87,
+     "end": 88,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 89,
+     "end": 90,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 91,
+     "end": 92,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 93,
+     "end": 94,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 95,
+     "end": 96,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 97,
+     "end": 98,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 99,
+     "end": 100,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 101,
+     "end": 102,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 103,
+     "end": 104,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 105,
+     "end": 106,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 107,
+     "end": 108,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 109,
+     "end": 110,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 111,
+     "end": 112,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 113,
+     "end": 114,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 115,
+     "end": 116,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 117,
+     "end": 118,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 119,
+     "end": 120,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 121,
+     "end": 122,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 123,
+     "end": 124,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 125,
+     "end": 126,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 127,
+     "end": 128,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 129,
+     "end": 130,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 131,
+     "end": 132,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 133,
+     "end": 134,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 135,
+     "end": 136,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 137,
+     "end": 138,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 139,
+     "end": 140,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 141,
+     "end": 142,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 143,
+     "end": 144,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 145,
+     "end": 146,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 147,
+     "end": 148,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 149,
+     "end": 150,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 151,
+     "end": 152,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 153,
+     "end": 154,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 155,
+     "end": 156,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 157,
+     "end": 158,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 159,
+     "end": 160,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 161,
+     "end": 162,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 163,
+     "end": 164,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 165,
+     "end": 166,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 167,
+     "end": 168,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 169,
+     "end": 170,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 171,
+     "end": 172,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 173,
+     "end": 174,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 175,
+     "end": 176,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 177,
+     "end": 178,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 179,
+     "end": 180,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 181,
+     "end": 182,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 183,
+     "end": 184,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 185,
+     "end": 186,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 187,
+     "end": 188,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 189,
+     "end": 190,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 191,
+     "end": 192,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 193,
+     "end": 194,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 195,
+     "end": 196,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 197,
+     "end": 198,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 199,
+     "end": 200,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 201,
+     "end": 202,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 203,
+     "end": 204,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 205,
+     "end": 206,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 207,
+     "end": 208,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 209,
+     "end": 210,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 211,
+     "end": 212,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 213,
+     "end": 214,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 215,
+     "end": 216,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 217,
+     "end": 218,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 219,
+     "end": 220,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 221,
+     "end": 222,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 223,
+     "end": 224,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 225,
+     "end": 226,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 227,
+     "end": 228,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 229,
+     "end": 230,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 231,
+     "end": 232,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 233,
+     "end": 234,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 235,
+     "end": 236,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 237,
+     "end": 238,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 239,
+     "end": 240,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 241,
+     "end": 242,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 243,
+     "end": 244,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 245,
+     "end": 246,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 247,
+     "end": 248,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 249,
+     "end": 250,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 251,
+     "end": 252,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 253,
+     "end": 254,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 255,
+     "end": 256,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 257,
+     "end": 258,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 259,
+     "end": 260,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 261,
+     "end": 262,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 263,
+     "end": 264,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 265,
+     "end": 266,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 267,
+     "end": 268,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 269,
+     "end": 270,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 271,
+     "end": 272,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 273,
+     "end": 274,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 275,
+     "end": 276,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 277,
+     "end": 278,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 279,
+     "end": 280,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 281,
+     "end": 282,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 283,
+     "end": 284,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 285,
+     "end": 286,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 287,
+     "end": 288,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 289,
+     "end": 290,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 291,
+     "end": 292,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 293,
+     "end": 294,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 295,
+     "end": 296,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 297,
+     "end": 298,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 299,
+     "end": 300,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 301,
+     "end": 302,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 303,
+     "end": 304,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 305,
+     "end": 306,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 307,
+     "end": 308,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 309,
+     "end": 310,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 311,
+     "end": 312,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 313,
+     "end": 314,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 315,
+     "end": 316,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 317,
+     "end": 318,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 319,
+     "end": 320,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 321,
+     "end": 322,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 323,
+     "end": 324,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 325,
+     "end": 326,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 327,
+     "end": 328,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 329,
+     "end": 330,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 331,
+     "end": 332,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 333,
+     "end": 334,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 335,
+     "end": 336,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 337,
+     "end": 338,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 339,
+     "end": 340,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 341,
+     "end": 342,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 343,
+     "end": 344,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 345,
+     "end": 346,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 347,
+     "end": 348,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 349,
+     "end": 350,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 351,
+     "end": 352,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 353,
+     "end": 354,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 355,
+     "end": 356,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 357,
+     "end": 358,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 359,
+     "end": 360,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 361,
+     "end": 362,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 363,
+     "end": 364,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 365,
+     "end": 366,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 367,
+     "end": 368,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 369,
+     "end": 370,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 371,
+     "end": 372,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 373,
+     "end": 374,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 375,
+     "end": 376,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 377,
+     "end": 378,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 379,
+     "end": 380,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 381,
+     "end": 382,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 383,
+     "end": 384,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 385,
+     "end": 386,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 387,
+     "end": 388,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 389,
+     "end": 390,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 391,
+     "end": 392,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 393,
+     "end": 394,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 395,
+     "end": 396,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 397,
+     "end": 398,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 399,
+     "end": 400,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 401,
+     "end": 402,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 403,
+     "end": 404,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 405,
+     "end": 406,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 407,
+     "end": 408,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 409,
+     "end": 410,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 411,
+     "end": 412,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 413,
+     "end": 414,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 415,
+     "end": 416,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 417,
+     "end": 418,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 419,
+     "end": 420,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 421,
+     "end": 422,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 423,
+     "end": 424,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 425,
+     "end": 426,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 427,
+     "end": 428,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 429,
+     "end": 430,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 431,
+     "end": 432,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 433,
+     "end": 434,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 435,
+     "end": 436,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 437,
+     "end": 438,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 439,
+     "end": 440,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 441,
+     "end": 442,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 443,
+     "end": 444,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 445,
+     "end": 446,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 447,
+     "end": 448,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 449,
+     "end": 450,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 451,
+     "end": 452,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 453,
+     "end": 454,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 455,
+     "end": 456,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 457,
+     "end": 458,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 459,
+     "end": 460,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 461,
+     "end": 462,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 463,
+     "end": 464,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 465,
+     "end": 466,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 467,
+     "end": 468,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 469,
+     "end": 470,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 471,
+     "end": 472,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 473,
+     "end": 474,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 475,
+     "end": 476,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 477,
+     "end": 478,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    },
+    {
+     "start": 479,
+     "end": 480,
+     "matured": 0,
+     "births": 4,
+     "net": -4
+    }
+   ]
+  },
+  {
+   "id": "censo-oscillator-5-p2-1",
+   "name": "Oscilador P2 · C5-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 3,
+   "lateNet": -3,
+   "stampedAt63": 3,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -50,
+     "generation": 0
+    },
+    "12": {
+     "energy": -50,
+     "generation": 0
+    },
+    "32": {
+     "energy": -50,
+     "generation": 0
+    },
+    "129": {
+     "energy": -50,
+     "generation": 0
+    },
+    "384": {
+     "energy": -50,
+     "generation": 0
+    }
+   },
+   "earlyNet": -168
+  },
+  {
+   "id": "p4f",
+   "name": "Flipper P4",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 1,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -50,
+     "generation": 0
+    },
+    "12": {
+     "energy": -50,
+     "generation": 0
+    },
+    "32": {
+     "energy": -50,
+     "generation": 0
+    },
+    "129": {
+     "energy": -50,
+     "generation": 0
+    },
+    "384": {
+     "energy": -50,
+     "generation": 0
+    }
+   },
+   "earlyNet": -248
+  },
+  {
+   "id": "censo-oscillator-6-p2-1",
+   "name": "Oscilador P2 · C6-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 3,
+   "lateNet": -3,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -60,
+     "generation": 0
+    },
+    "12": {
+     "energy": -60,
+     "generation": 0
+    },
+    "32": {
+     "energy": -60,
+     "generation": 0
+    },
+    "129": {
+     "energy": -60,
+     "generation": 0
+    },
+    "384": {
+     "energy": -60,
+     "generation": 0
+    }
+   },
+   "earlyNet": -144
+  },
+  {
+   "id": "censo-oscillator-6-p2-2",
+   "name": "Oscilador P2 · C6-2",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 3,
+   "lateNet": -3,
+   "stampedAt63": 3,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -60,
+     "generation": 0
+    },
+    "12": {
+     "energy": -60,
+     "generation": 0
+    },
+    "32": {
+     "energy": -60,
+     "generation": 0
+    },
+    "129": {
+     "energy": -60,
+     "generation": 0
+    },
+    "384": {
+     "energy": -60,
+     "generation": 0
+    }
+   },
+   "earlyNet": -168
+  },
+  {
+   "id": "p8f",
+   "name": "Flipper P8",
+   "group": "oscilador",
+   "window": 8,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 3.75,
+   "lateNet": -3.75,
+   "stampedAt63": 2,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -60,
+     "generation": 0
+    },
+    "12": {
+     "energy": -60,
+     "generation": 0
+    },
+    "32": {
+     "energy": -60,
+     "generation": 0
+    },
+    "129": {
+     "energy": -60,
+     "generation": 0
+    },
+    "384": {
+     "energy": -60,
+     "generation": 0
+    }
+   },
+   "earlyNet": -224
+  },
+  {
+   "id": "glider",
+   "name": "Glider P4",
+   "group": "nave",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 0,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -60,
+     "generation": 0
+    },
+    "12": {
+     "energy": -60,
+     "generation": 0
+    },
+    "32": {
+     "energy": -60,
+     "generation": 0
+    },
+    "129": {
+     "energy": -60,
+     "generation": 0
+    },
+    "384": {
+     "energy": -60,
+     "generation": 0
+    }
+   },
+   "earlyNet": -320,
+   "blocks": [
+    {
+     "start": 1,
+     "end": 4,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 5,
+     "end": 8,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 9,
+     "end": 12,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 13,
+     "end": 16,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 17,
+     "end": 20,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 21,
+     "end": 24,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 25,
+     "end": 28,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 29,
+     "end": 32,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 33,
+     "end": 36,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 37,
+     "end": 40,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 41,
+     "end": 44,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 45,
+     "end": 48,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 49,
+     "end": 52,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 53,
+     "end": 56,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 57,
+     "end": 60,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 61,
+     "end": 64,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 65,
+     "end": 68,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 69,
+     "end": 72,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 73,
+     "end": 76,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 77,
+     "end": 80,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 81,
+     "end": 84,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 85,
+     "end": 88,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 89,
+     "end": 92,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 93,
+     "end": 96,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 97,
+     "end": 100,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 101,
+     "end": 104,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 105,
+     "end": 108,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 109,
+     "end": 112,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 113,
+     "end": 116,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 117,
+     "end": 120,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 121,
+     "end": 124,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 125,
+     "end": 128,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 129,
+     "end": 132,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 133,
+     "end": 136,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 137,
+     "end": 140,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 141,
+     "end": 144,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 145,
+     "end": 148,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 149,
+     "end": 152,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 153,
+     "end": 156,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 157,
+     "end": 160,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 161,
+     "end": 164,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 165,
+     "end": 168,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 169,
+     "end": 172,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 173,
+     "end": 176,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 177,
+     "end": 180,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 181,
+     "end": 184,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 185,
+     "end": 188,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 189,
+     "end": 192,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 193,
+     "end": 196,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 197,
+     "end": 200,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 201,
+     "end": 204,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 205,
+     "end": 208,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 209,
+     "end": 212,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 213,
+     "end": 216,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 217,
+     "end": 220,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 221,
+     "end": 224,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 225,
+     "end": 228,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 229,
+     "end": 232,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 233,
+     "end": 236,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 237,
+     "end": 240,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 241,
+     "end": 244,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 245,
+     "end": 248,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 249,
+     "end": 252,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 253,
+     "end": 256,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 257,
+     "end": 260,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 261,
+     "end": 264,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 265,
+     "end": 268,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 269,
+     "end": 272,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 273,
+     "end": 276,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 277,
+     "end": 280,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 281,
+     "end": 284,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 285,
+     "end": 288,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 289,
+     "end": 292,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 293,
+     "end": 296,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 297,
+     "end": 300,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 301,
+     "end": 304,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 305,
+     "end": 308,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 309,
+     "end": 312,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 313,
+     "end": 316,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 317,
+     "end": 320,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 321,
+     "end": 324,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 325,
+     "end": 328,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 329,
+     "end": 332,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 333,
+     "end": 336,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 337,
+     "end": 340,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 341,
+     "end": 344,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 345,
+     "end": 348,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 349,
+     "end": 352,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 353,
+     "end": 356,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 357,
+     "end": 360,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 361,
+     "end": 364,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 365,
+     "end": 368,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 369,
+     "end": 372,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 373,
+     "end": 376,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 377,
+     "end": 380,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 381,
+     "end": 384,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 385,
+     "end": 388,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 389,
+     "end": 392,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 393,
+     "end": 396,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 397,
+     "end": 400,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 401,
+     "end": 404,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 405,
+     "end": 408,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 409,
+     "end": 412,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 413,
+     "end": 416,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 417,
+     "end": 420,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 421,
+     "end": 424,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 425,
+     "end": 428,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 429,
+     "end": 432,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 433,
+     "end": 436,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 437,
+     "end": 440,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 441,
+     "end": 444,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 445,
+     "end": 448,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 449,
+     "end": 452,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 453,
+     "end": 456,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 457,
+     "end": 460,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 461,
+     "end": 464,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 465,
+     "end": 468,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 469,
+     "end": 472,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 473,
+     "end": 476,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    },
+    {
+     "start": 477,
+     "end": 480,
+     "matured": 0,
+     "births": 20,
+     "net": -20
+    }
+   ]
+  },
+  {
+   "id": "censo-oscillator-7-p2-1",
+   "name": "Oscilador P2 · C7-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 3.5,
+   "lateNet": -3.5,
+   "stampedAt63": 4,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -70,
+     "generation": 0
+    },
+    "12": {
+     "energy": -70,
+     "generation": 0
+    },
+    "32": {
+     "energy": -70,
+     "generation": 0
+    },
+    "129": {
+     "energy": -70,
+     "generation": 0
+    },
+    "384": {
+     "energy": -70,
+     "generation": 0
+    }
+   },
+   "earlyNet": -192
+  },
+  {
+   "id": "censo-oscillator-8-p2-1",
+   "name": "Oscilador P2 · C8-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -80,
+     "generation": 0
+    },
+    "12": {
+     "energy": -80,
+     "generation": 0
+    },
+    "32": {
+     "energy": -80,
+     "generation": 0
+    },
+    "129": {
+     "energy": -80,
+     "generation": 0
+    },
+    "384": {
+     "energy": -80,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-8-p4-1",
+   "name": "Oscilador P4 · C8-1",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7,
+   "lateNet": -7,
+   "stampedAt63": 2,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -80,
+     "generation": 0
+    },
+    "12": {
+     "energy": -80,
+     "generation": 0
+    },
+    "32": {
+     "energy": -80,
+     "generation": 0
+    },
+    "129": {
+     "energy": -80,
+     "generation": 0
+    },
+    "384": {
+     "energy": -80,
+     "generation": 0
+    }
+   },
+   "earlyNet": -432
+  },
+  {
+   "id": "censo-oscillator-9-p2-1",
+   "name": "Oscilador P2 · C9-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-9-p2-2",
+   "name": "Oscilador P2 · C9-2",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-9-p2-3",
+   "name": "Oscilador P2 · C9-3",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-9-p2-4",
+   "name": "Oscilador P2 · C9-4",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-9-p2-5",
+   "name": "Oscilador P2 · C9-5",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-9-p2-6",
+   "name": "Oscilador P2 · C9-6",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-9-p2-7",
+   "name": "Oscilador P2 · C9-7",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-9-p4-1",
+   "name": "Oscilador P4 · C9-1",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 4,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-9-p4-2",
+   "name": "Oscilador P4 · C9-2",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 6,
+   "lateNet": -6,
+   "stampedAt63": 3,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -360
+  },
+  {
+   "id": "censo-oscillator-9-p5-1",
+   "name": "Oscilador P5 · C9-1",
+   "group": "oscilador",
+   "window": 5,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.8,
+   "lateNet": -4.8,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -272
+  },
+  {
+   "id": "censo-oscillator-9-p5-2",
+   "name": "Oscilador P5 · C9-2",
+   "group": "oscilador",
+   "window": 5,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.8,
+   "lateNet": -4.8,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -272
+  },
+  {
+   "id": "censo-oscillator-9-p6-1",
+   "name": "Oscilador P6 · C9-1",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.333333333333333,
+   "lateNet": -4.333333333333333,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -230
+  },
+  {
+   "id": "censo-oscillator-9-p10-1",
+   "name": "Oscilador P10 · C9-1",
+   "group": "oscilador",
+   "window": 10,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.4,
+   "lateNet": -4.4,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -90,
+     "generation": 0
+    },
+    "12": {
+     "energy": -90,
+     "generation": 0
+    },
+    "32": {
+     "energy": -90,
+     "generation": 0
+    },
+    "129": {
+     "energy": -90,
+     "generation": 0
+    },
+    "384": {
+     "energy": -90,
+     "generation": 0
+    }
+   },
+   "earlyNet": -268
+  },
+  {
+   "id": "censo-oscillator-10-p2-1",
+   "name": "Oscilador P2 · C10-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 6,
+   "lateNet": -6,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -336
+  },
+  {
+   "id": "censo-oscillator-10-p2-10",
+   "name": "Oscilador P2 · C10-10",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -192
+  },
+  {
+   "id": "censo-oscillator-10-p2-2",
+   "name": "Oscilador P2 · C10-2",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-10-p2-3",
+   "name": "Oscilador P2 · C10-3",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -192
+  },
+  {
+   "id": "censo-oscillator-10-p2-4",
+   "name": "Oscilador P2 · C10-4",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -208
+  },
+  {
+   "id": "censo-oscillator-10-p2-5",
+   "name": "Oscilador P2 · C10-5",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-10-p2-6",
+   "name": "Oscilador P2 · C10-6",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-10-p2-7",
+   "name": "Oscilador P2 · C10-7",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-10-p2-8",
+   "name": "Oscilador P2 · C10-8",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-10-p2-9",
+   "name": "Oscilador P2 · C10-9",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-10-p4-1",
+   "name": "Oscilador P4 · C10-1",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.75,
+   "lateNet": -4.75,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-10-p4-2",
+   "name": "Oscilador P4 · C10-2",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.75,
+   "lateNet": -4.75,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-10-p5-1",
+   "name": "Oscilador P5 · C10-1",
+   "group": "oscilador",
+   "window": 5,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.8,
+   "lateNet": -4.8,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -272
+  },
+  {
+   "id": "censo-oscillator-10-p6-1",
+   "name": "Oscilador P6 · C10-1",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.333333333333333,
+   "lateNet": -4.333333333333333,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -230
+  },
+  {
+   "id": "censo-oscillator-10-p6-2",
+   "name": "Oscilador P6 · C10-2",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.666666666666667,
+   "lateNet": -4.666666666666667,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -252
+  },
+  {
+   "id": "censo-oscillator-10-p10-1",
+   "name": "Oscilador P10 · C10-1",
+   "group": "oscilador",
+   "window": 10,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.9,
+   "lateNet": -4.9,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -295
+  },
+  {
+   "id": "censo-oscillator-10-p10-2",
+   "name": "Oscilador P10 · C10-2",
+   "group": "oscilador",
+   "window": 10,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.9,
+   "lateNet": -4.9,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -100,
+     "generation": 0
+    },
+    "12": {
+     "energy": -100,
+     "generation": 0
+    },
+    "32": {
+     "energy": -100,
+     "generation": 0
+    },
+    "129": {
+     "energy": -100,
+     "generation": 0
+    },
+    "384": {
+     "energy": -100,
+     "generation": 0
+    }
+   },
+   "earlyNet": -295
+  },
+  {
+   "id": "censo-oscillator-11-p2-1",
+   "name": "Oscilador P2 · C11-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-11-p2-10",
+   "name": "Oscilador P2 · C11-10",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-11",
+   "name": "Oscilador P2 · C11-11",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-12",
+   "name": "Oscilador P2 · C11-12",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-13",
+   "name": "Oscilador P2 · C11-13",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-11-p2-14",
+   "name": "Oscilador P2 · C11-14",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -192
+  },
+  {
+   "id": "censo-oscillator-11-p2-15",
+   "name": "Oscilador P2 · C11-15",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -232
+  },
+  {
+   "id": "censo-oscillator-11-p2-2",
+   "name": "Oscilador P2 · C11-2",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-3",
+   "name": "Oscilador P2 · C11-3",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-4",
+   "name": "Oscilador P2 · C11-4",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-5",
+   "name": "Oscilador P2 · C11-5",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-6",
+   "name": "Oscilador P2 · C11-6",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-7",
+   "name": "Oscilador P2 · C11-7",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-8",
+   "name": "Oscilador P2 · C11-8",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p2-9",
+   "name": "Oscilador P2 · C11-9",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-11-p4-1",
+   "name": "Oscilador P4 · C11-1",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.75,
+   "lateNet": -7.75,
+   "stampedAt63": 4,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -464
+  },
+  {
+   "id": "censo-oscillator-11-p4-10",
+   "name": "Oscilador P4 · C11-10",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.5,
+   "lateNet": -5.5,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -312
+  },
+  {
+   "id": "censo-oscillator-11-p4-11",
+   "name": "Oscilador P4 · C11-11",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -272
+  },
+  {
+   "id": "censo-oscillator-11-p4-2",
+   "name": "Oscilador P4 · C11-2",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 10,
+   "lateNet": -10,
+   "stampedAt63": 3,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -616
+  },
+  {
+   "id": "censo-oscillator-11-p4-3",
+   "name": "Oscilador P4 · C11-3",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.5,
+   "lateNet": -5.5,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -304
+  },
+  {
+   "id": "censo-oscillator-11-p4-4",
+   "name": "Oscilador P4 · C11-4",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.75,
+   "lateNet": -4.75,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-11-p4-5",
+   "name": "Oscilador P4 · C11-5",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.5,
+   "lateNet": -5.5,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -312
+  },
+  {
+   "id": "censo-oscillator-11-p4-6",
+   "name": "Oscilador P4 · C11-6",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.25,
+   "lateNet": -5.25,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -288
+  },
+  {
+   "id": "censo-oscillator-11-p4-7",
+   "name": "Oscilador P4 · C11-7",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.25,
+   "lateNet": -5.25,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -288
+  },
+  {
+   "id": "censo-oscillator-11-p4-8",
+   "name": "Oscilador P4 · C11-8",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.25,
+   "lateNet": -5.25,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -288
+  },
+  {
+   "id": "censo-oscillator-11-p4-9",
+   "name": "Oscilador P4 · C11-9",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.25,
+   "lateNet": -5.25,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -288
+  },
+  {
+   "id": "censo-oscillator-11-p6-1",
+   "name": "Oscilador P6 · C11-1",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.166666666666667,
+   "lateNet": -5.166666666666667,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -277
+  },
+  {
+   "id": "censo-oscillator-11-p10-1",
+   "name": "Oscilador P10 · C11-1",
+   "group": "oscilador",
+   "window": 10,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.9,
+   "lateNet": -4.9,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -271
+  },
+  {
+   "id": "censo-oscillator-12-p2-1",
+   "name": "Oscilador P2 · C12-1",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-10",
+   "name": "Oscilador P2 · C12-10",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-11",
+   "name": "Oscilador P2 · C12-11",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-12",
+   "name": "Oscilador P2 · C12-12",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-13",
+   "name": "Oscilador P2 · C12-13",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-14",
+   "name": "Oscilador P2 · C12-14",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-15",
+   "name": "Oscilador P2 · C12-15",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 10,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-12-p2-16",
+   "name": "Oscilador P2 · C12-16",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-17",
+   "name": "Oscilador P2 · C12-17",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-12-p2-18",
+   "name": "Oscilador P2 · C12-18",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-19",
+   "name": "Oscilador P2 · C12-19",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-2",
+   "name": "Oscilador P2 · C12-2",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 10,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-12-p2-20",
+   "name": "Oscilador P2 · C12-20",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-21",
+   "name": "Oscilador P2 · C12-21",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -192
+  },
+  {
+   "id": "censo-oscillator-12-p2-22",
+   "name": "Oscilador P2 · C12-22",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-23",
+   "name": "Oscilador P2 · C12-23",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -224
+  },
+  {
+   "id": "censo-oscillator-12-p2-24",
+   "name": "Oscilador P2 · C12-24",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-12-p2-25",
+   "name": "Oscilador P2 · C12-25",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-26",
+   "name": "Oscilador P2 · C12-26",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-27",
+   "name": "Oscilador P2 · C12-27",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-12-p2-28",
+   "name": "Oscilador P2 · C12-28",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.5,
+   "lateNet": -4.5,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -216
+  },
+  {
+   "id": "censo-oscillator-12-p2-29",
+   "name": "Oscilador P2 · C12-29",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-3",
+   "name": "Oscilador P2 · C12-3",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-30",
+   "name": "Oscilador P2 · C12-30",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-31",
+   "name": "Oscilador P2 · C12-31",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -192
+  },
+  {
+   "id": "censo-oscillator-12-p2-32",
+   "name": "Oscilador P2 · C12-32",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -192
+  },
+  {
+   "id": "censo-oscillator-12-p2-4",
+   "name": "Oscilador P2 · C12-4",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p2-5",
+   "name": "Oscilador P2 · C12-5",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 10,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-12-p2-6",
+   "name": "Oscilador P2 · C12-6",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 10,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -240
+  },
+  {
+   "id": "censo-oscillator-12-p2-7",
+   "name": "Oscilador P2 · C12-7",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.5,
+   "lateNet": -5.5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -288
+  },
+  {
+   "id": "censo-oscillator-12-p2-8",
+   "name": "Oscilador P2 · C12-8",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p2-9",
+   "name": "Oscilador P2 · C12-9",
+   "group": "oscilador",
+   "window": 2,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -256
+  },
+  {
+   "id": "censo-oscillator-12-p3-1",
+   "name": "Oscilador P3 · C12-1",
+   "group": "oscilador",
+   "window": 3,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4,
+   "lateNet": -4,
+   "stampedAt63": 12,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -168
+  },
+  {
+   "id": "censo-oscillator-12-p4-1",
+   "name": "Oscilador P4 · C12-1",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.5,
+   "lateNet": -7.5,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -440
+  },
+  {
+   "id": "censo-oscillator-12-p4-10",
+   "name": "Oscilador P4 · C12-10",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.25,
+   "lateNet": -5.25,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p4-11",
+   "name": "Oscilador P4 · C12-11",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.75,
+   "lateNet": -5.75,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -320
+  },
+  {
+   "id": "censo-oscillator-12-p4-12",
+   "name": "Oscilador P4 · C12-12",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.75,
+   "lateNet": -5.75,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -320
+  },
+  {
+   "id": "censo-oscillator-12-p4-13",
+   "name": "Oscilador P4 · C12-13",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.5,
+   "lateNet": -5.5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -296
+  },
+  {
+   "id": "censo-oscillator-12-p4-14",
+   "name": "Oscilador P4 · C12-14",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.5,
+   "lateNet": -5.5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -288
+  },
+  {
+   "id": "censo-oscillator-12-p4-15",
+   "name": "Oscilador P4 · C12-15",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.75,
+   "lateNet": -5.75,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -320
+  },
+  {
+   "id": "censo-oscillator-12-p4-2",
+   "name": "Oscilador P4 · C12-2",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.5,
+   "lateNet": -7.5,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -440
+  },
+  {
+   "id": "censo-oscillator-12-p4-3",
+   "name": "Oscilador P4 · C12-3",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 8,
+   "lateNet": -8,
+   "stampedAt63": 5,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -472
+  },
+  {
+   "id": "censo-oscillator-12-p4-4",
+   "name": "Oscilador P4 · C12-4",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 8.75,
+   "lateNet": -8.75,
+   "stampedAt63": 4,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -528
+  },
+  {
+   "id": "censo-oscillator-12-p4-5",
+   "name": "Oscilador P4 · C12-5",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.5,
+   "lateNet": -5.5,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -296
+  },
+  {
+   "id": "censo-oscillator-12-p4-6",
+   "name": "Oscilador P4 · C12-6",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.25,
+   "lateNet": -5.25,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -264
+  },
+  {
+   "id": "censo-oscillator-12-p4-7",
+   "name": "Oscilador P4 · C12-7",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.75,
+   "lateNet": -5.75,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -312
+  },
+  {
+   "id": "censo-oscillator-12-p4-8",
+   "name": "Oscilador P4 · C12-8",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 6,
+   "lateNet": -6,
+   "stampedAt63": 6,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -336
+  },
+  {
+   "id": "censo-oscillator-12-p4-9",
+   "name": "Oscilador P4 · C12-9",
+   "group": "oscilador",
+   "window": 4,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.75,
+   "lateNet": -5.75,
+   "stampedAt63": 7,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -312
+  },
+  {
+   "id": "censo-oscillator-12-p5-1",
+   "name": "Oscilador P5 · C12-1",
+   "group": "oscilador",
+   "window": 5,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.8,
+   "lateNet": -4.8,
+   "stampedAt63": 10,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -232
+  },
+  {
+   "id": "censo-oscillator-12-p5-2",
+   "name": "Oscilador P5 · C12-2",
+   "group": "oscilador",
+   "window": 5,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.8,
+   "lateNet": -4.8,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -248
+  },
+  {
+   "id": "censo-oscillator-12-p5-3",
+   "name": "Oscilador P5 · C12-3",
+   "group": "oscilador",
+   "window": 5,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.8,
+   "lateNet": -4.8,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -248
+  },
+  {
+   "id": "censo-oscillator-12-p6-1",
+   "name": "Oscilador P6 · C12-1",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.333333333333333,
+   "lateNet": -5.333333333333333,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -280
+  },
+  {
+   "id": "censo-oscillator-12-p6-2",
+   "name": "Oscilador P6 · C12-2",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 9,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -258
+  },
+  {
+   "id": "censo-oscillator-12-p6-3",
+   "name": "Oscilador P6 · C12-3",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.333333333333333,
+   "lateNet": -5.333333333333333,
+   "stampedAt63": 10,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -272
+  },
+  {
+   "id": "censo-oscillator-12-p6-4",
+   "name": "Oscilador P6 · C12-4",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5,
+   "lateNet": -5,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -266
+  },
+  {
+   "id": "censo-oscillator-12-p6-5",
+   "name": "Oscilador P6 · C12-5",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.333333333333333,
+   "lateNet": -4.333333333333333,
+   "stampedAt63": 10,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -206
+  },
+  {
+   "id": "censo-oscillator-12-p6-6",
+   "name": "Oscilador P6 · C12-6",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.166666666666667,
+   "lateNet": -5.166666666666667,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -277
+  },
+  {
+   "id": "censo-oscillator-12-p6-7",
+   "name": "Oscilador P6 · C12-7",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.166666666666667,
+   "lateNet": -5.166666666666667,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -277
+  },
+  {
+   "id": "censo-oscillator-12-p6-8",
+   "name": "Oscilador P6 · C12-8",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.166666666666667,
+   "lateNet": -5.166666666666667,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -277
+  },
+  {
+   "id": "censo-oscillator-12-p6-9",
+   "name": "Oscilador P6 · C12-9",
+   "group": "oscilador",
+   "window": 6,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.166666666666667,
+   "lateNet": -5.166666666666667,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -277
+  },
+  {
+   "id": "censo-oscillator-12-p10-1",
+   "name": "Oscilador P10 · C12-1",
+   "group": "oscilador",
+   "window": 10,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 4.4,
+   "lateNet": -4.4,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -244
+  },
+  {
+   "id": "censo-oscillator-12-p30-1",
+   "name": "Oscilador P30 · C12-1",
+   "group": "oscilador",
+   "window": 30,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 5.566666666666666,
+   "lateNet": -5.566666666666666,
+   "stampedAt63": 8,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -437
+  },
+  {
+   "id": "p42rot",
+   "name": "Oscilador rotativo P42",
+   "group": "oscilador",
+   "window": 42,
+   "generations": 504,
+   "lateFrom": 253,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.142857142857143,
+   "lateNet": -7.142857142857143,
+   "stampedAt63": 0,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -600
+  },
+  {
+   "id": "p48",
+   "name": "Nave P48",
+   "group": "nave",
+   "window": 48,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 6.958333333333333,
+   "lateNet": -6.958333333333333,
+   "stampedAt63": 0,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -120,
+     "generation": 0
+    },
+    "12": {
+     "energy": -120,
+     "generation": 0
+    },
+    "32": {
+     "energy": -120,
+     "generation": 0
+    },
+    "129": {
+     "energy": -120,
+     "generation": 0
+    },
+    "384": {
+     "energy": -120,
+     "generation": 0
+    }
+   },
+   "earlyNet": -668
+  },
+  {
+   "id": "p42",
+   "name": "Oscilador refletor P42",
+   "group": "oscilador",
+   "window": 42,
+   "generations": 504,
+   "lateFrom": 253,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 6.095238095238095,
+   "lateNet": -6.095238095238095,
+   "stampedAt63": 12,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -170,
+     "generation": 0
+    },
+    "12": {
+     "energy": -170,
+     "generation": 0
+    },
+    "32": {
+     "energy": -170,
+     "generation": 0
+    },
+    "129": {
+     "energy": -170,
+     "generation": 0
+    },
+    "384": {
+     "energy": -170,
+     "generation": 0
+    }
+   },
+   "earlyNet": -416
+  },
+  {
+   "id": "p14",
+   "name": "Oscilador P14",
+   "group": "oscilador",
+   "window": 14,
+   "generations": 490,
+   "lateFrom": 253,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 6.285714285714286,
+   "lateNet": -6.285714285714286,
+   "stampedAt63": 3,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -210,
+     "generation": 0
+    },
+    "12": {
+     "energy": -210,
+     "generation": 0
+    },
+    "32": {
+     "energy": -210,
+     "generation": 0
+    },
+    "129": {
+     "energy": -210,
+     "generation": 0
+    },
+    "384": {
+     "energy": -210,
+     "generation": 0
+    }
+   },
+   "earlyNet": -416
+  },
+  {
+   "id": "p11b",
+   "name": "Oscilador principal P11 (B)",
+   "group": "oscilador",
+   "window": 33,
+   "generations": 495,
+   "lateFrom": 265,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 6.7272727272727275,
+   "lateNet": -6.7272727272727275,
+   "stampedAt63": 20,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -240,
+     "generation": 0
+    },
+    "12": {
+     "energy": -240,
+     "generation": 0
+    },
+    "32": {
+     "energy": -240,
+     "generation": 0
+    },
+    "129": {
+     "energy": -240,
+     "generation": 0
+    },
+    "384": {
+     "energy": -240,
+     "generation": 0
+    }
+   },
+   "earlyNet": -284
+  },
+  {
+   "id": "p66",
+   "name": "Oscilador P66 tentáculo",
+   "group": "oscilador",
+   "window": 66,
+   "generations": 528,
+   "lateFrom": 265,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 8.681818181818182,
+   "lateNet": -8.681818181818182,
+   "stampedAt63": 19,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -250,
+     "generation": 0
+    },
+    "12": {
+     "energy": -250,
+     "generation": 0
+    },
+    "32": {
+     "energy": -250,
+     "generation": 0
+    },
+    "129": {
+     "energy": -250,
+     "generation": 0
+    },
+    "384": {
+     "energy": -250,
+     "generation": 0
+    }
+   },
+   "earlyNet": -421
+  },
+  {
+   "id": "p29pure26",
+   "name": "Oscilador P29 puro (26 células)",
+   "group": "oscilador",
+   "window": 29,
+   "generations": 493,
+   "lateFrom": 262,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 9.379310344827585,
+   "lateNet": -9.379310344827585,
+   "stampedAt63": 18,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -260,
+     "generation": 0
+    },
+    "12": {
+     "energy": -260,
+     "generation": 0
+    },
+    "32": {
+     "energy": -260,
+     "generation": 0
+    },
+    "129": {
+     "energy": -260,
+     "generation": 0
+    },
+    "384": {
+     "energy": -260,
+     "generation": 0
+    }
+   },
+   "earlyNet": -672
+  },
+  {
+   "id": "p15",
+   "name": "Nave P15",
+   "group": "nave",
+   "window": 15,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 10,
+   "lateNet": -10,
+   "stampedAt63": 0,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -260,
+     "generation": 0
+    },
+    "12": {
+     "energy": -260,
+     "generation": 0
+    },
+    "32": {
+     "energy": -260,
+     "generation": 0
+    },
+    "129": {
+     "energy": -260,
+     "generation": 0
+    },
+    "384": {
+     "energy": -260,
+     "generation": 0
+    }
+   },
+   "earlyNet": -750
+  },
+  {
+   "id": "p22",
+   "name": "Oscilador principal P22",
+   "group": "oscilador",
+   "window": 22,
+   "generations": 484,
+   "lateFrom": 243,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 9.136363636363637,
+   "lateNet": -9.136363636363637,
+   "stampedAt63": 14,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -270,
+     "generation": 0
+    },
+    "12": {
+     "energy": -270,
+     "generation": 0
+    },
+    "32": {
+     "energy": -270,
+     "generation": 0
+    },
+    "129": {
+     "energy": -270,
+     "generation": 0
+    },
+    "384": {
+     "energy": -270,
+     "generation": 0
+    }
+   },
+   "earlyNet": -491
+  },
+  {
+   "id": "reflect20_demo",
+   "name": "Reflexão de glider em estrutura P20 (exemplo publicado)",
+   "group": "interação",
+   "window": 20,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 11.6,
+   "lateNet": -11.6,
+   "stampedAt63": 13,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -290,
+     "generation": 0
+    },
+    "12": {
+     "energy": -290,
+     "generation": 0
+    },
+    "32": {
+     "energy": -290,
+     "generation": 0
+    },
+    "129": {
+     "energy": -290,
+     "generation": 0
+    },
+    "384": {
+     "energy": -290,
+     "generation": 0
+    }
+   },
+   "earlyNet": -823
+  },
+  {
+   "id": "p7b",
+   "name": "Oscilador principal P7 (B)",
+   "group": "oscilador",
+   "window": 28,
+   "generations": 504,
+   "lateFrom": 253,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 9.321428571428571,
+   "lateNet": -9.321428571428571,
+   "stampedAt63": 24,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -300,
+     "generation": 0
+    },
+    "12": {
+     "energy": -300,
+     "generation": 0
+    },
+    "32": {
+     "energy": -300,
+     "generation": 0
+    },
+    "129": {
+     "energy": -300,
+     "generation": 0
+    },
+    "384": {
+     "energy": -300,
+     "generation": 0
+    }
+   },
+   "earlyNet": -591
+  },
+  {
+   "id": "reflect42_demo",
+   "name": "Reflexão de glider em estrutura P42 (exemplo publicado)",
+   "group": "interação",
+   "window": 20,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 11.1125,
+   "lateNet": -11.1125,
+   "stampedAt63": 12,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -310,
+     "generation": 0
+    },
+    "12": {
+     "energy": -310,
+     "generation": 0
+    },
+    "32": {
+     "energy": -310,
+     "generation": 0
+    },
+    "129": {
+     "energy": -310,
+     "generation": 0
+    },
+    "384": {
+     "energy": -310,
+     "generation": 0
+    }
+   },
+   "earlyNet": -794
+  },
+  {
+   "id": "p11a",
+   "name": "Oscilador principal P11 (A)",
+   "group": "oscilador",
+   "window": 22,
+   "generations": 484,
+   "lateFrom": 243,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.454545454545454,
+   "lateNet": -7.454545454545454,
+   "stampedAt63": 24,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -330,
+     "generation": 0
+    },
+    "12": {
+     "energy": -330,
+     "generation": 0
+    },
+    "32": {
+     "energy": -330,
+     "generation": 0
+    },
+    "129": {
+     "energy": -330,
+     "generation": 0
+    },
+    "384": {
+     "energy": -330,
+     "generation": 0
+    }
+   },
+   "earlyNet": -300
+  },
+  {
+   "id": "p46",
+   "name": "Oscilador principal P46",
+   "group": "oscilador",
+   "window": 46,
+   "generations": 506,
+   "lateFrom": 277,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.913043478260869,
+   "lateNet": -7.913043478260869,
+   "stampedAt63": 19,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -330,
+     "generation": 0
+    },
+    "12": {
+     "energy": -330,
+     "generation": 0
+    },
+    "32": {
+     "energy": -330,
+     "generation": 0
+    },
+    "129": {
+     "energy": -330,
+     "generation": 0
+    },
+    "384": {
+     "energy": -330,
+     "generation": 0
+    }
+   },
+   "earlyNet": -576
+  },
+  {
+   "id": "p17",
+   "name": "Oscilador principal P17",
+   "group": "oscilador",
+   "window": 102,
+   "generations": 816,
+   "lateFrom": 409,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.696078431372549,
+   "lateNet": -7.696078431372549,
+   "stampedAt63": 26,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -340,
+     "generation": 0
+    },
+    "12": {
+     "energy": -340,
+     "generation": 0
+    },
+    "32": {
+     "energy": -340,
+     "generation": 0
+    },
+    "129": {
+     "energy": -340,
+     "generation": 0
+    },
+    "384": {
+     "energy": -340,
+     "generation": 0
+    }
+   },
+   "earlyNet": -577
+  },
+  {
+   "id": "p9",
+   "name": "Oscilador P9",
+   "group": "oscilador",
+   "window": 9,
+   "generations": 486,
+   "lateFrom": 244,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 8.11111111111111,
+   "lateNet": -8.11111111111111,
+   "stampedAt63": 32,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -350,
+     "generation": 0
+    },
+    "12": {
+     "energy": -350,
+     "generation": 0
+    },
+    "32": {
+     "energy": -350,
+     "generation": 0
+    },
+    "129": {
+     "energy": -350,
+     "generation": 0
+    },
+    "384": {
+     "energy": -350,
+     "generation": 0
+    }
+   },
+   "earlyNet": -328
+  },
+  {
+   "id": "stalk",
+   "name": "Crescedor de colmeia (stalk)",
+   "group": "crescedor",
+   "window": 20,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0.75,
+   "lateBirthsPerG": 5.958333333333333,
+   "lateNet": 0.041666666666666664,
+   "stampedAt63": 30,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -360,
+     "generation": 0
+    },
+    "12": {
+     "energy": 560,
+     "generation": 480
+    },
+    "32": {
+     "energy": 6860,
+     "generation": 480
+    },
+    "129": {
+     "energy": 37415,
+     "generation": 480
+    },
+    "384": {
+     "energy": 117740,
+     "generation": 480
+    }
+   },
+   "earlyNet": -117,
+   "blocks": [
+    {
+     "start": 1,
+     "end": 20,
+     "matured": 0,
+     "births": 121,
+     "net": -121
+    },
+    {
+     "start": 21,
+     "end": 40,
+     "matured": 0,
+     "births": 117,
+     "net": -117
+    },
+    {
+     "start": 41,
+     "end": 60,
+     "matured": 0,
+     "births": 121,
+     "net": -121
+    },
+    {
+     "start": 61,
+     "end": 80,
+     "matured": 45,
+     "births": 118,
+     "net": 242
+    },
+    {
+     "start": 81,
+     "end": 100,
+     "matured": 14,
+     "births": 120,
+     "net": -8
+    },
+    {
+     "start": 101,
+     "end": 120,
+     "matured": 16,
+     "births": 118,
+     "net": 10
+    },
+    {
+     "start": 121,
+     "end": 140,
+     "matured": 14,
+     "births": 121,
+     "net": -9
+    },
+    {
+     "start": 141,
+     "end": 160,
+     "matured": 16,
+     "births": 117,
+     "net": 11
+    },
+    {
+     "start": 161,
+     "end": 180,
+     "matured": 14,
+     "births": 121,
+     "net": -9
+    },
+    {
+     "start": 181,
+     "end": 200,
+     "matured": 16,
+     "births": 118,
+     "net": 10
+    },
+    {
+     "start": 201,
+     "end": 220,
+     "matured": 14,
+     "births": 120,
+     "net": -8
+    },
+    {
+     "start": 221,
+     "end": 240,
+     "matured": 16,
+     "births": 118,
+     "net": 10
+    },
+    {
+     "start": 241,
+     "end": 260,
+     "matured": 14,
+     "births": 121,
+     "net": -9
+    },
+    {
+     "start": 261,
+     "end": 280,
+     "matured": 16,
+     "births": 117,
+     "net": 11
+    },
+    {
+     "start": 281,
+     "end": 300,
+     "matured": 14,
+     "births": 121,
+     "net": -9
+    },
+    {
+     "start": 301,
+     "end": 320,
+     "matured": 16,
+     "births": 118,
+     "net": 10
+    },
+    {
+     "start": 321,
+     "end": 340,
+     "matured": 14,
+     "births": 120,
+     "net": -8
+    },
+    {
+     "start": 341,
+     "end": 360,
+     "matured": 16,
+     "births": 118,
+     "net": 10
+    },
+    {
+     "start": 361,
+     "end": 380,
+     "matured": 14,
+     "births": 121,
+     "net": -9
+    },
+    {
+     "start": 381,
+     "end": 400,
+     "matured": 16,
+     "births": 117,
+     "net": 11
+    },
+    {
+     "start": 401,
+     "end": 420,
+     "matured": 14,
+     "births": 121,
+     "net": -9
+    },
+    {
+     "start": 421,
+     "end": 440,
+     "matured": 16,
+     "births": 118,
+     "net": 10
+    },
+    {
+     "start": 441,
+     "end": 460,
+     "matured": 14,
+     "births": 120,
+     "net": -8
+    },
+    {
+     "start": 461,
+     "end": 480,
+     "matured": 16,
+     "births": 118,
+     "net": 10
+    }
+   ]
+  },
+  {
+   "id": "p18",
+   "name": "Oscilador P18",
+   "group": "oscilador",
+   "window": 18,
+   "generations": 486,
+   "lateFrom": 253,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 8.277777777777779,
+   "lateNet": -8.277777777777779,
+   "stampedAt63": 24,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -440,
+     "generation": 0
+    },
+    "12": {
+     "energy": -440,
+     "generation": 0
+    },
+    "32": {
+     "energy": -440,
+     "generation": 0
+    },
+    "129": {
+     "energy": -440,
+     "generation": 0
+    },
+    "384": {
+     "energy": -440,
+     "generation": 0
+    }
+   },
+   "earlyNet": -404
+  },
+  {
+   "id": "p29",
+   "name": "Oscilador principal P29",
+   "group": "oscilador",
+   "window": 87,
+   "generations": 696,
+   "lateFrom": 349,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.689655172413793,
+   "lateNet": -7.689655172413793,
+   "stampedAt63": 30,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -450,
+     "generation": 0
+    },
+    "12": {
+     "energy": -450,
+     "generation": 0
+    },
+    "32": {
+     "energy": -450,
+     "generation": 0
+    },
+    "129": {
+     "energy": -450,
+     "generation": 0
+    },
+    "384": {
+     "energy": -450,
+     "generation": 0
+    }
+   },
+   "earlyNet": -429
+  },
+  {
+   "id": "p19",
+   "name": "Oscilador principal P19",
+   "group": "oscilador",
+   "window": 95,
+   "generations": 760,
+   "lateFrom": 381,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 9.25263157894737,
+   "lateNet": -9.25263157894737,
+   "stampedAt63": 30,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -460,
+     "generation": 0
+    },
+    "12": {
+     "energy": -460,
+     "generation": 0
+    },
+    "32": {
+     "energy": -460,
+     "generation": 0
+    },
+    "129": {
+     "energy": -460,
+     "generation": 0
+    },
+    "384": {
+     "energy": -460,
+     "generation": 0
+    }
+   },
+   "earlyNet": -639
+  },
+  {
+   "id": "p26",
+   "name": "Oscilador principal P26",
+   "group": "oscilador",
+   "window": 78,
+   "generations": 624,
+   "lateFrom": 313,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 9.833333333333334,
+   "lateNet": -9.833333333333334,
+   "stampedAt63": 35,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -480,
+     "generation": 0
+    },
+    "12": {
+     "energy": -480,
+     "generation": 0
+    },
+    "32": {
+     "energy": -480,
+     "generation": 0
+    },
+    "129": {
+     "energy": -480,
+     "generation": 0
+    },
+    "384": {
+     "energy": -480,
+     "generation": 0
+    }
+   },
+   "earlyNet": -487
+  },
+  {
+   "id": "p7a",
+   "name": "Oscilador principal P7 (A)",
+   "group": "oscilador",
+   "window": 21,
+   "generations": 483,
+   "lateFrom": 253,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 7.476190476190476,
+   "lateNet": -7.476190476190476,
+   "stampedAt63": 43,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -520,
+     "generation": 0
+    },
+    "12": {
+     "energy": -520,
+     "generation": 0
+    },
+    "32": {
+     "energy": -520,
+     "generation": 0
+    },
+    "129": {
+     "energy": -520,
+     "generation": 0
+    },
+    "384": {
+     "energy": -520,
+     "generation": 0
+    }
+   },
+   "earlyNet": -284
+  },
+  {
+   "id": "gun20",
+   "name": "Gun P20",
+   "group": "gerador",
+   "window": 20,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 108.45,
+   "lateNet": -108.45,
+   "stampedAt63": 27,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -520,
+     "generation": 0
+    },
+    "12": {
+     "energy": -520,
+     "generation": 0
+    },
+    "32": {
+     "energy": -520,
+     "generation": 0
+    },
+    "129": {
+     "energy": -520,
+     "generation": 0
+    },
+    "384": {
+     "energy": -520,
+     "generation": 0
+    }
+   },
+   "earlyNet": -2060,
+   "blocks": [
+    {
+     "start": 1,
+     "end": 20,
+     "matured": 0,
+     "births": 419,
+     "net": -419
+    },
+    {
+     "start": 21,
+     "end": 40,
+     "matured": 0,
+     "births": 519,
+     "net": -519
+    },
+    {
+     "start": 41,
+     "end": 60,
+     "matured": 0,
+     "births": 619,
+     "net": -619
+    },
+    {
+     "start": 61,
+     "end": 80,
+     "matured": 27,
+     "births": 719,
+     "net": -503
+    },
+    {
+     "start": 81,
+     "end": 100,
+     "matured": 0,
+     "births": 819,
+     "net": -819
+    },
+    {
+     "start": 101,
+     "end": 120,
+     "matured": 0,
+     "births": 919,
+     "net": -919
+    },
+    {
+     "start": 121,
+     "end": 140,
+     "matured": 0,
+     "births": 1019,
+     "net": -1019
+    },
+    {
+     "start": 141,
+     "end": 160,
+     "matured": 0,
+     "births": 1119,
+     "net": -1119
+    },
+    {
+     "start": 161,
+     "end": 180,
+     "matured": 0,
+     "births": 1219,
+     "net": -1219
+    },
+    {
+     "start": 181,
+     "end": 200,
+     "matured": 0,
+     "births": 1319,
+     "net": -1319
+    },
+    {
+     "start": 201,
+     "end": 220,
+     "matured": 0,
+     "births": 1419,
+     "net": -1419
+    },
+    {
+     "start": 221,
+     "end": 240,
+     "matured": 0,
+     "births": 1519,
+     "net": -1519
+    },
+    {
+     "start": 241,
+     "end": 260,
+     "matured": 0,
+     "births": 1619,
+     "net": -1619
+    },
+    {
+     "start": 261,
+     "end": 280,
+     "matured": 0,
+     "births": 1719,
+     "net": -1719
+    },
+    {
+     "start": 281,
+     "end": 300,
+     "matured": 0,
+     "births": 1819,
+     "net": -1819
+    },
+    {
+     "start": 301,
+     "end": 320,
+     "matured": 0,
+     "births": 1919,
+     "net": -1919
+    },
+    {
+     "start": 321,
+     "end": 340,
+     "matured": 0,
+     "births": 2019,
+     "net": -2019
+    },
+    {
+     "start": 341,
+     "end": 360,
+     "matured": 0,
+     "births": 2119,
+     "net": -2119
+    },
+    {
+     "start": 361,
+     "end": 380,
+     "matured": 0,
+     "births": 2219,
+     "net": -2219
+    },
+    {
+     "start": 381,
+     "end": 400,
+     "matured": 0,
+     "births": 2319,
+     "net": -2319
+    },
+    {
+     "start": 401,
+     "end": 420,
+     "matured": 0,
+     "births": 2419,
+     "net": -2419
+    },
+    {
+     "start": 421,
+     "end": 440,
+     "matured": 0,
+     "births": 2519,
+     "net": -2519
+    },
+    {
+     "start": 441,
+     "end": 460,
+     "matured": 0,
+     "births": 2619,
+     "net": -2619
+    },
+    {
+     "start": 461,
+     "end": 480,
+     "matured": 0,
+     "births": 2719,
+     "net": -2719
+    }
+   ]
+  },
+  {
+   "id": "dup42_demo",
+   "name": "Duplicador P42 (exemplo publicado)",
+   "group": "interação",
+   "window": 20,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 22.2,
+   "lateNet": -22.2,
+   "stampedAt63": 24,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -540,
+     "generation": 0
+    },
+    "12": {
+     "energy": -540,
+     "generation": 0
+    },
+    "32": {
+     "energy": -540,
+     "generation": 0
+    },
+    "129": {
+     "energy": -540,
+     "generation": 0
+    },
+    "384": {
+     "energy": -540,
+     "generation": 0
+    }
+   },
+   "earlyNet": -1555
+  },
+  {
+   "id": "dup20_demo",
+   "name": "Duplicador P20 (exemplo publicado)",
+   "group": "interação",
+   "window": 20,
+   "generations": 480,
+   "lateFrom": 241,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 23.2,
+   "lateNet": -23.2,
+   "stampedAt63": 26,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -550,
+     "generation": 0
+    },
+    "12": {
+     "energy": -550,
+     "generation": 0
+    },
+    "32": {
+     "energy": -550,
+     "generation": 0
+    },
+    "129": {
+     "energy": -550,
+     "generation": 0
+    },
+    "384": {
+     "energy": -550,
+     "generation": 0
+    }
+   },
+   "earlyNet": -1629
+  },
+  {
+   "id": "gun42",
+   "name": "Gun P42 (catálogo do jogo)",
+   "group": "gerador",
+   "window": 42,
+   "generations": 504,
+   "lateFrom": 253,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 62.23809523809524,
+   "lateNet": -62.23809523809524,
+   "stampedAt63": 36,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -640,
+     "generation": 0
+    },
+    "12": {
+     "energy": -640,
+     "generation": 0
+    },
+    "32": {
+     "energy": -640,
+     "generation": 0
+    },
+    "129": {
+     "energy": -640,
+     "generation": 0
+    },
+    "384": {
+     "energy": -640,
+     "generation": 0
+    }
+   },
+   "earlyNet": -1580
+  },
+  {
+   "id": "gun43",
+   "name": "Gun de pulso P43/86",
+   "group": "gerador",
+   "window": 86,
+   "generations": 688,
+   "lateFrom": 345,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 88.36046511627907,
+   "lateNet": -88.36046511627907,
+   "stampedAt63": 42,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -800,
+     "generation": 0
+    },
+    "12": {
+     "energy": -800,
+     "generation": 0
+    },
+    "32": {
+     "energy": -800,
+     "generation": 0
+    },
+    "129": {
+     "energy": -800,
+     "generation": 0
+    },
+    "384": {
+     "energy": -800,
+     "generation": 0
+    }
+   },
+   "earlyNet": -2533
+  },
+  {
+   "id": "gun200",
+   "name": "Gun P200",
+   "group": "gerador",
+   "window": 200,
+   "generations": 1600,
+   "lateFrom": 801,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 58.83,
+   "lateNet": -58.83,
+   "stampedAt63": 48,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -1000,
+     "generation": 0
+    },
+    "12": {
+     "energy": -1000,
+     "generation": 0
+    },
+    "32": {
+     "energy": -1000,
+     "generation": 0
+    },
+    "129": {
+     "energy": -1000,
+     "generation": 0
+    },
+    "384": {
+     "energy": -1000,
+     "generation": 0
+    }
+   },
+   "earlyNet": -5882
+  },
+  {
+   "id": "gun210",
+   "name": "Gun P210 (relé de refletores)",
+   "group": "gerador",
+   "window": 210,
+   "generations": 1680,
+   "lateFrom": 841,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 22.19047619047619,
+   "lateNet": -22.19047619047619,
+   "stampedAt63": 24,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -1110,
+     "generation": 0
+    },
+    "12": {
+     "energy": -1110,
+     "generation": 0
+    },
+    "32": {
+     "energy": -1110,
+     "generation": 0
+    },
+    "129": {
+     "energy": -1110,
+     "generation": 0
+    },
+    "384": {
+     "energy": -1110,
+     "generation": 0
+    }
+   },
+   "earlyNet": -5209
+  },
+  {
+   "id": "gun840",
+   "name": "Gun P840",
+   "group": "gerador",
+   "window": 840,
+   "generations": 6720,
+   "lateFrom": 3361,
+   "lateCreditsPerG": 0,
+   "lateBirthsPerG": 74.00714285714285,
+   "lateNet": -74.00714285714285,
+   "stampedAt63": 65,
+   "peakAfterStamp": {
+    "8": {
+     "energy": -1310,
+     "generation": 0
+    },
+    "12": {
+     "energy": -1310,
+     "generation": 0
+    },
+    "32": {
+     "energy": -1310,
+     "generation": 0
+    },
+    "129": {
+     "energy": -1310,
+     "generation": 0
+    },
+    "384": {
+     "energy": -1310,
+     "generation": 0
+    }
+   },
+   "earlyNet": -38546
+  }
+ ]
+}

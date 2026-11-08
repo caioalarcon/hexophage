@@ -1,0 +1,219 @@
+{
+  "short": {
+    "rule": {
+      "id": "mass-short",
+      "price": 1500,
+      "massPressureDoubling": 3,
+      "pressureHalfLife": 33000
+    },
+    "two_hours_mixed_orders_by_seconds_between_reviews": {
+      "0.005": 331,
+      "5": 330,
+      "15": 329,
+      "30": 327,
+      "60": 320,
+      "300": 233,
+      "900": 105
+    },
+    "seconds_between_unrestricted_mixed_orders": {
+      "p50": 22.29,
+      "p90": 29.08,
+      "longest": 60.815
+    },
+    "overnight_at_common_clock_8h30": {
+      "active30min_then_absent8h": {
+        "orders": 67,
+        "burst": 42,
+        "gunBurst": 2,
+        "energyFlow": 50,
+        "field": 150
+      },
+      "reviews_every30s": {
+        "orders": 1805,
+        "burst": 1,
+        "gunBurst": 0,
+        "energyFlow": 1361,
+        "field": 4073.5
+      },
+      "founder_then_absent": {
+        "orders": 1,
+        "burst": 25,
+        "gunBurst": 1,
+        "energyFlow": 1,
+        "field": 3
+      }
+    },
+    "mixed_recovery_after_complete_asset_loss": [
+      {
+        "at_minute": 25.0,
+        "seconds_until_next_placement": 116.085
+      },
+      {
+        "at_minute": 30.0,
+        "seconds_until_next_placement": 63.225
+      },
+      {
+        "at_minute": 45.0,
+        "seconds_until_next_placement": 0.0
+      },
+      {
+        "at_minute": 60.0,
+        "seconds_until_next_placement": 41.885
+      },
+      {
+        "at_minute": 75.0,
+        "seconds_until_next_placement": 11.32
+      }
+    ],
+    "fastest_funded_P20_among_45_openings": {
+      "initial_total_assets": 8,
+      "asset_after_founder": "p4f",
+      "minutes": 10.148
+    }
+  },
+  "long": {
+    "rule": {
+      "id": "mass-long",
+      "price": 350,
+      "massPressureDoubling": 2,
+      "pressureHalfLife": 60000
+    },
+    "two_hours_mixed_orders_by_seconds_between_reviews": {
+      "0.005": 176,
+      "5": 176,
+      "15": 175,
+      "30": 175,
+      "60": 173,
+      "300": 148,
+      "900": 86
+    },
+    "seconds_between_unrestricted_mixed_orders": {
+      "p50": 44.8,
+      "p90": 53.26,
+      "longest": 64.905
+    },
+    "overnight_at_common_clock_8h30": {
+      "active30min_then_absent8h": {
+        "orders": 43,
+        "burst": 32,
+        "gunBurst": 1,
+        "energyFlow": 32,
+        "field": 96
+      },
+      "reviews_every30s": {
+        "orders": 866,
+        "burst": 0,
+        "gunBurst": 0,
+        "energyFlow": 652.5,
+        "field": 1953
+      },
+      "founder_then_absent": {
+        "orders": 1,
+        "burst": 22,
+        "gunBurst": 1,
+        "energyFlow": 1,
+        "field": 3
+      }
+    },
+    "mixed_recovery_after_complete_asset_loss": [
+      {
+        "at_minute": 25.0,
+        "seconds_until_next_placement": 91.93
+      },
+      {
+        "at_minute": 30.0,
+        "seconds_until_next_placement": 0.0
+      },
+      {
+        "at_minute": 45.0,
+        "seconds_until_next_placement": 129.24
+      },
+      {
+        "at_minute": 60.0,
+        "seconds_until_next_placement": 42.85
+      },
+      {
+        "at_minute": 75.0,
+        "seconds_until_next_placement": 19.81
+      }
+    ],
+    "fastest_funded_P20_among_45_openings": {
+      "initial_total_assets": 8,
+      "asset_after_founder": "p4f",
+      "minutes": 13.540916666666666
+    }
+  },
+  "poly-long": {
+    "rule": {
+      "id": "poly-long",
+      "price": 2500,
+      "massPressureScale": 14,
+      "massPressurePower": 2,
+      "pressureHalfLife": 960000
+    },
+    "two_hours_mixed_orders_by_seconds_between_reviews": {
+      "0.005": 153,
+      "5": 153,
+      "15": 152,
+      "30": 152,
+      "60": 151,
+      "300": 143,
+      "900": 126
+    },
+    "seconds_between_unrestricted_mixed_orders": {
+      "p50": 52.745,
+      "p90": 71.815,
+      "longest": 76.515
+    },
+    "overnight_at_common_clock_8h30": {
+      "active30min_then_absent8h": {
+        "orders": 60,
+        "burst": 269,
+        "gunBurst": 15,
+        "energyFlow": 44,
+        "field": 132
+      },
+      "reviews_every30s": {
+        "orders": 629,
+        "burst": 0,
+        "gunBurst": 0,
+        "energyFlow": 475.5,
+        "field": 1421.5
+      },
+      "founder_then_absent": {
+        "orders": 1,
+        "burst": 75,
+        "gunBurst": 4,
+        "energyFlow": 1,
+        "field": 3
+      }
+    },
+    "mixed_recovery_after_complete_asset_loss": [
+      {
+        "at_minute": 25.0,
+        "seconds_until_next_placement": 1710.295
+      },
+      {
+        "at_minute": 30.0,
+        "seconds_until_next_placement": 0.0
+      },
+      {
+        "at_minute": 45.0,
+        "seconds_until_next_placement": 1478.005
+      },
+      {
+        "at_minute": 60.0,
+        "seconds_until_next_placement": null
+      },
+      {
+        "at_minute": 75.0,
+        "seconds_until_next_placement": 2464.345
+      }
+    ],
+    "fastest_funded_P20_among_45_openings": {
+      "initial_total_assets": 6,
+      "asset_after_founder": "p4f",
+      "minutes": 4.69875
+    }
+  }
+}
