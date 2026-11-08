@@ -233,6 +233,31 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-atlas-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;border-top:1px solid #385168;padding-top:9px}
 #hexlab .br-atlas-action span{font-size:11px;color:#bed7df}
 @media(max-width:720px){#hexlab .br-atlas-body{display:flex;flex-direction:column;overflow:auto;height:78vh}#hexlab .br-atlas-search{flex:0 0 220px;border-bottom:1px solid #385168;border-right:0}#hexlab .br-atlas-results{flex-direction:row;overflow-x:auto}#hexlab .br-atlas-results button{min-width:155px}#hexlab .br-atlas-detail{flex:1 0 auto;overflow:visible}#hexlab .br-atlas-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+#hexlab .br-cycle-panel { border-top: 1px solid #385168; padding: 12px 0 6px; min-width: 0 }
+#hexlab .br-cycle-panel h4 { font-size: 15px; margin: 0 0 5px }
+#hexlab .br-cycle-panel p { font-size: 12px; line-height: 1.5; margin: 5px 0 9px }
+#hexlab .br-cycle-panel .br-cycle-muted { color: #adc3d3; font-size: 11px }
+#hexlab .br-cycle-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 5px; margin: 8px 0 }
+#hexlab .br-cycle-summary div { min-width: 0; padding: 7px; border: 1px solid #305066; border-radius: 6px; background: #182d3d }
+#hexlab .br-cycle-summary dt { color: #b8ccd7; font-size: 10px }
+#hexlab .br-cycle-summary dd { margin: 3px 0 0; font-size: 13px; font-weight: 700 }
+#hexlab .br-cycle-figure { background: #0e1c2b; border-radius: 6px; margin: 8px 0; padding: 7px 9px }
+#hexlab .br-cycle-figure figcaption { display: flex; gap: 12px; font-size: 11px; align-items: center; flex-wrap: wrap }
+#hexlab .br-cycle-figure figcaption > span:first-child { margin-right: auto }
+#hexlab .br-cycle-income { color: #77e3c5 }
+#hexlab .br-cycle-upkeep { color: #ffc483 }
+#hexlab .br-cycle-figure svg { width: 100%; height: auto; max-height: 124px; display: block }
+#hexlab .br-cycle-ledger { border-top: 1px solid #30485c; padding-top: 6px }
+#hexlab .br-cycle-ledger summary { cursor: pointer; color: #9eead8; font-size: 12px; padding: 3px 0 }
+#hexlab .br-cycle-scroll { max-height: 240px; overflow: auto; margin-top: 6px }
+#hexlab .br-cycle-ledger table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11px; font-variant-numeric: tabular-nums }
+#hexlab .br-cycle-ledger th, #hexlab .br-cycle-ledger td { padding: 4px 7px; text-align: right; white-space: nowrap; border-bottom: 1px solid #293e50 }
+#hexlab .br-cycle-ledger thead th { position: sticky; top: 0; background: #1c3244 }
+#hexlab .br-atlas-detail > * { flex-shrink: 0 }
+@media (max-width:900px) { #hexlab .br-cycle-summary { grid-template-columns: repeat(2,minmax(0,1fr)) } }
+
+@media (max-width: 510px) { #hexlab .br-cycle-figure svg text { font-size: 15px } }
 @media(max-width:1100px) and (min-width:761px){
  #hexlab .br-scoreboard {gap:6px;padding:6px}
  #hexlab .br-podium {gap:3px}
@@ -370,11 +395,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-worldpick{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 #hexlab .br-worldpick select{font-size:12px;max-width:200px}
 #hexlab .br-worldpick button:disabled,#hexlab .br-worldpick select:disabled{opacity:.5}
-#hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;max-height:84px;min-width:0;flex:0 0 auto}
+#hexlab .br-hotbar{display:flex;align-items:stretch;gap:7px;background:#0d1a2a;border-top:1px solid #2d4457;padding:5px 8px;min-height:77px;min-width:0;flex:0 0 auto}
 #hexlab .br-deck{display:flex;gap:5px;align-items:stretch;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scrollbar-width:thin;padding-bottom:3px}
-#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;height:66px;overflow:hidden}
+#hexlab .br-stampcard{position:relative;display:flex;flex:0 0 85px;align-items:center;flex-direction:column;justify-content:flex-start;gap:0;padding:2px 4px 6px;border:1px solid #324b5e;background:#15273a;border-radius:8px;min-height:66px;overflow:hidden}
 #hexlab .br-stampcard canvas{display:block;width:68px;height:38px;flex:0 0 auto;pointer-events:none}
-#hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:nowrap}
+#hexlab .br-stampcard .br-stampname{font-size:10px;font-weight:700;color:#d9f5ec;line-height:1.1;white-space:normal;width:100%;overflow-wrap:anywhere;text-align:center}
 #hexlab .br-stampcard .br-stampprice{position:absolute;right:2px;top:1px;background:#0a1926c7;padding:0 2px;border-radius:4px;color:#d0e3ec;font-size:9px}
 #hexlab .br-stampcard.selected{border-color:#57f5c4;box-shadow:inset 0 0 0 1px #3de5bb;background:#173b37}
 #hexlab .br-stampcard.unavailable canvas{opacity:.55}
@@ -397,7 +422,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-scoretitle{flex-direction:row;max-width:80px}
  #hexlab .br-podium{display:flex;grid-template-columns:none;gap:4px}
  #hexlab .br-podium li{flex:0 0 91px;min-width:91px;max-width:91px;padding:2px 4px}
- #hexlab .br-hotbar{padding:5px 5px;gap:4px;min-height:74px;max-height:80px}
+ #hexlab .br-hotbar{padding:5px 5px;gap:4px;min-height:74px}
  #hexlab .br-stampcard{flex-basis:77px;width:77px}
  #hexlab .br-transform{flex-direction:column;gap:3px;justify-content:center}
  #hexlab .br-transform button{font-size:16px;min-width:28px;width:33px;height:21px;padding:0 4px}
@@ -460,9 +485,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab #br-tuning-toggle[aria-expanded=true]{background:#175746;border-color:#52c6a5}
  #hexlab #br-panel-toggle{flex:0 0 auto;min-height:31px;height:31px;font-size:12px;padding:4px 9px;margin-left:0}
  #hexlab .hl-shell,#hexlab .hl-left,#hexlab .br-stage,#hexlab #hl-worldbox{min-height:0;min-width:0}
- #hexlab .br-hotbar{height:59px;min-height:59px;max-height:59px;gap:5px;padding:3px 6px}
+ #hexlab .br-hotbar{min-height:59px;gap:5px;padding:3px 6px}
  #hexlab .br-deck{gap:4px;min-width:0;padding-bottom:1px}
- #hexlab .br-stampcard{height:52px;flex:0 0 73px;width:73px;padding:1px 3px 5px;border-radius:6px}
+ #hexlab .br-stampcard{min-height:52px;flex:0 0 73px;width:73px;padding:1px 3px 5px;border-radius:6px}
  #hexlab .br-stampcard canvas{width:61px;height:29px}
  #hexlab .br-stampcard .br-stampname{font-size:9px;line-height:1.1}
  #hexlab .br-stampcard .br-stampprice{font-size:8px}
@@ -491,8 +516,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-podium li{height:29px}
  #hexlab .hl-controls{height:35px;min-height:35px;padding:2px 5px}
  #hexlab .hl-controls #hl-play,#hexlab #br-tuning-toggle,#hexlab #br-panel-toggle{height:30px;min-height:30px}
- #hexlab .br-hotbar{height:52px;min-height:52px;max-height:52px;padding:2px 5px}
- #hexlab .br-stampcard{height:47px;flex-basis:68px;width:68px;padding:1px 2px 5px}
+ #hexlab .br-hotbar{min-height:52px;padding:2px 5px}
+ #hexlab .br-stampcard{min-height:47px;flex-basis:68px;width:68px;padding:1px 2px 5px}
  #hexlab .br-stampcard canvas{width:57px;height:25px}
  #hexlab .br-transform button{height:40px;min-width:30px;padding:0 4px}
  #hexlab .br-mapbar{height:24px;min-height:24px;padding:1px 6px}
@@ -520,7 +545,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .hl-left{grid-column:1;grid-row:1;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;border:0}
 #hexlab .br-stage{flex:1 1 auto;min-height:0;width:100%;position:relative}
 #hexlab #hl-worldbox{min-height:0!important;height:100%;width:100%}
-#hexlab .br-hotbar{flex:0 0 auto;min-height:77px;max-height:82px;width:100%;min-width:0;align-items:center;border-top:1px solid #354a61;padding:5px 7px}
+#hexlab .br-hotbar{flex:0 0 auto;min-height:77px;width:100%;min-width:0;align-items:center;border-top:1px solid #354a61;padding:5px 7px}
 #hexlab .br-deck{flex:1 1 0;min-width:0}
 #hexlab .br-transform{flex:0 0 auto;align-self:center;padding:0;gap:4px}
 #hexlab .br-transform button{width:34px;height:43px;font-size:20px;min-width:34px;padding:0 3px}
@@ -581,7 +606,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-rail .br-rank-open{display:none}
 @media (orientation:portrait){
  #hexlab .hl-shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important}
- #hexlab .br-rail{grid-row:1;grid-column:1;display:flex;flex-direction:row;align-items:center;gap:6px;padding:5px 8px;min-height:45px;max-height:64px;overflow:visible;border:0;border-bottom:1px solid #30495e}
+ #hexlab .br-rail{position:static;grid-row:1;grid-column:1;display:flex;flex-direction:row;align-items:center;gap:6px;padding:5px 8px;min-height:45px;max-height:64px;overflow:visible;border:0;border-bottom:1px solid #30495e}
  #hexlab .br-rail-header{font-size:11px;flex:0 1 auto;min-width:0}
  #hexlab .br-rail-header strong{white-space:nowrap}
  #hexlab .br-rail-header>span{display:none}
@@ -596,7 +621,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-rail-ranking .br-scoreboard{display:none!important}
  #hexlab .br-rail-ranking.expanded .br-scoreboard{display:flex!important;max-height:155px;overflow:auto}
  #hexlab .br-rail-spacer{display:none}
- #hexlab .br-mini-panel{position:fixed!important;right:7px;bottom:85px;width:min(170px,48vw);z-index:13;box-shadow:0 5px 16px #0008;padding:5px}
+ #hexlab .br-mini-panel{position:absolute!important;grid-row:2 / 3;right:7px;bottom:6px;width:min(170px,48vw);z-index:13;box-shadow:0 5px 16px #0008;padding:5px}
  #hexlab .br-mini-panel.collapsed{width:auto;background:#20364a}
  #hexlab .br-mini-panel.collapsed .br-mini-heading b{display:none}
  #hexlab .br-mini-panel.collapsed #br-mini-max{display:none}
@@ -604,7 +629,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-globe-slot{max-height:min(160px,30vh)}
  #hexlab .hl-left{display:contents!important}
  #hexlab .br-stage{grid-row:2;grid-column:1;min-height:0}
- #hexlab .br-hotbar{grid-row:3;grid-column:1;min-height:75px;max-height:79px;width:100%;padding:5px}
+ #hexlab .br-hotbar{grid-row:3;grid-column:1;min-height:75px;width:100%;padding:5px}
  #hexlab .br-transform{flex-direction:column;gap:2px}
  #hexlab .br-transform button{height:21px;width:29px;min-width:29px;font-size:15px;padding:0}
  #hexlab .br-message{bottom:84px;max-width:68%;font-size:10px}
@@ -618,8 +643,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab .br-rail-ranking .br-podium li{padding:2px 4px}
  #hexlab .br-mini-caption{display:none}
  #hexlab .br-globe-slot{max-height:24vh}
- #hexlab .br-hotbar{min-height:62px;max-height:66px;padding:3px 4px}
- #hexlab .br-stampcard{height:56px;flex-basis:69px;width:69px}
+ #hexlab .br-hotbar{min-height:62px;padding:3px 4px}
+ #hexlab .br-stampcard{min-height:56px;flex-basis:69px;width:69px}
  #hexlab .br-stampcard canvas{height:30px;width:60px}
  #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
 }
@@ -841,9 +866,33 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <div class="br-atlas-title"><h3 id="br-atlas-name">Oscilador mínimo (flipper)</h3><span id="br-atlas-label">P2</span></div>
    <p id="br-atlas-description">Evolução da estrutura na regra Callahan.</p>
    <canvas id="br-atlas-canvas" width="520" height="300" aria-label="Evolução da estrutura escolhida, geração por geração"></canvas>
-   <div class="br-atlas-play"><button type="button" id="br-atlas-play">▶ Simular</button><button type="button" id="br-atlas-step">+1</button><button type="button" id="br-atlas-cycle">+1 ciclo</button><button type="button" id="br-atlas-reset">Reiniciar</button><span id="br-atlas-gen">Geração 0</span></div>
+   <div class="br-atlas-play"><button type="button" id="br-atlas-play">▶ Simular</button><button type="button" id="br-atlas-step">+1</button><button type="button" id="br-atlas-cycle">+1 ciclo</button><button type="button" id="br-atlas-reset">Reiniciar</button><button type="button" id="br-atlas-show-economy">Economia ↓</button><span id="br-atlas-gen">Geração 0</span></div>
    <div id="br-atlas-metrics" class="br-atlas-metrics"></div>
    <div class="br-atlas-action"><span id="br-atlas-slot-label">Slot 1</span><button type="button" class="primary" id="br-atlas-choose">Usar neste slot</button></div>
+   <section class="br-cycle-panel" id="br-cycle-panel" aria-labelledby="br-cycle-heading">
+ <h4 id="br-cycle-heading" tabindex="-1">Economia por ciclo</h4>
+ <p class="br-cycle-muted" id="br-cycle-scope" role="status"></p>
+ <div id="br-cycle-report" hidden>
+  <dl class="br-cycle-summary">
+   <div><dt>Carimbo inicial</dt><dd id="br-cycle-stamp"></dd></div>
+   <div><dt>Reserva adicional para manutenção</dt><dd id="br-cycle-capital"></dd></div>
+   <div><dt>Primeiro saldo positivo</dt><dd id="br-cycle-positive"></dd></div>
+   <div><dt>Recuperação do carimbo</dt><dd id="br-cycle-payback"></dd></div>
+  </dl>
+  <p id="br-cycle-trend"></p>
+  <figure class="br-cycle-figure">
+   <figcaption><span>Energia por <span id="br-cycle-unit">ciclo</span></span><span class="br-cycle-income">Receita</span><span class="br-cycle-upkeep">Manutenção</span></figcaption>
+   <svg id="br-cycle-plot" viewBox="0 0 570 92" role="img" aria-label="Evolução da receita e da manutenção; valores na tabela abaixo"></svg>
+  </figure>
+  <p class="br-cycle-muted" id="br-cycle-solvency"></p>
+  <details class="br-cycle-ledger"><summary>Ver valores por intervalo</summary>
+   <div class="br-cycle-scroll" role="region" aria-label="Detalhamento econômico" tabindex="0">
+    <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Receita</th><th scope="col">Manutenção</th><th scope="col">Do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
+   </div>
+   <p class="br-cycle-muted">¹ Parcela da manutenção cobrada de células vivas durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
+  </details>
+ </div>
+</section>
   </section>
  </div>
 </dialog>
@@ -934,15 +983,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       for (let bits = 0; bits < 1 << degree; bits++) {
         let n = 0;
         for (let b = bits; b; b &= b - 1) n++;
-        let adjacent = false, meta = false;
+        let adjacent2 = false, meta = false;
         if (n === 2)
           for (let k = 0; k < degree; k++) {
-            if (bits === (1 << k | 1 << (k + 1) % degree)) adjacent = true;
+            if (bits === (1 << k | 1 << (k + 1) % degree)) adjacent2 = true;
             if (bits === (1 << k | 1 << (k + 2) % degree)) meta = true;
           }
         const birth = degree === 6 ? world2.callBirth6 : world2.callBirth5;
         const survive = degree === 6 ? world2.callSurv6 : world2.callSurv5;
-        birth[bits] = n === 2 && adjacent ? 1 : 0;
+        birth[bits] = n === 2 && adjacent2 ? 1 : 0;
         survive[bits] = n === 3 || n === 4 || n === 2 && meta ? 1 : 0;
       }
   }
@@ -4831,6 +4880,238 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world.needsGrid = false;
   }
 
+  // src/patterns/cycle-economy.js
+  var emissionWindows = /* @__PURE__ */ new Map([
+    ["gun20", 20],
+    ["gun42", 42],
+    ["gun43", 86],
+    ["gun200", 200],
+    ["gun210", 210],
+    ["gun840", 840]
+  ]);
+  function cycleWindow(pattern) {
+    if (pattern.period > 0) return { length: pattern.period, kind: "period" };
+    if (emissionWindows.has(pattern.id)) return { length: emissionWindows.get(pattern.id), kind: "emission" };
+    return { length: 20, kind: "window" };
+  }
+  var stride = 65536;
+  var adjacent = DIR.map(([q, r]) => q * stride + r);
+  var rules = createSimulationState();
+  initRuleTables(rules);
+  function advance(ages, threshold) {
+    const masks = /* @__PURE__ */ new Map();
+    for (const id of ages.keys()) {
+      for (let k = 0; k < adjacent.length; k++) {
+        const target = id - adjacent[k];
+        masks.set(target, (masks.get(target) || 0) | 1 << k);
+      }
+    }
+    const next = /* @__PURE__ */ new Map();
+    let births = 0, charged = 0;
+    for (const [id, mask] of masks) {
+      const age = ages.get(id) || 0;
+      if (!(age ? rules.callSurv6 : rules.callBirth6)[mask]) continue;
+      next.set(id, age + 1);
+      if (age === 0) births++;
+      if (age + 1 >= threshold) charged++;
+    }
+    return { next, births, charged };
+  }
+  async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
+    const { length, kind } = cycleWindow(pattern);
+    const defaultCycles = Math.max(24, Math.ceil(128 / length));
+    const maxGenerations = cycles == null ? 8400 : 25200;
+    const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
+    const { birthEnergy, upkeep: upkeepRate, stableAfter } = economy;
+    let ages = new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
+    const initialCost = energyCost(ages.size, economy);
+    const startingReserve = initialEnergy(economy);
+    const rows2 = [];
+    let operatingBalance = 0, workingCapital = 0;
+    let firstPositiveCycle = null, profitableFromCycle = null;
+    let paybackGeneration = initialCost === 0 ? 0 : null;
+    let firstErosionGeneration = startingReserve < initialCost ? 0 : null;
+    let lastYield = performance.now();
+    signal?.throwIfAborted();
+    for (let cycle = 1; cycle <= observedCycles; cycle++) {
+      const from = (cycle - 1) * length + 1, to = cycle * length;
+      let births = 0, maintenanceCellTurns = 0;
+      for (let generation2 = from; generation2 <= to; generation2++) {
+        const turn = advance(ages, stableAfter);
+        ages = turn.next;
+        births += turn.births;
+        maintenanceCellTurns += turn.charged;
+        operatingBalance += turn.births * birthEnergy - turn.charged * upkeepRate;
+        workingCapital = Math.max(workingCapital, -operatingBalance);
+        if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation2;
+        if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < 0) {
+          firstErosionGeneration = generation2;
+        }
+        if (performance.now() - lastYield >= 10) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+          signal?.throwIfAborted();
+          lastYield = performance.now();
+        }
+      }
+      let fixedCore = 0, fixedUpkeep = 0;
+      for (const age of ages.values()) {
+        if (age <= length) continue;
+        fixedCore++;
+        const chargedTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
+        fixedUpkeep += chargedTurns * upkeepRate;
+      }
+      const income = births * birthEnergy, upkeep = maintenanceCellTurns * upkeepRate;
+      const net = income - upkeep;
+      if (net > 0) {
+        firstPositiveCycle ?? (firstPositiveCycle = cycle);
+        profitableFromCycle ?? (profitableFromCycle = cycle);
+      } else profitableFromCycle = null;
+      rows2.push({
+        cycle,
+        from,
+        to,
+        births,
+        maintenanceCellTurns,
+        income,
+        upkeep,
+        fixedCore,
+        fixedUpkeep,
+        net,
+        cumulative: operatingBalance - initialCost,
+        live: ages.size
+      });
+    }
+    return {
+      cycleLength: length,
+      kind,
+      generations: observedCycles * length,
+      initialCost,
+      workingCapital,
+      firstPositiveCycle,
+      profitableFromCycle,
+      paybackGeneration,
+      firstErosionGeneration,
+      rows: rows2
+    };
+  }
+
+  // src/patterns/atlas-cycle-panel.js
+  var format = new Intl.NumberFormat("pt-BR");
+  var fmt = (n) => format.format(n);
+  var signed = (n) => n > 0 ? "+" + fmt(n) : fmt(n);
+  var pending;
+  function plot(rows2, unit) {
+    const svg = $("br-cycle-plot");
+    svg.replaceChildren();
+    const add = (name, attrs, label) => {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+      for (const [key2, value] of Object.entries(attrs)) node.setAttribute(key2, value);
+      if (label !== void 0) node.textContent = label;
+      svg.append(node);
+    };
+    const max = Math.max(1, ...rows2.map((row) => Math.max(row.income, row.upkeep)));
+    const left = 54, right = 561, top = 12, bottom = 71;
+    const x = (i) => left + (right - left) * i / Math.max(1, rows2.length - 1);
+    const y = (value) => bottom - (bottom - top) * value / max;
+    const text = { fill: "#acc4d2", "font-size": 10 };
+    for (const value of [0, max]) {
+      add("line", { x1: left, x2: right, y1: y(value), y2: y(value), stroke: "#365167" });
+      add("text", { ...text, x: left - 6, y: y(value) + 3, "text-anchor": "end" }, fmt(value));
+    }
+    add("text", { ...text, x: left, y: 87 }, unit + " 1");
+    add("text", { ...text, x: right, y: 87, "text-anchor": "end" }, unit + " " + rows2.length);
+    for (const [key2, color] of [["income", "#77e3c5"], ["upkeep", "#ffc483"]]) {
+      const points = rows2.map((row, i) => x(i) + "," + y(row[key2])).join(" ");
+      add("polyline", {
+        points,
+        fill: "none",
+        stroke: color,
+        "stroke-width": 2,
+        "stroke-dasharray": key2 === "upkeep" ? "5 3" : "none"
+      });
+    }
+  }
+  function fillTable(rows2) {
+    const body = document.createDocumentFragment();
+    for (const r of rows2) {
+      const tr = document.createElement("tr");
+      const values = [
+        fmt(r.cycle),
+        fmt(r.from) + "–" + fmt(r.to),
+        fmt(r.births),
+        fmt(r.income),
+        fmt(r.upkeep),
+        fmt(r.fixedUpkeep) + " (" + fmt(r.fixedCore) + " cél.)",
+        signed(r.net),
+        signed(r.cumulative)
+      ];
+      for (const [i, value] of values.entries()) {
+        const cell = document.createElement(i === 0 ? "th" : "td");
+        if (i === 0) cell.scope = "row";
+        cell.textContent = value;
+        tr.append(cell);
+      }
+      body.append(tr);
+    }
+    $("br-cycle-rows").replaceChildren(body);
+  }
+  function render(report, economy, pattern) {
+    const { rows: rows2, kind, cycleLength, generations, initialCost, workingCapital, firstErosionGeneration } = report;
+    const first = rows2[0], last = rows2.at(-1);
+    const unit = kind === "window" ? "Janela" : "Ciclo";
+    const interval = unit.toLowerCase();
+    const frame2 = kind === "emission" ? "Ciclo nominal do emissor" : kind === "window" ? "Janela de observação" : "Período do padrão";
+    $("br-cycle-heading").textContent = (kind === "window" ? "Economia por janela" : "Economia por ciclo") + " · " + pattern.name;
+    $("br-cycle-scope").textContent = frame2 + " de " + fmt(cycleLength) + " gerações · " + fmt(rows2.length) + " " + unit.toLowerCase() + "s · " + fmt(generations) + " gerações simuladas. Estrutura isolada em malha plana, com reserva suficiente para evitar erosão." + (kind === "emission" ? " A conta inclui as naves emitidas." : "");
+    $("br-cycle-stamp").textContent = fmt(initialCost);
+    $("br-cycle-capital").textContent = fmt(workingCapital);
+    $("br-cycle-positive").textContent = report.firstPositiveCycle === null ? "Nenhum no intervalo" : unit + " " + fmt(report.firstPositiveCycle);
+    $("br-cycle-payback").textContent = report.paybackGeneration === null ? "Sem retorno no intervalo" : "Geração " + fmt(report.paybackGeneration);
+    const charge = rows2.every((row) => row.upkeep === first.upkeep) ? "A manutenção custou " + fmt(first.upkeep) + " de energia por " + interval + "." : "A manutenção custou " + fmt(first.upkeep) + " no primeiro intervalo e " + fmt(last.upkeep) + " no último.";
+    const core = rows2.every((row) => row.fixedUpkeep === first.fixedUpkeep) ? " A parcela do núcleo ficou em " + fmt(first.fixedUpkeep) + " por " + interval + "." : " A parcela do núcleo passou de " + fmt(first.fixedUpkeep) + " para " + fmt(last.fixedUpkeep) + ".";
+    const positive = report.profitableFromCycle;
+    const streak = positive === null ? "" : positive === 1 ? " Todos os intervalos deram saldo positivo." : positive === last.cycle ? " O último intervalo deu saldo positivo." : " O saldo ficou positivo do " + positive + "º ao " + last.cycle + "º intervalo.";
+    $("br-cycle-trend").textContent = charge + core + streak;
+    $("br-cycle-unit").textContent = unit.toLowerCase();
+    $("br-cycle-column").textContent = unit;
+    plot(rows2, unit);
+    const reserve = initialEnergy(economy);
+    const outcome = firstErosionGeneration === 0 ? "faltam " + fmt(initialCost - reserve) + " para carimbar." : firstErosionGeneration === null ? "o padrão atravessa todo o intervalo sem erosão." : "a erosão começaria na geração " + fmt(firstErosionGeneration) + ".";
+    $("br-cycle-solvency").textContent = "Para manter a estrutura intacta até G" + fmt(generations) + " são necessárias " + fmt(initialCost + workingCapital) + " unidades antes do carimbo. Com a reserva inicial de " + fmt(reserve) + ", " + outcome;
+    fillTable(rows2);
+    $("br-cycle-report").hidden = false;
+  }
+  function cancelCycleAnalysis() {
+    pending?.abort();
+  }
+  async function showCycleAnalysis(pattern, economy) {
+    cancelCycleAnalysis();
+    const controller = new AbortController();
+    pending = controller;
+    $("br-cycle-panel").setAttribute("aria-busy", "true");
+    $("br-cycle-scope").textContent = "Calculando a evolução de " + pattern.name + "…";
+    $("br-cycle-heading").textContent = "Economia · " + pattern.name;
+    $("br-cycle-report").hidden = true;
+    const settings = { ...economy };
+    try {
+      const report = await analyzePatternCycles(pattern, settings, { signal: controller.signal });
+      if (!controller.signal.aborted) {
+        render(report, settings, pattern);
+        if (document.activeElement === $("br-cycle-heading")) $("br-cycle-heading").scrollIntoView({ block: "start" });
+      }
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        $("br-cycle-scope").textContent = "Não foi possível calcular a economia deste padrão.";
+        console.error(error);
+      }
+    } finally {
+      if (pending === controller) {
+        $("br-cycle-panel").setAttribute("aria-busy", "false");
+        pending = null;
+      }
+    }
+  }
+
   // src/patterns/editor/selection.js
   var currentPatternId = "p2";
   function loadPattern(id) {
@@ -4873,11 +5154,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var previous = /* @__PURE__ */ new Set();
   var generation = 0;
   var timer = null;
+  var cycleTimer = null;
   var at = (q, r) => q + "," + r;
   var coords = (s) => s.split(",").map(Number);
-  var fmt = (v) => Number(v || 0).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
+  var fmt2 = (v) => Number(v || 0).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
   var el = (id) => $(id);
-  function step() {
+  function step(paint = true) {
     if (cells.size > 2e4) {
       stop();
       return;
@@ -4897,7 +5179,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     cells = next;
     generation++;
-    draw();
+    if (paint) draw();
   }
   function reset() {
     cells = new Set(decodeRLE(current?.rle || "!").map(([q, r]) => at(q, r)));
@@ -4905,7 +5187,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     generation = 0;
     draw();
   }
+  function cycleButton() {
+    const { length, kind } = cycleWindow(current || {});
+    return (kind === "window" ? "+1 janela" : "+1 ciclo") + " (" + length + " ger.)";
+  }
+  function advanceCycle() {
+    stop();
+    const end = generation + cycleWindow(current).length;
+    const run = () => {
+      const until = performance.now() + 8;
+      while (generation < end && cells.size <= 2e4 && performance.now() < until) step(false);
+      if (generation === end || cells.size > 2e4) {
+        stop();
+        draw();
+        return;
+      }
+      el("br-atlas-cycle").textContent = "Avançando…";
+      cycleTimer = setTimeout(run, 0);
+    };
+    run();
+  }
   function stop() {
+    if (cycleTimer !== null) clearTimeout(cycleTimer);
+    cycleTimer = null;
+    el("br-atlas-cycle").textContent = cycleButton();
     if (timer !== null) clearInterval(timer);
     timer = null;
     el("br-atlas-play").textContent = "▶ Simular";
@@ -4915,6 +5220,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       stop();
       return;
     }
+    stop();
     el("br-atlas-play").textContent = "⏸ Pausar";
     timer = setInterval(() => {
       step();
@@ -4929,15 +5235,21 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     el("br-atlas-name").textContent = p.name;
     el("br-atlas-label").textContent = p.period ? "P" + p.period : p.group;
     el("br-atlas-description").textContent = p.group + " · " + p.cells + " células iniciais · " + p.origin + ". A prévia usa a mesma regra Callahan da partida e não modifica seu mundo.";
+    renderProperties(p);
+  }
+  function renderProperties(p) {
+    const { length, kind } = cycleWindow(p);
     const stats = [
-      ["Células iniciais", fmt(p.cells)],
-      ["Custo atual", fmt(p.cells * game.economy.stampCost) + " energia"],
-      ["Período", p.period || "não periódico"],
-      ["Nascimento / ciclo", p.period ? fmt(p.birthsCycle) : "não periódico"],
-      ["Mortes / ciclo", p.period ? fmt(p.deathsCycle) : "não periódico"],
-      ["Núcleo sempre vivo", p.period ? fmt(p.stableCore) : "não periódico"],
-      ["Nascimentos / geração", p.period ? fmt(p.birthsCycle / p.period) : "ver simulação"],
-      ["Atividade por célula", p.period ? fmt(p.birthsCycle / (p.period * p.cells)) : "ver simulação"],
+      ["Células iniciais", fmt2(p.cells)],
+      ["Custo atual", fmt2(p.cells * game.economy.stampCost) + " energia"],
+      [kind === "emission" ? "Período nominal do emissor" : kind === "window" ? "Janela de observação" : "Período", length + " ger."],
+      ...p.period ? [
+        ["Nascimentos / ciclo", fmt2(p.birthsCycle)],
+        ["Mortes / ciclo", fmt2(p.deathsCycle)],
+        ["Núcleo sempre vivo", fmt2(p.stableCore)],
+        ["Nascimentos / geração", fmt2(p.birthsCycle / p.period)],
+        ["Atividade por célula", fmt2(p.birthsCycle / (p.period * p.cells))]
+      ] : [],
       ["Classe", p.group]
     ];
     el("br-atlas-metrics").replaceChildren();
@@ -4948,6 +5260,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       box.append(a, b);
       el("br-atlas-metrics").append(box);
     }
+    showCycleAnalysis(p, game.economy);
   }
   function renderList() {
     const query = el("br-atlas-query").value.trim().toLowerCase(), group = el("br-atlas-class").value, sort = el("br-atlas-order").value;
@@ -5029,6 +5342,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     targetSlot = slot;
     el("br-atlas-slot-label").textContent = "Slot " + (slot + 1) + " · trocar padrão";
     if (!current || current.id !== slotIds[slot]) choose(map.get(slotIds[slot]) || catalog[0]);
+    else renderProperties(current);
     renderList();
     const dialog = el("br-atlas-dialog");
     if (!dialog.open) dialog.showModal();
@@ -5043,10 +5357,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       stop();
       step();
     };
-    el("br-atlas-cycle").onclick = () => {
-      stop();
-      for (let i = 0; i < (current?.period || 20) && i < 240; i++) step();
+    el("br-atlas-cycle").onclick = advanceCycle;
+    el("br-atlas-show-economy").onclick = () => {
+      el("br-cycle-heading").focus({ preventScroll: true });
+      el("br-cycle-heading").scrollIntoView({ block: "start" });
     };
+    el("br-energy-sliders").addEventListener("input", () => {
+      if (el("br-atlas-dialog").open && current) renderProperties(current);
+    });
     el("br-atlas-reset").onclick = () => {
       stop();
       reset();
@@ -5058,7 +5376,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       renderDeck(currentPatternId, loadPattern);
       el("br-atlas-dialog").close();
     };
-    el("br-atlas-dialog").addEventListener("close", stop);
+    el("br-atlas-dialog").addEventListener("close", () => {
+      stop();
+      cancelCycleAnalysis();
+    });
   }
 
   // src/deck/configuration.js
@@ -5082,17 +5403,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function updateHumanReport(showDetails) {
     const h = game.humanHistory;
     if (!h) return;
-    const e = h.largest, fmt2 = (n) => n.toLocaleString("pt-BR");
+    const e = h.largest, fmt3 = (n) => n.toLocaleString("pt-BR");
     if (!showDetails) return;
     const p = game.players[0], peak = h.peak, field = world.ownerCells[1].length;
-    $("br-diag-peak").textContent = peak && peak.field > 0 ? `Desde o pico de ${fmt2(peak.field)} células na geração ${fmt2(peak.gen)}, seu campo chegou a ${fmt2(field)}. Carimbadas +${fmt2(h.placed - peak.placed)}, nascidas +${fmt2(h.births - peak.births)}, mortas pelo autômato −${fmt2(h.deaths - peak.deaths)}, removidas por dívida −${fmt2(p.eroded - peak.eroded)}. Reserva ${fmt2(peak.reserve)} → ${fmt2(p.reserve)}, com ${fmt2(p.received - peak.received)} recebidas, ${fmt2(p.paid - peak.paid - (p.eroded - peak.eroded))} pagas da reserva e ${fmt2(h.placed - peak.placed)} gastas em carimbos.` : "Aguardando o primeiro carimbo.";
-    $("br-diag-largest").textContent = e ? `Maior queda em uma geração (${fmt2(e.gen)}). Campo ${fmt2(e.before)} → ${fmt2(e.after)}. Nasceram ${fmt2(e.births)}, o autômato matou ${fmt2(e.deaths)} e a dívida removeu ${fmt2(e.erosion)}. Reserva ${fmt2(e.reserveBefore)} → ${fmt2(e.reserve)}.` : "";
-    $("br-diag-end").textContent = h.eliminated !== null ? `Eliminação na geração ${fmt2(h.eliminated)}, com zero no campo e zero na reserva.` : p.reserve === 0 && field > 0 ? `Você continua em jogo com ${fmt2(field)} células em campo e reserva zero.` : "";
+    $("br-diag-peak").textContent = peak && peak.field > 0 ? `Desde o pico de ${fmt3(peak.field)} células na geração ${fmt3(peak.gen)}, seu campo chegou a ${fmt3(field)}. Carimbadas +${fmt3(h.placed - peak.placed)}, nascidas +${fmt3(h.births - peak.births)}, mortas pelo autômato −${fmt3(h.deaths - peak.deaths)}, removidas por dívida −${fmt3(p.eroded - peak.eroded)}. Reserva ${fmt3(peak.reserve)} → ${fmt3(p.reserve)}, com ${fmt3(p.received - peak.received)} recebidas, ${fmt3(p.paid - peak.paid - (p.eroded - peak.eroded))} pagas da reserva e ${fmt3(h.placed - peak.placed)} gastas em carimbos.` : "Aguardando o primeiro carimbo.";
+    $("br-diag-largest").textContent = e ? `Maior queda em uma geração (${fmt3(e.gen)}). Campo ${fmt3(e.before)} → ${fmt3(e.after)}. Nasceram ${fmt3(e.births)}, o autômato matou ${fmt3(e.deaths)} e a dívida removeu ${fmt3(e.erosion)}. Reserva ${fmt3(e.reserveBefore)} → ${fmt3(e.reserve)}.` : "";
+    $("br-diag-end").textContent = h.eliminated !== null ? `Eliminação na geração ${fmt3(h.eliminated)}, com zero no campo e zero na reserva.` : p.reserve === 0 && field > 0 ? `Você continua em jogo com ${fmt3(field)} células em campo e reserva zero.` : "";
   }
 
   // src/match/hud/energy-panel.js
   var compact = (n) => Number(n || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
-  var signed = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + compact(Math.abs(n));
+  var signed2 = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + compact(Math.abs(n));
   var controls = { birthEnergy: "eco-birth", stampCost: "eco-stamp", upkeep: "eco-upkeep", stableAfter: "eco-age", initialCells: "eco-initial" };
   function beforeMatch() {
     return world.gen === 0 && game.players.every((p) => p.stamps === 0);
@@ -5137,13 +5458,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       "eco-births": compact(human.lastBirths),
       "eco-births-total": compact(human.totalBirths),
       "eco-deaths-total": compact(human.totalDeaths),
-      "eco-income": signed(human.lastIncome),
+      "eco-income": signed2(human.lastIncome),
       "eco-income-total": compact(human.received),
       "eco-maintenance": "−" + compact(human.lastUpkeep),
       "eco-maintenance-total": compact(human.paid),
       "eco-stamped-total": compact(human.stampedEnergy),
-      "eco-flow": signed(human.lastFlow),
-      "eco-rate": signed((human.flowAverage || 0) * (world.actual || world.speed)) + "/s",
+      "eco-flow": signed2(human.lastFlow),
+      "eco-rate": signed2((human.flowAverage || 0) * (world.actual || world.speed)) + "/s",
       "eco-eroded-last": compact(human.lastEroded)
     };
     for (const [id, value] of Object.entries(fields)) $(id).textContent = value;
