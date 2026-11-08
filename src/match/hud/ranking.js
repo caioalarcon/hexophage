@@ -3,6 +3,7 @@ import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
 import { syncPregameControls } from '../controls/pregame.js';
 import { updateHumanReport } from './human-report.js';
+import { updateEnergyPanel } from './energy-panel.js';
 
 function updateGamePanel(force = false) {
   if (!game.players.length) return;
@@ -17,6 +18,7 @@ function updateGamePanel(force = false) {
   $('br-neutral').textContent = world.ownerCells[7].length.toLocaleString('pt-BR');
   $('hl-step').disabled = game.ended;
   syncPregameControls();
+  updateEnergyPanel();
   const status = $('br-gamestatus');
   status.textContent = game.winner
     ? 'Vencedor: ' + game.symbols[game.winner] + ' ' + game.names[game.winner]
@@ -38,7 +40,7 @@ function updateGamePanel(force = false) {
   for (let i = 0; i < ranked.length; i++) {
     const p = ranked[i],
       pop = world.ownerCells[p.id].length,
-      rate = p.out ? 0 : game.tax * (pop - avg);
+      rate = p.out ? 0 : p.lastFlow;
     let card = $('br-player-' + p.id);
     if (!card) {
       card = document.createElement('li');

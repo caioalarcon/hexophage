@@ -14,6 +14,7 @@ import { bindMapGestures } from './map/camera/pointer.js';
 import { resetGame } from './match/controls/new-match.js';
 import { chooseRule, bindRuleChoice, bindRuleInput } from './match/controls/rule.js';
 import { bindTuning } from './match/controls/tuning.js';
+import { bindEnergyPanel } from './match/hud/energy-panel.js';
 import { bindTurnControls } from './match/controls/turns.js';
 import { bindStampControls } from './patterns/editor/controls.js';
 import { bindEditorGestures } from './patterns/editor/gestures.js';
@@ -50,6 +51,7 @@ buildDeckConfig();
 bindBotSelectors();
 $('br-reset').onclick = resetGame;
 bindTuning();
+bindEnergyPanel();
 
 bindPlayerFollow();
 $('hl-pattern').addEventListener('change', refreshTabs);

@@ -48,7 +48,7 @@ function resetGame() {
   game.average = 0;
   updateGamePanel(true);
   markRender();
-  toast('Seis jogadores posicionados. Você começa com ' + game.init + ' de biomassa.');
+  toast('Economia construtiva: seis jogadores, ' + game.init + ' de energia inicial cada.');
 }
 
 export { resetGame };
