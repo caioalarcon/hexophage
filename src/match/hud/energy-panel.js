@@ -11,6 +11,20 @@ function beforeMatch() {
   return !world.matchStarted && world.gen === 0 && game.players.every(p => p.stamps === 0);
 }
 export function bindEnergyPanel() {
+  const root=$('hexlab'), toggle=$('br-economy-toggle'), close=$('br-economy-close');
+  const setOpen=open=>{
+    root.classList.toggle('br-economy-open',open);
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.classList.toggle('primary',open);
+    if(open) $('eco-combat-fee').focus({preventScroll:true});
+    else toggle.focus({preventScroll:true});
+  };
+  toggle.addEventListener('click',()=>setOpen(!root.classList.contains('br-economy-open')));
+  close.addEventListener('click',()=>setOpen(false));
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape' && root.classList.contains('br-economy-open') &&
+       !$('eco-limit-dialog').open) setOpen(false);
+  });
   bindSliderLimits(Object.values(controls).map(id => $(id)));
   for (const [key,id] of Object.entries(controls)) {
     const slider = $(id);

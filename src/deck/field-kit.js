@@ -1,8 +1,20 @@
-// Curated for a scarce, mature-cell economy. Every slot can be exchanged in the atlas.
+// Fifteen default cards, ordered from economy to practical attacks and then
+// experiments. These are suggestions, never a restriction: every slot may
+// be replaced from all 160 Callahan patterns during a live match.
 export const fieldKit = {
-  stalk:  { role: 'Economia', use: 'A ponta estende o núcleo produtor. Proteja o crescimento inicial.' },
-  glider: { role: 'Incursão', use: 'Disparo móvel de 6 células para cortar uma ponta ou atingir um alvo próximo.' },
-  p42:    { role: 'Refletor', use: 'A orientação e a fase mudam o destino de um glider que o atinge.' },
-  gun42:  { role: 'Cerco', use: 'Um disparo a cada 42 gerações. Reserve energia para os projéteis em voo.' },
-  gun20:  { role: 'Assalto', use: 'Um disparo a cada 20 gerações. Use perto de um alvo para sustentar o ataque.' },
+  stalk:  {role:'Economia',use:'Expande a produção. Você pode plantar vários crescedores quando tiver reserva.'},
+  glider: {role:'Ataque',use:'Nave P4 de baixo custo para sabotar colmeias e interceptar gliders.'},
+  gun20:  {role:'Cerco P20',use:'Produz gliders rapidamente; o custo dos projéteis deve ser financiado.'},
+  gun42:  {role:'Cerco P42',use:'Emite gliders mais lentamente, permitindo cerco econômico prolongado.'},
+  p42:    {role:'Defesa',use:'Reflete ou perturba gliders conforme orientação e fase.'},
+  gun43: {role:'Cerco P43',use:'Emissor de dois pulsos por período completo de 86 gerações.'},
+  gun200:{role:'Cerco P200',use:'Arma de cadência baixa e estrutura maior.'},
+  gun210:{role:'Cerco P210',use:'Emissor relé com refletores.'},
+  gun840:{role:'Cerco P840',use:'Emissor caro de cadência muito baixa.'},
+  p15:   {role:'Nave P15',use:'Nave móvel para experimentar outra velocidade e geometria de colisão.'},
+  p48:   {role:'Nave P48',use:'Nave móvel de período longo.'},
+  p42rot:{role:'Rotativo',use:'Oscilador rotativo para teste de defesa e colisão; consome energia.'},
+  p7a:   {role:'Defesa exp.',use:'Oscilador P7; possível obstáculo, com custo operacional.'},
+  p66:   {role:'Defesa exp.',use:'Oscilador P66; geometria extensa, com custo operacional.'},
+  p2:    {role:'Flipper exp.',use:'Oscilador mínimo de três células. É deficitário nesta economia.'},
 };

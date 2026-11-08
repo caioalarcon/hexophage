@@ -2,8 +2,8 @@
 // energy; stamping pays once for each cell placed.
 export const DEFAULT_ECONOMY = Object.freeze({
   combatFee: 0.25,
-  stableEnergy: 0.02, productionScale: 1500, birthCost: 1, stableAfter: 256,
-  stampCost: 10000, initialCells: 37,
+  stableEnergy: 0.02, productionScale: 8000, birthCost: 1, stableAfter: 256,
+  stampCost: 10000, initialCells: 82,
 });
 export const ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
 export function generationEnergy(births, stable, economy) {

@@ -24,3 +24,27 @@
 #hexlab .br-limit-dialog h3 { margin: 0; font-size: 14px }
 #hexlab .br-limit-dialog input { width: 100%; min-height: 30px; padding: 4px 6px; border: 1px solid #496579; border-radius: 4px; background: #0f2130; color: inherit }
 #hexlab .br-limit-dialog form > div { display: flex; justify-content: flex-end; gap: 6px }
+
+/* Compact stats remain visible. All seven tunable sliders live in a clearly
+   labeled, on-demand pane, including on portrait phones. */
+#hexlab .br-energy-panel .br-energy-sliders,
+#hexlab .br-energy-panel .br-energy-help {display:none}
+#hexlab .br-energy-panel #br-economy-close {display:none;margin-left:auto;padding:2px 8px}
+#hexlab .br-rail-controls #br-economy-toggle {flex:1 1 85px;min-height:35px;font-size:11px;padding:5px 7px;white-space:nowrap}
+#hexlab.br-economy-open .br-rail .br-energy-panel {
+ display:block!important;position:fixed!important;top:clamp(12px,6vh,60px);
+ right:clamp(8px,2vw,24px);left:auto;width:min(385px,calc(100vw - 16px));
+ max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;
+ z-index:100!important;background:#152c40;box-shadow:0 14px 65px #000e;
+ border:2px solid #65cdb2;padding:13px;
+}
+#hexlab.br-economy-open .br-energy-panel .br-energy-sliders {display:grid;gap:10px}
+#hexlab.br-economy-open .br-energy-panel .br-energy-help {display:block;font-size:10px}
+#hexlab.br-economy-open .br-energy-panel #br-economy-close {display:inline-flex}
+#hexlab.br-economy-open .br-energy-panel h3 {position:sticky;top:-13px;z-index:2;padding:7px 0;background:#152c40}
+#hexlab.br-economy-open .br-energy-panel .br-energy-sliders label {font-size:12px}
+#hexlab.br-economy-open .br-energy-panel .br-energy-sliders input {height:22px}
+#hexlab.br-economy-open .br-energy-panel .br-energy-stats {display:none}
+@media (orientation:portrait) {
+ #hexlab.br-economy-open .br-rail .br-energy-panel {top:clamp(8px,6vh,48px);right:8px}
+}

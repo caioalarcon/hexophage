@@ -85,3 +85,8 @@
 #hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}
 #hexlab .br-stampcard:focus-visible{outline:2px solid #8beecd;outline-offset:1px}
 #hexlab #br-open-atlas{margin:7px 0 0;width:100%;font-size:11px}
+
+/* A complete fifteen-card laboratory palette, horizontally scrollable. */
+#hexlab .br-deck {scrollbar-width:thin;scrollbar-color:#55bca7 #0d1a2a;scroll-snap-type:x proximity}
+#hexlab .br-stampcard {scroll-snap-align:start;flex-shrink:0}
+#hexlab .br-stampcard .br-stampname {white-space:normal;overflow-wrap:anywhere}
