@@ -31,3 +31,28 @@
 #hexlab .br-atlas-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;border-top:1px solid #385168;padding-top:9px}
 #hexlab .br-atlas-action span{font-size:11px;color:#bed7df}
 @media(max-width:720px){#hexlab .br-atlas-body{display:flex;flex-direction:column;overflow:auto;height:78vh}#hexlab .br-atlas-search{flex:0 0 220px;border-bottom:1px solid #385168;border-right:0}#hexlab .br-atlas-results{flex-direction:row;overflow-x:auto}#hexlab .br-atlas-results button{min-width:155px}#hexlab .br-atlas-detail{flex:1 0 auto;overflow:visible}#hexlab .br-atlas-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+#hexlab .br-cycle-panel { border-top: 1px solid #385168; padding: 12px 0 6px; min-width: 0 }
+#hexlab .br-cycle-panel h4 { font-size: 15px; margin: 0 0 5px }
+#hexlab .br-cycle-panel p { font-size: 12px; line-height: 1.5; margin: 5px 0 9px }
+#hexlab .br-cycle-panel .br-cycle-muted { color: #adc3d3; font-size: 11px }
+#hexlab .br-cycle-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 5px; margin: 8px 0 }
+#hexlab .br-cycle-summary div { min-width: 0; padding: 7px; border: 1px solid #305066; border-radius: 6px; background: #182d3d }
+#hexlab .br-cycle-summary dt { color: #b8ccd7; font-size: 10px }
+#hexlab .br-cycle-summary dd { margin: 3px 0 0; font-size: 13px; font-weight: 700 }
+#hexlab .br-cycle-figure { background: #0e1c2b; border-radius: 6px; margin: 8px 0; padding: 7px 9px }
+#hexlab .br-cycle-figure figcaption { display: flex; gap: 12px; font-size: 11px; align-items: center; flex-wrap: wrap }
+#hexlab .br-cycle-figure figcaption > span:first-child { margin-right: auto }
+#hexlab .br-cycle-income { color: #77e3c5 }
+#hexlab .br-cycle-upkeep { color: #ffc483 }
+#hexlab .br-cycle-figure svg { width: 100%; height: auto; max-height: 124px; display: block }
+#hexlab .br-cycle-ledger { border-top: 1px solid #30485c; padding-top: 6px }
+#hexlab .br-cycle-ledger summary { cursor: pointer; color: #9eead8; font-size: 12px; padding: 3px 0 }
+#hexlab .br-cycle-scroll { max-height: 240px; overflow: auto; margin-top: 6px }
+#hexlab .br-cycle-ledger table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11px; font-variant-numeric: tabular-nums }
+#hexlab .br-cycle-ledger th, #hexlab .br-cycle-ledger td { padding: 4px 7px; text-align: right; white-space: nowrap; border-bottom: 1px solid #293e50 }
+#hexlab .br-cycle-ledger thead th { position: sticky; top: 0; background: #1c3244 }
+#hexlab .br-atlas-detail > * { flex-shrink: 0 }
+@media (max-width:900px) { #hexlab .br-cycle-summary { grid-template-columns: repeat(2,minmax(0,1fr)) } }
+
+@media (max-width: 510px) { #hexlab .br-cycle-figure svg text { font-size: 15px } }

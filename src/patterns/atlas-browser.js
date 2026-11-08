@@ -1,5 +1,7 @@
 import { patterns } from './catalog.js';
 import { decodeRLE } from './rle.js';
+import { cycleWindow } from './cycle-economy.js';
+import { cancelCycleAnalysis, showCycleAnalysis } from './atlas-cycle-panel.js';
 import { DIR } from '../world/geometry.js';
 import { game } from '../browser/game.js';
 import { world } from '../browser/world-state.js';
@@ -11,11 +13,12 @@ import { renderDeck } from '../deck/hand.js';
 const catalog=patterns.callahan.filter(p=>p.group);
 const map=new Map(catalog.map(p=>[p.id,p]));
 let targetSlot=0, current=null, cells=new Set(),previous=new Set(),generation=0,timer=null;
+let cycleTimer = null;
 const at=(q,r)=>q+','+r;
 const coords=s=>s.split(',').map(Number);
 const fmt=v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:2});
 const el=id=>$(id);
-function step() {
+function step(paint = true) {
   if(cells.size>20000) {stop();return;}
   previous=cells;
   const candidate=new Set(cells);
@@ -29,18 +32,40 @@ function step() {
     for(let k=0;k<6;k++)if(cells.has(at(q+DIR[k][0],r+DIR[k][1])))bits|=1<<k;
     if((cells.has(pos)?world.callSurv6:world.callBirth6)[bits])next.add(pos);
   }
-  cells=next;generation++;draw();
+  cells=next;generation++;if(paint)draw();
 }
 function reset() {
   cells=new Set(decodeRLE(current?.rle||'!').map(([q,r])=>at(q,r)));
   previous=new Set(cells);generation=0;draw();
 }
+function cycleButton() {
+  const { length, kind } = cycleWindow(current || {});
+  return (kind === 'window' ? '+1 janela' : '+1 ciclo') + ' (' + length + ' ger.)';
+}
+function advanceCycle() {
+  stop();
+  const end = generation + cycleWindow(current).length;
+  const run = () => {
+    const until = performance.now() + 8;
+    while (generation < end && cells.size <= 20000 && performance.now() < until) step(false);
+    if (generation === end || cells.size > 20000) {
+      stop();draw();return;
+    }
+    el('br-atlas-cycle').textContent = 'Avançando…';
+    cycleTimer = setTimeout(run, 0);
+  };
+  run();
+}
 function stop() {
+  if(cycleTimer !== null) clearTimeout(cycleTimer);
+  cycleTimer = null;
+  el('br-atlas-cycle').textContent = cycleButton();
   if(timer!==null)clearInterval(timer);timer=null;
   el('br-atlas-play').textContent='▶ Simular';
 }
 function play() {
   if(timer!==null){stop();return;}
+  stop();
   el('br-atlas-play').textContent='⏸ Pausar';
   timer=setInterval(()=>{step();if(cells.size>20000||!cells.size||generation>1800)stop()},170);
 }
@@ -51,15 +76,21 @@ function choose(p) {
   el('br-atlas-description').textContent=
     p.group+' · '+p.cells+' células iniciais · '+p.origin+
     '. A prévia usa a mesma regra Callahan da partida e não modifica seu mundo.';
+  renderProperties(p);
+}
+function renderProperties(p) {
+  const { length, kind } = cycleWindow(p);
   const stats=[
     ['Células iniciais',fmt(p.cells)],
     ['Custo atual',fmt(p.cells*game.economy.stampCost)+' energia'],
-    ['Período',p.period||'não periódico'],
-    ['Nascimento / ciclo',p.period?fmt(p.birthsCycle):'não periódico'],
-    ['Mortes / ciclo',p.period?fmt(p.deathsCycle):'não periódico'],
-    ['Núcleo sempre vivo',p.period?fmt(p.stableCore):'não periódico'],
-    ['Nascimentos / geração',p.period?fmt(p.birthsCycle/p.period):'ver simulação'],
-    ['Atividade por célula',p.period?fmt(p.birthsCycle/(p.period*p.cells)):'ver simulação'],
+    [kind==='emission'?'Período nominal do emissor':kind==='window'?'Janela de observação':'Período',length+' ger.'],
+    ...(p.period ? [
+      ['Nascimentos / ciclo',fmt(p.birthsCycle)],
+      ['Mortes / ciclo',fmt(p.deathsCycle)],
+      ['Núcleo sempre vivo',fmt(p.stableCore)],
+      ['Nascimentos / geração',fmt(p.birthsCycle/p.period)],
+      ['Atividade por célula',fmt(p.birthsCycle/(p.period*p.cells))],
+    ] : []),
     ['Classe',p.group],
   ];
   el('br-atlas-metrics').replaceChildren();
@@ -67,6 +98,7 @@ function choose(p) {
     const box=document.createElement('div'),a=document.createElement('small'),b=document.createElement('b');
     a.textContent=label;b.textContent=String(value);box.append(a,b);el('br-atlas-metrics').append(box);
   }
+  showCycleAnalysis(p, game.economy);
 }
 function renderList() {
   const query=el('br-atlas-query').value.trim().toLowerCase(),
@@ -126,6 +158,7 @@ export function openAtlasBrowser(slot=0) {
   targetSlot=slot;
   el('br-atlas-slot-label').textContent='Slot '+(slot+1)+' · trocar padrão';
   if(!current||current.id!==slotIds[slot])choose(map.get(slotIds[slot])||catalog[0]);
+  else renderProperties(current);
   renderList();
   const dialog=el('br-atlas-dialog');
   if(!dialog.open)dialog.showModal();
@@ -137,14 +170,19 @@ export function bindAtlasBrowser() {
   for(const id of ['br-atlas-query','br-atlas-class','br-atlas-order'])el(id).addEventListener('input',renderList);
   el('br-atlas-play').onclick=play;
   el('br-atlas-step').onclick=()=>{stop();step()};
-  el('br-atlas-cycle').onclick=()=>{
-    stop();for(let i=0;i<(current?.period||20)&&i<240;i++)step();
+  el('br-atlas-cycle').onclick=advanceCycle;
+  el('br-atlas-show-economy').onclick=()=>{
+    el('br-cycle-heading').focus({preventScroll:true});
+    el('br-cycle-heading').scrollIntoView({block:'start'});
   };
+  el('br-energy-sliders').addEventListener('input',()=>{
+    if(el('br-atlas-dialog').open && current)renderProperties(current);
+  });
   el('br-atlas-reset').onclick=()=>{stop();reset()};
   el('br-atlas-choose').onclick=()=>{
     if(!current||!assignSlot(targetSlot,current.id,catalog))return;
     selectSlot(targetSlot);loadPattern(current.id);renderDeck(currentPatternId,loadPattern);
     el('br-atlas-dialog').close();
   };
-  el('br-atlas-dialog').addEventListener('close',stop);
+  el('br-atlas-dialog').addEventListener('close',()=>{stop();cancelCycleAnalysis()});
 }

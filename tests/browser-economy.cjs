@@ -53,6 +53,8 @@ const {chromium}=require('playwright');
     await page.locator('#br-atlas-choose').click();
     assert.equal(await page.locator('.br-stampcard').first().getAttribute('data-pattern'),'p4f');
     assert.equal(await page.locator('#br-atlas-dialog').evaluate(d=>d.open),false);
+    await require('./support/slot-labels.cjs')(page);
+    await require('./support/atlas-cycle-ledger.cjs')(page);
     assert.deepEqual(errors,[]);
     console.log('PASS: 15 live slots, 160 atlas patterns, 5 sliders, flipper +1/g, live update and atlas swap');
     await page.close();
