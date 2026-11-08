@@ -1,5 +1,5 @@
 import { atlasPatterns } from '../patterns/atlas-data.js';
-import { advancePattern, seedPatternAges } from '../patterns/cycle-economy.js';
+import { advancePattern, patternOffset, seedPatternAges } from '../patterns/cycle-economy.js';
 import { decodeRLE } from '../patterns/rle.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
 
@@ -15,14 +15,25 @@ function weapon(id) {
   const offsets = decodeRLE(pattern.rle).map(([q,r]) => [q+dq,r+dr]);
   const period = id === 'glider' ? 4 : Number(id.slice(3));
   let ages = seedPatternAges(pattern), births = 0, firstCycleBirths = 0;
+  const trajectories = new Map();
+  const earliest = id === 'glider' ? 6 : id === 'gun20' ? 24 : 50;
+  const latest = id === 'glider' ? 30 : id === 'gun20' ? 100 : 140;
   // Finance the first 256 generations even when the first shots miss.
   for (let g = 0; g < 256; g++) {
     const turn = advancePattern(ages, 2);
     births += turn.births;
     if (g < period) firstCycleBirths += turn.births;
     ages = turn.next;
+    if (g + 1 >= earliest && g + 1 <= latest) {
+      for (const pos of ages.keys()) {
+        const [q,r] = patternOffset(pos), x=q+dq, y=r+dr;
+        if (Math.max(Math.abs(x),Math.abs(y),Math.abs(x+y)) > 5) continue;
+        const key=x+','+y;
+        if (!trajectories.has(key)) trajectories.set(key,{offset:[x,y],generation:g+1});
+      }
+    }
   }
-  const profile = {offsets, births, period, firstCycleBirths};
+  const profile = {offsets, births, period, firstCycleBirths, trace:[...trajectories.values()]};
   weapons.set(id, profile);
   return profile;
 }
@@ -39,27 +50,41 @@ export function expectedGunExpense(economy, id) {
   return (firstCycleBirths + 32 * 5) / period * economy.birthCost;
 }
 
-export function raidMatureCore(world, game, player, commitStamp, id = 'glider') {
-  const rivals = game.players.filter(p => p !== player && !p.out && p.stable)
-    .sort((a,b) => b.stable - a.stable);
-  const {offsets} = weapon(id);
+// Project the weapon's actual Callahan flight path onto the spherical mesh.
+// Only a corridor containing rival cells qualifies as a possible strike.
+export function projectedRaidScore(world, rival, attacker, target, dir, trace, maturity) {
+  const predicted=patchForStamp(world,target,dir,trace.map(v=>v.offset),false);
+  if (!predicted) return -Infinity;
+  let score=0, earliest=Infinity;
+  for (let i=0; i<predicted.length; i++) {
+    const owner=world.owners[predicted[i]], age=world.cellAges[predicted[i]];
+    if (owner===rival.id) {
+      score+=age===1 ? 6 : age>=maturity ? 2 : 1;
+      earliest=Math.min(earliest,trace[i].generation);
+    } else if(owner===attacker.id) score-=4;
+  }
+  return earliest===Infinity ? -Infinity : score/(1+earliest/100);
+}
+export function raidMatureCore(world, game, player, commitStamp, id='glider') {
+  const rivals=game.players.filter(p=>p!==player&&!p.out&&p.stable)
+    .sort((a,b)=>b.stable-a.stable).slice(0,2);
+  const {offsets,trace}=weapon(id);
+  let best=null;
   for (const rival of rivals) {
-    const cells = world.ownerCells[rival.id];
-    // Strike the active front of an earning colony first, then its mature core.
-    const targetIds = [];
+    const cells=world.ownerCells[rival.id], targetIds=[];
     for (const cell of cells) {
-      if (world.cellAges[cell] === 1) targetIds.push(cell);
-      if (targetIds.length === 8) break;
+      if (world.cellAges[cell]===1) targetIds.push(cell);
+      if (targetIds.length===4) break;
     }
-    const stride = Math.max(1, Math.ceil(cells.length / 8));
-    for (let i = world.gen % stride; i < cells.length; i += stride)
-      if (world.cellAges[cells[i]] >= game.economy.stableAfter) targetIds.push(cells[i]);
-    for (const target of targetIds) {
-      for (let dir = 0; dir < 6; dir++) {
-        const ids = patchForStamp(world, target, dir, offsets, true);
-        if (ids && commitStamp(player.id, ids, false)) return true;
-      }
+    const stride=Math.max(1,Math.ceil(cells.length/4));
+    for(let i=world.gen%stride;i<cells.length;i+=stride)
+      if(world.cellAges[cells[i]]>=game.economy.stableAfter)targetIds.push(cells[i]);
+    for (const target of targetIds) for (let dir=0;dir<6;dir++) {
+      const score=projectedRaidScore(world,rival,player,target,dir,trace,game.economy.stableAfter);
+      if (score<=0 || best && score<=best.score) continue;
+      const ids=patchForStamp(world,target,dir,offsets,true);
+      if (ids && ids.every(site=>!world.cells[site]))best={score,ids};
     }
   }
-  return false;
+  return best ? commitStamp(player.id,best.ids,false) : false;
 }
