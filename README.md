@@ -54,7 +54,7 @@ myRule: {
 
 For a positional rule, use `compileHexRule((alive, mask, degree) => ...)`. The bits follow the local ordered ring of five or six neighbours. A rule that depends on an absolute compass direction also needs an orientation convention across the sphere. The match, atlas, combat and bot previews use the compiled transition tables. To supply known patterns, add `gameplay: explorationGameplay(catalog, openingId)` from [gameplay.js](src/match/gameplay.js). With only physics configured, the editor and bots use geometric seeds. A specialized gameplay profile can supply a different loadout, opening, bot plans and strategy. A custom `economy.generationQuote(births, mature, settings)` returns `{ income, upkeep }` for both the match and the atlas.
 
-Each match currently has one automaton. The sparse planar atlas measures isolated seeds. For B0 it uses a finite torus so spontaneous births can be represented and accounted for separately from the player's cells.
+The main game uses one automaton per match. The sparse planar atlas measures isolated seeds. For B0 it uses a finite torus so spontaneous births can be represented and accounted for separately from the player's cells.
 
 ## Mixed-physics matches
 

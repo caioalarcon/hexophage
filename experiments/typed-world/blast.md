@@ -71,3 +71,5 @@ node experiments/typed-world/blast-figure.mjs
 ```
 
 [130 simulações com carteiras](blast.csv) · [Núcleo e colisão clássicos](blast-native.mjs) · [Construção da figura](blast-figure.mjs)
+
+[Experimento pareado com três jogadores](blast-victory.md). Trocar a posição da fazenda do patrocinador inverteu o vencedor nos 12 pares com cobertura planetária. Um disparo de 16 mil preservou a fazenda distante de quem atacou e destruiu as duas colônias rivais.

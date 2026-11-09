@@ -7,7 +7,7 @@ const ships=[['bays','glider'],['hex-b2s245','db-151'],['ashley','scan-5ab33f']]
 const investments=[['hex-b2s245','farm-4-12'],['bays','poly-3fdc3dd6'],['callahan','stalk']];
 const actions=['contact','phase','guard','antimatter'];
 const radius=12;
-function disk(graph,center) {
+export function disk(graph,center) {
   const list=[center], seen=new Set(list);
   let outer=0;
   for(let i=0,start=0;i<radius;i++){

@@ -1,6 +1,8 @@
 import {basis,pointOnSphere} from '../../src/world/geometry.js';
 
 const colors=['','#67dfc4','#ffac7c','#86aff9'];
+export const ruleColors={callahan:'#f7c36a',bays:'#68c6ff','hex-b2s34':'#b4d366','hex-b2s245':'#68ddbd',
+  bays245:'#ed97ac',andreen:'#fa9f6a',highhex:'#8ca5ff',ashley15:'#d0d9e0',ashley:'#c5a5f1'};
 const outline={phase:'#d0e5ff',guard:'#f6de79',antimatter:'#f49fea'};
 const dot=(arr,start,b)=>arr[start]*b[0]+arr[start+1]*b[1]+arr[start+2]*b[2];
 function dimensions(canvas){
@@ -33,22 +35,23 @@ export function createBoard(canvas,atlas,graph){
       path.closePath();patch.push({i,path});projected.push([i,x,y]);
     }
   }
-  function draw(match,center,zoom,ghost=[],valid=true,trail){
+  function draw(match,center,zoom,ghost=[],valid=true,trail,byRule=false){
     const {ctx,width:w,height:h}=dimensions(canvas);
     if(!w||!h)return;
     if(focus!==center||scale!==zoom||width!==w||height!==h)layout(center,zoom,w,h);
     ctx.clearRect(0,0,w,h);const marks=new Set(ghost??[]);
+    const fill=c=>c.wave?'#d67af5':byRule?ruleColors[c.rule]:colors[c.owner];
     for(const {i,path} of patch){
       const c=match.cells.get(i);
-      ctx.fillStyle=c?(c.wave?'#d67af5':colors[c.owner]):(graph.deg[i]===5?'#294652':'#142b35');
+      ctx.fillStyle=c?fill(c):(graph.deg[i]===5?'#294652':'#142b35');
       ctx.fill(path);
-      ctx.strokeStyle=c?.wave?colors[c.owner]:outline[c?.resolver]??'#26414a';ctx.lineWidth=c?.wave?1.7:.65;ctx.stroke(path);
+      ctx.strokeStyle=c && (c.wave || byRule)?colors[c.owner]:outline[c?.resolver]??'#26414a';ctx.lineWidth=c && (c.wave || byRule)?1.4:.65;ctx.stroke(path);
       if(marks.has(i)){ctx.fillStyle=valid?'#8af9e366':'#ff726a66';ctx.fill(path);ctx.strokeStyle=valid?'#b5ffe9':'#ff857d';ctx.lineWidth=1.7;ctx.stroke(path);}
     }
     const {ctx:g,width:aw,height:ah}=dimensions(atlas);g.clearRect(0,0,aw,ah);
     g.fillStyle='#324e57';for(const i of graph.pents){const [x,y]=globe[i];g.fillRect(x*aw-1,y*ah-1,2,2);}
     if(trail){g.fillStyle='#573d6f';for(const i of trail){const [x,y]=globe[i];g.fillRect(x*aw-1,y*ah-1,2,2);}}
-    for(const [i,c] of match.cells){const [x,y]=globe[i];g.fillStyle=c.wave?'#eb96f8':colors[c.owner];g.fillRect(x*aw-1.2,y*ah-1.2,2.4,2.4);}
+    for(const [i,c] of match.cells){const [x,y]=globe[i];g.fillStyle=fill(c);g.fillRect(x*aw-1.2,y*ah-1.2,2.4,2.4);}
     const [x,y]=globe[center];g.strokeStyle='#f4e7c4';g.lineWidth=1;g.beginPath();g.arc(x*aw,y*ah,5,0,Math.PI*2);g.stroke();
   }
   function pick(x,y){

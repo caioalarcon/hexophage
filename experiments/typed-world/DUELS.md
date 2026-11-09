@@ -15,7 +15,22 @@ O ensaio principal cruzou quatro pares de carimbos e os quatro resolutores em 72
 
 A vantagem inclui o custo de comprar e manter a nave. Na economia de estabilidade, destruir uma formação que vinha gastando dinheiro pode **aumentar** a reserva futura do defensor. Já um corte de poucos sítios pode desmontar toda uma fazenda e interromper sua renda. O livro cobra a troca de um sítio inimigo ocupado; as mortes naturais seguintes são medidas por comparação com o ramo de espera. [Duelos individuais](duels-league.csv) · [Sensibilidade a caixa e preço](duels-prices.csv)
 
+## Se a nave e o crescedor forem meus
+
+Repetimos cada lançamento com o alvo no mesmo lugar e três trajetórias na esfera inteira. Uma acompanha a colisão, outra acompanha o alvo sem disparo e a terceira deixa a nave voar sozinha. As contagens abaixo separam a linhagem do glider Bays da linhagem do crescedor Callahan mesmo quando compartilham dono e carteira. Cada condição usa nove pistas F48, 16.384 de reserva inicial por carteira, 24 por corte, prioridade de travessia e G+96 como horizonte.
+
+| Dono do crescedor | Trajetória do glider idêntica ao voo solo em todas as gerações | Cortes diretos pagos, total | Células do glider, mediana | Células do crescedor, mediana |
+|---|---:|---:|---:|---:|
+| Adversário | 9/9 | 292 | 18 | 76 |
+| Mesmo jogador | 0/9 | 0 | 2 | 116 |
+
+A travessia ignora a outra linhagem ao contar vizinhos. Se o sítio pretendido já tem uma aliada, o glider perde aquele nascimento. A restrição também vale se a aliada vai morrer nessa transição. Ainda há disputa nos vazios, portanto o próprio crescedor pode perder crescimento mesmo sem sofrer cortes. Na pista jogável (ângulo 1, faixa 0), o crescedor chegaria a 116 células sem disparo. Com o glider aliado ficou com 41 e o glider começou a desviar em G+5. Fazendo a mesma trajetória contra um inimigo, o glider pagou 36 cortes e a linhagem do crescedor desapareceu. Em outro par do atlas, Slider Ashley × fazenda B2/S245, a nave inimiga sobreviveu e eliminou a fazenda nas nove pistas. Contra a própria fazenda a nave desapareceu e as 12 células da fazenda sobreviveram nas nove.
+
+[Repetir com crescedor aliado](index.html?scene=ally) · [Repetir com crescedor inimigo](index.html?scene=cross) · [288 confrontos com dois orçamentos e duas precedências](duels-friendly.csv)
+
 ## Condorcet depende do que o mapa recompensa
+
+A disputa pela [última colônia convencional](CONDORCET.md) acompanha o primeiro instante de extinção de cada formação em 864 tiros. As tabelas abaixo comparam caixa e território em horizontes fixos.
 
 Construímos 36 pistas em F32 para exploração e 36 em F48 para validação. Mudaram a orientação, o desvio lateral, a semente de desempate e a idade de lançamento (para o encontro entre duas naves, mantivemos a idade). As pistas são variações estruturadas, não partidas independentes amostradas de uma população. Para o voto da pista, cada resolutor ataca uma vez e defende uma vez contra o mesmo adversário. Comparamos a diferença média de reserva nas duas pernas e, separadamente, a diferença média de população. Empates de até 0,01 crédito contam como empates.
 

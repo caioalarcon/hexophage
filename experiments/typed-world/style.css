@@ -2,3 +2,5 @@
 
 .cobalto{color:#96b9fc}#coverage{margin-top:4px;color:#d3b7e2}
 .hand{display:flex;gap:5px;margin-top:9px;align-items:center}.hand select{flex:1;font-size:12px}.hand button{font-size:11px;white-space:nowrap}
+
+.controls .colorby{flex:0 1 auto;margin:0}#legend:not([hidden]){display:flex;flex-wrap:wrap;gap:5px 12px;padding:8px 15px 0;font-size:12px}#legend span::before{content:"";display:inline-block;width:8px;height:8px;margin-right:5px;border-radius:50%;background:var(--ink)}

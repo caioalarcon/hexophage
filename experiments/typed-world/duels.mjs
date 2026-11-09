@@ -13,8 +13,8 @@ const horizon=Number(process.argv[7]??96), policies=['contact','phase','guard','
 const angles=validation?[1,3,5]:[0,2,4], lanes=validation?[-1,0,1]:[-2,0,2];
 const guardStampExtra=Number(process.argv[5]??0), selectedFee=Number(process.argv[6]??24);
 const terms={guardStampExtra,stampCost:8,birthCost:1,eraseCost:24,stableEnergy:1,stableAfter:12,productionScale:60,salvage:8,blastBirthCost:4};
-function newWorld(fee=terms.eraseCost,bank=768){
-  return createTypedWorld(graph,{wallets:[bank,bank],seed,economy:{...terms,eraseCost:fee}});
+function newWorld(fee=terms.eraseCost,bank=768,phasePriority=0){
+  return createTypedWorld(graph,{wallets:[bank,bank],seed,economy:{...terms,eraseCost:fee,phasePriority}});
 }
 const evolve=(w,count)=>{for(let t=0;t<count;t++)w.step();};
 const count=(w,id)=>{let n=0;for(const c of w.cells.values())if(c.owner===id)n++;return n;};
@@ -48,15 +48,37 @@ function targetOnly(f,dp,defender,fee,bank){
   evolve(w,horizon);
   return {population:count(w,defender),reserve:w.players[defender].reserve};
 }
-function attack(f,site,ap,dp,defender,fee,bank,hold,same=false){
-  const attacker=same?defender:3-defender;
+// A conventional colony is lost at the first generation with no non-wave
+// cells. Paid carriers count before ignition; their sponsored wave does not.
+function lastColony(f,site,ap,dp,defender) {
+  const attacker=3-defender, bank=768;
+  const w=prepare(f,dp,defender,selectedFee,bank);
+  assert(w.stamp(attacker,f.raider.rule,ap,site.shot));
+  function conventional(){
+    const field=[0,0,0];
+    for(const c of w.cells.values())if(!c.wave)field[c.owner]++;
+    return field;
+  }
+  let field=conventional(), turns=0;
+  assert(field[attacker] && field[defender]);
+  while(turns<horizon && field[attacker] && field[defender]){
+    w.step();turns++;field=conventional();
+  }
+  const result=field[attacker] && field[defender]?'open':
+    field[attacker]?'attacker':field[defender]?'defender':'draw';
+  return {split,arena:name,F,seed,angle:f.rotation,lane:f.lane,warm:f.warm,gap:site.distance,
+    attackerPolicy:ap,defenderPolicy:dp,attacker,defender,bank,fee:selectedFee,guardStampExtra,
+    horizon,turns,result,attackerConventional:field[attacker],defenderConventional:field[defender]};
+}
+function attack(f,site,ap,dp,defender,fee,bank,hold){
+  const attacker=3-defender;
   const w=prepare(f,dp,defender,fee,bank);
   const opening=w.players[attacker].reserve;
   if(!w.stamp(attacker,f.raider.rule,ap,site.shot))return null;
   let near=-1,adjacent=-1,peak=0;
   for(let i=0;i<=horizon;i++){
-    if(!same && near<0 && touch(w,attacker,2))near=i;
-    if(!same && adjacent<0 && touch(w,attacker,1))adjacent=i;
+    if(near<0 && touch(w,attacker,2))near=i;
+    if(adjacent<0 && touch(w,attacker,1))adjacent=i;
     peak=Math.max(peak,w.cells.size);
     if(i<horizon)w.step();
   }
@@ -71,6 +93,42 @@ function attack(f,site,ap,dp,defender,fee,bank,hold,same=false){
     aErosion:a.eroded,dErosion:d.eroded,peak,holdN:hold.population,holdCash:rounded(hold.reserve),
     deltaTargetN:pD-hold.population,deltaTargetCash:rounded(d.reserve-hold.reserve),
     relativeVsHold:rounded(a.reserve-opening-d.reserve+hold.reserve),rulesOfAttacker:types.size};
+}
+
+// Paired full-sphere controls separate the two genotypes even when one wallet
+// owns both. A per-owner census cannot distinguish a surviving ship from a farm.
+function friendly(f,site,defender,shared,bank,priority){
+  const attacker=shared?defender:3-defender;
+  const world=newWorld(24,bank,priority);
+  assert(world.stamp(defender,f.target.rule,'contact',f.base));
+  evolve(world,f.warm);
+  const hold=world.fork(), solo=newWorld(24,bank,priority);
+  evolve(solo,f.warm);
+  assert(world.stamp(attacker,f.raider.rule,'phase',site.shot));
+  assert(solo.stamp(attacker,f.raider.rule,'phase',site.shot));
+  let firstShipDifference=null,shipCells=0,targetCells=0;
+  for(let t=1;t<=horizon;t++){
+    world.step();hold.step();solo.step();
+    shipCells=0;targetCells=0;
+    let sameSites=true;
+    for(const [id,c] of world.cells){
+      if(c.rule===f.raider.rule){
+        shipCells++; if(!solo.cells.has(id))sameSites=false;
+      } else {
+        assert.equal(c.rule,f.target.rule);targetCells++;
+      }
+    }
+    if(shipCells!==solo.cells.size || !sameSites)firstShipDifference??=t;
+  }
+  const a=world.players[attacker],d=world.players[defender];
+  const delta=i=>+(world.players[i].reserve-hold.players[i].reserve).toFixed(3);
+  const cuts=shared?a.friendlyErased:a.erased;
+  assert.equal(cuts*24,shared?a.friendlyEraseSpent:a.eraseSpent);
+  return {arena:name,F,seed,angle:f.rotation,lane:f.lane,warm:f.warm,gap:site.distance,
+    shared:+shared,bankPerOwner:bank,phasePriority:priority,horizon,shipCells,soloShipCells:solo.cells.size,
+    firstShipDifference:firstShipDifference??'',targetCells,holdTargetCells:hold.cells.size,directCuts:cuts,
+    attackerCash:+a.reserve.toFixed(3),targetCash:+d.reserve.toFixed(3),shooterCashDelta:delta(attacker),
+    targetCashDelta:delta(defender),relativeCashDelta:shared?'':+(delta(attacker)-delta(defender)).toFixed(3)};
 }
 
 let header=false;
@@ -93,13 +151,16 @@ for(const angle of angles)for(const lane of lanes){
         emit(attack(f,site,ap,dp,defender,selectedFee,768,hold));
       }
     }
+  }else if(mode==='terminal'){
+    for(const dp of policies)for(const ap of policies)if(ap!==dp)
+      emit(lastColony(f,site,ap,dp,defender));
   }else if(mode==='prices'){
     for(const bank of [384,1536])for(const fee of [0,8,24,96]){
       const dp='contact', ap='phase', hold=targetOnly(f,dp,defender,fee,bank);
       emit(attack(f,site,ap,dp,defender,fee,bank,hold));
     }
   }else if(mode==='friendly'){
-    const hold=targetOnly(f,'contact',defender,24,768);
-    for(const same of [false,true])emit(attack(f,site,'phase','contact',defender,24,768,hold,same));
+    for(const bank of [768,16384])for(const priority of [0,1])for(const shared of [false,true])
+      emit(friendly(f,site,defender,shared,bank,priority));
   }else throw Error('Unexpected mode '+mode);
 }

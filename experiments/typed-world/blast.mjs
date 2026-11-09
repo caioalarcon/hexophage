@@ -24,18 +24,18 @@ function distances(g, origin) {
 export const blastEconomy={stampCost:8,birthCost:1,eraseCost:24,stableEnergy:1,stableAfter:12,
   productionScale:60,salvage:8,blastBirthCost:4};
 export function simulateBlast({F=32,treasury=3200,farm='small',mode='armed',rotation=0,horizon=384,
-  defense='contact',salvage=8,observer=false, carrier='p6', tariff={}, seed=1, trace}, capture) {
+  defense='contact',salvage=8,observer=false, swapFarms=false, carrier='p6', tariff={}, seed=1, trace}, capture) {
   if (!spheres.has(F)) spheres.set(F,buildSphere(F));
   const graph=spheres.get(F), lane=-2;
   const scene=blastScene(graph,rotation,lane);
   const world=createTypedWorld(graph,{wallets:[treasury,10000,...(observer?[10000]:[])],seed,
     economy:{...blastEconomy,salvage,...tariff}});
   if (farm!=='none') {
-    const seeds= observer ? scene.middleFarm : farm==='large'?scene.largeFarm:scene.smallFarm;
+    const seeds= observer ? (swapFarms?scene.smallFarm:scene.middleFarm) : farm==='large'?scene.largeFarm:scene.smallFarm;
     assert(seeds && world.stamp(1,'hex-b2s245','contact',seeds),'paid remote farm');
   }
   if (observer) {
-    assert(world.stamp(3,'hex-b2s245','contact',scene.smallFarm),'paid witness farm');
+    assert(world.stamp(3,'hex-b2s245','contact',swapFarms?scene.middleFarm:scene.smallFarm),'paid witness farm');
   }
   if(mode!=='cold')assert(world.stamp(2,'bays',defense,scene.targetBays),'paid Bays nucleus');
   for(let i=0;i<16;i++)world.step();

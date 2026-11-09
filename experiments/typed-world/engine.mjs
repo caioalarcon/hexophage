@@ -42,6 +42,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
     const {adj,deg}=graph;
     const stampPrice=resolver=>economy.stampCost+(resolver==='guard'?economy.guardStampExtra:0);
     function canStamp(owner, rule, resolver, ids) {
+      if (!Number.isInteger(owner) || owner<1 || owner>=players.length) return false;
       const p=players[owner];
       if (!p || p.out || !rules.has(rule) || !resolvers.includes(resolver) || !ids?.length ||
           new Set(ids).size!==ids.length || p.reserve+EPS<ids.length*stampPrice(resolver)) return false;
@@ -106,8 +107,9 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         }
         if(site===undefined)continue;
         const flanks=[1,-1].map(d=>adj[6*site+(deg[site]+direction+d)%deg[site]]);
-        const flank=flanks.sort((a,b)=>rank(b)-rank(a)).find(id=>!domain || domain.has(id));
-        const sites=flank===undefined?[site,target]:[site,target,flank];
+        const flank=rank(flanks[0])>rank(flanks[1])?flanks[0]:flanks[1];
+        // Clipping a forecast must never move its charge to a different vertex.
+        const sites=domain && !domain.has(flank)?[site,target]:[site,target,flank];
         const wave=genotype(t.owner,'hex-b2s245','antimatter',true);
         for(const id of group)spent.add(id);
         for(const id of sites) {
@@ -117,6 +119,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         players[t.owner].detonations++;
         lastIgnitions.push({owner:t.owner,site,target,sites});
       }
+      lastIgnitions.sort((a,b)=>rank(a.site)-rank(b.site));
 
       // Each type present in this neighbourhood proposes at most once. Contact
       // reads the material ring; phase and shock read only their own genotype.
@@ -234,7 +237,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
     function fork(sites) {
       const accounts=players.map(p=>p&&{...p});
       if(!sites)return instance(new Map(cells),accounts,gen,lastIgnitions.map(e=>({...e,sites:[...e.sites]})),domain,outside);
-      const cut=new Set(sites), snapshot=new Map();
+      const cut=new Set(domain ? [...sites].filter(id=>domain.has(id)) : sites), snapshot=new Map();
       const remote=players.map(p=>p&&{field:p.field,mature:p.mature});
       for(const id of cut){
         const c=cells.get(id);

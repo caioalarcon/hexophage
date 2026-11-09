@@ -1,13 +1,16 @@
 import {defaultEconomy} from './engine.mjs';
 import {cards,rules,resolverNames,footprint} from './catalog.mjs';
-import {prepareArena,sceneNames,defaultsFor} from './arena.mjs';
-import {createBoard} from './board.mjs';
+import {prepareArena,sceneNames,defaultsFor,isCrossing} from './arena.mjs';
+import {createBoard,ruleColors} from './board.mjs';
 import {createPilot} from './pilots.mjs';
+import {createTacticalDuel} from './pr10-controller.mjs';
 
 const el=id=>document.getElementById(id), names=['','Jade','Cobre','Cobalto'];
 const num=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:1});
 const options=(id,mapping)=>{for(const [key,text] of Object.entries(mapping))el(id).add(new Option(text,key));};
 const params=new URLSearchParams(location.search);
+const querySeed=params.get('seed');
+const seed=querySeed!==null && /^\d{1,10}$/.test(querySeed) && Number(querySeed)<=0xffffffff?Number(querySeed):undefined;
 const specs={stampCost:'Custo por célula plantada',birthCost:'Custo por nascimento',eraseCost:'Custo por célula apagada',
   stableEnergy:'Renda por célula madura',stableAfter:'Idade de maturação',productionScale:'Escala de saturação',
   blastBirthCost:'Custo por nascimento da onda',salvage:'Crédito por célula liquidada',
@@ -31,7 +34,7 @@ const selector=document.createElement('select');selector.id='frequency';
 for(const f of [16,24,32,48,64])selector.add(new Option('F'+f+' · '+num.format(10*f*f+2)+' células',f));
 const area=document.createElement('label');area.textContent='Esfera';area.append(selector);el('tariffs').append(area);
 selector.value='32';
-let world,view,center,hover=-1,timer=0,pilots=[],finish,drive,armed,verdict='',lastEvent='';
+let tactical,world,view,center,hover=-1,timer=0,pilots=[],finish,drive,armed,verdict='',lastEvent='';
 let owners=[],retired=new Set(),touched=new Set(),colonyEnd='',terminalWallet='',launchGen=0;
 function chooseStamp(key,resolver){
   el('pattern').value=key;el('rule').value=cards.get(key).source;el('resolver').value=resolver;
@@ -55,11 +58,16 @@ function clockVictory(){
 }
 function generation(){
   if(verdict)return;
-  const m=world.match;m.step();
+  const m=world.match, previous=m.cells, prior=tactical?m.players.map(p=>p&&{...p}):null;
+  m.step();
   for(const [site,c] of m.cells)if(c.wave)touched.add(site);
   if(world.restock && el('restock').checked && !retired.has(2))world.restock();
   if(m.lastIgnitions.length)lastEvent='Ignição em G'+m.gen+' · '+names[m.lastIgnitions[0].owner];
   clockVictory();
+  if(tactical){
+    if(!verdict)tactical.turn(previous,prior);
+    return;
+  }
   if(verdict || drive==='manual'||m.gen%32)return;
   for(const i of (Math.floor(m.gen/32)%2?owners:[...owners].reverse())){
     if(m.players[i].out || retired.has(i) || (drive==='opponent'&&i===1))continue;
@@ -76,7 +84,21 @@ function current(){
 function paint(){
   if(!world)return;
   const m=world.match,{owner,role,key,ids,valid}=current();
-  view.draw(m,center,Number(el('zoom').value),ids,valid,touched);
+  const byRule=el('colorby').value==='rule';
+  view.draw(m,center,Number(el('zoom').value),ids,valid,touched,byRule);
+  const legend=el('legend');legend.hidden=!byRule;
+  if(byRule){
+    const active=[...new Set(Array.from(m.cells.values(),c=>c.wave?'wave':c.rule))].sort();
+    if(legend.dataset.keys!==active.join(',')){
+      legend.dataset.keys=active.join(',');
+      legend.replaceChildren(...active.map(rule=>{
+        const tag=document.createElement('span');
+        tag.style.setProperty('--ink',ruleColors[rule]??'#d67af5');
+        tag.textContent=rule==='wave'?'Onda B2/S245':labels[rule].split(' · ')[0];
+        return tag;
+      }));
+    }
+  }
   el('gen').textContent='G'+m.gen+(launchGen?' · disparo +'+(m.gen-launchGen):'');el('verdict').textContent=verdict;
   el('play').disabled=el('step').disabled=el('many').disabled=!!verdict;
   el('tip').textContent=tips[role];
@@ -95,6 +117,14 @@ function paint(){
     ' · Células liquidadas '+m.players.slice(1).map(p=>p.eroded).join(' / ');
   el('coverage').textContent='Onda · '+num.format(touched.size)+' / '+num.format(world.graph.n)+' locais'+
     (colonyEnd?' · Última colônia: '+colonyEnd:'')+(terminalWallet?' · Último solvente: '+terminalWallet:'');
+  if(isCrossing(world.scene)){
+    let ship=0,grower=0;
+    for(const c of m.cells.values()){
+      if(c.rule==='bays'&&c.resolver==='phase')ship++;
+      if(c.rule==='callahan'&&c.resolver==='contact')grower++;
+    }
+    el('coverage').textContent='Linhagens · Bays em travessia '+ship+' · Callahan em contato '+grower;
+  }
   if(el('books').open){
     const items=m.players.slice(1).map((p,j)=>{
       const row=document.createElement('p');row.className='small';
@@ -104,24 +134,40 @@ function paint(){
     });
     el('balances').replaceChildren(...items);
   }
+  el('brain').hidden=!tactical;
+  if(tactical){
+    const trials=tactical.channels.reduce((n,c)=>n+c.bot.metrics.completed,0);
+    el('brain').textContent='Testes locais '+num.format(trials)+' · Compras Jade / Cobre '+tactical.books.slice(1).map(b=>b.orders-1).join(' / ')+
+      ' · '+(params.get('swap')==='1'?'Cobre escolhe resolução, Jade usa contato.':'Jade escolhe resolução, Cobre usa contato.');
+  }
   el('notice').textContent=lastEvent;
   const under=m.cells.get(hover);
   el('inspect').textContent=under?names[under.owner]+' · '+(under.wave?'Onda B2/S245':labels[under.rule]+' · '+resolverNames[under.resolver])+' · Idade '+under.age:'';
 }
 function start(){
   stop();
-  const scene=el('scene').value, economy=Object.fromEntries(Object.keys(specs).map(k=>[k,el(k).valueAsNumber]));
+  const scene=el('scene').value, tacticalMode=scene==='arena'&&el('drive').value==='tactical', economy=Object.fromEntries(Object.keys(specs).map(k=>[k,el(k).valueAsNumber]));
   economy.phasePriority=+el('precedence').value;
-  try {const w=prepareArena({scene,F:+selector.value,bank:el('bank').valueAsNumber,economy,farm:el('farm').checked});world=w;}
+  try {const w=prepareArena({scene,seed:tacticalMode?(seed??7):seed,F:+selector.value,bank:el('bank').valueAsNumber,economy,farm:el('farm').checked,swapFarms:el('sponsor').value==='far'});world=w;}
   catch(e){lastEvent=e.message;el('notice').textContent=lastEvent;return;}
+  el('colorby').value=isCrossing(scene)||scene==='portfolio'?'rule':'owner';
   drive=el('drive').value;finish=el('finish').value;center=world.anchor;hover=-1;verdict='';armed=false;
   owners=world.match.players.slice(1).map((_,j)=>j+1);
   el('owner').replaceChildren(...owners.map(i=>new Option(names[i],i)));
   retired=new Set();touched=new Set();el('many').textContent=world.period?'+1 volta':' +32';colonyEnd='';terminalWallet='';launchGen=world.match.gen;
   view=createBoard(el('board'),el('atlas'),world.graph);pilots=[null,createPilot(617),createPilot(931),createPilot(251)];
+  tactical=null;
+  if(tacticalMode){
+    const policies=params.get('swap')==='1'?['contact','typed']:['typed','contact'];
+    tactical=createTacticalDuel(world.match,seed??7,policies,{onPlacement:o=>{
+      const card=cards.get(o.rule+'/'+o.stamp);
+      lastEvent='G'+o.gen+' · '+names[o.owner]+' plantou '+(card?.name??o.stamp)+' · '+labels[o.rule].split(' · ')[0]+' · '+resolverNames[o.resolver];
+    }});
+    el('many').textContent='+256';
+  }
   el('owner').value='1';
-  chooseStamp(scene==='cross'?'bays/glider':'hex-b2s245/db-151',scene==='cross'?'phase':'antimatter');
-  lastEvent=scene==='recovery'?'Duas fazendas de Jade financiam a onda.':scene==='orbit'?'Slider de Ashley em órbita · Quatro fazendas de B2/S245 no percurso.':scene==='engulf'?'Três colônias · Cobalto ocupa o outro lado do planeta.':scene==='blast'?'P6 lançado contra o núcleo de Bays.':scene==='cross'?'Glider de Bays em rota para o crescedor de Callahan.':
+  chooseStamp(isCrossing(scene)?'bays/glider':'hex-b2s245/db-151',isCrossing(scene)?'phase':'antimatter');
+  lastEvent=scene==='recovery'?'Duas fazendas de Jade financiam a onda.':scene==='orbit'?'Slider de Ashley em órbita · Quatro fazendas de B2/S245 no percurso.':scene==='engulf'?'Três colônias · '+(el('sponsor').value==='far'?'Jade':'Cobalto')+' ocupa o outro lado do planeta.':scene==='blast'?'P6 lançado contra o núcleo de Bays.':isCrossing(scene)?'Glider de Bays em rota para o crescedor '+(scene==='ally'?'aliado.':'inimigo.'):
     scene==='portfolio'?'Uma carteira paga pela fazenda B2/S245 e pelo oscilador de Bays.':scene==='arena'?'Cada carteira pagou a sua fazenda.':'Escolha um carimbo e clique no campo.';
   clockVictory();paint();
 }
@@ -150,26 +196,28 @@ el('hand').onchange=()=>{
 el('forget').onclick=()=>{if(el('hand').value!==''){hand.splice(+el('hand').value,1);storeHand();}};
 showHand();
 el('pattern').onchange=()=>{el('rule').value=cards.get(el('pattern').value).source;paint();};
-for(const id of ['angle','rule','resolver','owner','zoom'])el(id).oninput=paint;
+for(const id of ['angle','rule','resolver','owner','zoom','colorby'])el(id).oninput=paint;
 el('board').onpointermove=e=>{hover=view.pick(e.offsetX,e.offsetY);paint();};
 el('board').onpointerleave=()=>{hover=-1;paint();};
 el('board').onclick=e=>{
   if(!world || verdict)return;hover=view.pick(e.offsetX,e.offsetY);
   const {owner,rule,role,key,ids}=current();
   if(retired.has(owner))lastEvent='Este jogador perdeu sua última colônia.';
-  else if((drive==='both')||(drive==='opponent'&&owner!==1)){lastEvent='Este jogador está sob controle do bot.';}
+  else if((drive==='both'||drive==='tactical')||(drive==='opponent'&&owner!==1)){lastEvent='Este jogador está sob controle do bot.';}
   else if(world.match.stamp(owner,rule,role,ids)){lastEvent=names[owner]+' plantou '+cards.get(key).name+' · '+resolverNames[role];clockVictory();}
   else lastEvent='Plantio indisponível. Confira a reserva, a ocupação e o espaço ao redor da estrutura.';
   paint();
 };
 el('atlas').onclick=e=>{center=view.navigate(e.offsetX/el('atlas').clientWidth,e.offsetY/el('atlas').clientHeight);hover=-1;paint();};
-el('play').onclick=()=>{if(timer){stop();}else{timer=setInterval(()=>{generation();paint();},95);el('play').textContent='Pausar';}};
+el('play').onclick=()=>{if(timer){stop();}else{timer=setInterval(()=>{for(let j=0;j<(tactical?8:1)&&!verdict;j++)generation();paint();},95);el('play').textContent='Pausar';}};
 el('step').onclick=()=>{stop();generation();paint();};
-el('many').onclick=()=>{stop();for(let i=0;i<(world.period??32)&&!verdict;i++)generation();paint();};
+el('many').onclick=()=>{stop();for(let i=0;i<(world.period??(tactical?256:32))&&!verdict;i++)generation();paint();};
 el('reset').onclick=start;el('books').ontoggle=paint;
 function presetControls(){
   const scene=el('scene').value;
   const preset=defaultsFor(scene);
+  el('drive').querySelector('[value=tactical]').disabled=scene!=='arena';
+  el('sponsor-position').hidden=scene!=='engulf';
   el('protectedMature').value=preset.protectedMature;el('precedence').value=preset.phasePriority;el('frequency').value=preset.F;el('bank').value=preset.bank;
   el('bank-label').textContent=['blast','engulf','orbit','recovery'].includes(scene)?'Reserva do lançador':'Reserva por jogador';
   el('finish').value=preset.finish;el('drive').value=preset.drive;
@@ -177,10 +225,15 @@ function presetControls(){
 el('scene').onchange=presetControls;
 if(Object.hasOwn(sceneNames,params.get('scene')))el('scene').value=params.get('scene');
 presetControls();
+if(el('scene').value==='arena' && params.get('bots')==='tactical'){
+  el('drive').value='tactical';el('bank').value='2400';selector.value='16';
+}
+if(['16','24','32','48','64'].includes(params.get('f')))selector.value=params.get('f');
 if(params.has('bank') && Number(params.get('bank'))>=0)el('bank').value=params.get('bank');
 if(params.has('erase') && Number.isFinite(+params.get('erase')) && +params.get('erase')>=0)el('eraseCost').value=params.get('erase');
 if(params.has('protect') && Number.isInteger(+params.get('protect')) && +params.get('protect')>=0)el('protectedMature').value=params.get('protect');
 if(params.get('bots')==='both')el('drive').value='both';
-if(params.get('finish')==='observe')el('finish').value='observe';
+if(['field','wallet','observe'].includes(params.get('finish')))el('finish').value=params.get('finish');
+if(params.get('sponsor')==='far')el('sponsor').value='far';
 el('farm').checked=params.get('farm')!=='0';
 start();window.addEventListener('resize',paint);

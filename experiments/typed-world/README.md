@@ -9,14 +9,14 @@ O carimbo identifica o desenho, a orientação, o autômato e o resolutor. Os de
 | Cenário | O que observar |
 |---|---|
 | Uma carteira, duas físicas | Uma fazenda B2/S245 mantém a alternância de um oscilador Bays na outra região do planeta. |
-| Glider × crescedor | Uma nave de Bays em travessia entra no crescedor material de Callahan. A preferência de fase vem ligada neste cenário. |
+| Glider × crescedor aliado ou inimigo | Compare a mesma pista F48. O painel conta separadamente o glider de Bays e o crescedor de Callahan. A travessia tem preferência no vazio. |
 | Patrulha orbital | Um Slider Ashley pode dar a volta ao planeta passando por quatro fazendas. O botão de avanço completa uma volta. Desligue a fazenda do lançador ou mude o preço por corte e reinicie para repetir o trajeto. |
 | Antimatéria × fazenda | Um projétil P6 tenta detonar contra um núcleo de Bays. A carteira da facção financia cada passo da reação. |
 | Financiar e reconstruir | Duas fazendas do lançador têm idades e físicas diferentes. Compare o piso de proteção de 12 maduras com zero para ver quais estruturas continuam pagando renda depois da explosão. |
 | O último a ser engolido | Três jogadores em F16. Compare 16 mil com 1 milhão de créditos para o lançador. Observar até o fim permite continuar vendo a onda depois que sobra uma única colônia. |
 | Duelo de carteiras / Mundo vazio | Jogue localmente, contra um piloto ou com dois pilotos. No planeta pequeno, clique na faixa de navegação para escolher a região e diretamente no campo para plantar. |
 
-Os preços e a condição de vitória se aplicam em **Iniciar cenário**. Controles de dois e três jogadores usam a mesma regra de cobrança. A cor do corpo identifica o dono. O violeta identifica a onda e o contorno conserva a cor do patrocinador. O mapa do planeta registra todos os locais por onde a onda já passou.
+Os preços e a condição de vitória se aplicam em **Iniciar cenário**. Controles de dois e três jogadores usam a mesma regra de cobrança. Em **Cor**, escolha jogador ou autômato. No confronto glider × crescedor, as duas regras têm cores próprias e o contorno identifica o dono. O violeta identifica a onda e o contorno conserva a cor do patrocinador. O mapa do planeta registra todos os locais por onde a onda já passou.
 
 ## Precedência na mesma geração
 
@@ -31,13 +31,13 @@ O estopim da antimatéria é explícito. O primeiro contato do grupo conectado c
 
 **Para o combate, usaria a travessia literal como capacidade comprada e a guarda como resposta visível.** Nas 72 pistas de controle com caixa amplo, a nave reproduziu exatamente sua trajetória solitária contra matéria comum. Para a arma orbital, o preço de 24 por baixa permitiu seis voltas pagas com renda externa. O preço de equilíbrio nessa órbita específica é aproximadamente 66,67 por corte. Ele depende da renda, do consumo da nave e da densidade de alvos. Destruir a fazenda financiadora também interrompe o ataque. [Duelos, órbita e carteira compartilhada](DUELS.md)
 
-**Para a vitória, escolheria a última colônia convencional.** A onda continua sob responsabilidade do lançador e pode atingir suas próprias estruturas. No cenário de 1 milhão, a terceira facção é a última a ter células convencionais. A contagem que inclui a onda dá a vitória ao lançador, embora ele mesmo vá à falência. O critério financeiro, por sua vez, deixa os dois outros jogadores com saldo para reentrar no mapa. **Último solvente** e **Observar até o fim** estão disponíveis para inspecionar os desfechos. [Explosão e cobertura da esfera](blast.md)
+**Para a vitória, escolheria a última colônia convencional.** A onda continua sob responsabilidade do lançador e pode atingir suas próprias estruturas. No cenário de 1 milhão, a terceira facção é a última a ter células convencionais. A contagem que inclui a onda dá a vitória ao lançador, embora ele mesmo vá à falência. O critério financeiro, por sua vez, deixa os dois outros jogadores com saldo para reentrar no mapa. Ao trocar os donos das fazendas intermediária e distante, o próprio lançador também conseguiu ser a última colônia. [Vitória do patrocinador e reconstrução após o disparo](blast-victory.md). **Último solvente** e **Observar até o fim** permitem inspecionar os demais desfechos. [Explosão e cobertura da esfera](blast.md)
 
-A comparação de Condorcet usa o resultado pareado de cada pista como voto e trata empates explicitamente. O vencedor muda quando se compara território ou reserva e quando se muda a tarifa. A referência matemática usa preferências estritas; aqui a distinção entre maioria dos votos decididos e maioria absoluta de todas as pistas importa. [Matrizes e denominadores](DUELS.md) · [Definição de Condorcet em Sauermann, 2022](https://arxiv.org/abs/2203.13713)
+A comparação de Condorcet usa o resultado pareado de cada pista como voto e trata empates explicitamente. O vencedor muda quando se compara território ou reserva e quando se muda a tarifa. A referência matemática usa preferências estritas; aqui a distinção entre maioria dos votos decididos e maioria absoluta de todas as pistas importa. [Última colônia em 864 combates](CONDORCET.md) · [Matrizes de caixa e território](DUELS.md) · [Definição de Condorcet em Sauermann, 2022](https://arxiv.org/abs/2203.13713)
 
 ## Execução
 
-O modo usa as malhas, as tabelas físicas e o atlas de Hexophage. Tem um motor esparso próprio para múltiplas linhagens e pilotos experimentais com projeção local. A partida de física única e os aprendizes do outro modo continuam disponíveis no menu principal. O HTML misto funciona inclusive aberto como arquivo offline.
+O modo usa as malhas, as tabelas físicas e o atlas de Hexophage. O motor esparso acompanha várias linhagens por dono. No duelo há pilotos com projeção local e um modo com os aprendizes táticos do PR #10. A partida de física única e os aprendizes do outro modo continuam disponíveis no menu principal. O HTML misto funciona inclusive aberto como arquivo offline.
 
 ```sh
 npm ci

@@ -202,3 +202,62 @@ test('one owner grows a B2/S245 farm and a Bays ship on the same planet, earning
   assert(Math.abs(p.reserve-(5000+p.income-p.stampSpent-p.birthSpent))<1e-8);
   assert(p.income>0 && p.birthSpent>0);
 });
+
+test('a narrow forecast clips the real ignition triangle without moving its third vertex',()=>{
+  const m=createTypedWorld(g,{economy:free});
+  arrange(m,[[1,'bays','antimatter',[mid]],[2,'bays','phase',[neighbor(mid,0)]]]);
+  const full=m.fork();
+  full.step();
+  const missing=full.lastIgnitions[0].sites[2];
+  const visible=new Set(Array.from({length:g.n},(_,i)=>i).filter(i=>i!==missing));
+  const local=m.fork(visible);
+  local.step();
+  assert.deepEqual(view(local),view(full).filter(([site])=>visible.has(site)));
+  assert.deepEqual(local.lastIgnitions[0].sites,full.lastIgnitions[0].sites.filter(i=>visible.has(i)));
+});
+
+test('nested forecasts cannot expand their parent view',()=>{
+  const m=createTypedWorld(g,{economy:free});
+  const disk=m.fork([mid]), nested=disk.fork([mid,neighbor(mid,0)]);
+  assert(nested.canStamp(1,'bays','phase',[mid]));
+  assert(!nested.canStamp(1,'bays','phase',[neighbor(mid,0)]));
+});
+
+test('simultaneous explosions have the same replay event order for both insertions',()=>{
+  function fire(reverse) {
+    const m=createTypedWorld(g,{economy:free});
+    const groups=[
+      [1,'bays','antimatter',[mid]],[2,'bays','contact',[neighbor(mid,0)]],
+      [2,'bays','antimatter',[0]],[1,'bays','contact',[neighbor(0,0)]],
+    ];
+    arrange(m,reverse?groups.reverse():groups);
+    m.step();
+    assert.equal(m.lastIgnitions.length,2);
+    return {events:m.lastIgnitions,sites:view(m)};
+  }
+  assert.deepEqual(fire(true),fire(false));
+});
+
+test('phase cannot overwrite another type sharing its wallet, including a dying allied site',()=>{
+  function intercept(owner,support) {
+    const m=createTypedWorld(g,{economy:{...free,eraseCost:5}});
+    arrange(m,[[owner,'hex-b2s245','contact',[mid,...support]],[1,'bays','phase',[neighbor(mid,0),neighbor(mid,1)]]]);
+    m.step();return m;
+  }
+  const supports=[neighbor(mid,3),neighbor(mid,4)];
+  const ally=intercept(1,supports), lone=intercept(1,[]), rival=intercept(2,supports);
+  assert.equal(ally.cells.get(mid).resolver,'contact');
+  assert.equal(ally.cells.get(mid).age,2);
+  assert.equal(ally.players[1].friendlyErased,0);
+  assert.equal(lone.cells.has(mid),false);
+  assert.equal(rival.cells.get(mid).resolver,'phase');
+  assert(rival.players[1].eraseSpent>=5);
+});
+
+test('stamps require a numeric player identity present in the match',()=>{
+  const m=createTypedWorld(g,{economy:free});
+  for(const id of ['1','length','constructor',0,3,1.5])
+    assert.equal(m.stamp(id,'bays','phase',[mid]),false);
+  assert.equal(m.cells.size,0);
+  assert(m.stamp(1,'bays','phase',[mid]));
+});
