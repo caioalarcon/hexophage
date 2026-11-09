@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hexophage · Mundo misto</title><style>/* APP_STYLE */</style>
+<body><main>
+<header><div class="brand">HEXOPHAGE <span>/ LABORATÓRIO</span></div><h1>Mundo misto</h1>
+<p>Uma esfera. Cada carimbo transmite sua física e seu modo de disputar espaço.</p></header>
+<div class="workbench">
+<section class="field"><div class="bar"><h2>Campo</h2><span id="gen">G0</span><span id="verdict"></span></div>
+<canvas id="board" aria-label="Área local da esfera. Clique para colocar o carimbo."></canvas>
+<div class="controls"><button id="play" class="primary">Simular</button><button id="step">+1 geração</button><button id="many">+32</button>
+<label>Zoom <input id="zoom" type="range" min="8" max="36" value="18"></label></div>
+<div class="nav"><div><h3>Planeta inteiro</h3><small>Clique para mudar de região.</small></div><canvas id="atlas" aria-label="Navegador de toda a esfera"></canvas></div>
+<div class="readout"><span id="notice" role="status"></span><span id="inspect"></span></div></section>
+<aside>
+<section class="card"><h2>Carimbo</h2><div class="twocol">
+<label>Jogador<select id="owner"><option value="1">Jade</option><option value="2">Cobre</option></select></label>
+<label>Rotação<select id="angle"></select></label></div>
+<label>Padrão<select id="pattern"></select></label>
+<label>Autômato herdado<select id="rule"></select></label><label>Resolução do conflito<select id="resolver"></select></label>
+<p class="hint" id="tip"></p><div id="quote"></div>
+<div class="hand"><button id="save" type="button">Guardar carimbo</button><select id="hand" aria-label="Carimbos guardados"></select><button id="forget" title="Remover o carimbo guardado" aria-label="Remover o carimbo guardado">×</button></div></section>
+<section class="card"><h2>Carteiras</h2><div id="accounts"></div><div class="small" id="damage"></div><div class="small" id="coverage"></div>
+<details id="books"><summary>Gastos e receitas</summary><div id="balances"></div></details></section>
+</aside></div>
+<section class="card setup"><div class="bar"><h2>Novo mundo</h2><button id="reset">Iniciar cenário</button></div>
+<div class="setupgrid">
+<label>Cenário<select id="scene"></select></label><label><span id="bank-label">Reserva inicial</span><input id="bank" type="number" min="0" step="1" value="3200"></label>
+<label>Controle<select id="drive"><option value="manual">Jogadores locais</option><option value="opponent">Você × bot</option><option value="both">Bot × bot</option></select></label>
+<label>Desfecho<select id="finish"><option value="field">Última colônia</option><option value="wallet">Último solvente</option><option value="observe">Observar até o fim</option></select></label>
+</div><details><summary>Economia e esfera</summary><div class="setupgrid" id="tariffs"></div>
+<label>Disputa de lugar vazio<select id="precedence"><option value="0">Maior apoio local</option><option value="1">Preferência à travessia</option></select></label>
+<label class="check"><input type="checkbox" id="farm" checked> Fazenda remota do lançador</label><label class="check"><input type="checkbox" id="restock" checked> Replantar alvos a cada volta na patrulha orbital</label></details></section>
+<footer><a href="../../index.html">Voltar ao Hexophage</a><span>Contato <b>·</b> Guarda <b>·</b> Travessia <b>·</b> Antimatéria</span></footer>
+</main><script>/* APP_SCRIPT */</script></body></html>

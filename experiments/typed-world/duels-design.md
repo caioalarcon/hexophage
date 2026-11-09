@@ -1,0 +1,7 @@
+# Protocolo da segunda comparação
+
+No primeiro ensaio, contato e guarda tiveram a mesma trajetória entre si. A guarda só se distingue quando um adversário tenta sobrescrever uma célula ocupada e apoiada. Testamos a hipótese de que cobrar a proteção na compra e variar a taxa pela travessia possa criar um ciclo econômico entre contato, guarda e fase. Nenhuma regra de precedência muda nesta comparação.
+
+Em F32 os preços por apagamento são 0, 4, 8, 16, 24, 48 e 96 créditos. Os adicionais por célula carimbada com guarda são 0, 1, 4 e 8 créditos. A unidade de compra normal custa 8. Em cada preço e par de resolutores, os dois concorrentes alternam todas as 36 posições de ataque e defesa descritas no relatório. Cada posição dá um voto pela diferença média de reservas nas duas pernas em G96. Empate financeiro até 0,01 crédito.
+
+A seleção maximiza a menor margem de maioria das três arestas orientadas fase sobre contato, guarda sobre fase e contato sobre guarda. Em empate, maximiza a soma das três margens, depois prefere a tarifa de apagamento mais próxima de 24 e o menor adicional de guarda. Para aceitar a hipótese, as três margens devem ser positivas nas mesmas tarifas, inclusive na amostra reservada em F48. Também se mede a ordenação dos quatro resolutores nesse ponto. A antimatéria faz parte do torneio completo, mas não é necessária para que os outros três formem um ciclo. A hipótese se refere a dinheiro e a esta distribuição de cenários.

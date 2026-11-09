@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.js",
-    "test": "node --test \"src/**/*.test.js\" \"tests/*.test.js\" && node tests/bot-isolation.cjs",
-    "test:browser": "node tests/browser-economy.cjs && node tests/render-detail.cjs"
+    "build": "node scripts/build.js && node experiments/typed-world/build.mjs",
+    "test": "node --test \"src/**/*.test.js\" \"tests/*.test.js\" \"experiments/typed-world/*.test.mjs\" && node tests/bot-isolation.cjs",
+    "test:browser": "node tests/browser-economy.cjs && node tests/render-detail.cjs && node tests/typed-world.cjs"
   },
   "devDependencies": {
     "esbuild": "0.25.12",

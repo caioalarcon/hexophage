@@ -56,6 +56,10 @@ For a positional rule, use `compileHexRule((alive, mask, degree) => ...)`. The b
 
 Each match currently has one automaton. The sparse planar atlas measures isolated seeds. For B0 it uses a finite torus so spontaneous births can be represented and accounted for separately from the player's cells.
 
+## Mixed-physics matches
+
+**Partida e bots → Mundo misto** opens a playable match with one shared treasury per player. Each stamp carries its own rule, orientation and conflict policy. Pick a pattern from the 409-card atlas, change its inherited rule independently and save the combination in your hand. The orbital patrol and planetary shock scenarios reproduce paid orders from the experiments. [Play the mixed world](experiments/typed-world/index.html) · [Experiments, precedence and tariffs](experiments/typed-world/README.md).
+
 ## An isolated match
 
 ```js
