@@ -32,8 +32,15 @@ export function bindEnergyPanel() {
 export function updateEnergyPanel() {
   const human=game.players[0];
   if (!human) return;
+  const { generationQuote, policy } = game.economy;
+  const activity = policy === 'activity';
+  $('eco-mature-label').textContent = generationQuote ? 'Tarifa por célula madura' :
+    activity ? 'Custo por célula madura' : 'Renda por célula madura';
+  $('eco-birth-label').textContent = generationQuote ? 'Tarifa por nascimento' :
+    activity ? 'Renda por nascimento' : 'Custo por nascimento';
   for (const [key,id] of Object.entries(controls)) {
     const slider=$(id);
+    if (game.economy[key] > Number(slider.max)) slider.max = String(game.economy[key]);
     if (slider.value !== String(game.economy[key])) slider.value=String(game.economy[key]);
     $(id+'-val').textContent=compact(game.economy[key]);
   }

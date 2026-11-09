@@ -4,11 +4,14 @@ export const patterns = {
   bays: [
     {
       id: 'glider',
-      name: 'Glider · P5',
+      name: 'Glider · P5', group: 'nave', period: 5, cells: 10,
+      birthsCycle: 62, deathsCycle: 62, stableCore: 0, origin: 'Carter Bays (2005)',
       rle: 'bo$o2bo$5bo$bo2bo$3bo$2bo3bo$5bo!',
       info: 'Carter Bays (2005). Período 5; movimento em malha hexagonal.',
     },
-    { id: 'osc2', name: 'Oscilador · P2', rle: '2o!', info: 'Oscilador simples, período 2.' },
+    { id: 'osc2', name: 'Oscilador · P2', rle: '2o!', group: 'oscilador', period: 2,
+      cells: 2, birthsCycle: 4, deathsCycle: 4, stableCore: 0, origin: 'B2/S35',
+      info: 'Par de células que alterna de posição a cada geração.' },
   ],
   callahan: [
     ...atlasPatterns,
@@ -49,5 +52,11 @@ export const patterns = {
       info: 'Oscilador estacionário P18 documentado por Paul Callahan.',
     },
   ],
-  custom: [],
+  custom: [
+    { id: 'single', name: 'Célula', rle: 'o!', cells: 1 },
+    { id: 'pair', name: 'Par', rle: '2o!', cells: 2 },
+    { id: 'triangle', name: 'Triângulo', rle: '2o$bo!', cells: 3 },
+    { id: 'ring', name: 'Anel', rle: '2o$obo$b2o!', cells: 6 },
+  ].map(p => ({ ...p, group: 'semente', origin: 'desenho geométrico',
+    info: 'Semente experimental para observar nesta regra.' })),
 };

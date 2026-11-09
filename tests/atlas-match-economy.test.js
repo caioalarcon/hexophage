@@ -18,7 +18,7 @@ test('atlas cycle ledgers match funded, isolated stamps in the actual game', asy
     const cells = match.patchForStamp(graph.farthest, 0, decodeRLE(pattern.rle));
     assert(match.commitStamp(player.id, cells, false), id);
 
-    const projection = await analyzePatternCycles(pattern, match.game.economy, { cycles });
+    const projection = await analyzePatternCycles(pattern, match.game.economy, { cycles, physics: match.world.physics });
     assert.equal(initialReserve - player.reserve, projection.initialCost, id);
     let payback = null;
     let extraReserve = 0;

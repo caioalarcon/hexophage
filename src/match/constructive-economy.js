@@ -1,17 +1,31 @@
-// Each mature coordinate produces energy each generation. Natural births cost
-// energy; stamping pays once for each cell placed.
-export const DEFAULT_ECONOMY = Object.freeze({
+// A profile selects a policy and may override rates or provide its own generationQuote.
+// Rates stay attached to the physical event when the direction of payment changes.
+const rates = {
   combatFee: 0.25,
   stableEnergy: 0.02, productionScale: 8000, birthCost: 1, stableAfter: 256,
   stampCost: 10000, initialCells: 82,
-});
-export const ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
+};
+export const ECONOMY_KEYS = Object.freeze(Object.keys(rates));
+export const STABILITY_ECONOMY = Object.freeze({ ...rates, policy: 'stability' });
+export const ACTIVITY_ECONOMY = Object.freeze({ ...rates, policy: 'activity' });
+export const DEFAULT_ECONOMY = STABILITY_ECONOMY;
+
+const policies = new Map([
+  ['stability', (birthValue, matureValue) => ({ income: matureValue, upkeep: birthValue })],
+  ['activity', (birthValue, matureValue) => ({ income: birthValue, upkeep: matureValue })],
+]);
+
+export function isStabilityEconomy(economy) {
+  return !economy.generationQuote && (economy.policy ?? 'stability') === 'stability';
+}
+
 export function generationEnergy(births, stable, economy) {
   if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
-  // At the scale S=K a colony earns half its maximum gross production.
-  // The scale applies to all mature cells of that owner, including separate farms.
+  const quote = policies.get(economy.policy ?? 'stability');
+  if (!quote) throw new RangeError('Unknown economy policy: ' + economy.policy);
+  // The saturation scale covers all mature cells of one owner, across farms.
   const effective = economy.productionScale > 0 ? stable / (1 + stable / economy.productionScale) : stable;
-  return { income: effective * economy.stableEnergy, upkeep: births * economy.birthCost };
+  return quote(births * economy.birthCost, effective * economy.stableEnergy);
 }
 export function energyCost(cells, economy) {
   return cells * economy.stampCost;

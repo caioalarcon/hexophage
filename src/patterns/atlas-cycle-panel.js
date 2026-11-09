@@ -1,10 +1,11 @@
 import { initialEnergy } from '../match/constructive-economy.js';
 import { $ } from '../layout/elements.js';
-import { analyzePatternCycles } from './cycle-economy.js';
+import { AnalysisLimit, analyzePatternCycles } from './cycle-economy.js';
 
 const format = new Intl.NumberFormat('pt-BR');
 const fmt = n => format.format(n);
 const signed = n => n > 0 ? '+' + fmt(n) : fmt(n);
+const coreBalance = row => row.fixedIncome - row.fixedUpkeep;
 let pending;
 
 function plot(rows, unit) {
@@ -39,7 +40,7 @@ function fillTable(rows) {
   for (const r of rows) {
     const tr = document.createElement('tr');
     const values = [fmt(r.cycle), fmt(r.from) + '–' + fmt(r.to), fmt(r.births), fmt(r.income),
-      fmt(r.upkeep), fmt(r.fixedIncome) + ' (' + fmt(r.fixedCore) + ' cél.)', signed(r.net), signed(r.cumulative)];
+      fmt(r.upkeep), fmt(coreBalance(r)) + ' (' + fmt(r.fixedCore) + ' cél.)', signed(r.net), signed(r.cumulative)];
     for (const [i, value] of values.entries()) {
       const cell = document.createElement(i === 0 ? 'th' : 'td');
       if (i === 0) cell.scope = 'row';
@@ -51,7 +52,7 @@ function fillTable(rows) {
   $('br-cycle-rows').replaceChildren(body);
 }
 
-function render(report, economy, pattern) {
+function render(report, economy, pattern, physics) {
   const { rows, kind, cycleLength, generations, initialCost, workingCapital, firstErosionGeneration } = report;
   const first = rows[0], last = rows.at(-1);
   const unit = kind === 'window' ? 'Janela' : 'Ciclo';
@@ -61,7 +62,8 @@ function render(report, economy, pattern) {
   $('br-cycle-heading').textContent = (kind === 'window' ? 'Economia por janela' : 'Economia por ciclo') + ' · ' + pattern.name;
   $('br-cycle-scope').textContent = frame + ' de ' + fmt(cycleLength) + ' gerações · ' +
     fmt(rows.length) + ' ' + unit.toLowerCase() + 's · ' + fmt(generations) + ' gerações simuladas. ' +
-    'Estrutura isolada, sem rivais e sem outras fontes de renda do jogador. O cálculo usa malha plana e reserva suficiente para evitar erosão.' +
+    (physics.tables[6][0][0] ? 'Toro hexagonal finito. Células neutras por nascimento espontâneo ficam fora do saldo.' :
+      'Estrutura isolada, sem rivais e sem outras fontes de renda do jogador. O cálculo usa malha plana e reserva suficiente para evitar erosão.') +
     (kind === 'emission' ? ' A conta inclui as naves emitidas.' : '');
   $('br-cycle-stamp').textContent = fmt(initialCost);
   $('br-cycle-capital').textContent = fmt(workingCapital);
@@ -71,11 +73,11 @@ function render(report, economy, pattern) {
     'Geração ' + fmt(report.paybackGeneration);
 
   const charge = rows.every(row => row.upkeep === first.upkeep)
-    ? 'Os nascimentos custaram ' + fmt(first.upkeep) + ' de energia por ' + interval + '.'
-    : 'Os nascimentos custaram ' + fmt(first.upkeep) + ' no primeiro intervalo e ' + fmt(last.upkeep) + ' no último.';
-  const core = rows.every(row => row.fixedIncome === first.fixedIncome)
-    ? ' O núcleo produziu ' + fmt(first.fixedIncome) + ' por ' + interval + '.'
-    : ' A produção do núcleo passou de ' + fmt(first.fixedIncome) + ' para ' + fmt(last.fixedIncome) + '.';
+    ? 'O custo operacional foi de ' + fmt(first.upkeep) + ' de energia por ' + interval + '.'
+    : 'O custo operacional foi de ' + fmt(first.upkeep) + ' no primeiro intervalo e ' + fmt(last.upkeep) + ' no último.';
+  const core = rows.every(row => coreBalance(row) === coreBalance(first))
+    ? ' O saldo do núcleo foi de ' + fmt(coreBalance(first)) + ' por ' + interval + '.'
+    : ' O saldo do núcleo passou de ' + fmt(coreBalance(first)) + ' para ' + fmt(coreBalance(last)) + '.';
   const positive = report.profitableFromCycle;
   const streak = positive === null ? '' : positive === 1 ? ' Todos os intervalos deram saldo positivo.' :
     positive === last.cycle ? ' O último intervalo deu saldo positivo.' :
@@ -99,7 +101,7 @@ export function cancelCycleAnalysis() {
   pending?.abort();
 }
 
-export async function showCycleAnalysis(pattern, economy) {
+export async function showCycleAnalysis(pattern, economy, physics) {
   cancelCycleAnalysis();
   const controller = new AbortController();
   pending = controller;
@@ -109,15 +111,16 @@ export async function showCycleAnalysis(pattern, economy) {
   $('br-cycle-report').hidden = true;
   const settings = { ...economy };
   try {
-    const report = await analyzePatternCycles(pattern, settings, { signal: controller.signal });
+    const report = await analyzePatternCycles(pattern, settings, { signal: controller.signal, physics });
     if (!controller.signal.aborted) {
-      render(report, settings, pattern);
+      render(report, settings, pattern, physics);
       if (document.activeElement === $('br-cycle-heading')) $('br-cycle-heading').scrollIntoView({ block: 'start' });
     }
   } catch (error) {
     if (!controller.signal.aborted) {
-      $('br-cycle-scope').textContent = 'Não foi possível calcular a economia deste padrão.';
-      console.error(error);
+      $('br-cycle-scope').textContent = error instanceof AnalysisLimit ? error.message :
+        'Não foi possível calcular a economia deste padrão.';
+      if (!(error instanceof AnalysisLimit)) console.error(error);
     }
   } finally {
     if (pending === controller) {

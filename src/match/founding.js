@@ -1,14 +1,14 @@
 import { eastAt } from '../world/geometry.js';
-import { atlasPatterns } from '../patterns/atlas-data.js';
 import { decodeRLE } from '../patterns/rle.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
 
-export const founderId = 'stalk';
-const cells = decodeRLE(atlasPatterns.find(p => p.id === founderId).rle);
-
 // Use the same legal, paid opening for the human and the five bots.
 export function plantFounder(world, game, player, commitStamp) {
-  if (player.stamps || player.out || player.reserve < cells.length * game.economy.stampCost) return false;
+  if (player.stamps || player.out) return false;
+  const pattern = game.gameplay.patterns.find(p => p.id === game.gameplay.opening);
+  if (!pattern) return false;
+  const cells = decodeRLE(pattern.rle);
+  if (player.reserve < cells.length * game.economy.stampCost) return false;
   const graph = world.graph;
   const neighbors = graph.adj.subarray(6 * player.seed, 6 * player.seed + graph.deg[player.seed]);
   for (const center of [player.seed, ...neighbors]) {

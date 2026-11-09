@@ -18,8 +18,6 @@ function resetGame() {
   world.actual = 0;
   world.statCount = 0;
   game.rngState = 0x6d2b79f5;
-  world.rule = 'callahan';
-  $('hl-rulechoice').value = 'callahan';
   world.matchStarted = false;
   game.winner = 0;
   game.ended = false;

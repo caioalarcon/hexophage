@@ -4,11 +4,8 @@
 import { atlasPatterns } from '../../src/patterns/atlas-data.js';
 import { decodeRLE } from '../../src/patterns/rle.js';
 import { DIR } from '../../src/world/geometry.js';
-import { createSimulationState } from '../../src/simulation/state.js';
-import { initRuleTables } from '../../src/simulation/rules.js';
+import { CALLAHAN } from '../../src/simulation/rules.js';
 
-const rules = createSimulationState();
-initRuleTables(rules);
 const width = 512, origin = 256 * width + 256;
 const index = (q,r) => origin + q*width + r;
 const offsets = DIR.map(([q,r]) => q*width + r);
@@ -40,7 +37,7 @@ function step() {
   }
   for(const j of candidates){
     const p=owner[j],mask=masks[j];masks[j]=0;
-    if(!(p?rules.callSurv6:rules.callBirth6)[mask]) continue;
+    if(!CALLAHAN.tables[6][p ? 1 : 0][mask]) continue;
     nextOwner[j]=p||parents[j];nextAge[j]=p?age[j]+1:1;nextLive.push(j);
   }
   candidates.length=0;

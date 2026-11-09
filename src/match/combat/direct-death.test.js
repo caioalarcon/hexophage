@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSimulationState } from '../../simulation/state.js';
-import { initRuleTables, parseRule } from '../../simulation/rules.js';
+import { CALLAHAN, compileTotalistic } from '../../simulation/rules.js';
 import { evaluateCell } from '../../simulation/cell-fate.js';
 import { recordCombatDeath } from './direct-death.js';
 
@@ -9,9 +9,7 @@ function ring(owners, custom) {
   const w = createSimulationState();
   w.graph = { adj: [1, 2, 3, 4, 5, 6], deg: [owners.length] };
   w.nextOwners = Uint8Array.from([1, ...owners]);
-  initRuleTables(w);
-  w.rule = custom ? 'custom' : 'callahan';
-  if (custom) parseRule(w, custom);
+  w.physics = custom ? compileTotalistic(custom) : CALLAHAN;
   return w;
 }
 

@@ -6,21 +6,17 @@ const population = Uint8Array.from({ length: 128 }, (_, mask) => {
   return count;
 });
 
-function survives(world, degree, mask) {
-  if (world.rule !== 'callahan') return world.survival[population[mask]];
-  return (degree === 5 ? world.callSurv5 : world.callSurv6)[mask];
-}
-
 // The caller has already established that a player-owned cell died naturally.
 export function recordCombatDeath(world, id, victim, claims) {
   const { adj, deg } = world.graph, degree = deg[id], before = world.nextOwners;
+  const survive = world.physics.tables[degree][1];
   let rivals = 0, background = 0;
   for (let k = 0; k < degree; k++) {
     const owner = before[adj[id * 6 + k]];
     if (owner === victim || owner === 7) background |= 1 << k;
     else if (owner) rivals |= 1 << owner;
   }
-  if (!rivals || !survives(world, degree, background)) return;
+  if (!rivals || !survive[background]) return;
 
   let credited = rivals;
   if (population[rivals] > 1) {
@@ -37,7 +33,7 @@ export function recordCombatDeath(world, id, victim, claims) {
       if ((group & rivals) !== group || lethal.some(s => (s & group) === s)) continue;
       let mask = background;
       for (let owner = 1; owner <= 6; owner++) if (group & (1 << owner)) mask |= masks[owner];
-      if (!survives(world, degree, mask)) {
+      if (!survive[mask]) {
         lethal.push(group);
         credited |= group;
       }

@@ -3,10 +3,9 @@ import assert from 'node:assert/strict';
 import { botSpiralPlan, nextBotAnchor } from './spiral.js';
 import { createFootprintLookup } from './oscillator-footprint.js';
 import { runBotTurns } from './turns.js';
+import { CALLAHAN } from '../simulation/rules.js';
 import { patterns } from '../patterns/catalog.js';
 import { buildSphere } from '../world/sphere.js';
-import { createSimulationState } from '../simulation/state.js';
-import { initRuleTables } from '../simulation/rules.js';
 import { sphereSpawns } from '../match/spawns.js';
 
 test('the six spawn sectors and spiral ties preserve the original f20 order', () => {
@@ -24,8 +23,7 @@ test('the six spawn sectors and spiral ties preserve the original f20 order', ()
 });
 
 test('guard footprints include the full cycle and neighbours of every default oscillator', () => {
-  const world = createSimulationState();
-  initRuleTables(world);
+  const world = { physics: CALLAHAN };
   const { botProtectedOffsets } = createFootprintLookup(world);
   const expected = { osc42: 94, osc66: 144, osc9: 120, osc14: 85, osc18: 125 };
   for (const [id, size] of Object.entries(expected)) {
@@ -61,7 +59,7 @@ test('investment quotes reprice seed, warm-up and sustained flow after live slid
   const { DEFAULT_ECONOMY } = await import('../match/constructive-economy.js');
   const { createInvestmentQuotes } = await import('./investments.js');
   const economy = { ...DEFAULT_ECONOMY, stableEnergy: 3, stableAfter: 16, stampCost: 30, productionScale: 0 };
-  const quote = createInvestmentQuotes(economy);
+  const quote = createInvestmentQuotes(economy, patterns.callahan, CALLAHAN);
   assert.deepEqual(quote('p2'), { id: 'p2', budget: 118, yield: 1 });
   assert.equal(quote('censo-oscillator-6-p2-1').budget, 222);
   economy.birthCost = 2;
@@ -103,4 +101,16 @@ test('a saturated mature colony cannot finance another moving front by duplicati
   const { DEFAULT_ECONOMY } = await import('../match/constructive-economy.js');
   assert(growthMargin(DEFAULT_ECONOMY, 120000, 1) < 0);
   assert(growthMargin({...DEFAULT_ECONOMY, productionScale: 0}, 120000, 1) > 0);
+});
+
+test('investment quotes follow the policy, including thousands of paid pre-maturity births', async () => {
+  const { STABILITY_ECONOMY } = await import('../match/constructive-economy.js');
+  const { createInvestmentQuotes } = await import('./investments.js');
+  const economy = { ...STABILITY_ECONOMY, stableAfter: 1024, stableEnergy: 3, stampCost: 30, productionScale: 0 };
+  const quote = createInvestmentQuotes(economy, patterns.callahan, CALLAHAN);
+  assert.deepEqual(quote('p2'), { id: 'p2', budget: 90 + 2 * 1022, yield: 1 });
+  economy.policy = 'activity';
+  assert.deepEqual(quote('p2'), { id: 'p2', budget: 90, yield: -1 });
+  economy.generationQuote = births => ({ income: 3 * births, upkeep: 0 });
+  assert.deepEqual(quote('p2'), { id: 'p2', budget: 90, yield: 6 });
 });

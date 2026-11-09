@@ -32,6 +32,24 @@ The build collects the HTML fragments listed in `src/shell.html`, preserves styl
 
 [The browser entry](src/start.js) wires the features together. [The browser callbacks](src/browser/game-effects.js) subscribe to engine events to refresh the HUD and invalidate the renderers. Both the browser and Node use [the same turn implementation](src/match/engine.js).
 
+## Automata and match profiles
+
+Choose **Painel de jogo → Partida e bots → Autômato** to start a match on the current sphere. **Economia** selects whether mature cells or natural births earn energy. Changing the economic direction keeps the current rates. A new automaton loads its own defaults. New matches and rebuilt planets keep the active profile. Loadouts and manual drawings are scoped to each rule, including the normalized B/S notation.
+
+Add one entry to [the registry](src/match/rule-profiles.js). For example, a binary radius-one rule can start with just a name and physics:
+
+```js
+myRule: {
+  label: 'B3/S23',
+  physics: compileTotalistic('B3/S23'),
+  economy: { policy: 'activity' },
+},
+```
+
+For a positional rule, use `compileHexRule((alive, mask, degree) => ...)`. The bits follow the local ordered ring of five or six neighbours. A rule that depends on an absolute compass direction also needs an orientation convention across the sphere. The match, atlas, combat and bot previews use the compiled transition tables. To supply known patterns, add `gameplay: explorationGameplay(catalog, openingId)` from [gameplay.js](src/match/gameplay.js). With only physics configured, the editor and bots use geometric seeds. A specialized gameplay profile can supply a different loadout, opening, bot plans and strategy. A custom `economy.generationQuote(births, mature, settings)` returns `{ income, upkeep }` for both the match and the atlas.
+
+Each match currently has one automaton. The sparse planar atlas measures isolated seeds. For B0 it uses a finite torus so spontaneous births can be represented and accounted for separately from the player's cells.
+
 ## An isolated match
 
 ```js
@@ -42,6 +60,8 @@ const match = createHeadlessMatch(buildSphere(32), { interval: 8 });
 for (let i = 0; i < 64; i++) match.nextTick();
 console.log(match.world.gen, match.game.players.map(p => match.world.ownerCells[p.id].length));
 ```
+
+To select another profile, pass `{ rule: 'bays' }` or `{ rule: 'custom', notation: 'B2/S035', economy: { policy: 'activity' } }`. Omitted rates come from the profile.
 
 Each instance owns its players, RNG, population buffers and bot reservations. Supply a `strategies` Map keyed by bot player ID to override individual decisions. The turn scheduler invokes each live bot on its configured turn. The current oscillator strategy and any replacement use the same `commitStamp(owner, ids)` command for placement and biomass accounting.
 

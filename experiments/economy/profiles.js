@@ -1,3 +1,4 @@
+import { CALLAHAN } from '../../src/simulation/rules.js';
 import { atlasPatterns } from '../../src/patterns/atlas-data.js';
 import { analyzePatternCycles, cycleWindow } from '../../src/patterns/cycle-economy.js';
 import { studyEconomy } from './study-baseline.js';
@@ -38,7 +39,7 @@ export async function generateProfiles() {
     const { id, name, group, period, cells } = pattern;
     const window = cycleWindow(pattern).length;
     const cycles = period ? 8 : group === 'interação' || id === 'stalk' ? 128 : 24;
-    const { rows, workingCapital, paybackGeneration } = await analyzePatternCycles(pattern, studyEconomy, { cycles });
+    const { rows, workingCapital, paybackGeneration } = await analyzePatternCycles(pattern, studyEconomy, { cycles, physics: CALLAHAN });
     const observations = rows.map(r => sample(r, window));
     const fit = project(observations, window);
     const [births, upkeep, windowCore, live] = fit?.base ?? average(observations);

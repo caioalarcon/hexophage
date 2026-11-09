@@ -9,14 +9,14 @@ const farmCandidates = ['censo-oscillator-6-p2-1', 'censo-oscillator-12-p3-1', '
 // One more front at the observed size of our existing fronts. An active stalk
 // births 143 cells per 24 generations; production scales across the entire field.
 export function growthMargin(economy, stable, fronts) {
-  const before = generationEnergy(0, stable, economy).income;
+  const before = generationEnergy(0, stable, economy);
   const after = generationEnergy(143/24, stable + stable/fronts, economy);
-  return after.income - after.upkeep - before;
+  return (after.income - after.upkeep) - (before.income - before.upkeep);
 }
 
 export function createGrowthStrategy(world, game, commitStamp) {
   const plant = createOscillatorStrategy(world, game, commitStamp);
-  const quote = createInvestmentQuotes(game.economy);
+  const quote = createInvestmentQuotes(game.economy, game.gameplay.patterns, world.physics);
   return player => {
     const e = game.economy, plan = game.botPlans[player.id - 1];
     if (!player.stamps) {
@@ -31,7 +31,7 @@ export function createGrowthStrategy(world, game, commitStamp) {
       return;
     }
     const growerPrice = 36 * e.stampCost;
-    const growerBudget = growerPrice + (e.stableAfter + 24) * 6 * e.birthCost;
+    const growerBudget = growerPrice + (e.stableAfter + 24) * generationEnergy(6, 0, e).upkeep;
     const farmer = player.pattern === 'farmer' || player.pattern === 'core';
     if (farmer && player.stable && growthMargin(e, player.stable, plan.fronts || 1) > 0) {
       if (player.reserve < growerBudget) return;
@@ -42,13 +42,13 @@ export function createGrowthStrategy(world, game, commitStamp) {
     }
     let weapon = player.pattern === 'slow' ? 'gun42' : player.pattern === 'diverse' ? 'gun20' : 'glider';
     let savings = player.pattern === 'core' ? growerBudget : 0;
-    if (weapon !== 'glider' && player.flowAverage < expectedGunExpense(e, weapon)) {
+    if (weapon !== 'glider' && player.flowAverage < expectedGunExpense(game, world, weapon)) {
       // While an entire battery would run a deficit, keep a partial siege
       // fund and send sorties that can end when their target is hit.
-      savings = raidBudget(e, weapon) / 2;
+      savings = raidBudget(game, world, weapon) / 2;
       weapon = 'glider';
     }
-    if (player.flowAverage <= 0 || player.reserve < savings + raidBudget(e, weapon)) return;
+    if (player.flowAverage <= 0 || player.reserve < savings + raidBudget(game, world, weapon)) return;
     raidMatureCore(world, game, player, commitStamp, weapon);
   };
 }

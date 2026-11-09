@@ -1,5 +1,4 @@
 import { eastAt } from '../world/geometry.js';
-import { patterns } from '../patterns/catalog.js';
 import { decodeRLE } from '../patterns/rle.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
 import { botSpiralPlan, nextBotAnchor } from './spiral.js';
@@ -7,10 +6,10 @@ import { createFootprintLookup } from './oscillator-footprint.js';
 import { energyCost } from '../match/constructive-economy.js';
 
 export function createOscillatorStrategy(world, game, commitStamp) {
-  const { botProtectedOffsets } = createFootprintLookup();
+  const { botProtectedOffsets } = createFootprintLookup(world);
   const seeds = new Map();
   return function plantOscillator(player, chosenId = player.pattern) {
-    const pat = patterns.callahan.find((x) => x.id === chosenId);
+    const pat = game.gameplay.patterns.find((x) => x.id === chosenId);
     if (!pat) return;
     if (!seeds.has(chosenId)) seeds.set(chosenId, decodeRLE(pat.rle));
     const offsets = seeds.get(chosenId);

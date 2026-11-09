@@ -7,6 +7,6 @@ export function prepareOpening() {
   const player = game.players[0];
   if (player?.stamps) return true;
   if (player && plantFounder(world, game, player, commitStamp)) return true;
-  toast('Para começar, financie o crescedor de 36 células ou carimbe sua abertura no mapa.');
+  toast('Carimbe sua abertura no mapa para começar.');
   return false;
 }

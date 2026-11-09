@@ -109,6 +109,7 @@ const {chromium}=require('playwright');
     await require('./support/slot-labels.cjs')(page);
     await require('./support/atlas-cycle-ledger.cjs')(page);
     await require('./support/match-playback.cjs')(page);
+    await require('./support/rule-switching.cjs')(page);
     assert.deepEqual(errors,[]);
     console.log('PASS: two-grower opening, fifteen tactical slots, accessible tribute among seven sliders, live economy, atlas and full stop');
     await page.close();

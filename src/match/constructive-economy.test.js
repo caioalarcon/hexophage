@@ -72,3 +72,31 @@ test('unaffordable births erode only their owner\'s cells',()=>{
   assert.equal(m.world.ownerCells[rival.id].length,rivalBefore);
   for(const id of m.world.ownerCells[p.id])assert.equal(m.world.owners[id],p.id);
 });
+
+test('inverting the policy swaps real income and upkeep without changing the physical trajectory', async () => {
+  const { ACTIVITY_ECONOMY } = await import('./constructive-economy.js');
+  const { analyzePatternCycles } = await import('../patterns/cycle-economy.js');
+  const graph = buildSphere(24), pattern = patterns.callahan.find(p => p.id === 'p2');
+  const create = policy => createHeadlessMatch(graph, { strategies: idle,
+    economy: { ...policy, stableAfter: 2, stableEnergy: 3, stampCost: 30, productionScale: 2 } });
+  const stability = create(DEFAULT_ECONOMY), activity = create(ACTIVITY_ECONOMY);
+  const producer = plantFlipper(stability), consumer = plantFlipper(activity);
+  const projected = await analyzePatternCycles(pattern, activity.game.economy, { cycles: 8, physics: activity.world.physics });
+  for (const row of projected.rows) {
+    let income = 0, upkeep = 0;
+    for (let gen = row.from; gen <= row.to; gen++) {
+      stability.nextTick();
+      activity.nextTick();
+      assert.equal(consumer.lastIncome, producer.lastUpkeep);
+      assert.equal(consumer.lastUpkeep, producer.lastIncome);
+      assert.equal(consumer.lastBirths, producer.lastBirths);
+      assert.equal(consumer.stable, producer.stable);
+      income += consumer.lastIncome;
+      upkeep += consumer.lastUpkeep;
+    }
+    assert.equal(row.income, income);
+    assert.equal(row.upkeep, upkeep);
+    assert.equal(row.fixedIncome, 0);
+    assert.equal(row.fixedUpkeep, upkeep, 'the permanent core accounts for the cost');
+  }
+});

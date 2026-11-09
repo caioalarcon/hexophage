@@ -1,3 +1,4 @@
+import { CALLAHAN } from '../../src/simulation/rules.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { atlasPatterns } from '../../src/patterns/atlas-data.js';
@@ -28,7 +29,7 @@ test('all original atlas seeds have a measured profile; closed-form flipper and 
 for (const [id,cycles] of [['gun20',64],['gun42',64],['stalk',132]]) {
   test(`${id} extrapolation reproduces independent late macroscopic totals`,async () => {
     const p = (await profiles).get(id);
-    const trajectory = await analyzePatternCycles(atlasPatterns.find(seed => seed.id === id),studyEconomy,{cycles});
+    const trajectory = await analyzePatternCycles(atlasPatterns.find(seed => seed.id === id),studyEconomy,{cycles,physics:CALLAHAN});
     const tail = trajectory.rows.slice(-p.fitBlock);
     const mean = field => tail.reduce((sum,r) => sum+r[field],0)/tail.length;
     const age = mean('from') - 1;

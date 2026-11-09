@@ -2,8 +2,18 @@
 <div class="br-controls">
   <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
   <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
-  <div class="br-summary">Iniciar planta uma colmeia. Você pode posicioná-la manualmente e plantar outras. Ajuste os valores em Economia.</div>
+  <div class="br-summary">Iniciar planta a abertura da regra.</div>
 </div>
+  <div class="br-worldpick">
+    <label for="hl-rulechoice">Autômato</label><select id="hl-rulechoice" title="Trocar reinicia a partida neste planeta"></select>
+  </div>
+  <div id="hl-ruleconfig" class="hl-ruleconfig"><label for="hl-rule">Regra B/S</label><input id="hl-rule" class="hl-rule" value="B2/S35" aria-describedby="hl-rule-error"><small id="hl-rule-error" role="status"></small></div>
+  <div class="br-worldpick">
+    <label for="br-economy-policy">Economia</label>
+    <select id="br-economy-policy" title="Trocar reinicia a partida com as tarifas atuais">
+      <option value="stability">Células maduras geram</option><option value="activity">Nascimentos geram</option>
+    </select>
+  </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="hl-subhead">Estratégia dos bots</div><div id="br-bots" class="br-bots"></div>
   </div></details>
