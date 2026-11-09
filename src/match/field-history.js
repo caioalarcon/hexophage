@@ -11,6 +11,7 @@ export function rememberHumanPeak(world, game) {
       births: h.births,
       deaths: h.deaths,
       placed: h.placed,
+      stampedEnergy: p.stampedEnergy,
       received: p.received,
       paid: p.paid,
       eroded: p.eroded,

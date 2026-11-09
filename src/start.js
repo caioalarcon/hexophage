@@ -18,6 +18,7 @@ import { bindEnergyPanel } from './match/hud/energy-panel.js';
 import { bindTurnControls } from './match/controls/turns.js';
 import { bindStampControls } from './patterns/editor/controls.js';
 import { bindEditorGestures } from './patterns/editor/gestures.js';
+import { slotIds } from './deck/slots.js';
 import { loadPattern, refreshTabs } from './patterns/editor/selection.js';
 import { newStamp } from './patterns/editor/stamp-grid.js';
 import { bindPatternTabs } from './patterns/editor/tabs.js';
@@ -58,7 +59,7 @@ bindEnergyPanel();
 bindPlayerFollow();
 $('hl-pattern').addEventListener('change', refreshTabs);
 
-loadPattern('p2');
+loadPattern(slotIds[0]);
 resetGame();
 refreshTabs();
 requestAnimationFrame(frame);

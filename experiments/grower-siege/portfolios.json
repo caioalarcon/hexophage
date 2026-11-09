@@ -1,0 +1,457 @@
+{
+  "rate": 200,
+  "horizon": 1440000,
+  "settings": {
+    "combatFee": 0.25,
+    "stableEnergy": 0.02,
+    "productionScale": 1500,
+    "birthCost": 1,
+    "stableAfter": 256,
+    "stampCost": 10000,
+    "initialCells": 37
+  },
+  "results": [
+    {
+      "spawn": 0,
+      "angle": 0,
+      "period": 3,
+      "finalSize": 1290,
+      "cases": [
+        {
+          "kind": "save",
+          "flight": 1000,
+          "fee": 60000,
+          "first": null,
+          "founderPayback": 39463,
+          "orders": 0,
+          "firstDeficit": null,
+          "closingCash": 13687260,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "120000": {
+              "cash": 1135806,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "360000": {
+              "cash": 3417888,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "720000": {
+              "cash": 6841012,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "1440000": {
+              "cash": 13687260,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "glider",
+          "flight": 1000,
+          "fee": 60000,
+          "first": 7387,
+          "founderPayback": null,
+          "orders": 210,
+          "firstDeficit": null,
+          "closingCash": 37260,
+          "watch": {
+            "12000": {
+              "cash": 43868,
+              "orders": 1,
+              "liveP4": 0
+            },
+            "120000": {
+              "cash": 30806,
+              "orders": 17,
+              "liveP4": 0
+            },
+            "360000": {
+              "cash": 37888,
+              "orders": 52,
+              "liveP4": 0
+            },
+            "720000": {
+              "cash": 16012,
+              "orders": 105,
+              "liveP4": 0
+            },
+            "1440000": {
+              "cash": 37260,
+              "orders": 210,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "glider",
+          "flight": 12000,
+          "fee": 60000,
+          "first": 13171,
+          "founderPayback": null,
+          "orders": 114,
+          "firstDeficit": null,
+          "closingCash": 63444,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "120000": {
+              "cash": 86466,
+              "orders": 9,
+              "liveP4": 1
+            },
+            "360000": {
+              "cash": 87452,
+              "orders": 28,
+              "liveP4": 1
+            },
+            "720000": {
+              "cash": 60482,
+              "orders": 57,
+              "liveP4": 1
+            },
+            "1440000": {
+              "cash": 63444,
+              "orders": 114,
+              "liveP4": 1
+            }
+          }
+        },
+        {
+          "kind": "gun20",
+          "flight": 1000,
+          "fee": 520000,
+          "first": 61548,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 62207,
+          "closingCash": -142,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun20",
+          "flight": 12000,
+          "fee": 520000,
+          "first": 61548,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 62207,
+          "closingCash": -142,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun42",
+          "flight": 1000,
+          "fee": 640000,
+          "first": 74168,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 75111,
+          "closingCash": -111,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun42",
+          "flight": 12000,
+          "fee": 640000,
+          "first": 74168,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 75111,
+          "closingCash": -111,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun200",
+          "flight": 1000,
+          "fee": 1000000,
+          "first": 112028,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 113639,
+          "closingCash": -34,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun200",
+          "flight": 12000,
+          "fee": 1000000,
+          "first": 112028,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 113586,
+          "closingCash": -62,
+          "watch": {
+            "12000": {
+              "cash": 108868,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "spawn": 1,
+      "angle": 0,
+      "period": 3,
+      "finalSize": 5738,
+      "cases": [
+        {
+          "kind": "save",
+          "flight": 1000,
+          "fee": 60000,
+          "first": null,
+          "founderPayback": 22077,
+          "orders": 0,
+          "firstDeficit": null,
+          "closingCash": 27470363,
+          "watch": {
+            "12000": {
+              "cash": 177416,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "120000": {
+              "cash": 2241588,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "360000": {
+              "cash": 6828638,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "720000": {
+              "cash": 13709213,
+              "orders": 0,
+              "liveP4": 0
+            },
+            "1440000": {
+              "cash": 27470363,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "glider",
+          "flight": 1000,
+          "fee": 60000,
+          "first": 5920,
+          "founderPayback": null,
+          "orders": 422,
+          "firstDeficit": null,
+          "closingCash": 40363,
+          "watch": {
+            "12000": {
+              "cash": 47416,
+              "orders": 2,
+              "liveP4": 0
+            },
+            "120000": {
+              "cash": 31588,
+              "orders": 34,
+              "liveP4": 0
+            },
+            "360000": {
+              "cash": 7688,
+              "orders": 105,
+              "liveP4": 1
+            },
+            "720000": {
+              "cash": 59213,
+              "orders": 210,
+              "liveP4": 0
+            },
+            "1440000": {
+              "cash": 40363,
+              "orders": 422,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "glider",
+          "flight": 12000,
+          "fee": 60000,
+          "first": 8996,
+          "founderPayback": null,
+          "orders": 228,
+          "firstDeficit": null,
+          "closingCash": 141493,
+          "watch": {
+            "12000": {
+              "cash": 102396,
+              "orders": 1,
+              "liveP4": 1
+            },
+            "120000": {
+              "cash": 127512,
+              "orders": 18,
+              "liveP4": 2
+            },
+            "360000": {
+              "cash": 140408,
+              "orders": 56,
+              "liveP4": 2
+            },
+            "720000": {
+              "cash": 102543,
+              "orders": 114,
+              "liveP4": 2
+            },
+            "1440000": {
+              "cash": 141493,
+              "orders": 228,
+              "liveP4": 1
+            }
+          }
+        },
+        {
+          "kind": "gun20",
+          "flight": 1000,
+          "fee": 520000,
+          "first": 33064,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 33760,
+          "closingCash": -71,
+          "watch": {
+            "12000": {
+              "cash": 177416,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun20",
+          "flight": 12000,
+          "fee": 520000,
+          "first": 33064,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 33760,
+          "closingCash": -71,
+          "watch": {
+            "12000": {
+              "cash": 177416,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun42",
+          "flight": 1000,
+          "fee": 640000,
+          "first": 39343,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 40364,
+          "closingCash": -134,
+          "watch": {
+            "12000": {
+              "cash": 177416,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun42",
+          "flight": 12000,
+          "fee": 640000,
+          "first": 39343,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 40364,
+          "closingCash": -134,
+          "watch": {
+            "12000": {
+              "cash": 177416,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun200",
+          "flight": 1000,
+          "fee": 1000000,
+          "first": 58178,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 60196,
+          "closingCash": -2,
+          "watch": {
+            "12000": {
+              "cash": 177416,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        },
+        {
+          "kind": "gun200",
+          "flight": 12000,
+          "fee": 1000000,
+          "first": 58178,
+          "founderPayback": null,
+          "orders": 1,
+          "firstDeficit": 60016,
+          "closingCash": -20,
+          "watch": {
+            "12000": {
+              "cash": 177416,
+              "orders": 0,
+              "liveP4": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -54,7 +54,6 @@
 #hexlab .br-mapbar .hl-upper{font-size:10px}
 #hexlab .br-mapbar #hl-modehint{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #hexlab .br-panelgroup summary{font-size:12px}
-#hexlab .br-knob #br-tax{width:58px}
 @media(max-width:1100px){#hexlab .br-scoretitle #br-gamestatus{display:none}#hexlab .br-scoretitle{max-width:100px}}
 @media(max-width:760px){
  #hexlab .br-top{display:flex;flex-direction:column}
@@ -78,11 +77,15 @@
  #hexlab .br-stampcard canvas{width:64px}
  #hexlab .br-transform button{width:30px}
  #hexlab .br-mapbar #br-fps{display:none}
- #hexlab .br-knob label[for="br-tax-slider"]{font-size:0;white-space:nowrap}
- #hexlab .br-knob label[for="br-tax-slider"]::after{content:'Taxa ‰';font-size:10px}
 }
 
-/* Fifteen independently configurable deck slots. */
+#hexlab .br-stampcard .br-stamprole {display:none}
+/* Compact cards: image, full multiline pattern name and price. */
+#hexlab .br-stampcard .br-stamprole{font-size:9px;font-weight:600;line-height:1.2;color:#84cbb9}
+#hexlab .br-stamprole:empty{display:none}
 #hexlab .br-slot-edit{position:absolute;top:0;left:1px;padding:0 4px;border-radius:4px;background:#1f4159d9;color:#ccf5ee;font-weight:900;font-size:12px;line-height:15px;z-index:1}
 #hexlab .br-stampcard:focus-visible{outline:2px solid #8beecd;outline-offset:1px}
 #hexlab #br-open-atlas{margin:7px 0 0;width:100%;font-size:11px}
+
+/* All fifteen cards remain accessible at once; size is managed by the layout. */
+#hexlab .br-stampcard .br-stampname {white-space:normal;overflow-wrap:anywhere}

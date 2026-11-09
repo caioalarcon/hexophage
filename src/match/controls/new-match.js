@@ -15,9 +15,12 @@ function resetGame() {
   game.initializing = true;
   game.symbols[1] = ($('br-myemoji').value.trim() || '🦖').slice(0, 12);
   clearCells();
+  world.actual = 0;
+  world.statCount = 0;
   game.rngState = 0x6d2b79f5;
   world.rule = 'callahan';
   $('hl-rulechoice').value = 'callahan';
+  world.matchStarted = false;
   game.winner = 0;
   game.ended = false;
   syncPlayButton();
@@ -48,7 +51,7 @@ function resetGame() {
   game.average = 0;
   updateGamePanel(true);
   markRender();
-  toast('Economia construtiva: seis jogadores, ' + game.init + ' de energia inicial cada.');
+  toast('Seis jogadores · ' + game.init + ' de energia inicial cada.');
 }
 
 export { resetGame };

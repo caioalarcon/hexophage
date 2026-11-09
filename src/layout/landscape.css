@@ -22,7 +22,7 @@
  #hexlab .br-scorevals{margin:2px 0 0;gap:5px}
  #hexlab .br-scorevals dd{font-size:10px;line-height:1.15}
  #hexlab .hl-controls{display:flex;flex-wrap:nowrap;align-items:center;min-height:38px;height:38px;gap:6px;padding:3px 7px;position:relative;z-index:12}
- #hexlab .hl-controls #hl-step,#hexlab .hl-controls #hl-clear,#hexlab .hl-controls #hl-seed{display:none}
+ #hexlab .hl-controls #hl-step,#hexlab .hl-controls #hl-seed{display:none}
  #hexlab .hl-controls #hl-play{flex:0 0 auto;height:31px;min-height:31px;padding:4px 9px;font-size:12px}
  #hexlab .br-live-tuning{display:flex;order:0;flex:1 1 100px;max-width:210px;min-width:70px;margin-left:auto;align-items:center;gap:0}
  #hexlab .br-speed-knob{display:grid;flex:1 1 auto;width:100%;min-width:0;grid-template-rows:auto 13px;gap:0}

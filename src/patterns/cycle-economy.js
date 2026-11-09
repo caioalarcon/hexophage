@@ -1,4 +1,4 @@
-import { energyCost, initialEnergy } from '../match/constructive-economy.js';
+import { energyCost, generationEnergy, initialEnergy } from '../match/constructive-economy.js';
 import { initRuleTables } from '../simulation/rules.js';
 import { createSimulationState } from '../simulation/state.js';
 import { DIR } from '../world/geometry.js';
@@ -24,7 +24,16 @@ const adjacent = DIR.map(([q, r]) => q * stride + r);
 const rules = createSimulationState();
 initRuleTables(rules);
 
-function advance(ages, threshold) {
+export function patternOffset(id) {
+  const q = Math.round(id / stride);
+  return [q, id - q * stride];
+}
+
+export function seedPatternAges(pattern) {
+  return new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
+}
+
+export function advancePattern(ages, threshold) {
   const masks = new Map();
   for (const id of ages.keys()) {
     for (let k = 0; k < adjacent.length; k++) {
@@ -33,15 +42,15 @@ function advance(ages, threshold) {
     }
   }
   const next = new Map();
-  let births = 0, charged = 0;
+  let births = 0, mature = 0;
   for (const [id, mask] of masks) {
     const age = ages.get(id) || 0;
     if (!(age ? rules.callSurv6 : rules.callBirth6)[mask]) continue;
     next.set(id, age + 1);
     if (age === 0) births++;
-    if (age + 1 >= threshold) charged++;
+    if (age + 1 >= threshold) mature++;
   }
-  return { next, births, charged };
+  return { next, births, mature };
 }
 
 // Fund the seed through the full observation so its intrinsic costs remain
@@ -49,15 +58,19 @@ function advance(ages, threshold) {
 // fail, before any erosion could perturb the measured trajectory.
 export async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
   const { length, kind } = cycleWindow(pattern);
-  const defaultCycles = Math.max(24, Math.ceil(128 / length));
+  // A grower first has to establish a long mature trail before it can
+  // amortize its births. Ordinary periodic patterns need a shorter horizon.
+  const defaultCycles = Math.max(24, Math.ceil((pattern.id === 'stalk' ? 2000 : 160) / length));
   const maxGenerations = cycles == null ? 8400 : 25200;
   const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
   // Keep one coherent quote even if a slider changes while this pass yields.
-  const { birthEnergy, upkeep: upkeepRate, stableAfter } = economy;
-  let ages = new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
+  economy = { ...economy };
+  const { stableAfter } = economy;
+  let ages = seedPatternAges(pattern);
   const initialCost = energyCost(ages.size, economy);
   const startingReserve = initialEnergy(economy);
   const rows = [];
+  const unitIncome = new Float64Array(length + 1);
   let operatingBalance = 0, workingCapital = 0;
   let firstPositiveCycle = null, profitableFromCycle = null;
   let paybackGeneration = initialCost === 0 ? 0 : null;
@@ -67,16 +80,24 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
 
   for (let cycle = 1; cycle <= observedCycles; cycle++) {
     const from = (cycle - 1) * length + 1, to = cycle * length;
-    let births = 0, maintenanceCellTurns = 0;
+    let births = 0, stableCellTurns = 0, income = 0, upkeep = 0;
     for (let generation = from; generation <= to; generation++) {
-      const turn = advance(ages, stableAfter);
+      const turn = advancePattern(ages, stableAfter);
       ages = turn.next;
       births += turn.births;
-      maintenanceCellTurns += turn.charged;
-      operatingBalance += turn.births * birthEnergy - turn.charged * upkeepRate;
+      stableCellTurns += turn.mature;
+      const flow = generationEnergy(turn.births, turn.mature, economy);
+      income += flow.income;
+      upkeep += flow.upkeep;
+      const step = generation - from + 1;
+      // Prefix integral of income per mature site. Historical lab callbacks
+      // can pay births instead, so separate their earnings from mature income.
+      const matureIncome = economy.generationQuote ? generationEnergy(0, turn.mature, economy).income : flow.income;
+      unitIncome[step] = unitIncome[step - 1] + (turn.mature ? matureIncome / turn.mature : 0);
+      operatingBalance += flow.income - flow.upkeep;
       workingCapital = Math.max(workingCapital, -operatingBalance);
       if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation;
-      if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < 0) {
+      if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < -1e-9) {
         firstErosionGeneration = generation;
       }
       if (performance.now() - lastYield >= 10) {
@@ -87,21 +108,20 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
     }
     // End age > window length means this exact position never died in the
     // window, including at its starting boundary. During warm-up, only the
-    // generations after it reaches the selected age incur a charge.
-    let fixedCore = 0, fixedUpkeep = 0;
+    // generations after it reaches the selected age earn income.
+    let fixedCore = 0, fixedIncome = 0;
     for (const age of ages.values()) {
       if (age <= length) continue;
       fixedCore++;
-      const chargedTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
-      fixedUpkeep += chargedTurns * upkeepRate;
+      const productiveTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
+      fixedIncome += unitIncome[length] - unitIncome[length - productiveTurns];
     }
-    const income = births * birthEnergy, upkeep = maintenanceCellTurns * upkeepRate;
     const net = income - upkeep;
     if (net > 0) {
       firstPositiveCycle ??= cycle;
       profitableFromCycle ??= cycle;
     } else profitableFromCycle = null;
-    rows.push({ cycle, from, to, births, maintenanceCellTurns, income, upkeep, fixedCore, fixedUpkeep,
+    rows.push({ cycle, from, to, births, stableCellTurns, income, upkeep, fixedCore, fixedIncome,
       net, cumulative: operatingBalance - initialCost, live: ages.size });
   }
   return { cycleLength: length, kind, generations: observedCycles * length, initialCost, workingCapital,

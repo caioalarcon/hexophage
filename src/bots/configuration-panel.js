@@ -1,11 +1,11 @@
 import { game } from '../browser/game.js';
 import { $ } from '../layout/elements.js';
 const plans=[
- ['farmer','Flippers P2 · cultivo barato'],
- ['cycler','Ciclos P4 · atividade'],
- ['core','Núcleo P2 · estabilidade'],
- ['slow','Flippers P8 · ciclos longos'],
- ['diverse','Cultivo variado'],
+ ['farmer','Expandir colmeias rentáveis e atacar'],
+ ['cycler','Incursões com glider P4'],
+ ['core','Guardar para uma colmeia de reserva'],
+ ['slow','Poupar para cerco · Gun P42'],
+ ['diverse','Poupar para cerco · Gun P20'],
 ];
 export function bindBotSelectors() {
   const bots=$('br-bots');bots.replaceChildren();

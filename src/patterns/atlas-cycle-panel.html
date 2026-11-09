@@ -4,21 +4,21 @@
  <div id="br-cycle-report" hidden>
   <dl class="br-cycle-summary">
    <div><dt>Carimbo inicial</dt><dd id="br-cycle-stamp"></dd></div>
-   <div><dt>Reserva adicional para manutenção</dt><dd id="br-cycle-capital"></dd></div>
+   <div><dt>Reserva para cobrir déficits</dt><dd id="br-cycle-capital"></dd></div>
    <div><dt>Primeiro saldo positivo</dt><dd id="br-cycle-positive"></dd></div>
    <div><dt>Recuperação do carimbo</dt><dd id="br-cycle-payback"></dd></div>
   </dl>
   <p id="br-cycle-trend"></p>
   <figure class="br-cycle-figure">
-   <figcaption><span>Energia por <span id="br-cycle-unit">ciclo</span></span><span class="br-cycle-income">Receita</span><span class="br-cycle-upkeep">Manutenção</span></figcaption>
-   <svg id="br-cycle-plot" viewBox="0 0 570 92" role="img" aria-label="Evolução da receita e da manutenção; valores na tabela abaixo"></svg>
+   <figcaption><span>Energia por <span id="br-cycle-unit">ciclo</span></span><span class="br-cycle-income">Produção</span><span class="br-cycle-upkeep">Custo dos nascimentos</span></figcaption>
+   <svg id="br-cycle-plot" viewBox="0 0 570 92" role="img" aria-label="Energia produzida e custo dos nascimentos por intervalo"></svg>
   </figure>
   <p class="br-cycle-muted" id="br-cycle-solvency"></p>
   <details class="br-cycle-ledger"><summary>Ver valores por intervalo</summary>
    <div class="br-cycle-scroll" role="region" aria-label="Detalhamento econômico" tabindex="0">
-    <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Receita</th><th scope="col">Manutenção</th><th scope="col">Do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
+    <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Produção</th><th scope="col">Custo dos nascimentos</th><th scope="col">Produção do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
    </div>
-   <p class="br-cycle-muted">¹ Parcela da manutenção cobrada de células vivas durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
+   <p class="br-cycle-muted">¹ Parcela da produção recebida pelas células que permaneceram vivas no mesmo lugar durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
   </details>
  </div>
 </section>

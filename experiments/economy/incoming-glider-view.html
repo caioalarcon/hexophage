@@ -1,0 +1,46 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hexophage · O disparo que vira uma despesa</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0a1720;color:#dbe9e9;font:16px/1.42 system-ui}main{max-width:1160px;margin:auto;padding:clamp(14px,3vw,40px)}
+small,.meta{color:#9fb7bd}.eyebrow{font-weight:700;color:#8bd8bb;letter-spacing:2px;font-size:11px}h1{font-size:clamp(25px,5vw,48px);line-height:1.05;margin:10px 0}p{max-width:85ch}
+nav{border-block:1px solid #36515b;padding:14px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0}button,select{color:#dbe9e9;background:#172b35;border:1px solid #4b6168;border-radius:5px;padding:7px;font:inherit}button{cursor:pointer}button:hover{background:#27474e}input{accent-color:#7cdeb5;flex:1;min-width:120px}#gen{color:#a2f4cb;font-variant-numeric:tabular-nums;min-width:5em}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:12px}article{border:1px solid #36515b;border-radius:10px;background:#10212a;overflow:hidden}h2{font-size:18px;margin:12px 16px}canvas{background:#0b1820;display:block;width:100%;height:clamp(170px,27vw,300px)}dl{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin:12px 16px}dt{font-size:12px;color:#a8c0c3}dd{font-weight:650;margin:2px 0;font-variant-numeric:tabular-nums}
+.dot{font-weight:700}details{margin-top:18px}summary{cursor:pointer}footer{margin-top:15px;font-size:13px;color:#a0b9bd}
+</style><main><div class="eyebrow">HEXOPHAGE · REPLAY DE COLISÃO</div><h1>O disparo que vira uma despesa</h1><p>Um glider P4 de seis células atinge um refletor P42 de dezessete. As duas janelas acompanham o mesmo defensor. Só a partida à esquerda recebe o disparo.</p>
+<label>Reserva por jogador <select id="budget"><option value="1000000000">1 bilhão · observar o crescimento</option><option value="5000">5.000 · observar a erosão</option></select></label>
+<nav><button id="play">▶ Reproduzir</button><input id="range" aria-label="Geração" type="range" min="0" max="768" value="0"><b id="gen">G 0</b><button data-gen="0">Início</button><button id="impact">Impacto</button><button data-gen="128">G128</button><button data-gen="256">G256</button><button data-gen="768">G768</button></nav>
+<p class="meta"><b class="dot" style="color:#75dfbd">⬢ Defensor</b>　<b class="dot" style="color:#ffb86a">⬢ Atacante</b>　<b class="dot" style="color:#beb9ee">⬢ Neutra</b></p>
+<section id="boards"></section>
+<footer id="note"></footer>
+<details><summary>Como reproduzir a experiência</summary><p>Duas partidas do motor do Hexophage, esfera f256, parâmetros econômicos padrão, bots ociosos. O defensor carimba primeiro. O atacante carimba o glider a distância, em espaço livre. Cada quadro vem das células e do extrato financeiro registrados naquela geração. As duas janelas usam a mesma escala.</p><p>Sem erosão, os 416 nascimentos e mortes na ponta avançante entre G301 e G364 coincidiram com os da ponta do crescedor de colmeia do atlas entre G276 e G339, após rotação e translação. A manutenção aparece no extrato do defensor.</p></details></main>
+<script>
+const data=/* REPLAY_DATA */null;
+const $=id=>document.getElementById(id), fmt=new Intl.NumberFormat('pt-BR').format;
+const colors={1:'#ffb86a',2:'#75dfbd',7:'#beb9ee'};
+let budget=null,last=-1,timer=null, grids=[];
+const stats=['Reserva do defensor','Células do defensor','Receita nesta geração','Manutenção nesta geração','Células corroídas no total','Células neutras'];
+for(const title of ['Com o disparo','Sem o disparo']){
+ const a=document.createElement('article');a.innerHTML='<h2>'+title+'</h2><canvas aria-label="Células por proprietário"></canvas><dl>'+stats.map(s=>'<div><dt>'+s+'</dt><dd>0</dd></div>').join('')+'</dl>';$('boards').append(a);
+}
+function pos(k){const q=(k>>9)-256,r=(k&511)-256;return [Math.sqrt(3)*(q+r/2),1.5*r];}
+function paint(t){
+ t=Math.min(768,Math.max(0,Number(t)));
+ const b=$('budget').value;if(b!==budget||t<last){last=-1;grids=[new Map(),new Map()];budget=b;}
+ for(let g=last+1;g<=t;g++)for(let i=0;i<2;i++)for(const change of data[b][i].frames[g][0]){const k=change>>3,p=change&7;if(p)grids[i].set(k,p);else grids[i].delete(k);}
+ last=t;$('range').value=t;$('gen').textContent='G '+fmt(t);
+ const all=[[0,0],...grids.flatMap(grid=>[...grid.keys()].map(pos))];
+ const xs=all.map(p=>p[0]),ys=all.map(p=>p[1]);const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+ [...document.querySelectorAll('article')].forEach((a,i)=>{
+  const c=a.querySelector('canvas'),w=c.clientWidth,h=c.clientHeight,dpr=Math.min(devicePixelRatio,2);
+  c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const radius=Math.min(12,(w-20)/(x1-x0+2),(h-20)/(y1-y0+2));const cx=(x0+x1)/2,cy=(y0+y1)/2;
+  for(const [k,owner] of grids[i]){const [x,y]=pos(k);ctx.beginPath();for(let j=0;j<6;j++){const angle=(j*60-30)*Math.PI/180;const xx=w/2+(x-cx+.93*Math.cos(angle))*radius,yy=h/2+(y-cy+.93*Math.sin(angle))*radius;if(j)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);}ctx.closePath();ctx.fillStyle=colors[owner];ctx.fill();}
+  const nums=data[b][i].frames[t].slice(1);[...a.querySelectorAll('dd')].forEach((v,j)=>v.textContent=fmt(nums[j]));
+ });
+ $('note').textContent=b==='5000'?'Com 5.000 de reserva inicial, a primeira erosão ocorre em G136 após o ataque e em G430 no controle.':'Com 1 bilhão de reserva inicial, as duas estruturas podem manter a trajetória natural durante as 768 gerações observadas.';
+}
+function stop(){clearInterval(timer);timer=null;$('play').textContent='▶ Reproduzir'}
+$('play').onclick=()=>{if(timer){stop();return}if(last===768)paint(0);$('play').textContent='❚❚ Pausar';timer=setInterval(()=>{paint(last+1);if(last===768)stop()},40)};
+$('range').oninput=e=>{stop();paint(e.target.value)};$('budget').onchange=()=>{stop();paint(last)};
+for(const b of document.querySelectorAll('[data-gen]'))b.onclick=()=>{stop();paint(b.dataset.gen)};
+$('impact').textContent='Impacto · G'+data.impact;$('impact').onclick=()=>{stop();paint(data.impact)};
+window.onresize=()=>paint(last);paint(0);
+</script></html>

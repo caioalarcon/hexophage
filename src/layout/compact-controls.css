@@ -9,7 +9,7 @@
  #hexlab .br-hotbar{min-height:62px;padding:3px 4px}
  #hexlab .br-stampcard{min-height:56px;flex-basis:69px;width:69px}
  #hexlab .br-stampcard canvas{height:30px;width:60px}
- #hexlab .br-transform button{height:31px;width:27px;min-width:27px;font-size:15px}
+ #hexlab .br-transform button{height:17px;width:27px;min-width:27px;font-size:14px}
 }
 
 /* Feedback is announced to assistive technology, never drawn over the world. */
@@ -31,7 +31,6 @@
  #hexlab .br-rail{z-index:25;overflow:visible}
  #hexlab .br-rail-controls .hl-controls{min-width:0;gap:5px}
  #hexlab .br-rail-controls .hl-controls #hl-step,
- #hexlab .br-rail-controls .hl-controls #hl-clear,
  #hexlab .br-rail-controls .hl-controls #hl-seed{display:none!important}
  #hexlab .br-rail-controls .br-live-tuning{display:contents!important}
  #hexlab .br-rail-controls #br-tuning-toggle{display:inline-flex!important;align-items:center;gap:3px;min-width:59px}
@@ -49,3 +48,8 @@
 #hexlab .br-rail .br-energy-panel{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 #hexlab .br-rail .br-rail-spacer{display:none}
 @media (orientation:portrait){#hexlab .br-rail .br-energy-panel{display:none}}
+
+@media (orientation:portrait) and (max-width:360px), (orientation:landscape) and (max-height:470px){
+ #hexlab .br-rail-controls #hl-play,#hexlab .br-rail-controls #hl-clear{flex:0 0 auto;min-width:30px;min-height:30px;padding:4px 6px}
+ #hexlab .br-rail-controls #hl-play span:last-child,#hexlab .br-rail-controls #hl-clear span{display:none}
+}

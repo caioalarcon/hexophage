@@ -2,12 +2,13 @@ import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
 import { patterns } from '../catalog.js';
 import { newStamp, stampFromPoints, stampOffsets } from './stamp-grid.js';
+import { slotIds } from '../../deck/slots.js';
 import { renderDeck } from '../../deck/hand.js';
 import { savedPatterns } from './saved-patterns.js';
 import { decodeRLE } from '../rle.js';
 
 // Pattern selection is independent of simulation state and owner identity.
-let currentPatternId = 'p2';
+let currentPatternId = slotIds[0];
 
 function loadPattern(id) {
   currentPatternId = id;

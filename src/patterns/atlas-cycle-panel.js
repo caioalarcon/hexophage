@@ -39,7 +39,7 @@ function fillTable(rows) {
   for (const r of rows) {
     const tr = document.createElement('tr');
     const values = [fmt(r.cycle), fmt(r.from) + '–' + fmt(r.to), fmt(r.births), fmt(r.income),
-      fmt(r.upkeep), fmt(r.fixedUpkeep) + ' (' + fmt(r.fixedCore) + ' cél.)', signed(r.net), signed(r.cumulative)];
+      fmt(r.upkeep), fmt(r.fixedIncome) + ' (' + fmt(r.fixedCore) + ' cél.)', signed(r.net), signed(r.cumulative)];
     for (const [i, value] of values.entries()) {
       const cell = document.createElement(i === 0 ? 'th' : 'td');
       if (i === 0) cell.scope = 'row';
@@ -61,7 +61,7 @@ function render(report, economy, pattern) {
   $('br-cycle-heading').textContent = (kind === 'window' ? 'Economia por janela' : 'Economia por ciclo') + ' · ' + pattern.name;
   $('br-cycle-scope').textContent = frame + ' de ' + fmt(cycleLength) + ' gerações · ' +
     fmt(rows.length) + ' ' + unit.toLowerCase() + 's · ' + fmt(generations) + ' gerações simuladas. ' +
-    'Estrutura isolada em malha plana, com reserva suficiente para evitar erosão.' +
+    'Estrutura isolada, sem rivais e sem outras fontes de renda do jogador. O cálculo usa malha plana e reserva suficiente para evitar erosão.' +
     (kind === 'emission' ? ' A conta inclui as naves emitidas.' : '');
   $('br-cycle-stamp').textContent = fmt(initialCost);
   $('br-cycle-capital').textContent = fmt(workingCapital);
@@ -71,11 +71,11 @@ function render(report, economy, pattern) {
     'Geração ' + fmt(report.paybackGeneration);
 
   const charge = rows.every(row => row.upkeep === first.upkeep)
-    ? 'A manutenção custou ' + fmt(first.upkeep) + ' de energia por ' + interval + '.'
-    : 'A manutenção custou ' + fmt(first.upkeep) + ' no primeiro intervalo e ' + fmt(last.upkeep) + ' no último.';
-  const core = rows.every(row => row.fixedUpkeep === first.fixedUpkeep)
-    ? ' A parcela do núcleo ficou em ' + fmt(first.fixedUpkeep) + ' por ' + interval + '.'
-    : ' A parcela do núcleo passou de ' + fmt(first.fixedUpkeep) + ' para ' + fmt(last.fixedUpkeep) + '.';
+    ? 'Os nascimentos custaram ' + fmt(first.upkeep) + ' de energia por ' + interval + '.'
+    : 'Os nascimentos custaram ' + fmt(first.upkeep) + ' no primeiro intervalo e ' + fmt(last.upkeep) + ' no último.';
+  const core = rows.every(row => row.fixedIncome === first.fixedIncome)
+    ? ' O núcleo produziu ' + fmt(first.fixedIncome) + ' por ' + interval + '.'
+    : ' A produção do núcleo passou de ' + fmt(first.fixedIncome) + ' para ' + fmt(last.fixedIncome) + '.';
   const positive = report.profitableFromCycle;
   const streak = positive === null ? '' : positive === 1 ? ' Todos os intervalos deram saldo positivo.' :
     positive === last.cycle ? ' O último intervalo deu saldo positivo.' :

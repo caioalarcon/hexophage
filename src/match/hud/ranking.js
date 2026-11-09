@@ -5,6 +5,13 @@ import { syncPregameControls } from '../controls/pregame.js';
 import { updateHumanReport } from './human-report.js';
 import { updateEnergyPanel } from './energy-panel.js';
 
+// Ranking display: whole numbers without thousands or decimal separators.
+const rankingInteger = (value) => String(Math.round(value));
+const rankingSignedInteger = (value) => {
+  const rounded = Math.round(value);
+  return (rounded > 0 ? '+' : '') + String(rounded);
+};
+
 function updateGamePanel(force = false) {
   if (!game.players.length) return;
   if (!force && world.gen === game.lastStats) return;
@@ -56,15 +63,13 @@ function updateGamePanel(force = false) {
       values = card.lastElementChild;
     name.firstElementChild.textContent = String(i + 1) + 'º';
     name.lastElementChild.textContent = p.symbol + ' ' + p.name + (p.out ? ' ×' : '');
-    values.children[0].lastElementChild.textContent = pop.toLocaleString('pt-BR');
-    values.children[1].lastElementChild.textContent = p.reserve.toLocaleString('pt-BR');
+    values.children[0].lastElementChild.textContent = rankingInteger(pop);
+    values.children[1].lastElementChild.textContent = rankingInteger(p.reserve);
     const balance = values.children[2].lastElementChild;
-    balance.textContent =
-      (rate > 0 ? '+' : '') +
-      rate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    balance.textContent = rankingSignedInteger(rate);
     balance.className = rate > 0 ? 'positive' : rate < 0 ? 'negative' : '';
     card.title =
-      `${i + 1}º ${p.symbol} ${p.name} · Campo ${pop.toLocaleString('pt-BR')} · Reserva ${p.reserve.toLocaleString('pt-BR')} · Saldo ${rate.toFixed(3)} por geração` +
+      `${i + 1}º ${p.symbol} ${p.name} · Campo ${rankingInteger(pop)} · Reserva ${rankingInteger(p.reserve)} · Saldo ${rankingInteger(rate)} por geração` +
       (p.out ? ' · Eliminado' : '');
     if (podium.children[i] !== card) podium.insertBefore(card, podium.children[i] || null);
     if (!details) continue;
@@ -79,19 +84,19 @@ function updateGamePanel(force = false) {
     };
     cell(String(i + 1));
     cell(`${p.symbol} ${p.name}${p.out ? ' · eliminado' : ''}`);
-    cell(pop.toLocaleString('pt-BR'));
-    cell(p.reserve.toLocaleString('pt-BR'));
+    cell(rankingInteger(pop));
+    cell(rankingInteger(p.reserve));
     cell(
-      (rate > 0 ? '+' : '') + rate.toFixed(2),
+      rankingSignedInteger(rate),
       rate > 0 ? 'positive' : rate < 0 ? 'negative' : 'neutral',
     );
     const net = p.received - p.paid;
     cell(
-      (net > 0 ? '+' : '') + net.toLocaleString('pt-BR'),
+      rankingSignedInteger(net),
       net > 0 ? 'positive' : net < 0 ? 'negative' : 'neutral',
     );
-    cell(p.eroded.toLocaleString('pt-BR'), p.eroded ? 'negative' : 'neutral');
-    cell(p.stamps.toLocaleString('pt-BR'));
+    cell(rankingInteger(p.eroded), p.eroded ? 'negative' : 'neutral');
+    cell(rankingInteger(p.stamps));
     body.append(tr);
   }
 }

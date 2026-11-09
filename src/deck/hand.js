@@ -1,4 +1,5 @@
 import { game } from '../browser/game.js';
+import { fieldKit } from './field-kit.js';
 import { drawDeckIcon } from './card-icon.js';
 import { deckNames, deckPoints } from './cards.js';
 import { slotIds, selectedSlot, selectSlot, requestSlotPicker } from './slots.js';
@@ -25,7 +26,7 @@ function renderDeck(currentPatternId, loadPattern) {
     const price=energyCost(pts.length,game.economy);
     b.querySelector('.br-stampname').textContent=name;
     b.querySelector('.br-stampprice').textContent=price?'◈'+price:'◈0';
-    b.title='Slot '+(slot+1)+' · '+name+' · '+price+' energia. Clique nos três pontos para trocar.';
+    b.title = [name, fieldKit[id]?.use, 'Clique nos três pontos para trocar.'].filter(Boolean).join(' · ');
     drawDeckIcon(b.querySelector('canvas'),pts);
     b.classList.toggle('selected',slot===selectedSlot && id===currentPatternId);
     b.setAttribute('aria-pressed',String(slot===selectedSlot && id===currentPatternId));

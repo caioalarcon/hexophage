@@ -1,7 +1,7 @@
 name: Verify Hexophage
 on:
   push:
-    branches: [dev]
+    branches: [dev, preview/grower-siege]
   pull_request:
     branches: [main]
 permissions:
@@ -23,13 +23,20 @@ jobs:
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - name: Verify the offline economic experiments
+        run: |
+          node --test "experiments/economy/*.test.js"
+          node experiments/economy/build-lab.js
+          git diff --exit-code --stat -- experiments/economy/lab.html
+          node experiments/economy/lab/browser.test.js
+          node experiments/economy/incoming-glider-replay.mjs
       - name: Update only the dev preview HTML after successful checks
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/preview/grower-siege')
         run: |
           git add index.html
           if ! git diff --cached --quiet; then
             git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Build dev preview from tested features'
-            git push origin HEAD:dev
+            git push origin HEAD:${GITHUB_REF_NAME}
           fi
       - uses: actions/upload-artifact@v4
         with:

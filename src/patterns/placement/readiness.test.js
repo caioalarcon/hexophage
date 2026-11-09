@@ -12,25 +12,27 @@ const { stampReady, updateStampReadiness } = await import('./readiness.js');
 
 test('selected-stamp affordability controls both actions and displays the missing biomass', () => {
   world.stampCount = 3;
+  game.economy.stampCost = 30;
   game.players = [{ reserve: 2, out: false }];
   game.ended = false;
   updateStampReadiness();
   assert.equal(stampReady(), false);
   assert.deepEqual(
     [tag.textContent, tag.style.color, mode.disabled, demo.disabled],
-    ['3 células · 30 energia · faltam 28', '#ffb99b', true, true],
+    ['3 células · 90 energia · faltam 88', '#ffb99b', true, true],
   );
-  game.players[0].reserve=30;
+  game.players[0].reserve=90;
   updateStampReadiness();
   assert.equal(stampReady(), true);
   assert.deepEqual(
     [tag.textContent, tag.style.color, mode.disabled, demo.disabled],
-    ['3 células · 30 energia · pronto', '', false, false],
+    ['3 células · 90 energia · pronto', '', false, false],
   );
 });
 
 test('message precedence distinguishes an empty stamp, an eliminated player and an ended match', () => {
   world.stampCount = 3;
+  game.economy.stampCost = 30;
   game.players = [{ reserve: 10, out: true }];
   game.ended = false;
   updateStampReadiness();
