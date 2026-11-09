@@ -96,3 +96,49 @@ test('canonical rules share learning only under matching economy, rates and stam
   c[1].gameplay = { ...c[1].gameplay, patterns: [{id:'single',rle:'2o!'}] };
   assert.notEqual(brainNamespace(...a), brainNamespace(...c));
 });
+
+test('ranked recall reads the original v1 browser record and combines only this bot’s observations', () => {
+  const storage = fakeStorage();
+  const encode = (context, action, count, mean) => [JSON.stringify([context, action]), count, mean];
+  storage.value = JSON.stringify([['world', { stamps: [
+    encode('empty', 'rare', 4, 0.9),
+    encode('empty', 'less-sure', 1, 1),
+    encode('field/empty', 'rare', 2, -0.2),
+  ], situations: [encode('rival/00003', 'p@4/2', 2, 0.5)] }]]);
+  const m = createBrainArchive(storage).open('world');
+  assert.deepEqual(m.ranked(2, 'empty'), [
+    { action:'rare', count:4, mean:.9 }, { action:'less-sure', count:1, mean:1 },
+  ]);
+  m.observe(2, 'empty', 'rare', -.1);
+  m.observe(2, 'yield/empty', 'now-profitable', .8);
+  assert.deepEqual(m.ranked(2, 'empty', 1), [{ action:'rare', count:5, mean:.7 }]);
+  assert.equal(m.ranked(3, 'empty', 1)[0].count, 4);
+  assert.equal(m.ranked(2, 'field/empty')[0].mean, -.2);
+  assert.deepEqual(m.ranked(2, 'rival/00003')[0], { action:'p@4/2', count:2, mean:.5 });
+  m.checkpoint();
+  assert.deepEqual(m.ranked(3, 'yield/empty'), []);
+  m.select('other');
+  assert.deepEqual(m.ranked(2, 'empty'), []);
+  m.select('world');
+  m.finish();
+  const next = createBrainArchive(storage).open('world');
+  assert.equal(next.ranked(5, 'yield/empty')[0].action, 'now-profitable');
+  assert.equal(next.ranked(5, 'empty')[0].count, 5);
+
+  // In v1 even a productive investment looked negative before its purchase
+  // price was repaid. Its stronger evidence should improve its rank.
+  for (let i = 0; i < 9; i++) next.observe(2, 'field/own', 'productive', -.4885);
+  for (let i = 0; i < 15; i++) {
+    next.observe(2, 'field/own', 'costly'+i, -.52);
+    next.observe(2, 'field/own', 'costly'+i, -.52);
+  }
+  assert.equal(next.ranked(2, 'field/own')[0].action, 'productive');
+});
+
+test('ranked recall stays bounded and preserves negative evidence', () => {
+  const m = createBrainArchive().open('world');
+  for (let i = 0; i < 200; i++) m.observe(2, 'empty', 'seed'+i, -i);
+  assert.equal(m.ranked(2, 'empty', 1000).length, 16);
+  assert.deepEqual(m.ranked(2, 'empty', 0), []);
+  assert.deepEqual(m.ranked(2, 'empty', 2).map(r => r.action), ['seed0','seed1']);
+});

@@ -13,6 +13,21 @@ module.exports = async function verifyLearningReload(page) {
     return { mode: game.botMode, completed: game.brainMetrics.completed, memory: game.brainMemory.stats() };
   });
   assert.equal(first.mode, 'learn');
+  const changed = await page.evaluate(() => {
+    const { game, world, nextTick } = __sphereLab;
+    const prior = game.brainMemory, g = world.gen, select = document.querySelector('#br-brain-rate');
+    const defaultRate = game.brainRate;
+    select.value = '1';
+    select.dispatchEvent(new Event('change', {bubbles:true}));
+    const before = game.brainMetrics.visits;
+    for (let i = 0; i < 2000; i++) nextTick();
+    return { defaultRate, rate: game.brainRate, sameMemory: game.brainMemory === prior,
+      elapsed: world.gen - g, visits: game.brainMetrics.visits - before,
+      enabled: !document.querySelector('#br-brain-rate-label').hidden };
+  });
+  assert.deepEqual([changed.defaultRate,changed.rate,changed.sameMemory,changed.elapsed,changed.enabled],
+    [8,1,true,2000,true]);
+  assert(changed.visits <= 8192 + 96 * 2000);
   assert(first.completed > 0 && first.memory.observations > 0);
   await page.reload();
   await ready();

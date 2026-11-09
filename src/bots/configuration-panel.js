@@ -15,6 +15,7 @@ export function bindBotSelectors() {
   const bots=$('br-bots');bots.replaceChildren();
   updateBrainProgress();
   bots.hidden = game.botMode === 'learn';
+  $('br-brain-rate-label').hidden = !bots.hidden;
   if (bots.hidden) return;
   const { choices } = getBotPlans(game.gameplay, game.economy);
   for(let id=2;id<=6;id++) {

@@ -2,12 +2,14 @@ import { ECONOMY_KEYS } from '../../match/constructive-economy.js';
 
 const STORE_KEY = 'hexophage.brains.v1';
 const MAX_NAMESPACES = 8, MAX_STORE_CHARS = 2_000_000;
-// Six broad observations per stamp fit the entire Callahan catalog. A moving
+// Simulation, field payback and operating yield for each broad context of a stamp
+// fit the entire Callahan catalog. A moving
 // front can generate many rare signatures without crowding out those lessons.
-const limits = { stamps: 1024, situations: 256 };
+const limits = { stamps: 1536, situations: 256 };
+const MAX_SHORTLIST = 16;
 const kinds = Object.keys(limits);
 const records = from => ({ stamps: new Map(from?.stamps), situations: new Map(from?.situations) });
-const kindOf = context => context.includes('/') && !context.startsWith('field/') ? 'situations' : 'stamps';
+const kindOf = context => context.includes('/') && !context.startsWith('field/') && !context.startsWith('yield/') ? 'situations' : 'stamps';
 const MAX_KEY_LENGTH = 192;
 const EMPTY = Object.freeze({ count: 0, mean: 0 });
 
@@ -61,8 +63,30 @@ function combine(old, fresh) {
   return { count, mean: old.mean + (fresh.mean - old.mean) * (fresh.count / count) };
 }
 
+// The on-disk v1 key is a pair encoded as JSON. Index its context once and
+// reuse it for all five readers. Scores remain live when an existing key changes.
+const contextIndexes = new WeakMap();
+function actionsIn(bank, context) {
+  if (!bank) return [];
+  let index = contextIndexes.get(bank);
+  if (!index) {
+    index = new Map();
+    for (const key of bank.keys()) {
+      let pair;
+      try { pair = JSON.parse(key); } catch { continue; }
+      if (!Array.isArray(pair) || typeof pair[0] !== 'string' || typeof pair[1] !== 'string') continue;
+      const [scope, action] = pair;
+      if (!index.has(scope)) index.set(scope, []);
+      index.get(scope).push({ key, action });
+    }
+    contextIndexes.set(bank, index);
+  }
+  return index.get(context) ?? [];
+}
+
 function record(rows, key, sample, kind) {
   const bank = rows[kind];
+  if (!bank.has(key)) contextIndexes.delete(bank);
   put(bank, key, combine(bank.get(key), sample), limits[kind]);
 }
 
@@ -112,7 +136,8 @@ export function createBrainArchive(storage, onDirty) {
   function open(namespace) {
     refresh();
     const inherited = new Map(archive);
-    const personal = new Map(), pending = new Map();
+    const personal = new Map(), pending = new Map(), rankings = new Map();
+    let recalls = 0, recalled = 0;
     let lookups = 0, hits = 0, observations = 0, checkpoints = 0, closed = false;
     function botRows(id) {
       const bots = scope(personal, namespace);
@@ -141,7 +166,42 @@ export function createBrainArchive(storage, onDirty) {
       catch { storage = null; } // Full or disabled storage leaves the in-memory archive usable.
     }
     return {
-      select(ns) { if (!closed) namespace = ns; },
+      select(ns) {
+        if (closed || namespace === ns) return;
+        namespace = ns;
+        rankings.clear();
+      },
+      // Recall the actions themselves, including winners too rare to appear
+      // in a random tournament. Payback, yield and simulation each keep their
+      // own context. Reading one bot never reveals another bot's live data.
+      ranked(botId, context, limit = 8) {
+        if (!Number.isInteger(botId) || botId < 1 || botId > 6 ||
+            !Number.isInteger(limit) || limit < 1 || typeof context !== 'string' || context.length > MAX_KEY_LENGTH) return [];
+        let cache = rankings.get(botId);
+        if (!cache) rankings.set(botId, cache = new Map());
+        let best = cache.get(context);
+        if (!best) {
+          const kind = kindOf(context);
+          const prior = inherited.get(namespace)?.[kind];
+          const mine = personal.get(namespace)?.get(botId)?.[kind];
+          const candidates = [];
+          const add = ({ key, action }) => {
+            const { count, mean } = combine(prior?.get(key), mine?.get(key));
+            // Utilities are normalized to [-1, 1]. A pessimistic unseen
+            // sample keeps a frequently observed, less costly legacy opening
+            // above a worse card that merely has fewer observations.
+            candidates.push({ action, count, mean, score: (mean * count - 1) / (count + 1) });
+          };
+          for (const row of actionsIn(prior, context)) add(row);
+          for (const row of actionsIn(mine, context)) if (!prior?.has(row.key)) add(row);
+          candidates.sort((a,b) => b.score - a.score || b.count - a.count || a.action.localeCompare(b.action, 'en'));
+          best = candidates.slice(0, MAX_SHORTLIST).map(({ action, count, mean }) => Object.freeze({ action, count, mean }));
+          put(cache, context, best, 32);
+        }
+        recalls++;
+        if (best.length) recalled++;
+        return best.slice(0, limit);
+      },
       lookup(botId, context, action) {
         lookups++;
         const key = JSON.stringify([context, action]), kind = kindOf(context);
@@ -156,7 +216,10 @@ export function createBrainArchive(storage, onDirty) {
         const key = JSON.stringify([context, action]), sample = { count: 1, mean: utility };
         if (key.length > 512) return;
         const kind = kindOf(context);
-        record(botRows(botId), key, sample, kind);
+        const mine = botRows(botId), bank = mine[kind];
+        if (bank.size === limits[kind] && !bank.has(key)) rankings.delete(botId);
+        else rankings.get(botId)?.delete(context);
+        record(mine, key, sample, kind);
         let updates = pending.get(namespace);
         // A long headless run may never receive a browser checkpoint. Merge
         // the batch before a new observation could evict uncommitted samples.
@@ -180,7 +243,7 @@ export function createBrainArchive(storage, onDirty) {
         return { namespace, inheritedEntries: size(prior), priorSamples: samples(prior),
           privateEntries: bots.reduce((n, rows) => n + size(rows), 0),
           privateSamples: bots.reduce((n, rows) => n + samples(rows), 0),
-          observations, lookups, hits, checkpoints };
+          observations, lookups, hits, recalls, recalled, checkpoints };
       },
       checkpoint,
       finish() { checkpoint(); closed = true; },

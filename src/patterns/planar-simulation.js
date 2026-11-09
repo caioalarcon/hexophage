@@ -6,13 +6,15 @@ import { decodeRLE } from './rle.js';
 const stride = 65536;
 const adjacent = DIR.map(([q, r]) => q * stride + r);
 
+export function patternSite(q, r) { return q * stride + r; }
+
 export function patternOffset(id) {
   const q = Math.round(id / stride);
   return [q, id - q * stride];
 }
 
 export function seedPatternAges(pattern) {
-  return new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
+  return new Map(decodeRLE(pattern.rle).map(([q, r]) => [patternSite(q, r), 1]));
 }
 
 // A B0 rule changes infinitely many sites even with an empty seed. Use an

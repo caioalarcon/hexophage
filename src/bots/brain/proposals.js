@@ -61,6 +61,24 @@ export function selectSpot(world, game, player, random) {
   const direction = Math.floor(random() * 6);
   if (rivals.length && player.stamps && random() < 0.55) {
     const rival = rivals[Math.floor(random() * rivals.length)];
+    // In a large colony most cells may be old. Reuse the small snapshot of
+    // actual births to find the advancing edge without walking the planet.
+    const sites = game.recentBirthSites?.[rival.id];
+    if (sites && random() < 0.75) {
+      const start = Math.floor(random() * sites.length);
+      for (let i = 0; i < sites.length; i++) {
+        const target = sites[(start + i) % sites.length];
+        if (target < 0 || world.owners[target] !== rival.id || world.cellAges[target] > 8) continue;
+        if (world.graph.deg[target] !== 6) continue;
+        for (let k = 0; k < 6; k++) {
+          const facing = (direction + k) % 6, offset = target * 6;
+          const ahead = world.graph.adj[offset + facing];
+          const behind = world.graph.adj[offset + (facing + 3) % 6];
+          if (!world.cells[ahead] && world.owners[behind] === rival.id)
+            return { kind: 'rival', target, direction: facing };
+        }
+      }
+    }
     return { kind: 'rival', target: sampleFront(world, world.ownerCells[rival.id], random), direction };
   }
   if (own.length && random() < 0.7)
@@ -109,6 +127,12 @@ function fingerprint(world, ids, threshold, horizon) {
       age + horizon < threshold ? 2 : 3 + threshold - age;
     return 8 * stage + owner;
   });
+}
+
+export function emptyHexPatch(world, position, radius) {
+  if (radius > 20 || !isotropic(world.physics) || world.physics.birthsFromVacuum) return false;
+  const ids = patchForStamp(world, position.center, position.heading, disk(radius));
+  return !!ids && ids.every(id => world.cells[id] === 0);
 }
 
 export function witness(world, position, radius, threshold, horizon) {

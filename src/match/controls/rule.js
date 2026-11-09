@@ -54,6 +54,9 @@ export function bindRuleControls() {
   const mode = $('br-bot-mode');
   if (new URLSearchParams(location.search).get('bots') === 'learn') game.botMode = 'learn';
   mode.value = game.botMode;
+  const rate = $('br-brain-rate');
+  rate.value = String(game.brainRate);
+  rate.onchange = () => { game.brainRate = Number(rate.value); };
   mode.onchange = () => {
     game.botMode = mode.value;
     bindBotSelectors();

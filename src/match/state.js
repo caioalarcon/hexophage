@@ -26,6 +26,7 @@ export function createMatchState(world, { rule, notation, economy, botMode = 'pr
     names: ['', 'Você', 'Raposa', 'Polvo', 'Escorpião', 'Alien', 'Robô'],
     players: [],
     botMode,
+    brainRate: 8,
     tax: 0,
     interval: 10,
     average: 0,

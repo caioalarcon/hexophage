@@ -1,4 +1,4 @@
-import { DEFAULT_ECONOMY, generationEnergy } from './constructive-economy.js';
+import { DEFAULT_ECONOMY, availableCells, generationEnergy } from './constructive-economy.js';
 import { recordCombatDeath } from './combat/direct-death.js';
 import { settleCombatTribute } from './combat/tribute.js';
 
@@ -43,7 +43,11 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
       ages[id] = age;
     } else {
       ages[id] = 1;
-      if (owner >= 1 && owner <= 6) newborn[owner]++;
+      if (owner >= 1 && owner <= 6) {
+        const sites = game.recentBirthSites?.[owner];
+        if (sites) sites[newborn[owner] % sites.length] = id;
+        newborn[owner]++;
+      }
     }
   }
   for (const p of game.players) {
@@ -86,7 +90,7 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
   for (const p of game.players) {
     if (p.out) continue;
     p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
-    if (p.reserve <= 0 && world.ownerCells[p.id].length === 0) p.out = true;
+    if (!world.ownerCells[p.id].length && availableCells(p.reserve, e) < 1) p.out = true;
   }
   const alive = game.players.filter(p => !p.out);
   game.average = alive.length

@@ -35,7 +35,7 @@ test('stamp charges energy only for newly placed cells; ghost and commit share l
 });
 test('first-generation and match-end event order remains synchronous',()=>{
   const m=createHeadlessMatch(buildSphere(20));
-  m.game.players.forEach((p,i)=>p.reserve=i===0?1:0);
+  m.game.players.forEach((p,i)=>p.reserve=i===0?m.game.economy.stampCost:0);
   const events=[];
   const engine=createMatchEngine(m.world,m.game,{
     populationChanged:()=>events.push('changed'),pause:()=>events.push('pause'),

@@ -1,5 +1,7 @@
 # Aprendizes por simulação local
 
+[Segunda rodada: aprendizagem entre quatro partidas, ritmo de pesquisa e nova condição de eliminação](four-matches.md)
+
 Em **Painel de jogo → Partida e bots → Bots**, escolha **Aprendizes**. Cada bot compara fazer uma compra com esperar. As duas cópias têm os mesmos donos, idades, reservas e vizinhos ordenados do planeta real. O simulador usa a física, os preços e o tributo da partida. Ele congela o anel externo e a atividade fora do recorte. Marca medições que alcançam a borda e interrompe a previsão quando seria necessário erodir a colônia.
 
 Os candidatos vêm dos carimbos da regra. O planejador experimenta regiões vazias, colônias próprias e frentes rivais, variando posição, carimbo e rotação. Um histórico ruim reduz a prioridade de um candidato em observações posteriores. O bot pode financiar um experimento de abertura antes de observar a maturação, desde que a estimativa de risco caiba na reserva. Ações táticas exigem efeito econômico rival previsto. A checagem final usa a geometria e a legalidade da compra no mundo atual.
@@ -12,7 +14,11 @@ As observações dos bots passam ao histórico comum quando a partida termina ou
 
 O arquivo conserva até oito combinações de física, catálogo e economia. Para cada combinação há limites separados de 1.024 associações amplas e 256 situações locais. Os detalhes recentes de uma frente não expulsam as conclusões gerais sobre as cartas. Quando o navegador bloqueia a gravação, o arquivo continua funcionando em memória enquanto a página estiver aberta.
 
-## Custo em uma partida
+## Primeira rodada de experimentos
+
+As medições e regras descritas abaixo correspondem à primeira prévia (commit `0c110f1`).
+
+### Custo em uma partida
 
 A esfera F320 tem 1.024.002 células. Um recorte mental alcança até 20 anéis, ou 1.261 posições hexagonais. Carimbos que excedem o raio com margem ficam fora da busca. Os cinco bots compartilham um orçamento de 96 visitas a posições locais por geração real e um crédito inicial de 8.192. O custo da busca de candidatas, do reconhecimento local e da memória também entra no tempo medido abaixo.
 
