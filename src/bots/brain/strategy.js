@@ -69,10 +69,10 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
   const brains = game.players.map(p => {
     const random = randomStream(seed ^ Math.imul(p.id, 0x9e3779b9));
     return { random, payback: 120000 + random() * 240000, rivalWeight: .45 + random(),
-      ready: null, field: [], pilotSpent: 0, pilotAt: -Infinity };
+      ready: null, field: [], recover: false, scanned: new Set(), pilotSpent: 0, pilotAt: -Infinity };
   });
   const metrics = {
-    trials: 0, completed: 0, work: 0, visits: 0, actions: 0, waits: 0, invalidated: 0, boundary: 0, tactical: 0, deferred: 0, relocations: 0, pilots: 0, observed: 0,
+    trials: 0, completed: 0, studies: 0, rescues: 0, work: 0, visits: 0, actions: 0, waits: 0, invalidated: 0, boundary: 0, tactical: 0, deferred: 0, relocations: 0, pilots: 0, observed: 0,
     byBot: Object.fromEntries(game.players.map(p => [p.id,
       { trials: 0, completed: 0, actions: 0, observed: 0, patterns: Object.create(null) }])),
   };
@@ -84,7 +84,10 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
   function propose(player, vacuumOpening = false) {
     const brain = brains[player.id - 1];
     for (let attempt = 0; attempt < 3; attempt++) {
-      const spot = selectSpot(world, game, player, brain.random);
+      const recovery = brain.recover && player.flowAverage < 0;
+      const spot = recovery
+        ? { kind: 'empty', target: player.seed, direction: Math.floor(brain.random() * 6) }
+        : selectSpot(world, game, player, brain.random);
       const context = signature(world, player.id, spot);
       const trialNumber = metrics.byBot[player.id].trials;
       const price = game.economy.stampCost;
@@ -94,24 +97,42 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       const pool = vacuumOpening ? catalog.filter(p => p.radius <= 2) :
         small ? catalog.filter(p => p.offsets.length * price <= player.reserve * .16) :
         kit.length && brain.random() < .55 ? kit : catalog;
-      const action = sampleAction(pool.length ? pool : catalog, player, spot, context, memory, brain.random, price);
+      let action;
+      if (recovery) {
+        // A money-losing opening triggers a search for untested alternatives
+        // in the currently equipped hand, then the rest of the valid catalog.
+        const eligible = p => !brain.scanned.has(p.id) && p.offsets.length * price < .65 * player.reserve;
+        let choices = kit.filter(eligible);
+        if (!choices.length) choices = catalog.filter(eligible);
+        if (!choices.length) {
+          brain.scanned.clear();
+          return null;
+        }
+        const stamp = choices[Math.floor(brain.random() * choices.length)];
+        action = { stamp, turn: Math.floor(brain.random() * 6), gap: 3, key: stamp.id, experience: 0 };
+      } else action = sampleAction(pool.length ? pool : catalog, player, spot, context, memory, brain.random, price);
       if (!action) continue;
       const { stamp, turn } = action;
-      const distance = spot.kind === 'empty' ? (player.stamps ? 4 + Math.floor(brain.random() * 14) : 0) :
-        stamp.radius + action.gap;
+      let distance = stamp.radius + action.gap;
+      if (recovery) distance = 14 + Math.floor(brain.random() * 9);
+      else if (spot.kind === 'empty') distance = player.stamps ? 4 + Math.floor(brain.random() * 14) : 0;
       const position = placement(world, spot, stamp, turn, distance);
       if (!position) continue;
-      const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, stamp.radius + 5, spot.kind === 'empty' ? 0 : distance + 3));
+      const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, stamp.radius + (recovery ? 9 : 5), spot.kind === 'empty' ? 0 : distance + 3));
       const deep = metrics.byBot[player.id].trials % 3 === 2;
-      const horizon = vacuumOpening ? 2 : options.horizon ?? (deep ? Math.min(1024, Math.max(96, game.economy.stableAfter + 48)) :
+      const horizon = recovery ? 18 : vacuumOpening ? 2 : options.horizon ?? (deep ? Math.min(1024, Math.max(96, game.economy.stableAfter + 48)) :
         spot.kind === 'rival' ? 64 : player.stamps ? 24 : 16);
       const job = beginLocalTrial(world, game, player.id, position.center, position.ids, { radius, horizon });
       if (!job) continue;
+      if (recovery) {
+        brain.scanned.add(stamp.id);
+        metrics.studies++;
+      }
       metrics.trials++;
       metrics.byBot[player.id].trials++;
       const site = { kind: 'site', target: position.center, direction: turn };
       const saved = spot.kind === 'rival' ? witness(world, position, radius, game.economy.stableAfter, horizon) : null;
-      return { player, brain, spot, context, action, position, distance, site, saved,
+      return { player, brain, recovery, spot, context, action, position, distance, site, saved,
         rivalId: world.owners[spot.target], before: signature(world, player.id, site), job };
     }
     return null;
@@ -138,8 +159,13 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       result.ownCore > 0 && (immature || expanding && result.boundary) &&
       (!action.experience || !player.stamps && expanding) && world.gen - brain.pilotAt > studyDuration &&
       brain.pilotSpent + result.cost + operatingRisk <= Math.min(game.init, player.reserve) * riskFraction;
-    if (acceptable || pilot) {
-      const ready = { ...trial, job: null, pilot, result, deferred, expiry: world.gen + Math.max(game.interval * 2, 48) };
+    const productiveRecovery = trial.recovery && !result.boundary && !result.ownUnfunded &&
+      expanding && result.ownDeferredMid > 0 && result.ownDeferredTrend > 0 &&
+      result.ownFlow + result.ownDeferredFlow + result.ownDeferredTrend * Math.min(1024, 2 * game.economy.stableAfter) > 0;
+    const rescue = productiveRecovery && result.cost + operatingRisk <= .65 * player.reserve &&
+      result.cost + operatingRisk + brain.pilotSpent <= .67 * game.init;
+    if (acceptable || (trial.recovery ? rescue : pilot)) {
+      const ready = { ...trial, job: null, pilot: pilot || rescue, rescue, result, deferred, expiry: world.gen + Math.max(game.interval * 2, 48) };
       brain.ready = ready;
     } else metrics.waits++;
   }
@@ -157,8 +183,13 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       const relative = excess(player, field.own) - field.cost - brain.rivalWeight * rivalReturn;
       memory.observe(player.id, 'field/' + field.kind, field.stamp, normalized(relative, field.cost));
       metrics.observed++; metrics.byBot[player.id].observed++;
-      if (field.late) brain.field.splice(i, 1);
-      else { field.late = true; field.due = world.gen + Math.max(4096, 4 * game.economy.stableAfter); }
+      if (field.late) {
+        brain.field.splice(i, 1);
+        if (field.kind === 'empty' && player.flowAverage < 0 && excess(player, field.own) < 0) brain.recover = true;
+      } else {
+        field.late = true;
+        field.due = world.gen + Math.max(4096, 4 * game.economy.stableAfter);
+      }
     }
   }
 
@@ -225,6 +256,7 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     const stats = metrics.byBot[player.id];
     stats.actions++;
     stats.patterns[action.stamp.id] = (stats.patterns[action.stamp.id] || 0) + 1;
+    if (ready.rescue) metrics.rescues++;
     if (pilot) { metrics.pilots++; brain.pilotAt = world.gen; brain.pilotSpent += result.cost; }
     if (brain.field.length < 3) {
       const baseline = p => ({ flow: p.flowAverage, wealth: p.reserve + p.stampedEnergy });
@@ -239,7 +271,12 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
   strategy.metrics = metrics;
   strategy.invalidate = () => {
     pending = null;
-    for (const brain of brains) { brain.ready = null; brain.field = []; }
+    for (const brain of brains) {
+      brain.ready = null;
+      brain.field = [];
+      brain.recover = false;
+      brain.scanned.clear();
+    }
   };
   return strategy;
 }

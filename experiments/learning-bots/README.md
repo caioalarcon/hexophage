@@ -12,12 +12,25 @@ Nos ensaios headless, o jogador humano paga a abertura padrão e depois espera. 
 
 | Bays em F320 | Gerações | Ensaios mentais completos | Compras dos bots | Compras contra rivais | Com planejamento | Replay das compras |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Memória vazia | 360.000 | 684 | 112 | 23 | 9,67 s | 7,06 s |
-| Com memória herdada | 360.000 | 714 | 116 | 30 | 8,75 s | 6,97 s |
+| Memória vazia | 360.000 | 684 | 112 | 23 | 7,04 s | 6,13 s |
+| Com memória herdada | 360.000 | 714 | 116 | 30 | 8,32 s | 7,09 s |
 
-A diferença foi de 0,0072 e 0,0049 ms por geração nesta máquina. Foram ensaios esparsos, com picos de 139 e 172 células vivas. A 200 gerações/s cada partida cobre 30 minutos de jogo. Ambas chegaram à G360.000 com os seis participantes ainda em jogo. O humano terminou sem células e com créditos. Pela regra da partida, a eliminação exige campo vazio e reserva esgotada.
+A diferença foi de 0,0025 e 0,0034 ms por geração nesta máquina. Foram ensaios esparsos, com picos de 139 e 172 células vivas. A 200 gerações/s cada partida cobre 30 minutos de jogo. Ambas chegaram à G360.000 com os seis participantes ainda em jogo. O humano terminou sem células e com créditos. Pela regra da partida, a eliminação exige campo vazio e reserva esgotada.
 
-**Callahan com os valores de produção.** Na mesma F320 e com a mesma semente aleatória, os aprendizes completaram 207 ensaios, fizeram sete compras, seis delas experimentais, e não executaram ataques. Em 183 comparações, o recorte ou seu limite externo impediu uma previsão confiável de longo prazo. O humano fez a abertura padrão e esperou. Na G360.000 tinha 5.738 células e 22.594.196 créditos. Quatro bots estavam eliminados. O quinto tinha zero células e aproximadamente 264 créditos, menos que o custo de plantar uma única célula (10.000). Sem células, também não conseguia obter renda. A condição de eliminação o mantinha vivo, e a partida continuava sem vencedor.
+## Recuperação após uma compra ruim em Callahan
+
+No [primeiro protótipo](https://github.com/caioalarcon/hexophage/commit/ca8d49e28b327a818580ae78401e22ac360b12cc), quatro bots faliram até a G360.000. O quinto ficou sem células e com 264 créditos, abaixo do custo de uma célula (10.000). Esse estado explica como a partida pode seguir indefinidamente enquanto o adversário tem uma colônia produtiva e o jogador sem campo continua com saldo positivo.
+
+A versão seguinte responde à perda observada depois da compra. Enquanto o fluxo continuar negativo, testa cartas distintas em um setor livre. Um novo piloto requer crescimento persistente, retorno plausível após a maturação e orçamento. Comparamos as duas versões na mesma F320, semente 4751, tarifas de produção e abertura humana.
+
+| Cinco bots na G32.000 | Antes | Com recuperação |
+| --- | ---: | ---: |
+| Compras | 5 | 9 |
+| Bots com fluxo positivo | 0 | 4 |
+| Fluxo líquido agregado por geração (média móvel) | −21,78 | +87,10 |
+| Reserva total | 2.815.201 | 3.569.687 |
+
+Em F40, nas sementes 4751, 77 e 349, o fluxo melhorou, mas as compras adicionais ainda deixaram menos dinheiro em caixa na G32.000. O saldo de uma partida depende da área disponível para as estruturas crescerem e do tempo desde a compra.
 
 ## O que a memória transferiu
 
@@ -25,7 +38,7 @@ Em F32, usamos a mesma regra B2/S035 e duas sementes legais. Uma permanece está
 
 | Economia | Aberturas rentáveis, fria → herdada | Geração média da abertura | Sementes com maior ganho agregado de caixa na G2048 |
 | --- | ---: | ---: | ---: |
-| Maturação gera | 36/40 → 40/40 | 284 → 108 | 5 de 8 |
+| Maturação gera | 36/40 → 40/40 | 386 → 108 | 5 de 8 |
 | Nascimento gera | 38/40 → 40/40 | 290 → 108 | 3 de 8 |
 
 A memória acelerou a identificação da abertura nas duas economias. O desempenho financeiro posterior variou entre sementes e políticas. A observação de campo continua sujeita a intervenções dos demais jogadores.

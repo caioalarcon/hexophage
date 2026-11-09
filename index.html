@@ -1043,7 +1043,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     let key2 = staticKeys.get(profile);
     if (!key2) {
       const tables = world2.physics.tables.slice(5).flatMap((pair) => pair.map((t) => t.join("")));
-      const catalog2 = gameplay.patterns.map((p) => [p.id, p.rle]);
+      const catalog2 = gameplay.patterns.map((p) => [p.id, p.rle]).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
       key2 = [profile.key, profile.brainVersion ?? 1, hash(tables.join("/")), hash(JSON.stringify(catalog2))];
       staticKeys.set(profile, key2);
     }
@@ -2217,6 +2217,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         rivalWeight: 0.45 + random(),
         ready: null,
         field: [],
+        recover: false,
+        scanned: /* @__PURE__ */ new Set(),
         pilotSpent: 0,
         pilotAt: -Infinity
       };
@@ -2224,6 +2226,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const metrics = {
       trials: 0,
       completed: 0,
+      studies: 0,
+      rescues: 0,
       work: 0,
       visits: 0,
       actions: 0,
@@ -2245,23 +2249,41 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function propose(player, vacuumOpening = false) {
       const brain2 = brains[player.id - 1];
       for (let attempt = 0; attempt < 3; attempt++) {
-        const spot = selectSpot(world2, game2, player, brain2.random);
+        const recovery = brain2.recover && player.flowAverage < 0;
+        const spot = recovery ? { kind: "empty", target: player.seed, direction: Math.floor(brain2.random() * 6) } : selectSpot(world2, game2, player, brain2.random);
         const context = signature(world2, player.id, spot);
         const trialNumber = metrics.byBot[player.id].trials;
         const price = game2.economy.stampCost;
         const small = !player.stamps && trialNumber < 3;
         const pool = vacuumOpening ? catalog2.filter((p) => p.radius <= 2) : small ? catalog2.filter((p) => p.offsets.length * price <= player.reserve * 0.16) : kit.length && brain2.random() < 0.55 ? kit : catalog2;
-        const action = sampleAction(pool.length ? pool : catalog2, player, spot, context, memory, brain2.random, price);
+        let action;
+        if (recovery) {
+          const eligible = (p) => !brain2.scanned.has(p.id) && p.offsets.length * price < 0.65 * player.reserve;
+          let choices = kit.filter(eligible);
+          if (!choices.length) choices = catalog2.filter(eligible);
+          if (!choices.length) {
+            brain2.scanned.clear();
+            return null;
+          }
+          const stamp2 = choices[Math.floor(brain2.random() * choices.length)];
+          action = { stamp: stamp2, turn: Math.floor(brain2.random() * 6), gap: 3, key: stamp2.id, experience: 0 };
+        } else action = sampleAction(pool.length ? pool : catalog2, player, spot, context, memory, brain2.random, price);
         if (!action) continue;
         const { stamp, turn } = action;
-        const distance = spot.kind === "empty" ? player.stamps ? 4 + Math.floor(brain2.random() * 14) : 0 : stamp.radius + action.gap;
+        let distance = stamp.radius + action.gap;
+        if (recovery) distance = 14 + Math.floor(brain2.random() * 9);
+        else if (spot.kind === "empty") distance = player.stamps ? 4 + Math.floor(brain2.random() * 14) : 0;
         const position = placement(world2, spot, stamp, turn, distance);
         if (!position) continue;
-        const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, stamp.radius + 5, spot.kind === "empty" ? 0 : distance + 3));
+        const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, stamp.radius + (recovery ? 9 : 5), spot.kind === "empty" ? 0 : distance + 3));
         const deep = metrics.byBot[player.id].trials % 3 === 2;
-        const horizon = vacuumOpening ? 2 : options.horizon ?? (deep ? Math.min(1024, Math.max(96, game2.economy.stableAfter + 48)) : spot.kind === "rival" ? 64 : player.stamps ? 24 : 16);
+        const horizon = recovery ? 18 : vacuumOpening ? 2 : options.horizon ?? (deep ? Math.min(1024, Math.max(96, game2.economy.stableAfter + 48)) : spot.kind === "rival" ? 64 : player.stamps ? 24 : 16);
         const job = beginLocalTrial(world2, game2, player.id, position.center, position.ids, { radius, horizon });
         if (!job) continue;
+        if (recovery) {
+          brain2.scanned.add(stamp.id);
+          metrics.studies++;
+        }
         metrics.trials++;
         metrics.byBot[player.id].trials++;
         const site = { kind: "site", target: position.center, direction: turn };
@@ -2269,6 +2291,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return {
           player,
           brain: brain2,
+          recovery,
           spot,
           context,
           action,
@@ -2299,8 +2322,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const expanding = result.ownCore > 0 && result.ownCells > result.added * 1.2;
       const riskFraction = expanding ? 0.55 : 0.2;
       const pilot = !acceptable && spot.kind === "empty" && !brain2.field.length && !result.ownUnfunded && result.ownCore > 0 && (immature || expanding && result.boundary) && (!action.experience || !player.stamps && expanding) && world2.gen - brain2.pilotAt > studyDuration && brain2.pilotSpent + result.cost + operatingRisk <= Math.min(game2.init, player.reserve) * riskFraction;
-      if (acceptable || pilot) {
-        const ready = { ...trial, job: null, pilot, result, deferred, expiry: world2.gen + Math.max(game2.interval * 2, 48) };
+      const productiveRecovery = trial.recovery && !result.boundary && !result.ownUnfunded && expanding && result.ownDeferredMid > 0 && result.ownDeferredTrend > 0 && result.ownFlow + result.ownDeferredFlow + result.ownDeferredTrend * Math.min(1024, 2 * game2.economy.stableAfter) > 0;
+      const rescue = productiveRecovery && result.cost + operatingRisk <= 0.65 * player.reserve && result.cost + operatingRisk + brain2.pilotSpent <= 0.67 * game2.init;
+      if (acceptable || (trial.recovery ? rescue : pilot)) {
+        const ready = { ...trial, job: null, pilot: pilot || rescue, rescue, result, deferred, expiry: world2.gen + Math.max(game2.interval * 2, 48) };
         brain2.ready = ready;
       } else metrics.waits++;
     }
@@ -2316,8 +2341,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         memory.observe(player.id, "field/" + field.kind, field.stamp, normalized(relative, field.cost));
         metrics.observed++;
         metrics.byBot[player.id].observed++;
-        if (field.late) brain2.field.splice(i, 1);
-        else {
+        if (field.late) {
+          brain2.field.splice(i, 1);
+          if (field.kind === "empty" && player.flowAverage < 0 && excess(player, field.own) < 0) brain2.recover = true;
+        } else {
           field.late = true;
           field.due = world2.gen + Math.max(4096, 4 * game2.economy.stableAfter);
         }
@@ -2398,6 +2425,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const stats = metrics.byBot[player.id];
       stats.actions++;
       stats.patterns[action.stamp.id] = (stats.patterns[action.stamp.id] || 0) + 1;
+      if (ready.rescue) metrics.rescues++;
       if (pilot) {
         metrics.pilots++;
         brain2.pilotAt = world2.gen;
@@ -2425,6 +2453,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       for (const brain2 of brains) {
         brain2.ready = null;
         brain2.field = [];
+        brain2.recover = false;
+        brain2.scanned.clear();
       }
     };
     return strategy;

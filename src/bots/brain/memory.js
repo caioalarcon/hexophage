@@ -35,7 +35,7 @@ export function brainNamespace(world, game) {
   let key = staticKeys.get(profile);
   if (!key) {
     const tables = world.physics.tables.slice(5).flatMap(pair => pair.map(t => t.join('')));
-    const catalog = gameplay.patterns.map(p => [p.id, p.rle]);
+    const catalog = gameplay.patterns.map(p => [p.id, p.rle]).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
     key = [profile.key, profile.brainVersion ?? 1, hash(tables.join('/')), hash(JSON.stringify(catalog))];
     staticKeys.set(profile, key);
   }

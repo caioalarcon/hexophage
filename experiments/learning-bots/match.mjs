@@ -46,7 +46,7 @@ function play(tape) {
   }
   const elapsedMs = performance.now() - start;
   const result = game.players.map(p => ({ cash: Math.round(p.reserve), cells: world.ownerCells[p.id].length,
-    purchases: p.stamps, totalFlow: Math.round(p.received - p.paid), out: p.out }));
+    purchases: p.stamps, flowAverage: p.flowAverage, totalFlow: Math.round(p.received - p.paid), out: p.out }));
   const memory = game.brainMemory?.stats();
   game.brainMemory?.finish();
   if (!learning) assert.deepEqual(position, orders.map(row => row.length));

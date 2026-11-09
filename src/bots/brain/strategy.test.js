@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHeadlessMatch } from '../../match/headless.js';
 import { compileHexRule } from '../../simulation/rules.js';
+import { plantFounder } from '../../match/founding.js';
 import { buildSphere } from '../../world/sphere.js';
 import { evaluateTrial } from './strategy.js';
 import { placement, recognizes, stampCatalog, witness } from './proposals.js';
@@ -68,4 +69,19 @@ test('missed interventions and effects cropped at the boundary cannot authorize 
   assert.equal(evaluateTrial(base, agent, 'rival').acceptable, false);
   assert.equal(evaluateTrial({...base, boundary:true, rivalFlow:-1, rivalDeferredMid:-1,
     rivalDeferredFlow:-2, rivalDeferredTrend:-.1}, agent, 'rival').acceptable, false);
+});
+
+test('real losses trigger a bounded search for productive alternatives after the late observation', () => {
+  const m = createHeadlessMatch(buildSphere(40), { botMode: 'learn', brain: { seed: 4751 } });
+  assert(plantFounder(m.world, m.game, m.game.players[0], m.commitStamp));
+  while (m.world.gen < 4000) m.nextTick();
+  assert.equal(m.game.brainMetrics.studies, 0, 'short-term costs alone cannot trigger rescue spending');
+  while (m.world.gen < 16000) m.nextTick();
+  const { studies, rescues, visits } = m.game.brainMetrics;
+  assert(studies > rescues && rescues > 0);
+  assert(visits <= 8192 + m.world.gen * 96);
+  m.game.economy.stableEnergy *= 2;
+  m.invalidateBrain();
+  while (m.world.gen < 16500) m.nextTick();
+  assert.equal(m.game.brainMetrics.studies, studies, 'new tariffs discard the old recovery mandate');
 });

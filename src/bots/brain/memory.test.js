@@ -89,6 +89,9 @@ test('canonical rules share learning only under matching economy, rates and stam
   assert.notEqual(brainNamespace(...a), brainNamespace(...pair('custom', 'B2/S35', 'stability')));
   b[1].economy.stableAfter = 1;
   assert.notEqual(brainNamespace(...a), brainNamespace(...b));
+  const reordered = pair('custom','B2/S35','activity');
+  reordered[1].gameplay = { ...reordered[1].gameplay, patterns: [...reordered[1].gameplay.patterns].reverse() };
+  assert.equal(brainNamespace(...a), brainNamespace(...reordered));
   const c = pair('custom','B2/S35','activity');
   c[1].gameplay = { ...c[1].gameplay, patterns: [{id:'single',rle:'2o!'}] };
   assert.notEqual(brainNamespace(...a), brainNamespace(...c));
