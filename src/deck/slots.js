@@ -5,16 +5,26 @@ import { estimateEconomicReturn, rankEconomicPatterns } from '../patterns/econom
 function defaultSlots(gameplay, ruleId, economy) {
   const curated = gameplay.initialSlots ?? Object.keys(gameplay.kit);
   const count = curated.length;
-  const eligible = new Set(curated);
-  // Preserve Callahan's deliberately curated 15-card combat hand. Other rules
-  // add profitable seeds discovered by the census without losing the original
-  // family-based mix of offensive, defensive and exploratory cards.
-  if (ruleId !== 'callahan')
-    for (const pattern of gameplay.patterns) {
+  const ranked = rankEconomicPatterns(gameplay.patterns, ruleId, economy);
+  const selected = new Set(curated);
+  // The economic shortlist changes the order of the hand, but must not remove
+  // indispensable starter cards (e.g. Bays's glider and flipper). Reserve up
+  // to four slots for new positive-return discoveries while retaining breadth.
+  if (ruleId !== 'callahan') {
+    const pinned = new Set(gameplay.patterns.slice(0, 2).map(p => p.id));
+    const profitable = ranked.filter(pattern => {
       const estimate = estimateEconomicReturn(ruleId, pattern, economy);
-      if (estimate?.feasible && estimate.flow > 0) eligible.add(pattern.id);
+      return estimate?.feasible && estimate.flow > 0;
+    }).slice(0, Math.min(4, count));
+    for (const pattern of profitable) {
+      if (selected.has(pattern.id)) continue;
+      const worst = [...ranked].reverse().find(p => selected.has(p.id) && !pinned.has(p.id));
+      if (!worst) break;
+      selected.delete(worst.id);
+      selected.add(pattern.id);
     }
-  return rankEconomicPatterns(gameplay.patterns.filter(p => eligible.has(p.id)), ruleId, economy)
+  }
+  return ranked.filter(pattern => selected.has(pattern.id))
     .slice(0, count).map(pattern => pattern.id);
 }
 
