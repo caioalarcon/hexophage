@@ -15,13 +15,15 @@ const {game}=await import('../browser/game.js');
 const {deckPoints}=await import('./cards.js');
 const {slotIds}=await import('./slots.js');
 const {fieldKit}=await import('../patterns/callahan-kit.js');
+const {rankEconomicPatterns}=await import('../patterns/economic-ranking.js');
 const {updateDeckAvailability}=await import('./hand.js');
 test('fifteen unrestricted atlas slots restore the experimental kit',()=>{
   assert.equal(slotIds.length,15);
-  assert.equal(slotIds[0], 'stalk');
+  const first = [...game.gameplay.patterns].filter(p=>Object.hasOwn(fieldKit,p.id));
+  const sorted = rankEconomicPatterns(first, 'callahan', game.economy);
+  assert.deepEqual(slotIds,sorted.map(p=>p.id));
   assert.deepEqual(new Set(slotIds), new Set(Object.keys(fieldKit)));
-  assert(slotIds.indexOf('p2') < slotIds.indexOf('gun20'), 'a ordem padrão considera a economia');
-  assert.equal(deckPoints(slotIds[0]).length,36);
+  assert.equal(deckPoints('stalk').length,36);
   assert.equal(deckPoints('p2').length,3);
   for(const id of slotIds)assert(deckPoints(id).length>0,id);
 });
@@ -49,6 +51,7 @@ test('identical IDs and edited cards keep their shapes and loadouts in their own
   };
   try {
     use(callahanGameplay, 'callahan');
+    const firstHand = [...slotIds];
     saved.savedPatterns.set('glider', [[9, 9]]);
     use(baysGameplay, 'bays');
     assert.equal(deckPoints('glider').length, 10);
@@ -66,7 +69,7 @@ test('identical IDs and edited cards keep their shapes and loadouts in their own
     use(baysGameplay, 'bays');
     assert.equal(slotIds[0], 'glider');
     use(callahanGameplay, 'callahan');
-    assert.equal(slotIds[0], 'stalk');
+    assert.deepEqual(slotIds, firstHand);
     assert.deepEqual(deckPoints('glider'), [[9, 9]]);
   } finally {
     use(callahanGameplay, 'callahan');

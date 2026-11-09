@@ -86,7 +86,7 @@ export function marginalSeedFlow(births, mature, player, economy) {
 // Exact local repricing for a certified empty, regular hexagonal patch. Every
 // live site stayed inside its halo for this entire trace. Exterior production
 // follows the same frozen boundary assumption as the paired graph simulator.
-export function quoteEmptySeed(measure, player, economy) {
+export function quoteEmptySeed(measure, player, economy, audit = false) {
   const cost = measure.initial * economy.stampCost;
   const base = generationEnergy(player.lastBirths, player.stable, economy);
   const baseFlow = base.income - base.upkeep;
@@ -107,6 +107,10 @@ export function quoteEmptySeed(measure, player, economy) {
   }
   return { cost, added: measure.initial, turns: horizon, boundary: false, ownUnfunded: false,
     ownCash: cash, ownFlow: flow, ownCells: measure.live, ownCore: measure.history.at(-1).core,
+    ...(audit ? {forecast:{radius:measure.reach+2, own:{
+      tailAction:baseFlow+flow,tailHold:baseFlow,actionOperating:baseFlow*horizon+cash+cost,holdOperating:baseFlow*horizon,
+      action:{births:measure.history.at(-1).births, mature:measure.history.at(-1).mature, cells:measure.live},
+      hold:{births:0,mature:0,cells:0}, outsideBirths:player.lastBirths, outsideMature:player.stable}, rival:null}} : {}),
     ownDeferredMid: mid, ownDeferredFlow: deferred, ownDeferredTrend: (deferred - mid) / persistentAge,
     rivalCash: 0, rivalFlow: 0, rivalCells: 0, rivalDeferredMid: 0, rivalDeferredFlow: 0, rivalDeferredTrend: 0 };
 }

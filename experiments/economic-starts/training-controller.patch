@@ -1,0 +1,231 @@
+--- a/src/bots/brain/feedback.js
++++ b/src/bots/brain/feedback.js
+@@ -29,37 +29,13 @@
+ function keyFor(trial, side) {
+   // The field phase/oriented local signature and the actual relative turn
+   // are portable between rival identities. Never share a live bot's samples.
+-  let phase=trial.phase || 0, shape='';
+-  while(phase){
+-    const owner=phase%8;
+-    shape+=owner===0?'0':owner===trial.player.id?'1':owner===trial.rivalId?'2':owner===7?'3':'4';
+-    phase=Math.floor(phase/8);
+-  }
+-  return ['error/'+trial.context+'/'+side,trial.action.key+(shape?'#'+shape:'')];
++  return ['error/'+trial.context+'/'+side,trial.action.key+(trial.phase ? '#'+trial.phase : '')];
+ }
+
+ export function createForecastFeedback(world, game, memory, metrics, onOutcome) {
+   const watches=new Map();
+   metrics.forecasts=0; metrics.forecastsCensored=0; metrics.forecastVisits=0;
+-  metrics.forecastAbsError=0; metrics.forecastLedgers=0; metrics.calibratedForecasts=0;
+-  function adjustment(t,result,side) {
+-    const prop=side+'Flow', id=t.player.id, stamp=t.action.stamp.id;
+-    const broad=memory.lookup(id,'yield/error/'+t.spot.kind+'/'+side,stamp);
+-    if(!broad.count)return {shadow:0,applied:0};
+-    let bias=broad.mean*broad.count/(broad.count+6);
+-    const [context,pose]=keyFor(t,side);
+-    if(t.spot.kind!=='empty'){
+-      const local=memory.lookup(id,context,pose);
+-      bias=(3*bias+local.count*local.mean)/(local.count+3);
+-    }
+-    // Validate the *shadow* bias on later orders before it may influence a
+-    // purchase. A minority of large misses must not skew otherwise exact bids.
+-    const fit=memory.lookup(id,'fit/'+context,pose);
+-    const operating=result[side+'Cash']+(side==='own'?result.cost:0);
+-    const limit=Math.max(Math.abs(result[prop]),Math.abs(operating)/result.turns);
+-    const shadow=Math.min(limit,Math.max(-limit,bias));
+-    return {shadow,applied:fit.count>=2 && fit.mean>=.5 ? shadow : 0};
+-  }
++  metrics.forecastAbsError=0; metrics.forecastLedgers=0;
+   function store(w, side, observed) {
+     const predicted=w.forecast[side], terms=game.economy;
+     const tail=w.tail.samples===Math.min(8,w.due-w.from);
+@@ -70,11 +46,6 @@
+     const projectedOperating=predicted.actionOperating-predicted.holdOperating;
+     const actualOperating=complete ? w.cumulative[side]-predicted.holdOperating : null;
+     const residual=actual-projected;
+-    const shadow=w.adjustments[side]?.shadow??0;
+-    if(shadow){
+-      const edge=Math.abs(residual)-Math.abs(residual-shadow);
+-      memory.observe(w.owner,'fit/'+w.keys[side][0],w.keys[side][1],Math.sign(edge));
+-    }
+     memory.observe(w.owner,'yield/error/'+w.kind+'/'+side,w.stamp,residual);
+     if (w.kind !== 'empty')
+       memory.observe(w.owner,...w.keys[side],residual);
+@@ -134,10 +105,9 @@
+       metrics.forecasts++;
+       if(w.cumulative)metrics.forecastLedgers++;
+       metrics.forecastAbsError+=Math.abs(a.residual-(b?.residual??0));
+-      if(w.bias!==0)metrics.calibratedForecasts++;
+       onOutcome?.({gen:world.gen,launched:w.from,owner:id,rival:w.rival,stamp:w.stamp,cost:w.cost,
+         context:w.context,pose:w.pose,own:a,target:b,relativePredicted:a.predictedFlow-(b?.predictedFlow??0),
+-        relativeCalibrated:a.predictedFlow-(b?.predictedFlow??0)+w.bias, relativeObserved:a.observedFlow-(b?.observedFlow??0)});
++        relativeObserved:a.observedFlow-(b?.observedFlow??0)});
+     }
+     metrics.forecastVisits+=visits;
+     return visits;
+@@ -162,23 +132,30 @@
+     if (!forecast || result.boundary || result.ownUnfunded || place.center!==t.position.center ||
+         watches.has(player.id)) { metrics.forecastsCensored++; return; }
+     const sites=forecast.ids??emptyDisk(world.graph,place.center,forecast.radius);
+-    const adjustments=t.result.fieldAdjustment??{
+-      own:adjustment(t,result,'own'),rival:forecast.rival?adjustment(t,result,'rival'):null};
+-    watches.set(player.id,{owner:player.id,rival:forecast.rival?t.rivalId:null,adjustments,
++    watches.set(player.id,{owner:player.id,rival:forecast.rival?t.rivalId:null,
+       from:world.gen,due:world.gen+result.turns,center:place.center,radius:forecast.radius,
+       tail:{own:0,rival:0,samples:0},cumulative:{own:0,rival:0}, last:world.gen,weight:t.brain.rivalWeight,payback:t.brain.payback,cost:result.cost,
+-      bias:(t.result.ownFlow-result.ownFlow)-(t.result.rivalFlow-result.rivalFlow),
+       sites:new Set(sites),forecast,kind:t.spot.kind,stamp:t.action.stamp.id,context:t.context,pose:t.action.key,
+       keys:{own:keyFor(t,'own'),rival:keyFor(t,'rival')}});
+   }
+   function correct(t,result) {
+     if (!result.forecast || result.ownUnfunded || result.boundary) return result;
+-    const copy={...result,fieldAdjustment:{}};
++    const copy={...result};
+     for (const side of ['own','rival']) {
+       if (!result.forecast[side]) continue;
+-      const value=adjustment(t,result,side);
+-      copy.fieldAdjustment[side]=value;
+-      copy[side+'Flow']+=value.applied;
++      const broad=memory.lookup(t.player.id,'yield/error/'+t.spot.kind+'/'+side,t.action.stamp.id);
++      if (!broad.count) continue;
++      let bias=broad.mean*broad.count/(broad.count+6);
++      if (t.spot.kind!=='empty') {
++        const local=memory.lookup(t.player.id,...keyFor(t,side));
++        bias=(3*bias+local.count*local.mean)/(local.count+3);
++      }
++      const prop=side+'Flow';
++      // Never invent an interaction from an unrelated historical stamp, and
++      // bound how much an endpoint error may change an averaged prediction.
++      const operatingCash=result[side+'Cash']+(side==='own'?result.cost:0);
++      const limit=Math.max(Math.abs(result[prop]),Math.abs(operatingCash)/result.turns);
++      copy[prop]+=Math.min(limit,Math.max(-limit,bias));
+     }
+     return copy;
+   }
+--- a/src/bots/brain/proposals.js
++++ b/src/bots/brain/proposals.js
+@@ -206,7 +206,7 @@
+     for (let direction = 0; direction < graph.deg[target]; direction++) {
+       if (signature(world, player.id, { kind: 'rival', target, direction }) !== context) continue;
+       const pose = placement(world, { target, direction }, action.stamp, action.turn, distance);
+-      if (pose && recognizes(world, pose, saved)) return { ...pose, target, direction };
++      if (pose && recognizes(world, pose, saved)) return pose;
+       if (++checks >= 4) return null;
+     }
+   }
+--- a/src/bots/brain/strategy.js
++++ b/src/bots/brain/strategy.js
+@@ -233,8 +233,8 @@
+       if(spot.kind==='rival' && !action.learnedPose) action.gap=1+Math.floor(brain.random()*3);
+       if (spot.kind === 'rival' && !action.learnedPose && brain.random() < .8) {
+         action.turn = aimAtTarget(brain.surveyed.has(stamp) ? screen.result(stamp) : null, action.turn);
+-      }
+-      if (spot.kind === 'rival') action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
++        action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
++      }
+       const { turn } = action;
+       let distance = stamp.radius + action.gap;
+       if (pick.nearby && spot.kind==='own') distance=stamp.radius+4+Math.floor(brain.random()*6);
+@@ -277,7 +277,6 @@
+       }
+       return { player, brain, round, recovery, investment: pick.investment, spot, context, action, position, distance, site, saved,
+         rivalId, before: signature(world, player.id, site), job, cached, radius,horizon,
+-        orderCount:spot.kind==='rival' ? game.players.reduce((n,p)=>n+p.stamps,0) : 0,
+         proposedAt:world.gen, phase:spot.kind==='rival'?phaseAt(world,spot):0, phaseDelay:0 };
+     }
+     if(round && ++round.slot>=3)closeRound(brain);
+@@ -291,7 +290,7 @@
+     if (!round || round.slot!==2 || spot.kind!=='rival' || trial.phaseDelay || trial.paired ||
+         world.gen<=trial.proposedAt || world.gen-trial.proposedAt>8) return;
+     const phase=phaseAt(world,spot);
+-    if (phase===trial.phase || trial.orderCount!==game.players.reduce((n,p)=>n+p.stamps,0)) return;
++    if(phase===trial.phase)return;
+     const cost=2*(1+3*radius*(radius+1));
+     if(credits<cost)return;
+     credits-=cost;metrics.visits+=cost;
+@@ -307,7 +306,6 @@
+   function finish(trial, result) {
+     const { player, brain, spot, context, action } = trial;
+     const rawResult = result;
+-    if (trial.paired) trial.paired.immediate = rawResult;
+     result = feedback.correct(trial, result);
+     const { value, acceptable, deferred } = evaluateTrial(result, brain, spot.kind);
+     const scale = Math.max(result.cost, game.economy.stampCost, 1);
+@@ -351,26 +349,12 @@
+     const rivalFlow=result.rivalFlow+(deferred?result.rivalDeferredFlow:0);
+     const ownFlow=investment?fundedYield:result.ownFlow;
+     const bid=result.ownCash-brain.rivalWeight*result.rivalCash+horizon*(ownFlow-brain.rivalWeight*rivalFlow);
+-    // Compare literal finite returns of the two snapshots, not an uncropped
+-    // annuity versus a forecast forced to stop at the earlier disk boundary.
+-    // Waiting also gives up the positive marginal operating flow of those ticks.
+-    let phaseBetter = true;
+-    if (trial.phaseDelay) {
+-      const early = trial.immediate;
+-      const relative = (r, unit) => r['own'+unit] - brain.rivalWeight*r['rival'+unit];
+-      phaseBetter = !early.boundary && !rawResult.boundary && !early.ownUnfunded &&
+-        !rawResult.ownUnfunded && early.turns === rawResult.turns &&
+-        relative(rawResult,'Cash') > relative(early,'Cash') + trial.phaseDelay*Math.max(0,relative(early,'Flow')) &&
+-        relative(rawResult,'Flow') >= relative(early,'Flow');
+-    }
+-    const approved=qualified && phaseBetter && (!round || bid>0 || pilot);
++    const approved=qualified && (!round || bid>0 || pilot);
+     if(round){
+       round.probes++;round.sites.add(trial.position.center);
+       round.log?.push({kind:spot.kind,stamp:action.stamp.id,target:spot.target,center:trial.position.center,
+         heading:(trial.position.heading+action.turn)%6, rival:trial.rivalId,at:trial.proposedAt,
+-        turn:action.turn,phase:trial.phase,delay:trial.phaseDelay,bid,approved,boundary:result.boundary,
+-        ownCash:rawResult.ownCash,rivalCash:rawResult.rivalCash,ownFlow:rawResult.ownFlow,rivalFlow:rawResult.rivalFlow,
+-        rivalCells:rawResult.rivalCells});
++        turn:action.turn,phase:trial.phase,delay:trial.phaseDelay,bid,approved});
+     }
+     if (approved) {
+       const ready = { ...trial, round:null, paired:null, job: null, pilot, investment, rescue: investment && trial.recovery, result, rawResult, deferred,bid,
+@@ -439,7 +423,6 @@
+       if (step.done) { learnSeed(player, brain, stamp); metrics.studies++; survey = null; }
+       return;
+     }
+-    if (pending) sampleLaterPhase(pending);
+     if (world.gen < earliest) return;
+     if (!pending) {
+       let player = game.players[cursor];
+@@ -460,6 +443,7 @@
+       if (!pending) return;
+       if (pending.cached) { finish(pending, pending.cached); pending = null; return; }
+     }
++    sampleLaterPhase(pending);
+     const { job } = pending;
+     const pair = 2 * job.nodes;
+     const slice = Math.min(4, Math.floor(credits / pair), Math.max(1, Math.floor(2300 / pair)));
+@@ -504,10 +488,8 @@
+     if(spot.kind==='rival' && ready.phaseDelay) metrics.delayedAttacks++;
+     if(spot.kind==='rival' && world.gen!==1 && world.gen%game.interval) metrics.offSlotAttacks++;
+     options.onPlacement?.({ gen:world.gen, owner:player.id, stamp:action.stamp.id, center:place.center,
+-      heading:(place.heading+action.turn)%6, target:place.target??spot.target, approach:place.direction??spot.direction,
+-      proposedCenter:position.center, proposedHeading:(position.heading+action.turn)%6, proposedTarget:spot.target,
+-      witnessRadius:ready.radius, witnessHorizon:ready.horizon,
+-      turn:action.turn,gap:action.gap,poseKey:action.key,phase:ready.phase,phaseOffset:ready.phaseDelay,proposedAt:ready.proposedAt,scouted:ready.scouted??1,
++      heading:(place.heading+action.turn)%6, target:spot.target, approach:spot.direction,
++      turn:action.turn,gap:action.gap,phase:ready.phase,phaseOffset:ready.phaseDelay,proposedAt:ready.proposedAt,scouted:ready.scouted??1,
+       compared:ready.compared??1,
+       rival:spot.kind === 'rival' ? ready.rivalId : null, ids:place.ids });
+     metrics.actions++;
+--- a/src/match/biomass.js
++++ b/src/match/biomass.js
+@@ -76,7 +76,6 @@
+     p.lastDeaths = naturalDeaths[p.id];
+     p.lastUnfundedBirths = 0;
+     p.totalDeaths = (p.totalDeaths || 0) + p.lastDeaths;
+-    p.totalBirths = (p.totalBirths || 0) + p.lastBirths;
+     if (p.out) continue;
+     let stable = 0;
+     for (const id of world.ownerCells[p.id])
+@@ -84,7 +83,7 @@
+     p.lastUnfundedBirths = refuseUnfundedBirths(world, game, p, e, p.lastBirths, stable, removeLive, ages);
+     p.unfundedBirths = (p.unfundedBirths || 0) + p.lastUnfundedBirths;
+     p.lastBirths -= p.lastUnfundedBirths;
+-    p.totalBirths -= p.lastUnfundedBirths;
++    p.totalBirths = (p.totalBirths || 0) + p.lastBirths;
+     if (e.stableAfter <= 1) stable -= p.lastUnfundedBirths;
+     const { income, upkeep } = generationEnergy(p.lastBirths, stable, e);
+     const balance = p.reserve + income - upkeep;

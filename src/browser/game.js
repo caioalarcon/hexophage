@@ -4,6 +4,7 @@ import { createMatchState } from '../match/state.js';
 
 const effects = {};
 const brain = {
+  onOutcome(receipt) { game.lastForecast = receipt; },
   get seed() { return crypto.getRandomValues(new Uint32Array(1))[0]; },
 };
 export function attachMatchEffects(handlers, archive) {

@@ -20,6 +20,8 @@ export function resetPlayers(world, game) {
     reserve: game.init,
     stable: 0,
     totalBirths: 0,
+    lastUnfundedBirths: 0,
+    unfundedBirths: 0,
     totalDeaths: 0,
     lastBirths: 0,
     lastDeaths: 0,

@@ -2,6 +2,8 @@ import { game, invalidateBrain } from '../../browser/game.js';
 import { world } from '../../browser/world-state.js';
 import { availableCells, initialEnergy, parameterValue } from '../constructive-economy.js';
 import { bindSliderLimits } from './slider-limits.js';
+import { useSlots } from '../../deck/slots.js';
+import { refreshTabs } from '../../patterns/editor/selection.js';
 import { $ } from '../../layout/elements.js';
 
 const compact = n => Number(n || 0).toLocaleString('pt-BR', { maximumFractionDigits: 3 });
@@ -15,6 +17,11 @@ export function bindEnergyPanel() {
   for (const [key,id] of Object.entries(controls)) {
     const slider = $(id);
     slider.value = String(game.economy[key]);
+    slider.addEventListener('change', () => {
+      if (!beforeMatch()) return;
+      useSlots(game.gameplay, game.profile.key, game.profile.id, game.economy);
+      refreshTabs();
+    });
     slider.addEventListener('input', () => {
       if (key === 'initialCells' && !beforeMatch()) return;
       const value = parameterValue(slider.value, Number(slider.max), Number(slider.step));
@@ -60,6 +67,8 @@ export function updateEnergyPanel() {
     'eco-eroded':compact(human.eroded),
     'eco-births':compact(human.lastBirths),
     'eco-births-total':compact(human.totalBirths),
+    'eco-unfunded-total':compact(human.unfundedBirths),
+    'eco-empty-total':compact(human.emptyFieldPaid),
     'eco-deaths-total':compact(human.totalDeaths),
     'eco-income':signed(human.lastIncome),
     'eco-income-total':compact(human.received),

@@ -3,7 +3,7 @@
  <div class="br-energy-sliders" id="br-energy-sliders">
   <label for="eco-stable-energy"><span id="eco-mature-label">Renda por célula madura</span> <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
   <label for="eco-scale">Escala das células maduras <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="0" max="16000" step="1" value="8000" data-energy="productionScale"></label>
-  <label for="eco-birth-cost"><span id="eco-birth-label">Custo por nascimento</span> <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
+  <label for="eco-birth-cost"><span id="eco-birth-label">Custo por nascimento</span> <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="0.01" value="1" data-energy="birthCost"></label>
   <label for="eco-combat-fee">Tributo por morte <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee"></label>
   <label for="eco-age">Maturação (gerações) <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
   <label for="eco-stamp">Custo por célula <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
@@ -31,6 +31,8 @@
    <div class="br-energy-extra">
   <div><span>Nascimentos/ger.</span><b id="eco-births">0</b></div>
   <div><span>Nascimentos (total)</span><b id="eco-births-total">0</b></div>
+  <div><span>Nascimentos sem verba (total)</span><b id="eco-unfunded-total">0</b></div>
+  <div><span>Reserva sem campo (pago)</span><b id="eco-empty-total">0</b></div>
   <div><span>Mortes naturais (total)</span><b id="eco-deaths-total">0</b></div>
   <div><span>Receita/ger.</span><b id="eco-income">+0</b></div>
   <div><span>Receita (total)</span><b id="eco-income-total">0</b></div>

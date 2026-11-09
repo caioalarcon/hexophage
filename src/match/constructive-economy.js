@@ -6,8 +6,8 @@ const rates = {
   stampCost: 10000, initialCells: 82,
 };
 export const ECONOMY_KEYS = Object.freeze(Object.keys(rates));
-export const STABILITY_ECONOMY = Object.freeze({ ...rates, policy: 'stability' });
-export const ACTIVITY_ECONOMY = Object.freeze({ ...rates, policy: 'activity' });
+export const STABILITY_ECONOMY = Object.freeze({ ...rates, policy: 'stability', fundBirths: false, emptyFieldUpkeep:false });
+export const ACTIVITY_ECONOMY = Object.freeze({ ...rates, policy: 'activity', fundBirths: false, emptyFieldUpkeep:false });
 export const DEFAULT_ECONOMY = STABILITY_ECONOMY;
 
 const policies = new Map([
@@ -17,6 +17,18 @@ const policies = new Map([
 
 export function isStabilityEconomy(economy) {
   return !economy.generationQuote && (economy.policy ?? 'stability') === 'stability';
+}
+
+// An optional charge for a wallet held without a single site on the planet.
+export const EMPTY_FIELD_GRACE = 512;
+export function chargeEmptyField(player, occupied, economy) {
+  player.emptyGenerations = occupied ? 0 : (player.emptyGenerations ?? 0) + 1;
+  if (player.emptyGenerations <= EMPTY_FIELD_GRACE) return 0;
+  const fee = Math.min(player.reserve, economy.stampCost / 64);
+  player.reserve -= fee;
+  player.paid += fee;
+  player.lastFlow -= fee;
+  return fee;
 }
 
 export function generationEnergy(births, stable, economy) {

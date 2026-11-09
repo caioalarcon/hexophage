@@ -1,0 +1,14 @@
+group,site,rotation,externalShip,rawRelativeFlow,calibratedRelativeFlow,observedVsMentalHold,realActionVsRealHold,observedRelativeOperating,realRelativeOperating
+train,296,0,true,1.25,1.25,-0.75,-0.75,29,29
+train,296,0,true,1.25,1.25,-0.75,-0.75,29,29
+train,296,0,true,1.25,1.25,-0.75,-0.75,29,29
+train,296,0,true,1.25,-0.08333333333333348,-0.75,-0.75,29,29
+train,296,0,true,1.25,-0.23571428571428577,-0.75,-0.75,29,29
+train,296,0,true,1.25,-0.34090909090909083,-0.75,-0.75,29,29
+unseenPose,318,0,true,6.5,4.833333333333334,2,2,178,179
+unseenPose,319,1,true,4.25,2,-0.75,-0.75,127,128
+unseenPose,297,2,true,2.75,1.0833333333333335,-0.75,-0.75,56,57
+unseenPose,273,3,true,-2.5,-2.7916666666666665,-0.75,-0.75,-127,-126
+unseenPose,272,4,true,-0.25,-1.6666666666666665,1,1,47,47
+unseenPose,295,5,true,1.25,-0.41666666666666663,2,2,139,139
+shiftedDistribution,296,0,false,1.25,-0.41666666666666663,1.25,1.25,83,83

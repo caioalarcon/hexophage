@@ -28,7 +28,8 @@ function defaultSlots(gameplay, ruleId, economy) {
     .slice(0, count).map(pattern => pattern.id);
 }
 
-export const slotIds = defaultSlots(resolveRuleProfile().gameplay, DEFAULT_RULE, DEFAULT_ECONOMY);
+const openingProfile = resolveRuleProfile();
+export const slotIds = defaultSlots(openingProfile.gameplay, DEFAULT_RULE, openingProfile.economy);
 export let SLOT_COUNT = slotIds.length;
 export let selectedSlot = 0;
 let scope = DEFAULT_RULE;

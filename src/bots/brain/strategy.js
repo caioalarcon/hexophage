@@ -1,6 +1,9 @@
 import { createSeedScreen, expectedSeedFlow, marginalSeedFlow, quoteEmptySeed } from './seed-screen.js';
+import { EMPTY_FIELD_GRACE } from '../../match/constructive-economy.js';
 import { estimateEconomicReturn, rankEconomicPatterns } from '../../patterns/economic-ranking.js';
 import { beginLocalTrial } from './local-world.js';
+import { createForecastFeedback } from './feedback.js';
+import { SCOUT_VISITS, phaseAt, scoutEmpty, scoutRival } from './scout.js';
 import { aimAtTarget } from './aim.js';
 import { MAX_EMPTY_PATCH_SCAN, emptyHexPatch, placement, recognizes, relocate, selectSpot, signature, stampCatalog, witness } from './proposals.js';
 
@@ -71,11 +74,12 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
   // Independent 1,024-generation physical measurements give each learner an
   // ordered shortlist to investigate. No simulated or remembered score is
   // treated as proof of profitability in its actual game situation.
-  const economicCandidates = rankEconomicPatterns(catalog, game.profile.id, game.economy)
+  const rankInvestments = () => rankEconomicPatterns(catalog, game.profile.id, game.economy)
     .filter(stamp => {
       const prior = estimateEconomicReturn(game.profile.id, stamp, game.economy);
       return prior?.feasible && prior.flow > 0;
     });
+  let economicCandidates=rankInvestments();
   const single = catalog.find(s => s.offsets.length === 1)
     ?? { id: 'manual/single', offsets: [[0,0]], radius: 0 };
   const minimum = Math.min(...catalog.map(s => s.offsets.length));
@@ -84,16 +88,17 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
   const seed = options.seed ?? 1;
   const brains = game.players.map(p => {
     const random = randomStream(seed ^ Math.imul(p.id, 0x9e3779b9));
-    return { random, payback: 120000 + random() * 240000, rivalWeight: .45 + random(),
-      ready: null, field: [], recover: false, surveyed: new Set(), investmentTurns: 0, rejected: new Map(), pilotSpent: 0, pilotAt: -Infinity };
+    return { random, payback: 120000 + random() * 240000, rivalWeight: 1 + .5*random(),
+      ready: null, field: [], recover: false, surveyed: new Set(), investmentTurns: 0, rounds:0, round:null, lastOrder:-Infinity, rejected: new Map(), pilotSpent: 0, pilotAt: -Infinity };
   });
   const metrics = {
-    trials: 0, completed: 0, studies: 0, screenVisits: 0, inheritedProbes: 0, investments: 0, rescues: 0, work: 0, visits: 0, actions: 0, waits: 0, invalidated: 0, boundary: 0, tactical: 0, deferred: 0, relocations: 0, pilots: 0, observed: 0,
+    trials: 0, completed: 0, studies: 0, screenVisits: 0, inheritedProbes: 0, investments: 0, rescues: 0, work: 0, visits: 0, actions: 0, waits: 0, invalidated: 0, boundary: 0, tactical: 0, comparisons:0, comparedSites:0, phaseTrials:0, delayedAttacks:0, offSlotAttacks:0, deferred: 0, relocations: 0, pilots: 0, observed: 0,
     byBot: Object.fromEntries(game.players.map(p => [p.id,
       { trials: 0, completed: 0, actions: 0, observed: 0, patterns: Object.create(null) }])),
   };
   // Budget both branches together, across the whole match. Even a stationary
   // branch consumes visit credits because its ages and finances still advance.
+  const feedback = createForecastFeedback(world, game, memory, metrics, options.onOutcome);
   const capacity = 8192;
   let credits = capacity, last = world.gen - 1, earliest = 0, cursor = 1, pending, survey;
 
@@ -165,43 +170,76 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     return best ? { stamp: best, investment: true } : { investment: false };
   }
 
+  function closeRound(brain) {
+    const round=brain.round;
+    if (!round) return;
+    if(round.probes>1) metrics.comparisons++;
+    metrics.comparedSites+=round.sites.size;
+    if(round.offers.length) {
+      round.offers.sort((a,b)=>b.bid-a.bid);
+      brain.ready=round.offers[0];
+      brain.ready.compared=round.probes; brain.ready.scouted=round.sites.size;
+      brain.ready.expiry=world.gen+Math.max(game.interval*4,128);
+    }
+    options.onComparison?.({gen:world.gen, owner:round.owner, probes:round.probes, sites:round.sites.size,
+      alternatives:round.log, choice:brain.ready?.action.key, phase:brain.ready?.phaseDelay??0});
+    brain.round=null;
+    brain.rounds++;
+  }
+
   function propose(player, vacuumOpening = false) {
     const brain = brains[player.id - 1];
+    const round=player.stamps && !vacuumOpening ? brain.round??= {
+      owner:player.id, slot:0, probes:0, offers:[], sites:new Set(), log:options.onComparison?[]:undefined,
+    } : null;
     for (let attempt = 0; attempt < 3; attempt++) {
       const recovery = brain.recover && player.flowAverage < 0;
       const restart = !world.ownerCells[player.id].length && player.reserve + 1e-9 < minimum * game.economy.stampCost;
       const economic = !vacuumOpening && !world.physics.birthsFromVacuum &&
-        (!player.stamps || recovery || brain.random() < .44);
+        (!round || round.slot===0);
       const pick = restart ? { stamp: single, investment: true }
-        : economic ? selectInvestment(player, brain) : { investment: false };
+        : economic ? selectInvestment(player, brain)
+        : round?.slot===2 && brain.rounds%2 && round.crop ? {stamp:round.crop,investment:true,nearby:true}
+        : { investment: false };
       if (!pick) return null;
-      const spot = pick.investment || recovery ? { kind: 'empty', target: player.seed,
-        direction: Math.floor(brain.random() * 6) } : selectSpot(world, game, player, brain.random);
+      if (!vacuumOpening && credits<SCOUT_VISITS) return null;
+      if (!vacuumOpening) { credits-=SCOUT_VISITS; metrics.visits+=SCOUT_VISITS; }
+      const attack = round && (round.slot===1 || round.slot===2 && brain.rounds%2===0);
+      let spot;
+      if (vacuumOpening) spot={kind:'empty', target:player.seed, direction:Math.floor(brain.random()*6)};
+      else if (pick.nearby && world.ownerCells[player.id].length) {
+        const own=world.ownerCells[player.id];
+        spot={kind:'own',target:own[Math.floor(brain.random()*own.length)],direction:Math.floor(brain.random()*6)};
+      } else if (pick.investment) spot=scoutEmpty(world,player,brain.random);
+      else if (attack) spot=scoutRival(world,game,player,brain.random);
+      spot ??= selectSpot(world,game,player,brain.random);
+      const rivalId=spot.kind==='rival' ? world.owners[spot.target] : 0;
       const context = signature(world, player.id, spot);
       const price = game.economy.stampCost;
       let pool = vacuumOpening ? catalog.filter(p => p.radius <= 2) :
         kit.length && brain.random() < .55 ? kit : catalog;
-      if (spot.kind === 'rival' && brain.random() < .35) {
-        const mobile = kit.filter(stamp => {
+      if (spot.kind === 'rival' && brain.random() < .6) {
+        const mobile = [...brain.surveyed].filter(stamp => {
           const drift = brain.surveyed.has(stamp) && screen.result(stamp)?.drift;
           return drift && Math.max(Math.abs(drift[0]), Math.abs(drift[1]), Math.abs(drift[0] + drift[1])) >= 1.5;
         });
         if (mobile.length) pool = mobile;
       }
+      if(spot.kind==='rival' && round?.slot===2 && round.raider) pool=[round.raider];
       const action = pick.stamp ? { stamp: pick.stamp, turn: Math.floor(brain.random() * 6), gap: 3,
         key: pick.stamp.id, experience: memory.lookup(player.id, 'empty', pick.stamp.id).count }
         : sampleAction(pool.length ? pool : catalog, player, spot, context, memory, brain.random, price);
       if (!action) continue;
       const { stamp } = action;
+      if(spot.kind==='rival' && !action.learnedPose) action.gap=1+Math.floor(brain.random()*3);
       if (spot.kind === 'rival' && !action.learnedPose && brain.random() < .8) {
         action.turn = aimAtTarget(brain.surveyed.has(stamp) ? screen.result(stamp) : null, action.turn);
-        action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
       }
+      if (spot.kind === 'rival') action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
       const { turn } = action;
       let distance = stamp.radius + action.gap;
-      if ((pick.investment && player.stamps) || recovery) distance = 16 + Math.floor(brain.random() * 28);
-      else if (spot.kind === 'empty') distance = player.stamps ? 4 + Math.floor(brain.random() * 14)
-        : Math.floor(brain.random() * 9);
+      if (pick.nearby && spot.kind==='own') distance=stamp.radius+4+Math.floor(brain.random()*6);
+      if (spot.kind === 'empty') distance = pick.investment ? 0 : Math.floor(brain.random()*9);
       const position = placement(world, spot, stamp, turn, distance);
       if (!position) continue;
       const measure = pick.investment && screen.result(stamp);
@@ -214,28 +252,66 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       const scanCost = world.physics.growthThreshold && world.activeCount <= MAX_EMPTY_PATCH_SCAN ? world.activeCount : 0;
       const proofCost = 1 + 3 * halo * (halo + 1) + (measure ? 2 * measure.turns : 0) + scanCost;
       let cached;
-      if (measure && halo <= 20 && !options.horizon) {
+      const emptyFeeDue = game.economy.emptyFieldUpkeep && !world.ownerCells[player.id].length &&
+        (player.emptyGenerations ?? 0) + (measure?.turns ?? 0) > EMPTY_FIELD_GRACE;
+      if (measure && halo <= 20 && !options.horizon && !emptyFeeDue) {
         if (credits < proofCost) {
           earliest = world.gen + 1;
           return null;
         }
         credits -= proofCost; metrics.visits += proofCost;
-        if (emptyHexPatch(world, position, halo, measure.turns)) cached = quoteEmptySeed(measure, player, game.economy);
+        if (emptyHexPatch(world, position, halo, measure.turns)) cached = quoteEmptySeed(measure, player, game.economy, true);
       }
-      const job = cached ? null : beginLocalTrial(world, game, player.id, position.center, position.ids, { radius, horizon });
+      if (!cached && !vacuumOpening) {
+        const setup=2*(1+3*radius*(radius+1));
+        if (setup>credits) return null;
+        credits-=setup;metrics.visits+=setup;
+      }
+      const job = cached ? null : beginLocalTrial(world, game, player.id, position.center, position.ids, { radius, horizon, rival:rivalId||undefined, audit:true });
       if (!cached && !job) continue;
       metrics.trials++;
       metrics.byBot[player.id].trials++;
       const site = { kind: 'site', target: position.center, direction: turn };
       const saved = spot.kind === 'rival' ? witness(world, position, radius, game.economy.stableAfter, horizon) : null;
-      return { player, brain, recovery, investment: pick.investment, spot, context, action, position, distance, site, saved,
-        rivalId: world.owners[spot.target], before: signature(world, player.id, site), job, cached };
+      if(round){
+        if(round.slot===0 && pick.investment)round.crop=stamp;
+        if(round.slot===1 && spot.kind==='rival')round.raider=stamp;
+        round.slot++;
+      }
+      return { player, brain, round, recovery, investment: pick.investment, spot, context, action, position, distance, site, saved,
+        rivalId, before: signature(world, player.id, site), job, cached, radius,horizon,
+        orderCount:spot.kind==='rival' ? game.players.reduce((n,p)=>n+p.stamps,0) : 0,
+        proposedAt:world.gen, phase:spot.kind==='rival'?phaseAt(world,spot):0, phaseDelay:0 };
     }
+    if(round && ++round.slot>=3)closeRound(brain);
     return null;
+  }
+
+  // Observe the same pose at a second real oscillator phase. Both branches retain
+  // their own immutable snapshot and have exactly the same rollout horizon.
+  function sampleLaterPhase(trial) {
+    const {round, spot, position, player, rivalId, radius, horizon}=trial;
+    if (!round || round.slot!==2 || spot.kind!=='rival' || trial.phaseDelay || trial.paired ||
+        world.gen<=trial.proposedAt || world.gen-trial.proposedAt>8) return;
+    const phase=phaseAt(world,spot);
+    if (phase===trial.phase || trial.orderCount!==game.players.reduce((n,p)=>n+p.stamps,0)) return;
+    const cost=2*(1+3*radius*(radius+1));
+    if(credits<cost)return;
+    credits-=cost;metrics.visits+=cost;
+    const job=beginLocalTrial(world,game,player.id,position.center,position.ids,
+      {radius,horizon,rival:rivalId,audit:true});
+    if(!job)return;
+    metrics.phaseTrials++;metrics.trials++;metrics.byBot[player.id].trials++;
+    trial.paired={...trial,job,context:signature(world,player.id,spot),before:signature(world,player.id,trial.site),
+      saved:witness(world,position,radius,game.economy.stableAfter,horizon),phase,
+      phaseDelay:world.gen-trial.proposedAt};
   }
 
   function finish(trial, result) {
     const { player, brain, spot, context, action } = trial;
+    const rawResult = result;
+    if (trial.paired) trial.paired.immediate = rawResult;
+    result = feedback.correct(trial, result);
     const { value, acceptable, deferred } = evaluateTrial(result, brain, spot.kind);
     const scale = Math.max(result.cost, game.economy.stampCost, 1);
     const utility = normalized(value, scale);
@@ -270,30 +346,58 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       fundedYield > 0 && fundedYield * brain.payback > result.cost + operatingRisk &&
       result.cost + operatingRisk <= player.reserve;
     if (!investment && trial.investment && !acceptable && !result.boundary) brain.rejected.set(action.stamp, world.gen + 256);
-    if (!unprofitable && (acceptable || investment || pilot)) {
-      const ready = { ...trial, job: null, pilot, investment, rescue: investment && trial.recovery, result, deferred,
+    const round=trial.round;
+    const qualified=!unprofitable && (acceptable || investment || pilot);
+    // Compare all regions on the same economic horizon. A purchase still
+    // needs its individual funding/causality checks; holding has value zero.
+    const horizon=result.boundary?0:brain.payback;
+    const rivalFlow=result.rivalFlow+(deferred?result.rivalDeferredFlow:0);
+    const ownFlow=investment?fundedYield:result.ownFlow;
+    const bid=result.ownCash-brain.rivalWeight*result.rivalCash+horizon*(ownFlow-brain.rivalWeight*rivalFlow);
+    // Compare literal finite returns of the two snapshots, not an uncropped
+    // annuity versus a forecast forced to stop at the earlier disk boundary.
+    // Waiting also gives up the positive marginal operating flow of those ticks.
+    let phaseBetter = true;
+    if (trial.phaseDelay) {
+      const early = trial.immediate;
+      const relative = (r, unit) => r['own'+unit] - brain.rivalWeight*r['rival'+unit];
+      phaseBetter = !early.boundary && !rawResult.boundary && !early.ownUnfunded &&
+        !rawResult.ownUnfunded && early.turns === rawResult.turns &&
+        relative(rawResult,'Cash') > relative(early,'Cash') + trial.phaseDelay*Math.max(0,relative(early,'Flow')) &&
+        relative(rawResult,'Flow') >= relative(early,'Flow');
+    }
+    const approved=qualified && phaseBetter && (!round || bid>0 || pilot);
+    if(round){
+      round.probes++;round.sites.add(trial.position.center);
+      round.log?.push({kind:spot.kind,stamp:action.stamp.id,target:spot.target,center:trial.position.center,
+        heading:(trial.position.heading+action.turn)%6, rival:trial.rivalId,at:trial.proposedAt,
+        turn:action.turn,phase:trial.phase,delay:trial.phaseDelay,bid,approved,boundary:result.boundary,
+        ownCash:rawResult.ownCash,rivalCash:rawResult.rivalCash,ownFlow:rawResult.ownFlow,rivalFlow:rawResult.rivalFlow,
+        rivalCells:rawResult.rivalCells});
+    }
+    if (approved) {
+      const ready = { ...trial, round:null, paired:null, job: null, pilot, investment, rescue: investment && trial.recovery, result, rawResult, deferred,bid,
         expiry: world.gen + Math.max(game.interval * 2, 48) };
-      brain.ready = ready;
+      if(round)round.offers.push(ready);
+      else brain.ready=ready;
     } else metrics.waits++;
+    if(round && round.slot>=3 && !trial.paired) closeRound(brain);
   }
 
   function observeField(player, brain) {
     for (let i = brain.field.length - 1; i >= 0; i--) {
       const field = brain.field[i];
       if (world.gen < field.due) continue;
-      // Other actions confound these real observations. Keep them distinct from
-      // causal local trials and use them as a modest prior for the next probe.
       const elapsed = world.gen - field.from;
-      const excess = (p, start) => p.reserve + p.stampedEnergy - start.wealth - elapsed * start.flow;
-      const rival = game.players[field.rivalId - 1];
-      const rivalReturn = rival ? excess(rival, field.rival) : 0;
-      const relative = excess(player, field.own) - field.cost - brain.rivalWeight * rivalReturn;
-      memory.observe(player.id, 'field/' + field.kind, field.stamp, normalized(relative, field.cost));
-      metrics.observed++; metrics.byBot[player.id].observed++;
-      if (field.kind === 'empty') {
-        const marginalFlow = excess(player, field.own) / elapsed;
+      // Long-term yields use only a single-crop portfolio. Short-term pose
+      // feedback comes from the paired, spatially scoped action observation.
+      const singleCrop=metrics.byBot[player.id].patterns[field.stamp]===player.stamps;
+      const quiet=field.stamps===player.stamps && field.otherOrders===game.players.reduce((s,p)=>s+(p===player?0:p.stamps),0);
+      if (field.kind === 'empty' && singleCrop && quiet) {
+        const marginalFlow=(player.reserve+player.stampedEnergy-field.own.wealth)/elapsed-field.own.flow;
         const scale = Math.max(1e-4, field.cost / brain.payback);
-        if (player.stamps === field.stamps) memory.observe(player.id, 'yield/empty', field.stamp, normalized(marginalFlow, scale));
+        memory.observe(player.id, 'yield/empty', field.stamp, normalized(marginalFlow, scale));
+        metrics.observed++; metrics.byBot[player.id].observed++;
         // In a single-crop field attribute aggregate operating output across
         // its copies. Mixed portfolios cannot identify this stamp's yield.
         const copies = metrics.byBot[player.id].patterns[field.stamp];
@@ -314,6 +418,8 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     const budget = options.budget ?? 96 * (game.brainRate ?? 1);
     if (world.gen <= last) return;
     credits = Math.min(capacity, credits + (world.gen - last) * budget);
+    const observedVisits=feedback.observe(Math.min(credits,Math.max(128,budget/2)));
+    credits-=observedVisits; metrics.visits+=observedVisits;
     last = world.gen;
     if (world.gen === 0 && world.physics.birthsFromVacuum) {
       for (const player of game.players.slice(1)) {
@@ -336,6 +442,7 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       if (step.done) { learnSeed(player, brain, stamp); metrics.studies++; survey = null; }
       return;
     }
+    if (pending) sampleLaterPhase(pending);
     if (world.gen < earliest) return;
     if (!pending) {
       let player = game.players[cursor];
@@ -365,29 +472,46 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     metrics.visits += (job.generations - before) * pair;
     credits -= (job.generations - before) * pair;
     metrics.work += job.work - oldWork;
-    if (result) { finish(pending, result); pending = null; }
+    if (result) { finish(pending, result); pending = pending.paired ?? null; }
   }
 
   function strategy(player) {
     const brain = brains[player.id - 1];
     observeField(player, brain);
     const ready = brain.ready;
-    if (!ready) return;
+    if (!ready || world.gen-brain.lastOrder<game.interval) return;
     const { spot, site, context, before, position, result, action, pilot, expiry } = ready;
     if (world.gen > expiry || player.out) { brain.ready = null; metrics.invalidated++; return; }
     let place = position;
     const same = signature(world, player.id, spot) === context && signature(world, player.id, site) === before;
     if (spot.kind === 'rival') {
+      // A pose may be checked between ordinary turns, so debit its actual
+      // witness and cap relocation work rather than scanning a disk every tick.
+      const check=ready.saved.cells.length;
+      if(same && credits<check)return;
+      if(same){ credits-=check;metrics.visits+=check; }
       if (!same || !recognizes(world, position, ready.saved)) {
-        if (world.gen < (ready.retryAt ?? 0)) return;
+        if (!ready.saved.offsets || world.gen < (ready.retryAt ?? 0)) return;
         ready.retryAt = world.gen + 24;
+        const reserve=4*check+256;
+        if(credits<reserve)return;
+        credits-=reserve;metrics.visits+=reserve;
         place = relocate(world, ready);
         if (!place) return;
       }
     } else if (!same) return;
     brain.ready = null;
     if (!commitStamp(player.id, place.ids, false)) { metrics.invalidated++; return; }
-    options.onPlacement?.({ gen:world.gen, owner:player.id, stamp:action.stamp.id,
+    feedback.watch(player, ready, place);
+    brain.lastOrder=world.gen;
+    if(spot.kind==='rival' && ready.phaseDelay) metrics.delayedAttacks++;
+    if(spot.kind==='rival' && world.gen!==1 && world.gen%game.interval) metrics.offSlotAttacks++;
+    options.onPlacement?.({ gen:world.gen, owner:player.id, stamp:action.stamp.id, center:place.center,
+      heading:(place.heading+action.turn)%6, target:place.target??spot.target, approach:place.direction??spot.direction,
+      proposedCenter:position.center, proposedHeading:(position.heading+action.turn)%6, proposedTarget:spot.target,
+      witnessRadius:ready.radius, witnessHorizon:ready.horizon,
+      turn:action.turn,gap:action.gap,poseKey:action.key,phase:ready.phase,phaseOffset:ready.phaseDelay,proposedAt:ready.proposedAt,scouted:ready.scouted??1,
+      compared:ready.compared??1,
       rival:spot.kind === 'rival' ? ready.rivalId : null, ids:place.ids });
     metrics.actions++;
     brain.firstStamp ??= world.gen;
@@ -401,19 +525,24 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     if (pilot) { metrics.pilots++; brain.pilotAt = world.gen; brain.pilotSpent += result.cost; }
     if (brain.field.length < 3) {
       const baseline = p => ({ flow: p.flowAverage, wealth: p.reserve + p.stampedEnergy });
-      const rival = spot.kind === 'rival' ? game.players[ready.rivalId - 1] : null;
       brain.field.push({ stamp: action.stamp.id, stamps: player.stamps, kind: spot.kind, from: world.gen,
         due: world.gen + Math.min(8192, Math.max(128, game.economy.stableAfter + 64)),
-        cost: result.cost, own: baseline(player), rivalId: rival?.id, rival: rival && baseline(rival) });
+        cost: result.cost, own: baseline(player), otherOrders:game.players.reduce((s,p)=>s+(p===player?0:p.stamps),0) });
     }
   }
 
+  strategy.phaseTurn = player => {
+    if(brains[player.id-1].ready?.spot.kind==='rival') strategy(player);
+  };
+  strategy.recordStamp = feedback.recordStamp;
   strategy.think = think;
   strategy.metrics = metrics;
   strategy.invalidate = () => {
+    feedback.clear();
     pending = null; survey = null; screen = createSeedScreen(world.physics);
+    economicCandidates=rankInvestments();
     for (const brain of brains) {
-      brain.ready = null;
+      brain.ready = null; brain.round=null;
       brain.field = [];
       brain.recover = false;
       brain.prior = null; brain.surveyed.clear(); brain.investmentTurns = 0; brain.rejected.clear();
