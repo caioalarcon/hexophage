@@ -10,7 +10,7 @@ const rule = 'hex-b2s245', horizon = 360000, graph = buildSphere(32);
 const candidates = JSON.parse(readFileSync(new URL('./attack-catalog.json', import.meta.url)));
 function play(tape, capture) {
   const overrides = new Map();
-  const m = createHeadlessMatch(graph, { rule, economy: STABILITY_ECONOMY,
+  const m = createHeadlessMatch(graph, { conflict: 'legacy', rule, economy: STABILITY_ECONOMY,
     botMode:tape ? 'profile' : 'learn', strategies:overrides, brain:{ seed:4751 } });
   const { world, game } = m;
   game.gameplay = { ...game.gameplay, patterns:candidates, kit:Object.fromEntries(candidates.map(p=>[p.id,{}])) };

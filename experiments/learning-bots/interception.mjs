@@ -21,7 +21,7 @@ for (const [name, economy] of [
   ['early-maturity', { stableAfter: 2, stableEnergy: 1, stampCost: 10 }],
   ['mature-cost', { policy: 'activity', stableEnergy: 1, birthCost: 0, stampCost: 10 }],
 ]) {
-  const newMatch = () => createHeadlessMatch(graph, { init: 820000, economy, strategies: idle, botMode: 'profile' });
+  const newMatch = () => createHeadlessMatch(graph, { conflict: 'legacy', init: 820000, economy, strategies: idle, botMode: 'profile' });
   const baseline = newMatch();
   const at = (offsets,q,r) => baseline.patchForStamp(origin, 0, offsets.map(([a,b]) => [a+q,b+r]));
   const grower = at(shape('stalk'),0,0), [center] = at([[0,0]],-6,10);

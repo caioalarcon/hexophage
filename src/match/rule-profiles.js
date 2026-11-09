@@ -1,4 +1,5 @@
 import { BAYS, CALLAHAN, compileTotalistic } from '../simulation/rules.js';
+import { DEFAULT_CONFLICT, withConflict } from '../simulation/conflict.js';
 import { catalogRules } from '../simulation/catalog-rules.js';
 import { ACTIVITY_ECONOMY, STABILITY_ECONOMY, initialEnergy } from './constructive-economy.js';
 import { baysGameplay, callahanGameplay, genericGameplay, getBotPlans, surveyGameplay } from './gameplay.js';
@@ -40,10 +41,15 @@ export function resolveRuleProfile(id = DEFAULT_RULE, notation) {
   };
 }
 
+export function setConflictPolicy(world, game, id) {
+  world.physics = withConflict(game.profile.physics, id);
+  game.conflict = id;
+}
+
 export function applyRuleProfile(world, game, profile, overrides) {
   world.rule = profile.id;
-  world.physics = profile.physics;
   game.profile = profile;
+  setConflictPolicy(world, game, game.conflict ?? DEFAULT_CONFLICT);
   game.gameplay = profile.gameplay;
   game.economy = { ...STABILITY_ECONOMY, ...profile.economy, ...overrides };
   game.init = initialEnergy(game.economy);

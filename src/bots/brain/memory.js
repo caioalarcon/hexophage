@@ -41,7 +41,10 @@ export function brainNamespace(world, game) {
     key = [profile.key, profile.brainVersion ?? 1, hash(tables.join('/')), hash(JSON.stringify(catalog))];
     staticKeys.set(profile, key);
   }
-  return JSON.stringify([...key, quoteKey(economy), ...ECONOMY_KEYS.map(k => economy[k])]);
+  const scope = [...key, quoteKey(economy), ...ECONOMY_KEYS.map(k => economy[k])];
+  // Keep historical memories for exactly their original arbitration.
+  if (game.conflict && game.conflict !== 'legacy') scope.push(game.conflict);
+  return JSON.stringify(scope);
 }
 
 // Maps are ordered by most recent observation. Reads never promote a failed experiment.

@@ -12,7 +12,7 @@ const graph = buildSphere(Number(freq)), archive = createBrainArchive(), seed = 
 function play(tape) {
   const strategies = new Map();
   const learning = !tape;
-  const match = createHeadlessMatch(graph, {
+  const match = createHeadlessMatch(graph, { conflict: 'legacy',
     rule, botMode: learning ? 'learn' : 'profile', strategies, brain: { archive, seed },
   });
   const { world, game } = match;

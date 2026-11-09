@@ -55,7 +55,7 @@ for(const rule of Object.keys(ruleProfiles).filter(s=>s!=='custom' && (!requests
     if (!ages.size) continue;
     const field=[...ages.keys()].map(patternOffset).map(([q,r])=>[q-def.q,r-def.r]);
     function setup() {
-      const m=createHeadlessMatch(graph,{rule,economy});
+      const m=createHeadlessMatch(graph,{ conflict: 'legacy',rule,economy});
       const ids=m.patchForStamp(graph.farthest,0,def.points);
       if(!ids || !m.commitStamp(1,ids,false)) throw Error('Invalid defender '+target.id);
       runTicks(m,warm);

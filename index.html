@@ -747,7 +747,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <span class="hl-stat">Vivas <strong id="hl-pop">0</strong></span>
   <span class="hl-stat">Avaliadas <strong id="hl-eval">0</strong></span>
   <span class="hl-stat">Real <strong id="hl-actual">0/s</strong></span>
-  <span class="hl-stat">Neutras <strong id="br-neutral">0</strong></span>
+  <span class="hl-stat" title="Células vivas sem time · participam da evolução">Neutras <strong id="br-neutral">0</strong></span>
  </div>
 </header>
 
@@ -841,6 +841,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     <select id="br-economy-policy" title="Trocar reinicia a partida com as tarifas atuais">
       <option value="stability">Células maduras geram</option><option value="activity">Nascimentos geram</option>
     </select>
+  </div>
+  <div class="br-worldpick">
+    <label for="br-conflict">Nascimento em disputa</label>
+    <select id="br-conflict" title="Aplicar aos próximos nascimentos da partida"></select>
   </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="br-worldpick"><label for="br-bot-mode">Bots</label>
@@ -1052,7 +1056,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       key2 = [profile.key, profile.brainVersion ?? 1, hash(tables.join("/")), hash(JSON.stringify(catalog2))];
       staticKeys.set(profile, key2);
     }
-    return JSON.stringify([...key2, quoteKey(economy), ...ECONOMY_KEYS.map((k) => economy[k])]);
+    const scope3 = [...key2, quoteKey(economy), ...ECONOMY_KEYS.map((k) => economy[k])];
+    if (game2.conflict && game2.conflict !== "legacy") scope3.push(game2.conflict);
+    return JSON.stringify(scope3);
   }
   function put(map, key2, value, limit) {
     map.delete(key2);
@@ -1441,7 +1447,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/simulation/cell-fate.js
-  function evaluateCell({ cells: cells2, owners, graph: { adj, deg }, physics }) {
+  function evaluateCell({ cells: cells2, owners, graph: { adj, deg, ids }, physics }) {
     const { tables, birthOwner } = physics;
     const counts = new Uint8Array(8);
     return (id) => {
@@ -1449,7 +1455,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       let mask = 0;
       for (let k = 0; k < degree; k++) mask |= cells2[adj[offset + k]] << k;
       if (!tables[degree][cells2[id]][mask]) return 0;
-      return cells2[id] ? owners[id] : birthOwner(owners, adj, offset, degree, mask, counts);
+      return cells2[id] ? owners[id] : birthOwner(owners, adj, offset, degree, mask, counts, ids);
     };
   }
 
@@ -2402,7 +2408,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function witness(world2, position, radius, threshold, horizon2) {
     const offsets = disk(radius);
-    const projected = isotropic(world2.physics) && patchForStamp(world2, position.center, position.heading, offsets);
+    const projected = !world2.physics.siteDependentBirths && isotropic(world2.physics) && patchForStamp(world2, position.center, position.heading, offsets);
     let ids = projected;
     if (!ids) {
       ids = [position.center];
@@ -2846,6 +2852,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         metrics.invalidated++;
         return;
       }
+      options.onPlacement?.({
+        gen: world2.gen,
+        owner: player.id,
+        stamp: action.stamp.id,
+        rival: spot.kind === "rival" ? ready.rivalId : null,
+        ids: place.ids
+      });
       metrics.actions++;
       brain2.firstStamp ?? (brain2.firstStamp = world2.gen);
       if (place !== position) metrics.relocations++;
@@ -3249,6 +3262,76 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return { ...rule, notation: "B" + birth + "/S" + survival };
   }
   var BAYS = compileTotalistic("B2/S35");
+
+  // src/simulation/conflict.js
+  var DEFAULT_CONFLICT = "lineage";
+  var conflictPolicies = Object.freeze({
+    lineage: "Maioria · herdar de um time",
+    legacy: "Empate neutro · original",
+    block: "Bloquear nascimento misto"
+  });
+  function mix(x) {
+    x = Math.imul(x ^ x >>> 16, 2146121005);
+    x = Math.imul(x ^ x >>> 15, 2221713035);
+    return (x ^ x >>> 16) >>> 0;
+  }
+  function lineageOwner(owners, adj, offset, degree, mask, counts, globalIds) {
+    let first = 0, mixed = false;
+    for (let k = 0; k < degree; k++) {
+      if (!(mask & 1 << k)) continue;
+      const owner = owners[adj[offset + k]];
+      if (owner === 7) continue;
+      if (first && first !== owner) {
+        mixed = true;
+        break;
+      }
+      first = owner;
+    }
+    if (!mixed) return first || 7;
+    counts.fill(0);
+    let most = 0;
+    for (let k = 0; k < degree; k++) {
+      if (!(mask & 1 << k)) continue;
+      const owner = owners[adj[offset + k]];
+      if (owner !== 7) most = Math.max(most, ++counts[owner]);
+    }
+    const center = offset / 6;
+    const salt = mix(globalIds ? globalIds[center] : center);
+    let best = -1, winner = 0;
+    for (let k = 0; k < degree; k++) {
+      if (!(mask & 1 << k)) continue;
+      const parent = adj[offset + k], owner = owners[parent];
+      if (counts[owner] !== most) continue;
+      const rank = mix((globalIds ? globalIds[parent] : parent) ^ salt);
+      if (rank > best) {
+        best = rank;
+        winner = owner;
+      }
+    }
+    return winner;
+  }
+  function blockMixedBirth(owners, adj, offset, degree, mask) {
+    let first = 0;
+    for (let k = 0; k < degree; k++) {
+      if (!(mask & 1 << k)) continue;
+      const owner = owners[adj[offset + k]];
+      if (owner === 7) continue;
+      if (first && first !== owner) return 0;
+      first = owner;
+    }
+    return first || 7;
+  }
+  function withConflict(physics, id) {
+    if (!Object.hasOwn(conflictPolicies, id)) throw new RangeError("Conflito desconhecido: " + id);
+    const base = physics.basePhysics ?? physics;
+    if (id === "legacy") return base;
+    return {
+      ...base,
+      basePhysics: base,
+      siteDependentBirths: id === "lineage",
+      birthOwner: id === "lineage" ? lineageOwner : blockMixedBirth
+    };
+  }
 
   // src/simulation/catalog-rules.js
   function ringRule(notation, birth, survive) {
@@ -4319,10 +4402,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       key: profile.compile ? id + "/" + physics.notation : id
     };
   }
+  function setConflictPolicy(world2, game2, id) {
+    world2.physics = withConflict(game2.profile.physics, id);
+    game2.conflict = id;
+  }
   function applyRuleProfile(world2, game2, profile, overrides) {
     world2.rule = profile.id;
-    world2.physics = profile.physics;
     game2.profile = profile;
+    setConflictPolicy(world2, game2, game2.conflict ?? DEFAULT_CONFLICT);
     game2.gameplay = profile.gameplay;
     game2.economy = { ...STABILITY_ECONOMY, ...profile.economy, ...overrides };
     game2.init = initialEnergy(game2.economy);
@@ -4330,7 +4417,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/match/state.js
-  function createMatchState(world2, { rule, notation, economy, botMode = "profile" } = {}) {
+  function createMatchState(world2, { rule, notation, economy, conflict, botMode = "profile" } = {}) {
     const game2 = {
       colors: [
         "#000000",
@@ -4356,6 +4443,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       names: ["", "Você", "Raposa", "Polvo", "Escorpião", "Alien", "Robô"],
       players: [],
       botMode,
+      conflict,
       brainRate: 8,
       tax: 0,
       interval: 10,
@@ -7685,7 +7773,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ] : [],
       ...p.survey ? [
         ["Fluxo/g · estabilidade padrão · G897–1024", p.survey[0] === null ? "Incompleto" : fmt2(p.survey[0])],
-        ["Compras · 4 partidas F32 de aprendizes", p.survey[1] ?? "Fora do raio mental"]
+        ["Compras · F32 · estabilidade e conflito original", p.survey[1] ?? "Fora do raio mental"]
       ] : [],
       ...p.settledCells ? [["Formação estável", "G" + p.transient + " · " + p.settledCells + " células"]] : [],
       ["Classe", p.group]
@@ -8869,6 +8957,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function syncRuleControls() {
     const profile = game.profile;
     $("hl-rulechoice").value = profile.id;
+    $("br-conflict").value = game.conflict;
     $("hl-ruleconfig").classList.toggle("show", !!profile.compile);
     $("hl-rule-error").textContent = "";
     $("hl-rule").removeAttribute("aria-invalid");
@@ -8937,6 +9026,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       syncRuleControls();
       resetGame();
     };
+    const conflict = $("br-conflict");
+    for (const [id, label] of Object.entries(conflictPolicies)) conflict.add(new Option(label, id));
+    conflict.onchange = () => {
+      if (game.conflict === conflict.value) return;
+      setConflictPolicy(world, game, conflict.value);
+      invalidateBrain();
+    };
+    const requestedConflict = params.get("conflict");
+    if (Object.hasOwn(conflictPolicies, requestedConflict))
+      setConflictPolicy(world, game, requestedConflict);
     const requested = params.get("rule");
     const initial = requested && Object.hasOwn(ruleProfiles, requested) ? resolveRuleProfile(requested) : game.profile;
     if (comparisonPolicy || initial.id !== game.profile.id)

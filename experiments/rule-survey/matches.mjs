@@ -31,7 +31,7 @@ function play(seed, cohort, archive, candidate) {
       } };
     },
   };
-  const match = createHeadlessMatch(graph, { rule, botMode: 'learn', economy: STABILITY_ECONOMY,
+  const match = createHeadlessMatch(graph, { conflict: 'legacy', rule, botMode: 'learn', economy: STABILITY_ECONOMY,
     brain: { seed, archive: observedArchive } });
   const { world, game } = match;
   assert.deepEqual(game.economy, STABILITY_ECONOMY);

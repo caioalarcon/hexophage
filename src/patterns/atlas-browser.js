@@ -79,7 +79,7 @@ function renderProperties(p) {
     ] : []),
     ...(p.survey ? [
       ['Fluxo/g · estabilidade padrão · G897–1024',p.survey[0] === null ? 'Incompleto' : fmt(p.survey[0])],
-      ['Compras · 4 partidas F32 de aprendizes',p.survey[1] ?? 'Fora do raio mental'],
+      ['Compras · F32 · estabilidade e conflito original',p.survey[1] ?? 'Fora do raio mental'],
     ] : []),
     ...(p.settledCells ? [['Formação estável','G'+p.transient+' · '+p.settledCells+' células']] : []),
     ['Classe',p.group],

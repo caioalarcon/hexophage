@@ -36,7 +36,9 @@ The build collects the HTML fragments listed in `src/shell.html`, preserves styl
 
 Choose **Painel de jogo → Partida e bots → Autômato** to start a match on the current sphere. **Economia** selects whether mature cells or natural births earn energy. Changing the economic direction keeps the current rates. A new automaton loads its own defaults. New matches and rebuilt planets keep the active profile. Loadouts and manual drawings are scoped to each rule, including the normalized B/S notation.
 
-The [nine-rule survey](experiments/rule-survey/README.md) covers 409 atlas stamps, learned purchases, operating income and paired collisions. Open `?rule=hex-b2s245&bots=learn&economy=stability` to start in B2/S245 with the comparison policy.
+**Nascimento em disputa** sets how births shared by opponents are resolved. The default gives the birth to a team with the most parents, with a repeatable, team-independent tie-break on the sphere. The selector applies immediately. The original neutral ties and a veto on mixed-team births are available for experiments. [Conflict study and paired replays](experiments/conflict-survey/README.md).
+
+The [nine-rule survey](experiments/rule-survey/README.md) covers 409 atlas stamps, learned purchases, operating income and paired collisions. Open `?rule=ashley15&bots=learn&economy=activity&conflict=lineage` to play the combat candidate. The earlier B2/S245 experiment can be reproduced with `?rule=hex-b2s245&bots=learn&economy=stability&conflict=legacy`.
 
 Add one entry to [the registry](src/match/rule-profiles.js). For example, a binary radius-one rule can start with just a name and physics:
 

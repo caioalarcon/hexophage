@@ -137,10 +137,10 @@ export function emptyHexPatch(world, position, radius) {
 
 export function witness(world, position, radius, threshold, horizon) {
   const offsets = disk(radius);
-  const projected = isotropic(world.physics) && patchForStamp(world, position.center, position.heading, offsets);
+  const projected = !world.physics.siteDependentBirths && isotropic(world.physics) && patchForStamp(world, position.center, position.heading, offsets);
   let ids = projected;
   if (!ids) {
-    // Anisotropic physics and pentagon defects are anchored to this particular
+    // Site-based ties, anisotropic physics and pentagon defects are anchored to this
     // graph. Copy the absolute neighbourhood for revalidation at its own site.
     ids = [position.center];
     const seen = new Set(ids);

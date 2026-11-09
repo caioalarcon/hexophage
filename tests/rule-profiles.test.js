@@ -17,7 +17,7 @@ test('one new registry entry runs with independent defaults, opening and bots', 
   const match = createHeadlessMatch(graph, { rule: 'isolated' });
   const bays = createHeadlessMatch(graph, { rule: 'bays' });
   assert.equal(match.world.graph, bays.world.graph);
-  assert.equal(match.world.physics, ruleProfiles.isolated.physics);
+  assert.equal(match.world.physics.tables, ruleProfiles.isolated.physics.tables);
   assert.notDeepEqual(match.game.gameplay.patterns, bays.game.gameplay.patterns);
   assert.equal(match.game.players[0].reserve, 20 * match.game.economy.stampCost);
   const seed = match.game.players[0].seed;

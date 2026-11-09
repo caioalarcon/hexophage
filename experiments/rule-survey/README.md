@@ -1,6 +1,6 @@
 # Nove regras hexagonais no Hexophage
 
-**B2/S245H foi a candidata mais promissora para jogar com a economia de estabilidade.** Encontramos quatro carimbos baratos que constroem fazendas finitas. Os aprendizes passaram a financiá-las sozinhos. Também conseguimos destruir essas fazendas com carimbos pequenos. No baralho final os bots priorizaram investir, inclusive na partida longa.
+**Reavaliação após acompanhar as células neutras.** Das 30 posições em que a nave P6 eliminou a fazenda B2/S245H de 12 células, 28 deixaram pelo menos 256 células neutras vivas. As medições econômicas e a perda das células do defensor continuam reproduzíveis. A recomendação original para o jogo subestimava o que ocupava o mapa depois do ataque. [Investigação de conflitos, resultados por regra e replay](../conflict-survey/README.md)
 
 ## Resultado por regra
 

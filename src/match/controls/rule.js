@@ -1,9 +1,10 @@
 import { bindBotSelectors } from '../../bots/configuration-panel.js';
-import { game } from '../../browser/game.js';
+import { game, invalidateBrain } from '../../browser/game.js';
+import { conflictPolicies } from '../../simulation/conflict.js';
 import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
 import { syncGameplayControls } from '../../patterns/editor/gameplay-controls.js';
-import { applyRuleProfile, resolveRuleProfile, ruleProfiles } from '../rule-profiles.js';
+import { applyRuleProfile, resolveRuleProfile, ruleProfiles, setConflictPolicy } from '../rule-profiles.js';
 import { resetGame } from './new-match.js';
 
 const savedNotations = new Map();
@@ -12,6 +13,7 @@ let comparisonPolicy;
 function syncRuleControls() {
   const profile = game.profile;
   $('hl-rulechoice').value = profile.id;
+  $('br-conflict').value = game.conflict;
   $('hl-ruleconfig').classList.toggle('show', !!profile.compile);
   $('hl-rule-error').textContent = '';
   $('hl-rule').removeAttribute('aria-invalid');
@@ -81,6 +83,16 @@ export function bindRuleControls() {
     syncRuleControls();
     resetGame();
   };
+  const conflict = $('br-conflict');
+  for (const [id, label] of Object.entries(conflictPolicies)) conflict.add(new Option(label, id));
+  conflict.onchange = () => {
+    if (game.conflict === conflict.value) return;
+    setConflictPolicy(world, game, conflict.value);
+    invalidateBrain();
+  };
+  const requestedConflict = params.get('conflict');
+  if (Object.hasOwn(conflictPolicies, requestedConflict))
+    setConflictPolicy(world, game, requestedConflict);
   const requested = params.get('rule');
   const initial = requested && Object.hasOwn(ruleProfiles, requested) ? resolveRuleProfile(requested) : game.profile;
   if (comparisonPolicy || initial.id !== game.profile.id)

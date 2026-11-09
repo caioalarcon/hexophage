@@ -351,6 +351,8 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     } else if (!same) return;
     brain.ready = null;
     if (!commitStamp(player.id, place.ids, false)) { metrics.invalidated++; return; }
+    options.onPlacement?.({ gen:world.gen, owner:player.id, stamp:action.stamp.id,
+      rival:spot.kind === 'rival' ? ready.rivalId : null, ids:place.ids });
     metrics.actions++;
     brain.firstStamp ??= world.gen;
     if (place !== position) metrics.relocations++;

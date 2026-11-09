@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Colisão de duas linhagens · Hexophage</title>
+<style>
+:root{color-scheme:dark;font:16px/1.5 system-ui,sans-serif;color:#e8eff4;background:#101823}
+*{box-sizing:border-box}body{max-width:1220px;margin:auto;padding:clamp(18px,4vw,56px)}
+header small{color:#6cddbd;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+h1{margin:.2em 0;font-size:clamp(1.7rem,4.8vw,3rem);line-height:1.08}
+p{margin:.6rem 0;color:#bccbd6}button,select{font:inherit;color:inherit;background:#233344;border:1px solid #41586b;border-radius:6px;padding:.34em .65em;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #6cddbd;outline-offset:3px}
+button:disabled{opacity:.4;cursor:default}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:.55rem;margin:1.5rem 0 .7rem}.controls select{margin-left:auto}
+.timeline{display:flex;gap:1rem;align-items:center}.timeline output{min-width:5.4em;font:600 1.15rem ui-monospace,monospace}.timeline input{flex:1;min-width:5rem;accent-color:#64dabb}
+section{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin:1.15rem 0}
+article{border:1px solid #364a5a;border-radius:9px;background:#192532;overflow:hidden;min-width:0}h2{font-size:1.03rem;margin:12px 14px 0}
+article p{font-size:.8rem;margin:.15rem 14px .5rem}canvas{display:block;width:100%;aspect-ratio:1.44;background:#101d2a}
+dl{margin:.65rem .85rem;display:flex;flex-wrap:wrap;gap:2px 13px}dt{font-size:.73rem;color:#c3d1dc}dd{margin:0;font:600 1.05rem ui-monospace,monospace}.attack{color:#60e5bb}.defend{color:#ff918c}.neutral{color:#b8c8da}
+footer{font-size:.85rem;color:#95a8b9}a{color:#75dfc5}
+@media(max-width:730px){section{grid-template-columns:1fr}.controls select{margin-left:0}canvas{max-height:260px}}
+</style>
+<header><small>Hexophage · laboratório de colisões</small><h1>Uma nave contra uma fazenda</h1>
+<p>A nave P6 de nove células atinge a fazenda 4 → 12 em B2/S245H. Os três mundos começam com os mesmos dois carimbos. Só muda quem pode nascer entre times rivais.</p></header>
+<div class="controls"><button id="prev" aria-label="Quadro anterior">←</button><button id="play">Reproduzir</button><button id="next" aria-label="Próximo quadro">→</button>
+<select id="view" aria-label="Área exibida"><option value="local">Setor da colisão</option><option value="planet">Planeta inteiro</option></select></div>
+<div class="timeline"><output id="generation" for="time"></output><input aria-label="Gerações após o disparo" id="time" type="range" min="0" value="0" step="1"></div>
+<section id="panels" aria-label="Três resoluções da mesma colisão"></section>
+<footer>G+0 é o instante do disparo. As contagens cobrem toda a esfera F32, com 10.242 posições. Os quadros mostram intervalos maiores depois do impacto.</footer>
+<script src="contacts-replay-data.js"></script>
+<script>
+const replay=collisionReplay, get=id=>document.getElementById(id);
+const colors=['#263b4d','#60e5bb','#ff918c','#b8c8da'];
+const modes=[
+  ['legacy','Empate neutro','A célula em empate nasce sem time.'],
+  ['lineage','Herdar de um time','O desempate escolhe uma linhagem parental.'],
+  ['block','Bloquear nascimento misto','Pais de dois times impedem o nascimento.'],
+];
+const unpack=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const raw=new DataView(unpack(replay.coords).buffer);
+const xyz=id=>[0,1,2].map(k=>raw.getInt16(6*id+2*k,true)/32767);
+const dot=(a,b)=>a.reduce((n,x,i)=>n+x*b[i],0);
+const unit=a=>a.map(x=>x/Math.hypot(...a));
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const front=unit(xyz(replay.anchor)),east=unit(cross(Math.abs(front[1])>.95?[1,0,0]:[0,1,0],front)),north=cross(front,east);
+const planet=Array.from({length:replay.n},(_,id)=>{
+  const v=unit(xyz(id));
+  return [id,.5+Math.atan2(dot(v,east),dot(v,front))/(2*Math.PI),.5-Math.asin(Math.max(-1,Math.min(1,dot(v,north))))/Math.PI];
+});
+const panels=modes.map(([key,name,description])=>{
+  const article=document.createElement('article');
+  article.innerHTML='<h2></h2><p></p><canvas></canvas><dl></dl>';
+  article.querySelector('h2').textContent=name;
+  article.querySelector('p').textContent=description;
+  const canvas=article.querySelector('canvas');
+  canvas.setAttribute('aria-label','Campo simulado · '+name);
+  const values=[['Atacante','attack'],['Defensor','defend'],['Neutras','neutral']].map(([label,cls])=>{
+    const group=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');
+    dt.textContent=label;dd.className=cls;group.append(dt,dd);article.querySelector('dl').append(group);return dd;
+  });
+  get('panels').append(article);
+  return {canvas,values,frames:replay.frames[key].map(f=>({...f,packed:unpack(f.owners)}))};
+});
+function hex(ctx,x,y,r){
+  ctx.beginPath();
+  for(let k=0;k<6;k++){
+    const a=(k+.5)*Math.PI/3;
+    if(k)ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));else ctx.moveTo(x+r*Math.cos(a),y+r*Math.sin(a));
+  }
+  ctx.closePath();ctx.fill();
+}
+function draw(){
+  const i=Number(get('time').value),wide=get('view').value==='planet';
+  get('generation').textContent='G+'+replay.times[i].toLocaleString('pt-BR');
+  get('time').setAttribute('aria-valuetext',replay.times[i]+' gerações após o disparo');
+  get('prev').disabled=i===0;get('next').disabled=i===replay.times.length-1;
+  for(const {canvas,values,frames} of panels){
+    const f=frames[i],b=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
+    const w=canvas.width=Math.round(b.width*dpr),h=canvas.height=Math.round(b.height*dpr),ctx=canvas.getContext('2d');
+    const owner=id=>(f.packed[id>>2]>>((id&3)*2))&3;
+    if(wide){
+      const size=Math.max(1,Math.sqrt(w*h/replay.n)*.87);
+      for(const [id,x,y] of planet){ctx.fillStyle=colors[owner(id)];ctx.fillRect(x*(w-size),y*(h-size),size,size);}
+    }else{
+      const r=Math.min(w/34,h/27);
+      for(const [id,q,s] of replay.local){
+        const x=w/2+Math.sqrt(3)*(q+s/2)*r,y=h/2+s*1.5*r;
+        if(x < -r || x>w+r || y < -r || y>h+r)continue;
+        ctx.fillStyle=colors[owner(id)];hex(ctx,x,y,.89*r);
+      }
+    }
+    [f.a,f.d,f.neutral].forEach((v,j)=>values[j].textContent=v.toLocaleString('pt-BR'));
+  }
+}
+let timer;
+function stop(){clearInterval(timer);timer=null;get('play').textContent='Reproduzir';}
+function set(i){get('time').value=i;draw();}
+get('time').max=replay.times.length-1;
+get('time').oninput=()=>{stop();draw();};
+get('prev').onclick=()=>{stop();set(Number(get('time').value)-1);};
+get('next').onclick=()=>{stop();set(Number(get('time').value)+1);};
+get('view').onchange=draw;
+get('play').onclick=()=>{
+  if(timer){stop();return;}
+  if(Number(get('time').value)===replay.times.length-1)set(0);
+  get('play').textContent='Pausar';
+  timer=setInterval(()=>{const i=Number(get('time').value)+1;set(i);if(i===replay.times.length-1)stop();},700);
+};
+new ResizeObserver(draw).observe(get('panels'));draw();
+</script></html>

@@ -36,8 +36,8 @@ test('every learner can compare a compact opening before a persistent B0 backgro
   assert(m.game.brainMetrics.visits <= 5 * 2 * 2 * 91);
 });
 
-test('front signatures can relocate a rotated economic context and reject an intervening cell', () => {
-  const m = createHeadlessMatch(buildSphere(40));
+test('site-independent front signatures can relocate a rotated economic context and reject an intervening cell', () => {
+  const m = createHeadlessMatch(buildSphere(40), {conflict:'legacy'});
   const pattern = stampCatalog([{id:'pair', rle:'2o!'}])[0];
   const [first, second] = m.game.players.map(p => p.seed);
   const from = placement(m.world, {target:first, direction:0}, pattern, 0, 3);
