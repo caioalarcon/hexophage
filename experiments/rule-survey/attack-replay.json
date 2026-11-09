@@ -1,0 +1,206 @@
+{
+  "rule": "hex-b2s245",
+  "F": 32,
+  "seed": 4751,
+  "gen": 360000,
+  "attack": {
+    "gen": 269570,
+    "owner": 6,
+    "stamp": "scan-b1cf68",
+    "cells": [
+      7026,
+      7027,
+      6999
+    ],
+    "targeted": true
+  },
+  "openingOrders": [
+    {
+      "gen": 810,
+      "owner": 6,
+      "stamp": "scan-cf5664",
+      "cells": [
+        5263,
+        5249,
+        5256,
+        5262,
+        5267,
+        5248,
+        5261,
+        5239,
+        5247,
+        5254,
+        5260,
+        5246
+      ],
+      "targeted": false
+    },
+    {
+      "gen": 940,
+      "owner": 5,
+      "stamp": "scan-b1cf68",
+      "cells": [
+        3745,
+        3746,
+        3715
+      ],
+      "targeted": false
+    },
+    {
+      "gen": 1010,
+      "owner": 4,
+      "stamp": "scan-b1cf68",
+      "cells": [
+        8248,
+        8264,
+        8265
+      ],
+      "targeted": false
+    },
+    {
+      "gen": 1120,
+      "owner": 2,
+      "stamp": "scan-cf5664",
+      "cells": [
+        7158,
+        7110,
+        7134,
+        7157,
+        7179,
+        7109,
+        7156,
+        7083,
+        7108,
+        7132,
+        7155,
+        7107
+      ],
+      "targeted": false
+    },
+    {
+      "gen": 1200,
+      "owner": 3,
+      "stamp": "scan-b1cf68",
+      "cells": [
+        2039,
+        4617,
+        4600
+      ],
+      "targeted": false
+    }
+  ],
+  "withAttack": [
+    {
+      "id": 2,
+      "cash": 585229.8068594064,
+      "flow": -1.9800024996875387,
+      "cells": 3,
+      "births": 180850,
+      "deaths": 180859,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 3,
+      "cash": 79570.02374968375,
+      "flow": -1.9800024996875405,
+      "cells": 3,
+      "births": 717600,
+      "deaths": 717600,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 4,
+      "cash": 79193.8232747445,
+      "flow": -1.9800024996875405,
+      "cells": 3,
+      "births": 717980,
+      "deaths": 717980,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 5,
+      "cash": 79055.22309976688,
+      "flow": -1.9800024996875405,
+      "cells": 3,
+      "births": 718120,
+      "deaths": 718120,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 6,
+      "cash": 756011.616564936,
+      "flow": 0.2396405391912132,
+      "cells": 12,
+      "births": 4,
+      "deaths": 7,
+      "tribute": 0,
+      "stamps": 2,
+      "out": false
+    }
+  ],
+  "withoutAttack": [
+    {
+      "id": 2,
+      "cash": 785941.3279977955,
+      "flow": 0.2396405391912132,
+      "cells": 12,
+      "births": 0,
+      "deaths": 0,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 3,
+      "cash": 79570.02374968375,
+      "flow": -1.9800024996875405,
+      "cells": 3,
+      "births": 717600,
+      "deaths": 717600,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 4,
+      "cash": 79193.8232747445,
+      "flow": -1.9800024996875405,
+      "cells": 3,
+      "births": 717980,
+      "deaths": 717980,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 5,
+      "cash": 79055.22309976688,
+      "flow": -1.9800024996875405,
+      "cells": 3,
+      "births": 718120,
+      "deaths": 718120,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    },
+    {
+      "id": 6,
+      "cash": 786015.616564936,
+      "flow": 0.2396405391912132,
+      "cells": 12,
+      "births": 0,
+      "deaths": 0,
+      "tribute": 0,
+      "stamps": 1,
+      "out": false
+    }
+  ]
+}

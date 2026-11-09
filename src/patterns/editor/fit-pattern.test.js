@@ -54,7 +54,7 @@ test('empty patterns reset to 11 and oversize patterns are rejected', () => {
   assert.equal(
     fitStampPoints([
       [0, 0],
-      [100, 0],
+      [120, 0],
     ]),
     null,
   );

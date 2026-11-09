@@ -1,5 +1,5 @@
 export function allocateCells(n) {
-  const store = {};
+  const store = {lastOutbreak:null};
   store.cells = new Uint8Array(n);
   store.next = new Uint8Array(n);
   store.owners = new Uint8Array(n);
@@ -75,6 +75,7 @@ export function createPopulation(world, effects) {
     world.activeCount = 0;
     world.nextActiveCount = 0;
     world.gen = 0;
+    world.lastOutbreak = null;
     world.evaluated = 0;
     effects.populationCleared?.();
   }

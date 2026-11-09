@@ -1,0 +1,170 @@
+rule,life2d_name,registered_id,status
+hex-b2s34,"12",bagley-12,added
+hex-b2s34,"spinning triangle",bagley-spinning-triangle,added
+hex-b2s34,"hexagon (p3)",bagley-hexagon-p3,added
+hex-b2s34,"c (p4)",bagley-c-p4,added
+hex-b2s34,"sad (p4)",bagley-sad-p4,added
+hex-b2s34,"clock (p4)",bagley-clock-p4,added
+hex-b2s34,"111 (p4)",bagley-111-p4,added
+hex-b2s34,"1121 (p4)",bagley-1121-p4,added
+hex-b2s34,"11211 (p4)",bagley-11211-p4,added
+hex-b2s34,"tree (p5)",bagley-tree-p5,added
+hex-b2s34,"hex (p5)",bagley-hex-p5,added
+hex-b2s34,"121121 (p8)",bagley-121121-p8,added
+hex-b2s34,"1121121 (p8)",bagley-1121121-p8,added
+hex-b2s34,"11211211 (p8)",bagley-11211211-p8,added
+hex-b2s34,"hexagon (p9)",bagley-hexagon-p9,added
+hex-b2s34,"triangle (p12)",bagley-triangle-p12,added
+hex-b2s34,"spinner (p12)",bagley-spinner-p12,added
+hex-b2s34,"chakar2 (p14)",bagley-chakar2-p14,added
+hex-b2s34,"chakar (p18)",bagley-chakar-p18,added
+hex-b2s34,"ornament (p36)",bagley-ornament-p36,added
+hex-b2s34,"oscillator (p48)",bagley-oscillator-p48,added
+hex-b2s34,"triangle growth (remnant p10)",bagley-triangle-growth-remnant-p10,added
+bays,"glider (c/5, p5)",glider,alias
+bays,"neutron star (p3)",bagley-neutron-star-p3,added
+bays,"binary star (p3)",bagley-binary-star-p3,added
+bays,"c (p4)",bagley-c-p4,added
+bays,"s (p4)",bagley-s-p4,added
+bays,"v dot (p4)",bagley-v-dot-p4,added
+bays,"drum (p4)",bagley-drum-p4,added
+bays,"broken umbrella (p4)",bagley-broken-umbrella-p4,added
+bays,"siamese (p7)",bagley-siamese-p7,added
+bays,"tie (p7)",bagley-tie-p7,added
+bays,"vortex (p8)",bagley-vortex-p8,added
+bays,"snake hive (p8)",bagley-snake-hive-p8,added
+bays,"snow flake (p8)",bagley-snow-flake-p8,added
+bays,"spinner (p12)",bagley-spinner-p12,added
+bays,"smiley (p12)",bagley-smiley-p12,added
+bays,"arrow (p12)",bagley-arrow-p12,added
+bays,"cephid (p15)",bagley-cephid-p15,added
+bays,"flipping triangle (p16)",bagley-flipping-triangle-p16,added
+bays,"hungry (p16)",bagley-hungry-p16,added
+bays,"kaleidoscope (p16)",bagley-kaleidoscope-p16,added
+bays,"chakar (p18)",bagley-chakar-p18,added
+bays,"triangle with stabilizers (p18)",bagley-triangle-with-stabilizers-p18,added
+bays,"buckyball (p19)",bagley-buckyball-p19,added
+bays,"supernova (remnant p3)",bagley-supernova-remnant-p3,added
+callahan,"glider (p4)",glider,alias
+callahan,"ship (p15)",p15,alias
+callahan,"ship (p48)",p48,alias
+callahan,"c",censo-oscillator-5-p2-1,alias
+callahan,"oscillator (p3)",censo-oscillator-12-p3-1,alias
+callahan,"greater than (p4)",p4f,alias
+callahan,"smashed scissor (p4)",censo-oscillator-9-p4-1,alias
+callahan,"broken scissor (p4)",censo-oscillator-10-p4-2,alias
+callahan,"scissor (p4)",censo-oscillator-11-p4-10,alias
+callahan,"H (p5)",censo-oscillator-9-p5-2,alias
+callahan,"saint (p5)",censo-oscillator-9-p5-1,alias
+callahan,"glasses (p5)",censo-oscillator-12-p5-1,alias
+callahan,"tree (p5)",bagley-tree-p5,added
+callahan,"whirlygig (p5)",bagley-whirlygig-p5,added
+callahan,"hex (p5)",bagley-hex-p5,added
+callahan,"hump (p6)",censo-oscillator-9-p6-1,alias
+callahan,"flask (p6)",bagley-flask-p6,added
+callahan,"oscillator (p7)",p7b,alias
+callahan,"3 bulbs (p7)",bagley-3-bulbs-p7,added
+callahan,"3 flies (p7)",bagley-3-flies-p7,added
+callahan,"3 bulbs2 (p7)",bagley-3-bulbs2-p7,added
+callahan,"internal oscillator (p7)",p7a,alias
+callahan,"6 clubs(p7)",bagley-6-clubs-p7,added
+callahan,"person (p8)",p8f,alias
+callahan,"snowflake (p8)",bagley-snowflake-p8,added
+callahan,"oscillator (p9)",p9,alias
+callahan,"Russian saint (p10)",censo-oscillator-9-p10-1,alias
+callahan,"flower (p10)",censo-oscillator-11-p10-1,alias
+callahan,"oscillator1 (p11)",p11a,alias
+callahan,"oscillator2 (p11)",p11b,alias
+callahan,"eat (p11)",bagley-eat-p11,added
+callahan,"6 A's (p11)",bagley-6-a-s-p11,added
+callahan,"vanish (p12)",bagley-vanish-p12,added
+callahan,"TIE fighter (p13)",bagley-tie-fighter-p13,added
+callahan,"oscillator (p14)",p14,alias
+callahan,"bulbs (p14)",bagley-bulbs-p14,added
+callahan,"chain (p14)",bagley-chain-p14,added
+callahan,"fountain (p14)",bagley-fountain-p14,added
+callahan,"45 record adapter (p14)",bagley-45-record-adapter-p14,added
+callahan,"6 flies (p14)",bagley-6-flies-p14,added
+callahan,"6 bigger flies (p14)",bagley-6-bigger-flies-p14,added
+callahan,"greater than c (p16)",bagley-greater-than-c-p16,added
+callahan,"flag waver (p16)",bagley-flag-waver-p16,added
+callahan,"3v (p16)",bagley-3v-p16,added
+callahan,"3 things (p16)",bagley-3-things-p16,added
+callahan,"oscillator (p17)",p17,alias
+callahan,"2 portals (p18)",bagley-2-portals-p18,added
+callahan,"oscillator (p18)",p18,alias
+callahan,"oscillator (p19)",p19,alias
+callahan,"6 crowns (p19)",bagley-6-crowns-p19,added
+callahan,"sparky (p21)",bagley-sparky-p21,added
+callahan,"vase (p22)",bagley-vase-p22,added
+callahan,"oscillator (p22)",p22,alias
+callahan,"broken glasses (p22)",bagley-broken-glasses-p22,added
+callahan,"2 glasses (p22)",bagley-2-glasses-p22,added
+callahan,"3 glasses (p22)",bagley-3-glasses-p22,added
+callahan,"oscillator (p26)",p26,alias
+callahan,"3 erasers (p26)",bagley-3-erasers-p26,added
+callahan,"A template (p28)",bagley-a-template-p28,added
+callahan,"oscillator (p29)",p29,alias
+callahan,"XX (p35)",bagley-xx-p35,added
+callahan,"knotted string (p38)",bagley-knotted-string-p38,added
+callahan,"double A template (p39)",bagley-double-a-template-p39,added
+callahan,"rotating oscillator (p42)",p42rot,alias
+callahan,"oscillator (p42)",p42,alias
+callahan,"69 (p42)",bagley-69-p42,added
+callahan,"6 A's (p44)",bagley-6-a-s-p44,added
+callahan,"2 snowflakes (p44)",bagley-2-snowflakes-p44,added
+callahan,"lightning (p45)",bagley-lightning-p45,added
+callahan,"oscillator (p46)",p46,alias
+callahan,"tentacle (p66)",p66,alias
+callahan,"3 large bats (p75)",bagley-3-large-bats-p75,added
+callahan,"crinkle (p90)",bagley-crinkle-p90,added
+callahan,"stalk (p8)",bagley-stalk-p8,added
+callahan,"ship by a collision of 3 gliders (p15)",bagley-ship-by-a-collision-of-3-gliders-p15,added
+callahan,"stalk by a collision of 3 gliders",bagley-stalk-by-a-collision-of-3-gliders,added
+callahan,"stalk by a collision of 2 gilders and eater",bagley-stalk-by-a-collision-of-2-gilders-and-eater,added
+callahan,"3 oscillator glider gun (p42)",gun42,alias
+callahan,"another gun (p20)",gun20,alias
+andreen,"sym glider",bagley-sym-glider,added
+andreen,"asym glider1",bagley-asym-glider1,added
+andreen,"asym glider2",bagley-asym-glider2,added
+andreen,"sym ship (p9)",bagley-sym-ship-p9,added
+andreen,"diagonal puffer (p18)",bagley-diagonal-puffer-p18,added
+andreen,"toggle pair",bagley-toggle-pair,added
+andreen,"half c (p4)",bagley-half-c-p4,added
+andreen,"2 halves (p4)",bagley-2-halves-p4,added
+andreen,"shard (p6)",bagley-shard-p6,added
+andreen,"mirror image (p6)",bagley-mirror-image-p6,added
+andreen,"antisym image (p6)",bagley-antisym-image-p6,added
+andreen,"antisym image2 (p6)",bagley-antisym-image2-p6,added
+andreen,"broken kaleidoscope (p6)",bagley-broken-kaleidoscope-p6,added
+andreen,"broken kaleidoscope2 (p6)",bagley-broken-kaleidoscope2-p6,added
+andreen,"asym spiral (p6)",bagley-asym-spiral-p6,added
+andreen,"mirror mirror (p6)",bagley-mirror-mirror-p6,added
+andreen,"almost kaleidoscope (p6)",bagley-almost-kaleidoscope-p6,added
+andreen,"mirror mirror2 (p6)",bagley-mirror-mirror2-p6,added
+andreen,"kaleidoscope (p6)",bagley-kaleidoscope-p6,added
+andreen,"squashed kaleidoscope (p6)",bagley-squashed-kaleidoscope-p6,added
+andreen,"squashed kaleidoscope2 (p6)",bagley-squashed-kaleidoscope2-p6,added
+andreen,"constrained spiral (p6)",bagley-constrained-spiral-p6,added
+andreen,"mirror image (p9)",bagley-sym-ship-p9,alias
+andreen,"quasar (p10)",bagley-quasar-p10,added
+andreen,"lily (p12)",bagley-lily-p12,added
+andreen,"lily2 (p12)",bagley-lily2-p12,added
+andreen,"lily3 (p12)",bagley-lily3-p12,added
+andreen,"shuttle (p16)",bagley-shuttle-p16,added
+andreen,"double shuttle (p16)",bagley-double-shuttle-p16,added
+andreen,"bouncing diagonal ship (p320)",bagley-bouncing-diagonal-ship-p320,added
+andreen,"4 glider gunship (p28)",bagley-4-glider-gunship-p28,added
+andreen,"eater",bagley-eater,added
+andreen,"reflector",bagley-reflector,added
+bays245,"glider (c/5, p10)",bagley-glider-c-5-p10,added
+bays245,"medium triangle",bagley-medium-triangle,added
+bays245,"static triangle",bagley-static-triangle,added
+bays245,"half divvy (p4)",bagley-half-divvy-p4,added
+bays245,"big divvy (p4)",bagley-big-divvy-p4,added
+bays245,"small triangle (p4)",bagley-small-triangle-p4,added
+bays245,"snake (p4)",bagley-snake-p4,added
+bays245,"divvy (p6)",bagley-divvy-p6,added
+bays245,"daisy (p8)",bagley-daisy-p8,added
+bays245,"s (p13)",bagley-s-p13,added
+bays245,"blossom (p57)",bagley-blossom-p57,added

@@ -1,4 +1,5 @@
 import { bindBotSelectors } from '../../bots/configuration-panel.js';
+import { game } from '../../browser/game.js';
 import { selectedSlot, slotIds, useSlots } from '../../deck/slots.js';
 import { $ } from '../../layout/elements.js';
 import { syncAtlasCatalog } from '../atlas-browser.js';
@@ -7,7 +8,7 @@ import { loadPattern } from './selection.js';
 import { bindPatternTabs } from './tabs.js';
 
 export function syncGameplayControls(gameplay, scopeKey) {
-  useSlots(gameplay, scopeKey);
+  useSlots(gameplay, scopeKey, game.profile.id, game.economy);
   useSavedPatterns(scopeKey);
   syncAtlasCatalog(gameplay);
   const select = $('hl-pattern');

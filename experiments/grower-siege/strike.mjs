@@ -11,7 +11,7 @@ const graph=buildSphere(256);
 const seed=id=>decodeRLE(atlasPatterns.find(p=>p.id===id).rle);
 const idle=new Map([2,3,4,5,6].map(i=>[i,()=>{}]));
 function run(name,turn,q,r){
-  const m=createHeadlessMatch(graph,{strategies:idle});
+  const m=createHeadlessMatch(graph,{ growth:'classic', conflict: 'legacy',strategies:idle});
   const place=(owner,points)=>m.commitStamp(owner,m.patchForStamp(graph.farthest,0,points),false);
   assert(place(2,seed('stalk')));
   if(name!=='hold'){

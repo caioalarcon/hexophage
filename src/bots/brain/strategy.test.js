@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHeadlessMatch } from '../../match/headless.js';
 import { compileHexRule } from '../../simulation/rules.js';
+import { ACTIVITY_ECONOMY } from '../../match/constructive-economy.js';
 import { plantFounder } from '../../match/founding.js';
 import { buildSphere } from '../../world/sphere.js';
 import { brainNamespace, createBrainArchive } from './memory.js';
@@ -27,6 +28,36 @@ test('cold openings use bounded probes and are invariant to hand/catalog orderin
   assert.deepEqual(play(false), play(true));
 });
 
+test('private surveys progress beyond the first profitable opening and other bots must request their own measures', () => {
+  const receipts = [], seen = new Map();
+  const archive = createBrainArchive();
+  const observer = {open(namespace) {
+    const bank = archive.open(namespace);
+    return {...bank, observe(bot, context, id, value) {
+      if (context === 'yield/survey') {
+        if (!seen.has(bot)) seen.set(bot, new Set());
+        assert(!seen.get(bot).has(id), 'a learner should not request a card twice');
+        seen.get(bot).add(id);
+      }
+      bank.observe(bot, context, id, value);
+    }};
+  }};
+  const m = createHeadlessMatch(buildSphere(40), {rule:'ashley15', conflict:'lineage', growth:'classic', botMode:'learn',
+    economy:ACTIVITY_ECONOMY, brain:{seed:4751, archive:observer, onPlacement:order=>{
+      if (!receipts.some(p=>p.owner === order.owner))
+        assert(seen.get(order.owner)?.has(order.stamp), 'each buyer must have independently measured its opening');
+      receipts.push(order);
+    }}});
+  m.game.players[0].out = true;
+  while (m.world.gen < 8192) m.nextTick();
+  const unique = new Set([...seen.values()].flatMap(ids=>[...ids]));
+  assert.equal(unique.size, m.game.gameplay.patterns.length);
+  assert.equal(m.game.brainMetrics.studies, unique.size, 'each physical trajectory is charged only once');
+  assert([...seen.values()].every(ids=>ids.size>1));
+  assert(receipts.some(order=>order.stamp === 'puff30'));
+  assert(m.game.brainMetrics.visits <= 8192 + m.world.gen * 96 * m.game.brainRate);
+});
+
 test('every learner can compare a compact opening before a persistent B0 background occupies the planet', () => {
   const m = createHeadlessMatch(buildSphere(24), { botMode: 'learn', rule: 'custom', notation: 'B0/S0123456',
     brain: { seed: 4751 } });
@@ -36,8 +67,8 @@ test('every learner can compare a compact opening before a persistent B0 backgro
   assert(m.game.brainMetrics.visits <= 5 * 2 * 2 * 91);
 });
 
-test('front signatures can relocate a rotated economic context and reject an intervening cell', () => {
-  const m = createHeadlessMatch(buildSphere(40));
+test('site-independent front signatures can relocate a rotated economic context and reject an intervening cell', () => {
+  const m = createHeadlessMatch(buildSphere(40), {conflict:'legacy'});
   const pattern = stampCatalog([{id:'pair', rle:'2o!'}])[0];
   const [first, second] = m.game.players.map(p => p.seed);
   const from = placement(m.world, {target:first, direction:0}, pattern, 0, 3);

@@ -1,6 +1,9 @@
 import { BAYS, CALLAHAN, compileTotalistic } from '../simulation/rules.js';
+import { DEFAULT_GROWTH, DEFAULT_GROWTH_THRESHOLD, withGrowth } from '../simulation/growth.js';
+import { DEFAULT_CONFLICT, withConflict } from '../simulation/conflict.js';
+import { catalogRules } from '../simulation/catalog-rules.js';
 import { ACTIVITY_ECONOMY, STABILITY_ECONOMY, initialEnergy } from './constructive-economy.js';
-import { baysGameplay, callahanGameplay, genericGameplay, getBotPlans } from './gameplay.js';
+import { baysGameplay, callahanGameplay, genericGameplay, getBotPlans, surveyGameplay } from './gameplay.js';
 
 export const DEFAULT_RULE = 'callahan';
 
@@ -15,6 +18,13 @@ export const ruleProfiles = {
     label: 'Bays · B2/S35', physics: BAYS,
     gameplay: baysGameplay, economy: ACTIVITY_ECONOMY,
   },
+  ...Object.fromEntries(Object.entries({
+    'hex-b2s34': 'Hexagonal Life', 'hex-b2s245': 'Hex B2/S245', bays245: 'Bays 245', andreen: 'Andreen',
+    highhex: 'HighHexLife', ashley15: 'Ashley 2015', ashley: 'Hex Life · Ashley 2016',
+  }).map(([id, name]) => [id, {
+    label: name + ' · ' + catalogRules[id].notation, physics: catalogRules[id],
+    gameplay: surveyGameplay(id), economy: STABILITY_ECONOMY,
+  }])),
   custom: {
     label: 'B/S personalizada', compile: compileTotalistic, defaultNotation: 'B2/S35',
     gameplay: genericGameplay, economy: STABILITY_ECONOMY,
@@ -32,10 +42,24 @@ export function resolveRuleProfile(id = DEFAULT_RULE, notation) {
   };
 }
 
+export function setConflictPolicy(world, game, id) {
+  world.physics = withGrowth(withConflict(game.profile.physics, id),
+    game.growth ?? DEFAULT_GROWTH, game.growthThreshold ?? DEFAULT_GROWTH_THRESHOLD);
+  game.conflict = id;
+}
+
+export function setGrowthPolicy(world, game, id, threshold = game.growthThreshold ?? DEFAULT_GROWTH_THRESHOLD) {
+  world.physics = withGrowth(withConflict(game.profile.physics, game.conflict), id, threshold);
+  game.growth = id;
+  game.growthThreshold = threshold;
+}
+
 export function applyRuleProfile(world, game, profile, overrides) {
   world.rule = profile.id;
-  world.physics = profile.physics;
   game.profile = profile;
+  game.growth ??= DEFAULT_GROWTH;
+  game.growthThreshold ??= DEFAULT_GROWTH_THRESHOLD;
+  setConflictPolicy(world, game, game.conflict ?? DEFAULT_CONFLICT);
   game.gameplay = profile.gameplay;
   game.economy = { ...STABILITY_ECONOMY, ...profile.economy, ...overrides };
   game.init = initialEnergy(game.economy);

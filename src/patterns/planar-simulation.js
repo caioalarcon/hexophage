@@ -1,3 +1,4 @@
+import { quenchReactions } from '../simulation/growth.js';
 import { evaluateCell } from '../simulation/cell-fate.js';
 import { DIR } from '../world/geometry.js';
 import { decodeRLE } from './rle.js';
@@ -5,6 +6,8 @@ import { decodeRLE } from './rle.js';
 // The full observation horizon is at most 25,200 hexes in each direction.
 const stride = 65536;
 const adjacent = DIR.map(([q, r]) => q * stride + r);
+
+const reactionLinks = [...new Set([...adjacent, ...adjacent.flatMap(a => adjacent.map(b => a + b))])].filter(d => d !== 0);
 
 export function patternSite(q, r) { return q * stride + r; }
 
@@ -85,6 +88,17 @@ export function advancePattern(ages, threshold, physics) {
     next.set(id, age + 1);
     if (age === 0) births++;
     if (age + 1 >= threshold) mature++;
+  }
+  const limit = physics.growthThreshold;
+  if (limit && births >= limit) {
+    quenchReactions(next.keys(), limit, id => !ages.has(id), (id, visit) => {
+      for (const d of reactionLinks) visit(id + d);
+    }, id => {
+      const age = next.get(id);
+      if (age === 1) births--;
+      if (age >= threshold) mature--;
+      next.delete(id);
+    });
   }
   return { next, births, mature };
 }

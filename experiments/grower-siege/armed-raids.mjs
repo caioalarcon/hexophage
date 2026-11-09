@@ -13,7 +13,7 @@ const seed=id=>decodeRLE(atlasPatterns.find(p=>p.id===id).rle);
 const idle=new Map([2,3,4,5,6].map(id=>[id,()=>{}]));
 const offers={glider:[-14,-2],gun20:[-3,20],gun42:[-13,20]};
 function test(id,zone,direction){
-  const m=createHeadlessMatch(graph,{strategies:idle}),w=m.world,players=m.game.players;
+  const m=createHeadlessMatch(graph,{ growth:'classic', conflict: 'legacy',strategies:idle}),w=m.world,players=m.game.players;
   // Defender has the game's opening reserve. Attacker may buy the most
   // expensive selected weapon and retain 60,000 for operation.
   players[0].reserve=700000;

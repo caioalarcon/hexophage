@@ -8,7 +8,7 @@ import {buildSphere} from '../../src/world/sphere.js';
 const ignoreBots=new Map([2,3,4,5,6].map(id=>[id,()=>{}]));
 const data=[];
 for(const frequency of [20,96,320]){
-  const run=createHeadlessMatch(buildSphere(frequency),{strategies:ignoreBots});
+  const run=createHeadlessMatch(buildSphere(frequency),{ growth:'classic', conflict: 'legacy',strategies:ignoreBots});
   const planted=run.game.players.map(p=>plantFounder(run.world,run.game,p,run.commitStamp));
   const milestones=[];
   const waiting=run.game.players.map(()=>null);

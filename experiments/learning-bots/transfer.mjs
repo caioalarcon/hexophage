@@ -18,7 +18,7 @@ ruleProfiles[rule] = { physics: compileTotalistic('B2/S035'),
 const storage = (data = null) => ({ data, getItem() { return this.data; }, setItem(_, value) { this.data = value; } });
 
 function play(seed, policy, store) {
-  const match = createHeadlessMatch(graph, { rule, botMode: 'learn',
+  const match = createHeadlessMatch(graph, { growth:'classic', conflict: 'legacy', rule, botMode: 'learn',
     economy: { policy, stableAfter: 2, stableEnergy: 1, birthCost: 3, stampCost: 10,
       initialCells: 40, productionScale: 0, combatFee: 0 },
     brain: { archive: createBrainArchive(store), seed } });

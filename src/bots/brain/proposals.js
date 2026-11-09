@@ -129,18 +129,37 @@ function fingerprint(world, ids, threshold, horizon) {
   });
 }
 
-export function emptyHexPatch(world, position, radius) {
+export const MAX_EMPTY_PATCH_SCAN = 2048;
+
+export function emptyHexPatch(world, position, radius, turns = 0) {
   if (radius > 20 || !isotropic(world.physics) || world.physics.birthsFromVacuum) return false;
+  if (world.physics.growthThreshold && turns && world.activeCount) {
+    // The planar trace's radius already includes a two-cell moat. A remote
+    // lineage can approach it at most one graph edge per tick. For this
+    // radially projected icosahedron, every chord is shorter than 2/f:
+    // its pre-projection edge is 2/f and every face is >1 from the origin.
+    // Reject the shortcut if that conservative distance bound cannot prove
+    // isolation; the paired graph simulation remains available.
+    const {coords, f} = world.graph;
+    if (!coords || !f || world.activeCount > MAX_EMPTY_PATCH_SCAN) return false;
+    const reach = 2 * (radius + turns) / f + 1e-6;
+    const c = position.center * 3;
+    for (let i = 0; i < world.activeCount; i++) {
+      const s = world.active[i] * 3;
+      const x = coords[c] - coords[s], y = coords[c+1] - coords[s+1], z = coords[c+2] - coords[s+2];
+      if (x*x + y*y + z*z <= reach*reach) return false;
+    }
+  }
   const ids = patchForStamp(world, position.center, position.heading, disk(radius));
   return !!ids && ids.every(id => world.cells[id] === 0);
 }
 
 export function witness(world, position, radius, threshold, horizon) {
   const offsets = disk(radius);
-  const projected = isotropic(world.physics) && patchForStamp(world, position.center, position.heading, offsets);
+  const projected = !world.physics.siteDependentBirths && isotropic(world.physics) && patchForStamp(world, position.center, position.heading, offsets);
   let ids = projected;
   if (!ids) {
-    // Anisotropic physics and pentagon defects are anchored to this particular
+    // Site-based ties, anisotropic physics and pentagon defects are anchored to this
     // graph. Copy the absolute neighbourhood for revalidation at its own site.
     ids = [position.center];
     const seen = new Set(ids);

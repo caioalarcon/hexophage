@@ -14,7 +14,7 @@ for (const [name, left, flipper, right] of [
   ['left glider attacks both defending pieces', 1, 2, 2],
   ['right glider attacks both defending pieces', 2, 2, 1],
 ]) {
-  const match = createHeadlessMatch(graph, { init: 1e9, strategies: idleBots });
+  const match = createHeadlessMatch(graph, { growth:'classic', conflict: 'legacy', init: 1e9, strategies: idleBots });
   const ids = match.patchForStamp(graph.farthest, 0, seed);
   seed.forEach(([q], i) => match.addLive(ids[i], q < 0 ? left : q > 1 ? right : flipper));
   const checkpoints = [];

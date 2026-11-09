@@ -1,3 +1,5 @@
+import { surveyScores } from './survey-scores.js';
+import { estimateEconomicReturn, rankEconomicPatterns } from './economic-ranking.js';
 import { decodeRLE } from './rle.js';
 import { advancePattern, patternOffset, seedPatternAges } from './planar-simulation.js';
 import { cycleWindow } from './cycle-economy.js';
@@ -65,9 +67,13 @@ function choose(p) {
 }
 function renderProperties(p) {
   const { length, kind } = cycleWindow(p);
+  const estimate = estimateEconomicReturn(game.profile.id, p, game.economy);
   const stats=[
     ['Células iniciais',fmt(p.cells)],
     ['Custo atual',fmt(p.cells*game.economy.stampCost)+' energia'],
+    ['Fluxo estimado · G897–1024', estimate ? '≈ '+fmt(estimate.flow)+' / geração' : 'Sem medição válida'],
+    ['Retorno estimado', estimate?.payback !== null && estimate?.payback !== undefined ?
+      '≈ '+Math.ceil(estimate.payback).toLocaleString('pt-BR')+' gerações' : 'Não estimado'],
     [kind==='emission'?'Período nominal do emissor':kind==='window'?'Janela de observação':'Período',length+' ger.'],
     ...(p.period && Number.isFinite(p.birthsCycle) ? [
       ['Nascimentos / ciclo',fmt(p.birthsCycle)],
@@ -76,6 +82,11 @@ function renderProperties(p) {
       ['Nascimentos / geração',fmt(p.birthsCycle/p.period)],
       ['Atividade por célula',fmt(p.birthsCycle/(p.period*p.cells))],
     ] : []),
+    ...(p.survey ? [
+      ['Fluxo/g · estabilidade padrão · G897–1024',p.survey[0] === null ? 'Incompleto' : fmt(p.survey[0])],
+      ['Compras · F32 · estabilidade e conflito original',p.survey[1] ?? 'Fora do raio mental'],
+    ] : []),
+    ...(p.settledCells ? [['Formação estável','G'+p.transient+' · '+p.settledCells+' células']] : []),
     ['Classe',p.group],
   ];
   el('br-atlas-metrics').replaceChildren();
@@ -90,8 +101,16 @@ function renderList() {
     group=el('br-atlas-class').value,sort=el('br-atlas-order').value;
   let found=catalog.filter(p=>(!group||p.group===group)&&
     (p.name.toLowerCase().includes(query)||p.id.toLowerCase().includes(query)||p.group.toLowerCase().includes(query)||('p'+p.period).includes(query)||String(p.cells)===query));
-  if(sort==='activity')found.sort((a,b)=>(b.period?b.birthsCycle/(b.period*b.cells):0)-(a.period?a.birthsCycle/(a.period*a.cells):0));
-  else if(sort==='core')found.sort((a,b)=>b.stableCore-a.stableCore||a.cells-b.cells);
+  if(sort==='economy') found=rankEconomicPatterns(found, game.profile.id, game.economy);
+  else if(sort==='survey-flow' || sort==='survey-buys') {
+    const i=sort==='survey-flow'?0:1;
+    const score=p=>p.survey?.[i] ?? -Infinity;
+    found.sort((a,b)=>score(b)-score(a)||a.cells-b.cells);
+  } else if(sort==='activity') {
+    const activity=p=>p.period && Number.isFinite(p.birthsCycle) ? p.birthsCycle/(p.period*p.cells) : -1;
+    found.sort((a,b)=>activity(b)-activity(a)||a.cells-b.cells);
+  }
+  else if(sort==='core')found.sort((a,b)=>(b.stableCore??-1)-(a.stableCore??-1)||a.cells-b.cells);
   else if(sort==='period')found.sort((a,b)=>(a.period||Infinity)-(b.period||Infinity)||a.cells-b.cells);
   else found.sort((a,b)=>a.cells-b.cells||a.name.localeCompare(b.name,'pt'));
   const frag=document.createDocumentFragment();
@@ -99,7 +118,10 @@ function renderList() {
     const btn=document.createElement('button');btn.type='button';
     btn.setAttribute('aria-selected',String(p.id===current?.id));
     const title=document.createElement('strong');title.textContent=p.name;
-    const meta=document.createElement('small');meta.textContent=p.cells+' células · '+p.group+(p.period?' · P'+p.period:'');
+    const meta=document.createElement('small');
+    const estimate=sort==='economy'?estimateEconomicReturn(game.profile.id,p,game.economy):null;
+    meta.textContent=p.cells+' células · '+p.group+(p.period?' · P'+p.period:'')+
+      (estimate?' · ≈'+fmt(estimate.flow)+'/g':'');
     btn.append(title,meta);btn.onclick=()=>choose(p);frag.append(btn);
   }
   el('br-atlas-results').replaceChildren(frag);
@@ -147,9 +169,14 @@ export function syncAtlasCatalog(gameplay) {
   current = null;
   catalog = (gameplay.atlas ?? gameplay.patterns).map(p => ({
     ...p, group: p.group || 'semente', cells: p.cells ?? decodeRLE(p.rle).length,
+    survey: surveyScores[game.profile.id]?.[p.id],
   }));
   el('br-atlas-heading').textContent = 'Atlas · ' + game.profile.label + ' · ' + catalog.length + ' estruturas';
   el('br-atlas-query').value = '';
+  const order = el('br-atlas-order');
+  const hasSurvey = !!surveyScores[game.profile.id];
+  for (const option of order.options) if (option.value.startsWith('survey-')) option.disabled = !hasSurvey;
+  if (!hasSurvey && order.value.startsWith('survey-')) order.value = 'economy';
   const groups = el('br-atlas-class');
   groups.replaceChildren(new Option('Todos', ''));
   for (const group of new Set(catalog.map(p => p.group))) groups.add(new Option(group, group));
@@ -178,7 +205,7 @@ export function bindAtlasBrowser() {
     el('br-cycle-heading').scrollIntoView({block:'start'});
   };
   el('br-energy-sliders').addEventListener('input',()=>{
-    if(el('br-atlas-dialog').open && current)renderProperties(current);
+    if(el('br-atlas-dialog').open && current){renderProperties(current);renderList();}
   });
   el('br-atlas-reset').onclick=()=>{stop();reset()};
   el('br-atlas-choose').onclick=()=>{

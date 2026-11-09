@@ -1,8 +1,9 @@
-import { fitIndexBuffer } from './population.js';
+import { quenchGraph } from './growth.js';
+import { createPopulation, fitIndexBuffer } from './population.js';
 import { evaluateCell } from './cell-fate.js';
 
 export function advanceGeneration(world) {
-  let births = 0;
+  let births = 0, totalBirths = 0;
   const a = world.cells,
     b = world.next,
     oa = world.owners,
@@ -36,7 +37,10 @@ export function advanceGeneration(world) {
   for (const items of nextOwnerCells) items.length = 0;
   const calc = evaluateCell(world);
   const store = (id, owner) => {
-    if (owner === 1 && !a[id]) births++;
+    if (!a[id]) {
+      totalBirths++;
+      if (owner === 1) births++;
+    }
     b[id] = 1;
     ob[id] = owner;
     newActive[nextCount] = id;
@@ -91,6 +95,20 @@ export function advanceGeneration(world) {
   world.nextActiveCount = actCount;
   world.ownerCells = nextOwnerCells;
   world.nextOwnerCells = oldOwnerCells;
+  const limit = world.physics.growthThreshold;
+  if (limit && totalBirths >= limit) {
+    let suppressed = 0, suppressedBirths = 0;
+    const { removeLive } = createPopulation(world, {});
+    quenchGraph(g, a, b, newActive.subarray(0, nextCount), limit, id => {
+      suppressed++;
+      if (!a[id]) {
+        suppressedBirths++;
+        if (ob[id] === 1) births--;
+      }
+      removeLive(id);
+    });
+    if (suppressed) world.lastOutbreak = {gen:world.gen + 1, cells:suppressed, births:suppressedBirths};
+  }
   world.gen++;
   world.evaluated = evaluated;
   world.statCount++;

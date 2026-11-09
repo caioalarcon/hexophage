@@ -1,0 +1,8 @@
+rule,F,generations,seed,cohort,priorSamples,purchases,tactics,stampTypesBought,localTrials,clipped,scans,peakLiving,finalBotCells,finalCash,stampSpending,operatingCashDelta,positiveFinalFlow,tributePaid,eroded,out,winner
+hex-b2s245,32,16384,4751,cold-1,0,5,0,2,412,353,80,33,33,3686168.98,330000,-83831.02,2,0,0,0,0
+hex-b2s245,32,16384,8329,warm-2,579,0,0,0,444,427,80,0,0,4100000,0,0,0,0,0,0,0
+hex-b2s245,32,16384,1049,warm-3,1023,0,0,0,450,432,80,0,0,4100000,0,0,0,0,0,0,0
+hex-b2s245,32,16384,1049,cold-control,0,5,0,2,421,350,80,33,33,3685171.04,330000,-84828.96,2,0,0,0,0
+hex-b2s245,32,360000,4751,long-cold,0,6,1,2,11042,8808,80,38,24,1579060.49,360000,-2160939.51,1,0,0,0,0
+hex-b2s245,320,16384,4751,cold-1,0,5,0,2,399,343,80,33,33,3686223.59,330000,-83776.41,2,0,0,0,0
+hex-b2s245,96,16384,4751,cold-1,0,5,0,2,401,346,80,33,33,3686223.59,330000,-83776.41,2,0,0,0,0

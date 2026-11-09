@@ -39,7 +39,7 @@ for(let i=0;i<queue.length;i++){
 }
 const pack=(q,r)=>((q+256)<<9)+(r+256);
 function run(budget,attacked,defenderSeed=target,end=768){
-  const match=createHeadlessMatch(graph,{init:budget,strategies,economy:studyEconomy});
+  const match=createHeadlessMatch(graph,{ growth:'classic', conflict: 'legacy',init:budget,strategies,economy:studyEconomy});
   if(defenderSeed.length)assert(match.commitStamp(2,match.patchForStamp(origin.id,0,defenderSeed),false));
   if(attacked)assert(match.commitStamp(1,match.patchForStamp(origin.id,0,glider),false));
   let previous=new Map(),firstErosion=null;

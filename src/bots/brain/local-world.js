@@ -1,3 +1,4 @@
+import { quenchGraph } from '../../simulation/growth.js';
 import { evaluateCell } from '../../simulation/cell-fate.js';
 import { createStampCommands } from '../../match/stamping.js';
 import { energyCost, generationEnergy } from '../../match/constructive-economy.js';
@@ -26,11 +27,13 @@ function neighborhood(source, center, radius) {
   const n = ids.length, complete = n === source.n;
   const interior = complete ? n : rings[radius];
   const edge = complete ? n : rings[radius - 1];
-  const deg = new Uint8Array(n), adj = new Uint16Array(6 * interior);
-  for (let i = 0; i < interior; i++) {
+  const deg = new Uint8Array(n), adj = new Uint16Array(6 * n);
+  for (let i = 0; i < n; i++) {
     const id = ids[i];
-    deg[i] = source.deg[id];
-    for (let k = 0; k < deg[i]; k++) adj[i * 6 + k] = index.get(source.adj[id * 6 + k]);
+    for (let k = 0; k < source.deg[id]; k++) {
+      const local = index.get(source.adj[id * 6 + k]);
+      if (local !== undefined) adj[i * 6 + deg[i]++] = local;
+    }
   }
   return { ids, index, n, interior, edge, deg, adj };
 }
@@ -54,13 +57,29 @@ function advance(state, economy, outside) {
   const { graph, ages, births, mature, live } = state;
   births.fill(0); mature.fill(0); live.fill(0);
   let changed = false, claims;
-  const before = { graph, physics: state.physics, nextOwners: state.owners };
-  for (let i = 0; i < graph.interior; i++) {
-    const prev = state.owners[i], owner = state.steady ? prev : state.fate(i);
-    if (!state.steady) {
+  if (!state.steady) {
+    let naturalBirths = 0;
+    for (let i = 0; i < graph.interior; i++) {
+      const owner = state.fate(i);
       state.nextOwners[i] = owner;
       state.nextCells[i] = Number(owner !== 0);
+      if (owner && !state.cells[i]) naturalBirths++;
+      // A component may continue outside the copied region even if its
+      // local part will disappear under containment in this generation.
+      if (owner && state.physics.growthThreshold && i >= graph.edge) state.touchedBoundary = true;
     }
+    const limit = state.physics.growthThreshold;
+    if (limit && naturalBirths >= limit) {
+      const live = [];
+      for (let i = 0; i < graph.n; i++) if (state.nextCells[i]) live.push(i);
+      quenchGraph(graph, state.cells, state.nextCells, live, limit, i => {
+        if (i < graph.interior) state.nextCells[i] = state.nextOwners[i] = 0;
+      });
+    }
+  }
+  const before = { graph, physics: state.physics, nextOwners: state.owners };
+  for (let i = 0; i < graph.interior; i++) {
+    const prev = state.owners[i], owner = state.steady ? prev : state.nextOwners[i];
     if (prev !== owner) {
       changed = true;
       if (prev && prev < 7 && !owner && economy.combatFee > 0) {
@@ -155,7 +174,7 @@ export function beginLocalTrial(world, game, owner, center, ids, { radius = 10, 
   const cost = energyCost(fresh.length, economy);
   action.players[owner - 1].reserve -= cost;
   let boundary = graph.interior < graph.n && (world.physics.birthsFromVacuum ||
-    snapshot.cells.subarray(graph.interior).some(Boolean));
+    snapshot.cells.subarray(world.physics.growthThreshold ? graph.edge : graph.interior).some(Boolean));
   let turns = 0, work = 0, result, halfway;
   const mid = Math.floor(horizon / 2), observedAge = Math.min(16, Math.max(2, mid));
   function deferred() {
@@ -173,6 +192,7 @@ export function beginLocalTrial(world, game, owner, center, ids, { radius = 10, 
       while (!result && turns < end) {
         const baseErodes = advance(control, economy, outside), actionErodes = advance(action, economy, outside);
         work += 2 * graph.interior;
+        boundary ||= !!(action.touchedBoundary || control.touchedBoundary);
         for (let i = graph.edge; !boundary && i < graph.interior; i++)
           if (action.owners[i] || control.owners[i]) boundary = true;
         for (const p of action.players)

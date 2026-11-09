@@ -12,7 +12,7 @@ const {chromium}=require('playwright');
     const page=await browser.newPage({viewport:{width:1440,height:900}});
     const errors=[];
     page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(pathToFileURL(path.resolve(__dirname,'..','index.html')).href);
+    await page.goto(pathToFileURL(path.resolve(__dirname,'..','index.html')).href+'?bots=profile');
     await page.waitForFunction(()=>window.__sphereLab?.world?.graph && window.__sphereLab.game.players.length===6,{timeout:90000});
     const buttons=await page.locator('.br-transform button').evaluateAll(nodes=>nodes.map(node=>{
       const r=node.getBoundingClientRect();
@@ -60,7 +60,11 @@ const {chromium}=require('playwright');
     await page.keyboard.press('Escape');
     assert.equal(await tuningToggle.getAttribute('aria-expanded'),'false');
     const cards=page.locator('.br-stampcard');
-    assert.deepEqual((await cards.evaluateAll(nodes=>nodes.map(n=>n.dataset.pattern))).slice(0,5),['stalk','glider','gun20','gun42','p42']);
+    const initialCards=await cards.evaluateAll(nodes=>nodes.map(n=>n.dataset.pattern));
+    assert.equal(initialCards[0],'stalk');
+    assert(initialCards.indexOf('p2')<initialCards.indexOf('gun20'),'the initial hand is economically ordered');
+    assert(['glider','gun20','gun42','p42'].every(id=>initialCards.includes(id)),
+      'economic sorting preserves the curated offensive cards');
     assert.equal(await cards.count(),15);
     assert.equal(await cards.first().getAttribute('aria-pressed'),'true');
     assert.equal(await cards.first().locator('.br-stampprice').textContent(),'◈360000');
@@ -99,7 +103,8 @@ const {chromium}=require('playwright');
     await page.locator('#eco-birth-cost').evaluate(el=>{el.value='1';el.dispatchEvent(new Event('input',{bubbles:true}));});
     await page.locator('.br-slot-edit').first().click();
     assert.equal(await page.locator('#br-atlas-dialog').evaluate(d=>d.open),true);
-    assert.equal(await page.locator('#br-atlas-results button').count(),160);
+    assert.equal(await page.locator('#br-atlas-results button').count(),
+      await page.evaluate(() => __sphereLab.game.gameplay.atlas.length));
     await page.locator('#br-atlas-query').fill('Flipper P4');
     assert(await page.locator('#br-atlas-results button').count()>=1);
     await page.locator('#br-atlas-results button').first().click();
