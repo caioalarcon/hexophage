@@ -19,12 +19,13 @@ module.exports = async function verifyRuleSwitching(page) {
   });
   await rule.selectOption('bays');
   const bays = await state();
-  assert.deepEqual(bays.cards.sort(), ['glider', 'osc2']);
+  assert.deepEqual(bays.cards.slice(0, 2), ['glider', 'osc2']);
+  assert.equal(bays.cards.length, 15);
   assert.equal(bays.policy, 'activity');
   assert.equal(bays.samePlanet, true);
   await page.locator('#br-open-atlas').evaluate(el => el.click());
-  assert.equal(await page.locator('#br-atlas-results button').count(), 2);
-  await page.locator('#br-atlas-results button').filter({ hasText: 'Oscilador' }).click();
+  assert((await page.locator('#br-atlas-results button').count()) > bays.cards.length);
+  await page.locator('#br-atlas-results button').filter({ hasText: 'Oscilador · P2' }).first().click();
   await page.waitForFunction(() => !document.querySelector('#br-cycle-report').hidden);
   await page.locator('#br-atlas-close').click();
   await page.locator('#hl-step').evaluate(el => el.click());

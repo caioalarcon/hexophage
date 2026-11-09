@@ -7,6 +7,7 @@ import { applyRuleProfile, resolveRuleProfile, ruleProfiles } from '../rule-prof
 import { resetGame } from './new-match.js';
 
 const savedNotations = new Map();
+let comparisonPolicy;
 
 function syncRuleControls() {
   const profile = game.profile;
@@ -38,7 +39,7 @@ export function chooseRule(id, notation) {
     return false;
   }
   if (profile.key !== game.profile.key) {
-    applyRuleProfile(world, game, profile);
+    applyRuleProfile(world, game, profile, comparisonPolicy ? {policy: comparisonPolicy} : undefined);
     syncRuleControls();
     resetGame();
   } else {
@@ -52,7 +53,9 @@ export function chooseRule(id, notation) {
 
 export function bindRuleControls() {
   const mode = $('br-bot-mode');
-  if (new URLSearchParams(location.search).get('bots') === 'learn') game.botMode = 'learn';
+  const params = new URLSearchParams(location.search);
+  if (params.get('bots') === 'learn') game.botMode = 'learn';
+  if (['stability', 'activity'].includes(params.get('economy'))) comparisonPolicy = params.get('economy');
   mode.value = game.botMode;
   const rate = $('br-brain-rate');
   rate.value = String(game.brainRate);
@@ -68,6 +71,7 @@ export function bindRuleControls() {
   $('hl-rule').onchange = event => chooseRule(rule.value, event.target.value);
   $('br-economy-policy').onchange = event => {
     const policy = event.target.value;
+    if (comparisonPolicy) comparisonPolicy = policy === 'profile' ? undefined : policy;
     const profilePolicy = game.profile.economy;
     applyRuleProfile(world, game, game.profile, {
       ...game.economy,
@@ -77,5 +81,9 @@ export function bindRuleControls() {
     syncRuleControls();
     resetGame();
   };
+  const requested = params.get('rule');
+  const initial = requested && Object.hasOwn(ruleProfiles, requested) ? resolveRuleProfile(requested) : game.profile;
+  if (comparisonPolicy || initial.id !== game.profile.id)
+    applyRuleProfile(world, game, initial, comparisonPolicy ? {policy: comparisonPolicy} : undefined);
   syncRuleControls();
 }

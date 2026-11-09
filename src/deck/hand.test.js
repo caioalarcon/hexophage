@@ -49,7 +49,8 @@ test('identical IDs and edited cards keep their shapes and loadouts in their own
     saved.savedPatterns.set('glider', [[9, 9]]);
     use(baysGameplay, 'bays');
     assert.equal(deckPoints('glider').length, 10);
-    assert.deepEqual(slotIds, ['glider', 'osc2']);
+    assert.deepEqual(slotIds.slice(0, 2), ['glider', 'osc2']);
+    assert.equal(slotIds.length, 15);
     assert.equal(assignSlot(0, 'stalk', baysGameplay.patterns), false);
     assert(assignSlot(0, 'osc2', baysGameplay.patterns));
     use(genericGameplay, 'custom/B2/S35');

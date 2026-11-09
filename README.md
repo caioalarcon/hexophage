@@ -36,6 +36,8 @@ The build collects the HTML fragments listed in `src/shell.html`, preserves styl
 
 Choose **Painel de jogo → Partida e bots → Autômato** to start a match on the current sphere. **Economia** selects whether mature cells or natural births earn energy. Changing the economic direction keeps the current rates. A new automaton loads its own defaults. New matches and rebuilt planets keep the active profile. Loadouts and manual drawings are scoped to each rule, including the normalized B/S notation.
 
+The [nine-rule survey](experiments/rule-survey/README.md) covers 409 atlas stamps, learned purchases, operating income and paired collisions. Open `?rule=hex-b2s245&bots=learn&economy=stability` to start in B2/S245 with the comparison policy.
+
 Add one entry to [the registry](src/match/rule-profiles.js). For example, a binary radius-one rule can start with just a name and physics:
 
 ```js

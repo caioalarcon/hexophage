@@ -11,7 +11,7 @@ export function useSlots(gameplay, key) {
   loadouts.set(scope, { ids: [...slotIds], selectedSlot });
   scope = key;
   const saved = loadouts.get(key);
-  slotIds.splice(0, slotIds.length, ...(saved?.ids ?? Object.keys(gameplay.kit)));
+  slotIds.splice(0, slotIds.length, ...(saved?.ids ?? gameplay.initialSlots ?? Object.keys(gameplay.kit)));
   SLOT_COUNT = slotIds.length;
   selectedSlot = saved?.selectedSlot ?? 0;
 }

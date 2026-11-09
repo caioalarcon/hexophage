@@ -20,7 +20,7 @@ function loadPattern(id) {
     newStamp(11, false);
     $('hl-stampsize').value = '11';
   }
-  $('hl-patternhelp').textContent = pat?.info || 'Padrão desenhado manualmente.';
+  $('hl-patternhelp').textContent = pat?.info || pat?.origin || 'Padrão desenhado manualmente.';
   $('hl-pattern').value = id;
   refreshTabs();
 }

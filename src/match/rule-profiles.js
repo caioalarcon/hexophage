@@ -1,6 +1,7 @@
 import { BAYS, CALLAHAN, compileTotalistic } from '../simulation/rules.js';
+import { catalogRules } from '../simulation/catalog-rules.js';
 import { ACTIVITY_ECONOMY, STABILITY_ECONOMY, initialEnergy } from './constructive-economy.js';
-import { baysGameplay, callahanGameplay, genericGameplay, getBotPlans } from './gameplay.js';
+import { baysGameplay, callahanGameplay, genericGameplay, getBotPlans, surveyGameplay } from './gameplay.js';
 
 export const DEFAULT_RULE = 'callahan';
 
@@ -15,6 +16,13 @@ export const ruleProfiles = {
     label: 'Bays · B2/S35', physics: BAYS,
     gameplay: baysGameplay, economy: ACTIVITY_ECONOMY,
   },
+  ...Object.fromEntries(Object.entries({
+    'hex-b2s34': 'Hexagonal Life', 'hex-b2s245': 'Hex B2/S245', bays245: 'Bays 245', andreen: 'Andreen',
+    highhex: 'HighHexLife', ashley15: 'Ashley 2015', ashley: 'Hex Life · Ashley 2016',
+  }).map(([id, name]) => [id, {
+    label: name + ' · ' + catalogRules[id].notation, physics: catalogRules[id],
+    gameplay: surveyGameplay(id), economy: STABILITY_ECONOMY,
+  }])),
   custom: {
     label: 'B/S personalizada', compile: compileTotalistic, defaultNotation: 'B2/S35',
     gameplay: genericGameplay, economy: STABILITY_ECONOMY,

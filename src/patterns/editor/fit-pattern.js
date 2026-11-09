@@ -1,4 +1,4 @@
-const stampSizes = [7, 11, 15, 19, 25, 29, 33, 41, 51, 61, 81, 101];
+const stampSizes = [7, 11, 15, 19, 25, 29, 33, 41, 51, 61, 81, 101, 121];
 
 // Select the smallest editor size that leaves one empty cell on all four sides.
 export function fitStampPoints(points) {

@@ -99,7 +99,8 @@ const {chromium}=require('playwright');
     await page.locator('#eco-birth-cost').evaluate(el=>{el.value='1';el.dispatchEvent(new Event('input',{bubbles:true}));});
     await page.locator('.br-slot-edit').first().click();
     assert.equal(await page.locator('#br-atlas-dialog').evaluate(d=>d.open),true);
-    assert.equal(await page.locator('#br-atlas-results button').count(),160);
+    assert.equal(await page.locator('#br-atlas-results button').count(),
+      await page.evaluate(() => __sphereLab.game.gameplay.atlas.length));
     await page.locator('#br-atlas-query').fill('Flipper P4');
     assert(await page.locator('#br-atlas-results button').count()>=1);
     await page.locator('#br-atlas-results button').first().click();
