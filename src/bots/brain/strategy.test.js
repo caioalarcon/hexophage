@@ -54,7 +54,6 @@ test('private surveys progress beyond the first profitable opening and other bot
   assert.equal(unique.size, m.game.gameplay.patterns.length);
   assert.equal(m.game.brainMetrics.studies, unique.size, 'each physical trajectory is charged only once');
   assert([...seen.values()].every(ids=>ids.size>1));
-  assert.notEqual(receipts[0].stamp, 'puff30');
   assert(receipts.some(order=>order.stamp === 'puff30'));
   assert(m.game.brainMetrics.visits <= 8192 + m.world.gen * 96 * m.game.brainRate);
 });

@@ -1,4 +1,5 @@
 import { createSeedScreen, expectedSeedFlow, marginalSeedFlow, quoteEmptySeed } from './seed-screen.js';
+import { estimateEconomicReturn, rankEconomicPatterns } from '../../patterns/economic-ranking.js';
 import { beginLocalTrial } from './local-world.js';
 import { aimAtTarget } from './aim.js';
 import { MAX_EMPTY_PATCH_SCAN, emptyHexPatch, placement, recognizes, relocate, selectSpot, signature, stampCatalog, witness } from './proposals.js';
@@ -67,6 +68,14 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
   const catalog = stampCatalog(game.gameplay.patterns).filter(p => p.radius + 3 <= 20);
   const kit = catalog.filter(p => Object.hasOwn(game.gameplay.kit, p.id));
   const byId = new Map(catalog.map(stamp => [stamp.id, stamp]));
+  // Independent 1,024-generation physical measurements give each learner an
+  // ordered shortlist to investigate. No simulated or remembered score is
+  // treated as proof of profitability in its actual game situation.
+  const economicCandidates = rankEconomicPatterns(catalog, game.profile.id, game.economy)
+    .filter(stamp => {
+      const prior = estimateEconomicReturn(game.profile.id, stamp, game.economy);
+      return prior?.feasible && prior.flow > 0;
+    });
   const single = catalog.find(s => s.offsets.length === 1)
     ?? { id: 'manual/single', offsets: [[0,0]], radius: 0 };
   const minimum = Math.min(...catalog.map(s => s.offsets.length));
@@ -131,7 +140,8 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       const evidence = [...memory.ranked(player.id, 'yield/survey', 16).filter(row => row.mean > 0),
         ...memory.ranked(player.id, 'yield/empty', 16), ...memory.ranked(player.id, 'field/empty', 16),
         ...memory.ranked(player.id, 'empty').filter(row => row.mean > 0)];
-      brain.prior = [...new Set(evidence.map(row => byId.get(row.action)).filter(Boolean))];
+      brain.prior = [...new Set([...economicCandidates,
+        ...evidence.map(row => byId.get(row.action)).filter(Boolean)])];
     }
     const unseen = stamp => !brain.surveyed.has(stamp) && affordable(stamp, player);
     let next = brain.prior.find(unseen);
