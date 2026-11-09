@@ -4,6 +4,14 @@ Em **Painel de jogo → Partida e bots → Bots**, escolha **Aprendizes**. Cada 
 
 Os candidatos vêm dos carimbos da regra. O planejador experimenta regiões vazias, colônias próprias e frentes rivais, variando posição, carimbo e rotação. Um histórico ruim reduz a prioridade de um candidato em observações posteriores. O bot pode financiar um experimento de abertura antes de observar a maturação, desde que a estimativa de risco caiba na reserva. Ações táticas exigem efeito econômico rival previsto. A checagem final usa a geometria e a legalidade da compra no mundo atual.
 
+## O que fica salvo
+
+Cada bot guarda o valor observado de uma ação por carimbo e contexto. No caso de uma frente rival, o contexto inclui vizinhos, dono e idade, e a ação inclui orientação e distância. Um reconhecimento detalhado do recorte e o teste de legalidade precedem a compra. O jogador pode ver o número de experiências herdadas no painel.
+
+As observações dos bots passam ao histórico comum quando a partida termina ou o navegador grava um checkpoint. A leitura durante a partida combina a própria experiência com uma cópia do histórico anterior. Assim outro bot só herda a descoberta em um novo jogo. O navegador grava dados pendentes a cada 15 segundos e ao ocultar ou sair da página. A persistência usa a origem do jogo: a prévia e a produção no GitHub Pages têm históricos separados.
+
+O arquivo conserva até oito combinações de física, catálogo e economia. Para cada combinação há limites separados de 1.024 associações amplas e 256 situações locais. Os detalhes recentes de uma frente não expulsam as conclusões gerais sobre as cartas. Quando o navegador bloqueia a gravação, o arquivo continua funcionando em memória enquanto a página estiver aberta.
+
 ## Custo em uma partida
 
 A esfera F320 tem 1.024.002 células. Um recorte mental alcança até 20 anéis, ou 1.261 posições hexagonais. Carimbos que excedem o raio com margem ficam fora da busca. Os cinco bots compartilham um orçamento de 96 visitas a posições locais por geração real e um crédito inicial de 8.192. O custo da busca de candidatas, do reconhecimento local e da memória também entra no tempo medido abaixo.
@@ -31,6 +39,17 @@ A versão seguinte responde à perda observada depois da compra. Enquanto o flux
 | Reserva total | 2.815.201 | 3.569.687 |
 
 Em F40, nas sementes 4751, 77 e 349, o fluxo melhorou, mas as compras adicionais ainda deixaram menos dinheiro em caixa na G32.000. O saldo de uma partida depende da área disponível para as estruturas crescerem e do tempo desde a compra.
+
+Em jogo aberto até a G360.000, a versão com recuperação completou 336 ensaios mentais, fez 9 compras e 0 intervenções dirigidas a rivais. O número de compras já inclui os 4 pilotos de recuperação. O humano plantou um único crescedor na abertura. O motor headless levou 509 segundos na máquina de ensaio.
+
+| Participante | Compras | Células finais | Reserva final arredondada | Situação |
+| --- | ---: | ---: | ---: | --- |
+| Humano | 1 | 5.738 | 22.594.196 | Em jogo |
+| Raposa | 2 | 1.525 | 5.851.047 | Em jogo |
+| Polvo | 2 | 1.342 | 5.346.762 | Em jogo |
+| Escorpião | 2 | 2.019 | 8.139.031 | Em jogo |
+| Alien | 1 | 0 | 0 | Eliminado |
+| Robô | 2 | 3.304 | 13.443.391 | Em jogo |
 
 ## O que a memória transferiu
 
