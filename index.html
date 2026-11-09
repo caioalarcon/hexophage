@@ -125,6 +125,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-tabs button{font-size:11px;padding:6px 9px;flex:0 0 auto}
 #hexlab .br-botlabel{font-size:10px;color:#b2d6de}
 #hexlab .br-botlabel select{font-size:11px;max-width:100%;width:100%}
+#hexlab .br-bots[hidden]{display:none}
 #hexlab .br-bots{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#0e1a29;border-radius:7px;padding:8px}
 #hexlab .br-status{padding:5px 9px;border-radius:6px;color:#bcddff;background:#152c43;border:1px solid #29425d;font-size:11px}
 #hexlab .br-boardwrap{overflow:auto}
@@ -842,7 +843,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     </select>
   </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
-  <div class="hl-subhead">Estratégia dos bots</div><div id="br-bots" class="br-bots"></div>
+  <div class="br-worldpick"><label for="br-bot-mode">Bots</label>
+    <select id="br-bot-mode" title="Trocar inicia outra partida"><option value="profile">Estratégias do autômato</option><option value="learn">Aprendizes · simulação local</option></select>
+  </div>
+  <label id="br-brain-rate-label" for="br-brain-rate" hidden>Ritmo de pesquisa
+    <select id="br-brain-rate" title="Esforço dos cinco aprendizes por geração"><option value="1">1×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select>
+  </label>
+  <span id="br-brain-progress" class="hl-smallline" hidden></span><div id="br-bots" class="br-bots"></div>
   </div></details>
    <details class="br-panelgroup"><summary>Planeta e inspeção</summary><div class="br-groupitems">
  <button id="hl-rotateccw" title="Girar a visão 60 graus">↶ 60°</button><button id="hl-rotatecw" title="Girar a visão 60 graus">↷ 60°</button><button id="hl-sideflip">Espelhar / <span id="hl-side">Exterior</span></button><button id="hl-pentagon">Ir até anomalia</button>
@@ -968,6 +975,320 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 </div>
 <script>
 (() => {
+  // src/match/constructive-economy.js
+  var rates = {
+    combatFee: 0.25,
+    stableEnergy: 0.02,
+    productionScale: 8e3,
+    birthCost: 1,
+    stableAfter: 256,
+    stampCost: 1e4,
+    initialCells: 82
+  };
+  var ECONOMY_KEYS = Object.freeze(Object.keys(rates));
+  var STABILITY_ECONOMY = Object.freeze({ ...rates, policy: "stability" });
+  var ACTIVITY_ECONOMY = Object.freeze({ ...rates, policy: "activity" });
+  var DEFAULT_ECONOMY = STABILITY_ECONOMY;
+  var policies = /* @__PURE__ */ new Map([
+    ["stability", (birthValue, matureValue) => ({ income: matureValue, upkeep: birthValue })],
+    ["activity", (birthValue, matureValue) => ({ income: birthValue, upkeep: matureValue })]
+  ]);
+  function isStabilityEconomy(economy) {
+    return !economy.generationQuote && (economy.policy ?? "stability") === "stability";
+  }
+  function generationEnergy(births, stable, economy) {
+    if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
+    const quote = policies.get(economy.policy ?? "stability");
+    if (!quote) throw new RangeError("Unknown economy policy: " + economy.policy);
+    const effective = economy.productionScale > 0 ? stable / (1 + stable / economy.productionScale) : stable;
+    return quote(births * economy.birthCost, effective * economy.stableEnergy);
+  }
+  function energyCost(cells2, economy) {
+    return cells2 * economy.stampCost;
+  }
+  function availableCells(reserve, economy) {
+    return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
+  }
+  function parameterValue(value, maximum = 100, step2 = 1) {
+    const units = Math.round((Number(value) || 0) / step2);
+    const places = String(step2).split(".")[1]?.length ?? 0;
+    return Math.max(0, Math.min(maximum, Number((units * step2).toFixed(places))));
+  }
+  function initialEnergy(economy) {
+    return economy.initialCells * economy.stampCost;
+  }
+
+  // src/bots/brain/memory.js
+  var STORE_KEY = "hexophage.brains.v1";
+  var MAX_NAMESPACES = 8;
+  var MAX_STORE_CHARS = 2e6;
+  var limits = { stamps: 1536, situations: 256 };
+  var MAX_SHORTLIST = 16;
+  var kinds = Object.keys(limits);
+  var records = (from) => ({ stamps: new Map(from?.stamps), situations: new Map(from?.situations) });
+  var kindOf = (context) => context.includes("/") && !context.startsWith("field/") && !context.startsWith("yield/") ? "situations" : "stamps";
+  var MAX_KEY_LENGTH = 192;
+  var EMPTY = Object.freeze({ count: 0, mean: 0 });
+  function hash(text) {
+    let h = 2166136261;
+    for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+    return (h >>> 0).toString(36);
+  }
+  var staticKeys = /* @__PURE__ */ new WeakMap();
+  var quoteKeys = /* @__PURE__ */ new WeakMap();
+  function quoteKey(economy) {
+    if (!economy.generationQuote) return economy.policy;
+    if (economy.brainKey) return "quote:" + economy.brainKey;
+    if (!quoteKeys.has(economy.generationQuote))
+      quoteKeys.set(economy.generationQuote, "session:" + Math.random().toString(36).slice(2));
+    return quoteKeys.get(economy.generationQuote);
+  }
+  function brainNamespace(world2, game2) {
+    const { profile, gameplay, economy } = game2;
+    let key2 = staticKeys.get(profile);
+    if (!key2) {
+      const tables = world2.physics.tables.slice(5).flatMap((pair) => pair.map((t) => t.join("")));
+      const catalog2 = gameplay.patterns.map((p) => [p.id, p.rle]).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
+      key2 = [profile.key, profile.brainVersion ?? 1, hash(tables.join("/")), hash(JSON.stringify(catalog2))];
+      staticKeys.set(profile, key2);
+    }
+    return JSON.stringify([...key2, quoteKey(economy), ...ECONOMY_KEYS.map((k) => economy[k])]);
+  }
+  function put(map, key2, value, limit) {
+    map.delete(key2);
+    map.set(key2, value);
+    if (map.size > limit) map.delete(map.keys().next().value);
+    return value;
+  }
+  function scope(map, key2) {
+    return map.get(key2) ?? put(map, key2, /* @__PURE__ */ new Map(), MAX_NAMESPACES);
+  }
+  function combine(old, fresh) {
+    if (!old) return fresh;
+    if (!fresh) return old;
+    const count = old.count + fresh.count;
+    return { count, mean: old.mean + (fresh.mean - old.mean) * (fresh.count / count) };
+  }
+  var contextIndexes = /* @__PURE__ */ new WeakMap();
+  function actionsIn(bank, context) {
+    if (!bank) return [];
+    let index = contextIndexes.get(bank);
+    if (!index) {
+      index = /* @__PURE__ */ new Map();
+      for (const key2 of bank.keys()) {
+        let pair;
+        try {
+          pair = JSON.parse(key2);
+        } catch {
+          continue;
+        }
+        if (!Array.isArray(pair) || typeof pair[0] !== "string" || typeof pair[1] !== "string") continue;
+        const [scope3, action] = pair;
+        if (!index.has(scope3)) index.set(scope3, []);
+        index.get(scope3).push({ key: key2, action });
+      }
+      contextIndexes.set(bank, index);
+    }
+    return index.get(context) ?? [];
+  }
+  function record(rows2, key2, sample, kind) {
+    const bank = rows2[kind];
+    if (!bank.has(key2)) contextIndexes.delete(bank);
+    put(bank, key2, combine(bank.get(key2), sample), limits[kind]);
+  }
+  function readArchive(raw) {
+    if (!raw || raw.length > MAX_STORE_CHARS) return /* @__PURE__ */ new Map();
+    const scopes2 = JSON.parse(raw);
+    const result = /* @__PURE__ */ new Map();
+    if (!Array.isArray(scopes2)) return result;
+    for (const item of scopes2.slice(-MAX_NAMESPACES)) {
+      if (!Array.isArray(item)) continue;
+      const [name, entries] = item;
+      if (typeof name !== "string" || name.length > 512 || !entries) continue;
+      const rows2 = records();
+      for (const kind of kinds) {
+        if (!Array.isArray(entries[kind])) continue;
+        for (const row of entries[kind].slice(-limits[kind])) {
+          if (!Array.isArray(row)) continue;
+          const [key2, count, mean] = row;
+          if (typeof key2 === "string" && key2.length <= 512 && Number.isSafeInteger(count) && count > 0 && Number.isFinite(mean))
+            rows2[kind].set(key2, { count, mean });
+        }
+      }
+      result.set(name, rows2);
+    }
+    return result;
+  }
+  function encode([ns, rows2]) {
+    return [ns, Object.fromEntries(kinds.map((kind) => [kind, [...rows2[kind]].map(([key2, { count, mean }]) => [key2, count, mean])]))];
+  }
+  function createBrainArchive(storage, onDirty) {
+    let archive = /* @__PURE__ */ new Map();
+    function refresh() {
+      if (!storage) return;
+      let raw;
+      try {
+        raw = storage.getItem(STORE_KEY);
+      } catch {
+        storage = null;
+        return;
+      }
+      try {
+        archive = readArchive(raw);
+      } catch {
+      }
+    }
+    function open(namespace) {
+      refresh();
+      const inherited = new Map(archive);
+      const personal = /* @__PURE__ */ new Map(), pending2 = /* @__PURE__ */ new Map(), rankings = /* @__PURE__ */ new Map();
+      let recalls = 0, recalled = 0;
+      let lookups = 0, hits = 0, observations = 0, checkpoints = 0, closed = false;
+      function botRows(id) {
+        const bots = scope(personal, namespace);
+        if (!bots.has(id)) bots.set(id, records());
+        return bots.get(id);
+      }
+      function checkpoint() {
+        if (!pending2.size) return;
+        refresh();
+        for (const [ns, updates] of pending2) {
+          const rows2 = records(archive.get(ns));
+          for (const kind of kinds)
+            for (const [key2, sample] of updates[kind]) record(rows2, key2, sample, kind);
+          put(archive, ns, rows2, MAX_NAMESPACES);
+        }
+        pending2.clear();
+        checkpoints++;
+        if (!storage) return;
+        const scopes2 = [...archive].map(encode);
+        let raw = JSON.stringify(scopes2);
+        while (raw.length > MAX_STORE_CHARS && scopes2.length > 1) {
+          archive.delete(scopes2.shift()[0]);
+          raw = JSON.stringify(scopes2);
+        }
+        try {
+          storage.setItem(STORE_KEY, raw);
+        } catch {
+          storage = null;
+        }
+      }
+      return {
+        select(ns) {
+          if (closed || namespace === ns) return;
+          namespace = ns;
+          rankings.clear();
+        },
+        // Recall the actions themselves, including winners too rare to appear
+        // in a random tournament. Payback, yield and simulation each keep their
+        // own context. Reading one bot never reveals another bot's live data.
+        ranked(botId, context, limit = 8) {
+          if (!Number.isInteger(botId) || botId < 1 || botId > 6 || !Number.isInteger(limit) || limit < 1 || typeof context !== "string" || context.length > MAX_KEY_LENGTH) return [];
+          let cache = rankings.get(botId);
+          if (!cache) rankings.set(botId, cache = /* @__PURE__ */ new Map());
+          let best = cache.get(context);
+          if (!best) {
+            const kind = kindOf(context);
+            const prior = inherited.get(namespace)?.[kind];
+            const mine = personal.get(namespace)?.get(botId)?.[kind];
+            const candidates = [];
+            const add = ({ key: key2, action }) => {
+              const { count, mean } = combine(prior?.get(key2), mine?.get(key2));
+              candidates.push({ action, count, mean, score: (mean * count - 1) / (count + 1) });
+            };
+            for (const row of actionsIn(prior, context)) add(row);
+            for (const row of actionsIn(mine, context)) if (!prior?.has(row.key)) add(row);
+            candidates.sort((a, b) => b.score - a.score || b.count - a.count || a.action.localeCompare(b.action, "en"));
+            best = candidates.slice(0, MAX_SHORTLIST).map(({ action, count, mean }) => Object.freeze({ action, count, mean }));
+            put(cache, context, best, 32);
+          }
+          recalls++;
+          if (best.length) recalled++;
+          return best.slice(0, limit);
+        },
+        lookup(botId, context, action) {
+          lookups++;
+          const key2 = JSON.stringify([context, action]), kind = kindOf(context);
+          const seen = combine(inherited.get(namespace)?.[kind].get(key2), personal.get(namespace)?.get(botId)?.[kind].get(key2));
+          if (seen) hits++;
+          return seen ? { ...seen } : EMPTY;
+        },
+        observe(botId, context, action, utility) {
+          if (closed || !Number.isInteger(botId) || botId < 1 || botId > 6 || !Number.isFinite(utility) || typeof context !== "string" || context.length > MAX_KEY_LENGTH || typeof action !== "string" || action.length > MAX_KEY_LENGTH) return;
+          const key2 = JSON.stringify([context, action]), sample = { count: 1, mean: utility };
+          if (key2.length > 512) return;
+          const kind = kindOf(context);
+          const mine = botRows(botId), bank = mine[kind];
+          if (bank.size === limits[kind] && !bank.has(key2)) rankings.delete(botId);
+          else rankings.get(botId)?.delete(context);
+          record(mine, key2, sample, kind);
+          let updates = pending2.get(namespace);
+          if (updates && !updates[kind].has(key2) && updates[kind].size >= limits[kind] || !updates && pending2.size >= MAX_NAMESPACES) {
+            checkpoint();
+            updates = void 0;
+          }
+          const dirty = pending2.size !== 0;
+          if (!updates) pending2.set(namespace, updates = records());
+          record(updates, key2, sample, kind);
+          observations++;
+          if (!dirty) onDirty?.();
+        },
+        stats() {
+          const prior = inherited.get(namespace) ?? records();
+          const bots = [...personal.get(namespace)?.values() ?? []];
+          const samples = (rows2) => kinds.reduce((n, kind) => n + [...rows2[kind].values()].reduce((sum, row) => sum + row.count, 0), 0);
+          const size = (rows2) => rows2.stamps.size + rows2.situations.size;
+          return {
+            namespace,
+            inheritedEntries: size(prior),
+            priorSamples: samples(prior),
+            privateEntries: bots.reduce((n, rows2) => n + size(rows2), 0),
+            privateSamples: bots.reduce((n, rows2) => n + samples(rows2), 0),
+            observations,
+            lookups,
+            hits,
+            recalls,
+            recalled,
+            checkpoints
+          };
+        },
+        checkpoint,
+        finish() {
+          checkpoint();
+          closed = true;
+        }
+      };
+    }
+    return { open };
+  }
+
+  // src/browser/brain-archive.js
+  function browserBrainArchive() {
+    let storage;
+    try {
+      storage = window.localStorage;
+    } catch {
+    }
+    let session, timer2;
+    const flush = () => {
+      clearTimeout(timer2);
+      timer2 = void 0;
+      session?.checkpoint();
+    };
+    const archive = createBrainArchive(storage, () => {
+      timer2 ?? (timer2 = setTimeout(flush, 15e3));
+    });
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) flush();
+    });
+    return { open(namespace) {
+      session?.finish();
+      session = archive.open(namespace);
+      return session;
+    } };
+  }
+
   // src/simulation/state.js
   function createSimulationState() {
     return {
@@ -1347,13 +1668,224 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return ids;
   }
 
-  // src/bots/turns.js
-  function runBotTurns(world2, game2, defaultStrategy, strategies) {
-    if (game2.ended || !game2.players.length || world2.gen !== 1 && world2.gen % game2.interval !== 0) return;
-    for (let index = 1; index < 6; index++) {
-      const player = game2.players[index];
-      if (!player.out) (strategies.get(player.id) ?? defaultStrategy)(player);
+  // src/patterns/rle.js
+  function decodeRLE(str) {
+    const out = [], re = /(\d*)([ob$!])/g;
+    let r = 0, c = 0, m;
+    while ((m = re.exec(str)) !== null) {
+      const n = Number(m[1] || 1);
+      if (m[2] === "o") {
+        for (let i = 0; i < n; i++) out.push([c + i - r, r]);
+        c += n;
+      } else if (m[2] === "b") c += n;
+      else if (m[2] === "$") {
+        r += n;
+        c = 0;
+      } else break;
     }
+    return out;
+  }
+
+  // src/patterns/planar-simulation.js
+  var stride = 65536;
+  var adjacent = DIR.map(([q, r]) => q * stride + r);
+  function patternSite(q, r) {
+    return q * stride + r;
+  }
+  function patternOffset(id) {
+    const q = Math.round(id / stride);
+    return [q, id - q * stride];
+  }
+  function seedPatternAges(pattern) {
+    return new Map(decodeRLE(pattern.rle).map(([q, r]) => [patternSite(q, r), 1]));
+  }
+  var torusByFrame = /* @__PURE__ */ new WeakMap();
+  function makeTorus(ages) {
+    let reach = 0;
+    for (const id of ages.keys())
+      for (const coordinate of patternOffset(id)) reach = Math.max(reach, Math.abs(coordinate));
+    const side = Math.max(64, 2 * reach + 4);
+    const n = side * side, half = side / 2;
+    const graph = { n, adj: new Uint32Array(n * 6), deg: new Uint8Array(n).fill(6) };
+    const keys = new Float64Array(n);
+    for (let q = 0; q < side; q++) for (let r = 0; r < side; r++) {
+      const id = q * side + r;
+      keys[id] = (q - half) * stride + r - half;
+      for (let k = 0; k < 6; k++) {
+        const [dq, dr] = DIR[k];
+        graph.adj[id * 6 + k] = (q + dq + side) % side * side + (r + dr + side) % side;
+      }
+    }
+    return { graph, keys, cells: new Uint8Array(n), owners: new Uint8Array(n) };
+  }
+  function advanceTorus(ages, threshold, physics) {
+    const torus = torusByFrame.get(ages) ?? makeTorus(ages);
+    const { keys, cells: cells2, owners } = torus;
+    for (let i = 0; i < keys.length; i++) {
+      const age = ages.get(keys[i]) || 0;
+      cells2[i] = Number(age !== 0);
+      owners[i] = age > 0 ? 1 : age < 0 ? 7 : 0;
+    }
+    const fate = evaluateCell({ ...torus, physics });
+    const next = /* @__PURE__ */ new Map();
+    let births = 0, mature = 0;
+    for (let i = 0; i < keys.length; i++) {
+      const owner = fate(i);
+      if (!owner) continue;
+      const id = keys[i], age = Math.abs(ages.get(id) || 0) + 1;
+      next.set(id, owner === 1 ? age : -age);
+      if (owner !== 1) continue;
+      if (age === 1) births++;
+      if (age >= threshold) mature++;
+    }
+    torusByFrame.set(next, torus);
+    return { next, births, mature };
+  }
+  function advancePattern(ages, threshold, physics) {
+    const [birth, survive] = physics.tables[6];
+    if (birth[0]) return advanceTorus(ages, threshold, physics);
+    const masks = /* @__PURE__ */ new Map();
+    for (const id of ages.keys()) {
+      if (survive[0] && !masks.has(id)) masks.set(id, 0);
+      for (let k = 0; k < adjacent.length; k++) {
+        const target = id - adjacent[k];
+        masks.set(target, (masks.get(target) || 0) | 1 << k);
+      }
+    }
+    const next = /* @__PURE__ */ new Map();
+    let births = 0, mature = 0;
+    for (const [id, mask] of masks) {
+      const age = ages.get(id) || 0;
+      if (!(age ? survive : birth)[mask]) continue;
+      next.set(id, age + 1);
+      if (age === 0) births++;
+      if (age + 1 >= threshold) mature++;
+    }
+    return { next, births, mature };
+  }
+
+  // src/bots/brain/seed-screen.js
+  var horizon = 18;
+  var persistentAge = horizon / 2;
+  function centroid(ages) {
+    let q = 0, r = 0;
+    for (const id of ages.keys()) {
+      const [x, y] = patternOffset(id);
+      q += x;
+      r += y;
+    }
+    return ages.size ? [q / ages.size, r / ages.size] : [0, 0];
+  }
+  function createSeedScreen(physics) {
+    const measured = /* @__PURE__ */ new Map();
+    let job;
+    return {
+      result: (stamp) => measured.get(stamp),
+      run(stamp, threshold, allowance) {
+        if (measured.has(stamp)) return { visits: 0, done: true };
+        if (job?.stamp !== stamp) {
+          const ages = new Map(stamp.offsets.map(([q, r]) => [patternSite(q, r), 1]));
+          job = { stamp, ages, start: centroid(ages), turns: 0, births: 0, mature: 0, midCore: 0, reach: stamp.radius, history: [] };
+        }
+        let visits = 0;
+        while (job.turns < horizon) {
+          const cost = Math.max(1, 13 * job.ages.size);
+          if (cost > 2400) {
+            measured.set(stamp, null);
+            job = null;
+            return { visits, done: true };
+          }
+          if (visits + cost > allowance) return { visits, done: false };
+          const turn = advancePattern(job.ages, threshold, physics);
+          visits += cost;
+          job.ages = turn.next;
+          job.turns++;
+          let pending2 = 0, core = 0;
+          for (const [id, age] of job.ages) {
+            const [q, r] = patternOffset(id);
+            job.reach = Math.max(job.reach, Math.abs(q), Math.abs(r), Math.abs(q + r));
+            if (age >= persistentAge && age < threshold) pending2++;
+            if (age > job.turns) core++;
+          }
+          job.history.push({ births: turn.births, mature: turn.mature, pending: pending2, core });
+          if (job.turns === persistentAge) job.midCore = pending2 + turn.mature;
+          if (job.turns > horizon - 8) {
+            job.births += turn.births;
+            job.mature += turn.mature;
+          }
+        }
+        const end = centroid(job.ages);
+        let lateCore = 0;
+        for (const age of job.ages.values()) if (age >= persistentAge) lateCore++;
+        measured.set(stamp, {
+          initial: stamp.offsets.length,
+          live: job.ages.size,
+          turns: horizon,
+          births: job.births / 8,
+          mature: job.mature / 8,
+          midCore: job.midCore,
+          lateCore,
+          history: job.history,
+          reach: job.reach,
+          drift: [end[0] - job.start[0], end[1] - job.start[1]]
+        });
+        job = null;
+        return { visits, done: true };
+      }
+    };
+  }
+  function expectedSeedFlow(measure2, player, economy) {
+    if (!measure2?.live) return -Infinity;
+    let mature = measure2.mature;
+    if (economy.stableAfter > measure2.turns) {
+      const trend = measure2.live > measure2.initial * 1.2 ? Math.max(0, (measure2.lateCore - measure2.midCore) / persistentAge) : 0;
+      mature = measure2.lateCore + trend * Math.min(512, 2 * economy.stableAfter);
+    }
+    return marginalSeedFlow(measure2.births, mature, player, economy);
+  }
+  function marginalSeedFlow(births, mature, player, economy) {
+    const before = generationEnergy(player.lastBirths, player.stable, economy);
+    const after = generationEnergy(player.lastBirths + births, player.stable + mature, economy);
+    return after.income - after.upkeep - (before.income - before.upkeep);
+  }
+  function quoteEmptySeed(measure2, player, economy) {
+    const cost = measure2.initial * economy.stampCost;
+    const base = generationEnergy(player.lastBirths, player.stable, economy);
+    const baseFlow = base.income - base.upkeep;
+    let cash = -cost, flow = 0, mid = 0, deferred = 0;
+    for (const [index, step2] of measure2.history.entries()) {
+      const births = player.lastBirths + step2.births, mature = player.stable + step2.mature;
+      const quote = generationEnergy(births, mature, economy);
+      const delta = quote.income - quote.upkeep - baseFlow;
+      cash += delta;
+      if (player.reserve + (index + 1) * baseFlow + cash < -1e-9 || player.reserve + (index + 1) * baseFlow < -1e-9) return null;
+      if (index >= horizon - 8) flow += delta / 8;
+      if (index === persistentAge - 1 || index === horizon - 1) {
+        const later = generationEnergy(births, mature + step2.pending, economy);
+        deferred = later.income - later.upkeep - quote.income + quote.upkeep;
+        if (index === persistentAge - 1) mid = deferred;
+      }
+    }
+    return {
+      cost,
+      added: measure2.initial,
+      turns: horizon,
+      boundary: false,
+      ownUnfunded: false,
+      ownCash: cash,
+      ownFlow: flow,
+      ownCells: measure2.live,
+      ownCore: measure2.history.at(-1).core,
+      ownDeferredMid: mid,
+      ownDeferredFlow: deferred,
+      ownDeferredTrend: (deferred - mid) / persistentAge,
+      rivalCash: 0,
+      rivalFlow: 0,
+      rivalCells: 0,
+      rivalDeferredMid: 0,
+      rivalDeferredFlow: 0,
+      rivalDeferredTrend: 0
+    };
   }
 
   // src/match/field-history.js
@@ -1392,162 +1924,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     if (p.out && h.eliminated === null) h.eliminated = world2.gen;
     rememberHumanPeak(world2, game2);
-  }
-
-  // src/match/spawns.js
-  function sphereSpawns(g) {
-    const n = g.n, c = g.coords, cut = Math.max(8, Math.floor(g.f * 0.12)), picks = [g.farthest], separation = new Float64Array(n);
-    for (let k = 1; k < 6; k++) {
-      const anchor = 3 * picks[k - 1], x = c[anchor], y = c[anchor + 1], z = c[anchor + 2];
-      let best = -1, score = -Infinity;
-      for (let id = 0, j = 0; id < n; id++, j += 3) {
-        const distance = g.distance[id];
-        if (distance < cut) continue;
-        const d = 1 - (c[j] * x + c[j + 1] * y + c[j + 2] * z);
-        const min = k === 1 || d < separation[id] ? d : separation[id];
-        separation[id] = min;
-        const value = min + distance * 2e-6;
-        if (value > score) {
-          score = value;
-          best = id;
-        }
-      }
-      if (best < 0) throw Error("Não foi possível distribuir seis jogadores na esfera");
-      picks.push(best);
-    }
-    return picks;
-  }
-
-  // src/bots/spiral.js
-  function botSpiralPlan(g, seed) {
-    const seen = new Uint8Array(Math.ceil(g.n / 8));
-    seen[seed >>> 3] |= 1 << (seed & 7);
-    return {
-      seen,
-      base: basis(pointOnSphere(g, seed)),
-      ring: [seed],
-      radius: 0,
-      order: [],
-      index: 0
-    };
-  }
-  function nextBotAnchor(g, plan) {
-    const v = g.coords;
-    while (plan.index >= plan.order.length) {
-      if (!plan.ring.length) return -1;
-      const next = [], order = [], r = plan.radius;
-      for (const id of plan.ring) {
-        if (g.deg[id] === 6 && g.distance[id] >= 3) {
-          const i = id * 3, x = v[i], y = v[i + 1], z = v[i + 2], { right, up } = plan.base;
-          const angle = mod(
-            Math.atan2(
-              x * up[0] + y * up[1] + z * up[2],
-              x * right[0] + y * right[1] + z * right[2]
-            ) - r * 0.23,
-            Math.PI * 2
-          );
-          order.push({ id, angle });
-        }
-        for (let k = 0; k < g.deg[id]; k++) {
-          const n = g.adj[id * 6 + k], slot = n >>> 3, bit = 1 << (n & 7);
-          if (plan.seen[slot] & bit) continue;
-          plan.seen[slot] |= bit;
-          next.push(n);
-        }
-      }
-      order.sort((x, y) => x.angle - y.angle || x.id - y.id);
-      plan.ring = next;
-      plan.radius = r + 1;
-      plan.order = order;
-      plan.index = 0;
-    }
-    return plan.order[plan.index++].id;
-  }
-
-  // src/match/players.js
-  function resetPlayers(world2, game2) {
-    game2.humanHistory = {
-      births: 0,
-      deaths: 0,
-      placed: 0,
-      peak: null,
-      largest: null,
-      eliminated: null
-    };
-    const g = world2.graph, seedIds = g.spawnIds || (g.spawnIds = sphereSpawns(g));
-    game2.players = Array.from({ length: 6 }, (_, i) => ({
-      id: i + 1,
-      name: game2.names[i + 1],
-      symbol: game2.symbols[i + 1],
-      seed: seedIds[i],
-      reserve: game2.init,
-      stable: 0,
-      totalBirths: 0,
-      totalDeaths: 0,
-      lastBirths: 0,
-      lastDeaths: 0,
-      lastIncome: 0,
-      lastUpkeep: 0,
-      lastEroded: 0,
-      flowAverage: 0,
-      stamps: 0,
-      stampedEnergy: 0,
-      out: false,
-      debtCarry: 0,
-      tributeReceived: 0,
-      tributePaid: 0,
-      received: 0,
-      paid: 0,
-      eroded: 0,
-      lastFlow: 0,
-      pattern: i === 0 ? "manual" : game2.bots[i - 1]
-    }));
-    world2.cellAges = new Uint8Array(world2.graph.n);
-    game2.botPlans = game2.players.map((p) => p.id === 1 ? null : botSpiralPlan(world2.graph, p.seed));
-    game2.botReserved = new Uint8Array(world2.graph.n);
-  }
-
-  // src/match/constructive-economy.js
-  var rates = {
-    combatFee: 0.25,
-    stableEnergy: 0.02,
-    productionScale: 8e3,
-    birthCost: 1,
-    stableAfter: 256,
-    stampCost: 1e4,
-    initialCells: 82
-  };
-  var ECONOMY_KEYS = Object.freeze(Object.keys(rates));
-  var STABILITY_ECONOMY = Object.freeze({ ...rates, policy: "stability" });
-  var ACTIVITY_ECONOMY = Object.freeze({ ...rates, policy: "activity" });
-  var DEFAULT_ECONOMY = STABILITY_ECONOMY;
-  var policies = /* @__PURE__ */ new Map([
-    ["stability", (birthValue, matureValue) => ({ income: matureValue, upkeep: birthValue })],
-    ["activity", (birthValue, matureValue) => ({ income: birthValue, upkeep: matureValue })]
-  ]);
-  function isStabilityEconomy(economy) {
-    return !economy.generationQuote && (economy.policy ?? "stability") === "stability";
-  }
-  function generationEnergy(births, stable, economy) {
-    if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
-    const quote = policies.get(economy.policy ?? "stability");
-    if (!quote) throw new RangeError("Unknown economy policy: " + economy.policy);
-    const effective = economy.productionScale > 0 ? stable / (1 + stable / economy.productionScale) : stable;
-    return quote(births * economy.birthCost, effective * economy.stableEnergy);
-  }
-  function energyCost(cells2, economy) {
-    return cells2 * economy.stampCost;
-  }
-  function availableCells(reserve, economy) {
-    return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
-  }
-  function parameterValue(value, maximum = 100, step2 = 1) {
-    const units = Math.round((Number(value) || 0) / step2);
-    const places = String(step2).split(".")[1]?.length ?? 0;
-    return Math.max(0, Math.min(maximum, Number((units * step2).toFixed(places))));
-  }
-  function initialEnergy(economy) {
-    return economy.initialCells * economy.stampCost;
   }
 
   // src/match/stamping.js
@@ -1665,6 +2041,985 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
   }
 
+  // src/bots/brain/local-world.js
+  function neighborhood(source, center, radius) {
+    const ids = [center], index = /* @__PURE__ */ new Map([[center, 0]]);
+    const rings = [0];
+    for (let r = 0; r < radius; r++) {
+      const end = ids.length;
+      for (let i = rings[r]; i < end; i++) {
+        const id = ids[i];
+        for (let k = 0; k < source.deg[id]; k++) {
+          const next = source.adj[6 * id + k];
+          if (!index.has(next)) {
+            index.set(next, ids.length);
+            ids.push(next);
+          }
+        }
+      }
+      rings.push(end);
+    }
+    const n = ids.length, complete = n === source.n;
+    const interior = complete ? n : rings[radius];
+    const edge = complete ? n : rings[radius - 1];
+    const deg = new Uint8Array(n), adj = new Uint16Array(6 * interior);
+    for (let i = 0; i < interior; i++) {
+      const id = ids[i];
+      deg[i] = source.deg[id];
+      for (let k = 0; k < deg[i]; k++) adj[i * 6 + k] = index.get(source.adj[id * 6 + k]);
+    }
+    return { ids, index, n, interior, edge, deg, adj };
+  }
+  function branch(snapshot, graph, physics, players) {
+    const cells2 = snapshot.cells.slice(), owners = snapshot.owners.slice();
+    const nextCells = cells2.slice(), nextOwners = owners.slice();
+    return {
+      graph,
+      physics,
+      cells: cells2,
+      owners,
+      nextCells,
+      nextOwners,
+      fate: evaluateCell({ cells: cells2, owners, graph, physics }),
+      nextFate: evaluateCell({ cells: nextCells, owners: nextOwners, graph, physics }),
+      ages: snapshot.ages.slice(),
+      players: players.map((p) => ({ ...p })),
+      births: new Uint16Array(8),
+      mature: new Uint16Array(8),
+      live: new Uint16Array(8),
+      steady: false
+    };
+  }
+  function advance(state, economy, outside) {
+    const { graph, ages, births, mature, live } = state;
+    births.fill(0);
+    mature.fill(0);
+    live.fill(0);
+    let changed = false, claims;
+    const before = { graph, physics: state.physics, nextOwners: state.owners };
+    for (let i = 0; i < graph.interior; i++) {
+      const prev = state.owners[i], owner = state.steady ? prev : state.fate(i);
+      if (!state.steady) {
+        state.nextOwners[i] = owner;
+        state.nextCells[i] = Number(owner !== 0);
+      }
+      if (prev !== owner) {
+        changed = true;
+        if (prev && prev < 7 && !owner && economy.combatFee > 0) {
+          claims ?? (claims = []);
+          recordCombatDeath(before, i, prev, claims);
+        }
+      }
+      if (!owner) {
+        ages[i] = 0;
+        continue;
+      }
+      ages[i] = prev ? ages[i] + 1 : 1;
+      live[owner]++;
+      if (!prev) births[owner]++;
+      if (ages[i] >= economy.stableAfter) mature[owner]++;
+    }
+    if (!state.steady) {
+      [state.cells, state.nextCells] = [state.nextCells, state.cells];
+      [state.owners, state.nextOwners] = [state.nextOwners, state.owners];
+      [state.fate, state.nextFate] = [state.nextFate, state.fate];
+      state.steady = !changed;
+    }
+    let needsErosion = false;
+    for (const p of state.players) {
+      if (p.out) continue;
+      const id = p.id;
+      const { income, upkeep } = generationEnergy(
+        outside.births[id] + births[id],
+        outside.mature[id] + mature[id],
+        economy
+      );
+      p.lastFlow = income - upkeep;
+      const balance = p.reserve + p.lastFlow;
+      p.unfunded = balance < -1e-9;
+      if (p.unfunded && live[id]) needsErosion = true;
+      p.reserve = Math.max(0, balance);
+    }
+    if (claims?.length) settleCombatTribute(state.players, claims, economy.combatFee);
+    return needsErosion;
+  }
+  function deferredQuote(state, economy, outside, owner, observedAge) {
+    const pending2 = new Uint16Array(8);
+    for (let i = 0; i < state.graph.interior; i++)
+      if (state.ages[i] >= observedAge && state.ages[i] < economy.stableAfter)
+        pending2[state.owners[i]]++;
+    const quote = { own: 0, rival: 0 };
+    for (const p of state.players) {
+      if (!pending2[p.id] || p.out) continue;
+      const births = state.births[p.id] + outside.births[p.id];
+      const mature = state.mature[p.id] + outside.mature[p.id];
+      const now = generationEnergy(births, mature, economy);
+      const later = generationEnergy(births, mature + pending2[p.id], economy);
+      quote[p.id === owner ? "own" : "rival"] += later.income - later.upkeep - (now.income - now.upkeep);
+    }
+    return quote;
+  }
+  function beginLocalTrial(world2, game2, owner, center, ids, { radius = 10, horizon: horizon2 = 32 } = {}) {
+    if (!Number.isInteger(center) || center < 0 || center >= world2.graph.n || !ids?.length || !Number.isInteger(radius) || radius < 3 || radius > 20 || !Number.isInteger(horizon2) || horizon2 < 1 || horizon2 > 2048) return null;
+    const fresh = createStampCommands(world2, game2).stampAdditions(owner, ids);
+    if (!fresh) return null;
+    const graph = neighborhood(world2.graph, center, radius);
+    for (const id of ids) if (!graph.index.has(id) || graph.index.get(id) >= graph.interior) return null;
+    const economy = { ...game2.economy };
+    const snapshot = { cells: new Uint8Array(graph.n), owners: new Uint8Array(graph.n), ages: new Float64Array(graph.n) };
+    const outside = { births: new Float64Array(8), mature: new Float64Array(8) };
+    for (const p of game2.players) {
+      outside.births[p.id] = p.lastBirths;
+      outside.mature[p.id] = p.stable;
+    }
+    for (let i = 0; i < graph.n; i++) {
+      const id = graph.ids[i], occupant = world2.owners[id];
+      snapshot.cells[i] = world2.cells[id];
+      snapshot.owners[i] = occupant;
+      snapshot.ages[i] = occupant ? world2.cellAges?.[id] || 1 : 0;
+      if (i >= graph.interior || !occupant || occupant === 7) continue;
+      if (world2.next && world2.cells[id] && !world2.next[id] && snapshot.ages[i] === 1)
+        outside.births[occupant] = Math.max(0, outside.births[occupant] - 1);
+      if (snapshot.ages[i] >= economy.stableAfter)
+        outside.mature[occupant] = Math.max(0, outside.mature[occupant] - 1);
+    }
+    const control = branch(snapshot, graph, world2.physics, game2.players);
+    for (const id of fresh) {
+      const i = graph.index.get(id);
+      snapshot.cells[i] = 1;
+      snapshot.owners[i] = owner;
+      snapshot.ages[i] = 1;
+    }
+    const action = branch(snapshot, graph, world2.physics, game2.players);
+    const cost = energyCost(fresh.length, economy);
+    action.players[owner - 1].reserve -= cost;
+    let boundary = graph.interior < graph.n && (world2.physics.birthsFromVacuum || snapshot.cells.subarray(graph.interior).some(Boolean));
+    let turns = 0, work = 0, result, halfway;
+    const mid = Math.floor(horizon2 / 2), observedAge = Math.min(16, Math.max(2, mid));
+    function deferred() {
+      const base = deferredQuote(control, economy, outside, owner, observedAge);
+      const move = deferredQuote(action, economy, outside, owner, observedAge);
+      return { own: move.own - base.own, rival: move.rival - base.rival };
+    }
+    const recent = new Float64Array(8 * 7);
+    const trial = {
+      nodes: graph.n,
+      get generations() {
+        return turns;
+      },
+      get work() {
+        return work;
+      },
+      step(maxGenerations = 1) {
+        const end = Math.min(horizon2, turns + Math.max(0, Math.floor(maxGenerations)));
+        while (!result && turns < end) {
+          const baseErodes = advance(control, economy, outside), actionErodes = advance(action, economy, outside);
+          work += 2 * graph.interior;
+          for (let i = graph.edge; !boundary && i < graph.interior; i++)
+            if (action.owners[i] || control.owners[i]) boundary = true;
+          for (const p of action.players)
+            recent[turns % 8 * 7 + p.id] = p.lastFlow - control.players[p.id - 1].lastFlow;
+          turns++;
+          if (turns === mid) halfway = deferred();
+          if (turns < horizon2 && !baseErodes && !actionErodes) continue;
+          result = {
+            ownCash: 0,
+            rivalCash: 0,
+            ownFlow: 0,
+            rivalFlow: 0,
+            ownCells: 0,
+            rivalCells: 0,
+            ownCore: 0,
+            rivalCore: 0,
+            cost,
+            added: fresh.length,
+            turns,
+            work,
+            boundary,
+            ownUnfunded: !!action.players[owner - 1].unfunded
+          };
+          for (const [state, sign] of [[action, 1], [control, -1]]) {
+            for (let i = 0; i < graph.interior; i++) {
+              const occupant = state.owners[i];
+              if (occupant && occupant < 7 && state.ages[i] > turns)
+                result[occupant === owner ? "ownCore" : "rivalCore"] += sign;
+            }
+          }
+          const forecast = deferred();
+          for (const side of ["own", "rival"]) {
+            result[side + "DeferredFlow"] = forecast[side];
+            result[side + "DeferredMid"] = halfway?.[side] ?? 0;
+            result[side + "DeferredTrend"] = halfway && turns > mid ? (forecast[side] - halfway[side]) / (turns - mid) : 0;
+          }
+          const samples = Math.min(8, turns);
+          for (const p of action.players) {
+            const other = control.players[p.id - 1];
+            let flow = 0;
+            for (let row = 0; row < samples; row++) flow += recent[row * 7 + p.id];
+            const side = p.id === owner ? "own" : "rival";
+            result[side + "Cash"] += p.reserve - other.reserve;
+            result[side + "Flow"] += flow / samples;
+            result[side + "Cells"] += action.live[p.id] - control.live[p.id];
+          }
+        }
+        return result ?? null;
+      }
+    };
+    return trial;
+  }
+
+  // src/bots/brain/aim.js
+  function aimAtTarget(observation, fallbackTurn) {
+    if (!observation?.drift) return fallbackTurn;
+    let [q, r] = observation.drift;
+    if (Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r)) < 1.5) return fallbackTurn;
+    let bestTurn = fallbackTurn, bestProjection = -Infinity;
+    for (let turn = 0; turn < 6; turn++) {
+      const approach = -q - r / 2;
+      if (approach > bestProjection || approach === bestProjection && turn === fallbackTurn) {
+        bestProjection = approach;
+        bestTurn = turn;
+      }
+      [q, r] = [q + r, -q];
+    }
+    return bestTurn;
+  }
+
+  // src/bots/brain/proposals.js
+  function stampCatalog(patterns2) {
+    const catalog2 = [];
+    const seen = /* @__PURE__ */ new Set();
+    for (const p of [...patterns2].sort((a, b) => a.id.localeCompare(b.id, "en"))) {
+      if (seen.has(p.rle)) continue;
+      seen.add(p.rle);
+      const points = decodeRLE(p.rle);
+      if (!points.length) continue;
+      const q = Math.round(points.reduce((sum, v) => sum + v[0], 0) / points.length);
+      const r = Math.round(points.reduce((sum, v) => sum + v[1], 0) / points.length);
+      const offsets = points.map(([x, y]) => [x - q, y - r]);
+      const radius = Math.max(...offsets.map(([x, y]) => Math.max(Math.abs(x), Math.abs(y), Math.abs(x + y))));
+      catalog2.push({ id: p.id, offsets, radius });
+    }
+    return catalog2;
+  }
+  function walk(graph, site, direction, distance) {
+    for (let i = 0; i < distance; i++) {
+      if (graph.deg[site] !== 6) return null;
+      const next = graph.adj[site * 6 + direction];
+      if (graph.deg[next] !== 6) return null;
+      let back = 0;
+      while (graph.adj[next * 6 + back] !== site) back++;
+      direction = (back + 3) % 6;
+      site = next;
+    }
+    return { site, direction };
+  }
+  function signature(world2, owner, spot) {
+    if (spot.kind === "empty") return "empty";
+    const g = world2.graph, site = spot.target;
+    const encode2 = (id) => !world2.cells[id] ? "0" : world2.owners[id] === owner ? "1" : world2.owners[id] === 7 ? "2" : world2.cellAges[id] <= 2 ? "3" : "4";
+    let word = encode2(site);
+    for (let i = 0; i < g.deg[site]; i++)
+      word += encode2(g.adj[site * 6 + (i + spot.direction) % g.deg[site]]);
+    return spot.kind + "/" + word;
+  }
+  function sampleFront(world2, cells2, random) {
+    let target = cells2[Math.floor(random() * cells2.length)];
+    for (let i = 0; i < 6; i++) {
+      const candidate = cells2[Math.floor(random() * cells2.length)];
+      if (world2.cellAges[candidate] < world2.cellAges[target]) target = candidate;
+    }
+    return target;
+  }
+  function selectSpot(world2, game2, player, random) {
+    const rivals = game2.players.filter((p) => !p.out && p !== player && world2.ownerCells[p.id].length);
+    const own = world2.ownerCells[player.id];
+    const direction = Math.floor(random() * 6);
+    if (rivals.length && player.stamps && random() < 0.55) {
+      const rival = rivals[Math.floor(random() * rivals.length)];
+      const sites = game2.recentBirthSites?.[rival.id];
+      if (sites && random() < 0.75) {
+        const start = Math.floor(random() * sites.length);
+        for (let i = 0; i < sites.length; i++) {
+          const target = sites[(start + i) % sites.length];
+          if (target < 0 || world2.owners[target] !== rival.id || world2.cellAges[target] > 8) continue;
+          if (world2.graph.deg[target] !== 6) continue;
+          for (let k = 0; k < 6; k++) {
+            const facing = (direction + k) % 6, offset = target * 6;
+            const ahead = world2.graph.adj[offset + facing];
+            const behind = world2.graph.adj[offset + (facing + 3) % 6];
+            if (!world2.cells[ahead] && world2.owners[behind] === rival.id)
+              return { kind: "rival", target, direction: facing };
+          }
+        }
+      }
+      return { kind: "rival", target: sampleFront(world2, world2.ownerCells[rival.id], random), direction };
+    }
+    if (own.length && random() < 0.7)
+      return { kind: "own", target: sampleFront(world2, own, random), direction };
+    return { kind: "empty", target: player.seed, direction };
+  }
+  function placement(world2, spot, stamp, turn, distance) {
+    const pose = walk(world2.graph, spot.target, spot.direction, distance);
+    if (!pose) return null;
+    const ids = patchForStamp(world2, pose.site, (pose.direction + turn) % 6, stamp.offsets);
+    return ids && { ids, center: pose.site, heading: pose.direction };
+  }
+  var disks = /* @__PURE__ */ new Map();
+  function disk(radius) {
+    if (!disks.has(radius)) {
+      const offsets = [];
+      for (let q = -radius; q <= radius; q++)
+        for (let r = Math.max(-radius, -q - radius); r <= Math.min(radius, -q + radius); r++)
+          offsets.push([q, r]);
+      disks.set(radius, offsets);
+    }
+    return disks.get(radius);
+  }
+  var symmetricRules = /* @__PURE__ */ new WeakMap();
+  function isotropic(physics) {
+    if (!symmetricRules.has(physics)) {
+      let invariant = true;
+      for (const degree of [5, 6]) for (const table of physics.tables[degree])
+        for (let mask = 0; mask < table.length; mask++)
+          invariant && (invariant = table[mask] === table[mask << 1 & table.length - 1 | mask >> degree - 1]);
+      symmetricRules.set(physics, invariant);
+    }
+    return symmetricRules.get(physics);
+  }
+  function fingerprint(world2, ids, threshold, horizon2) {
+    return ids.map((id) => {
+      const owner = world2.owners[id], age = world2.cellAges[id];
+      if (!owner) return 0;
+      const stage = age >= threshold ? 0 : age === 1 ? 1 : age + horizon2 < threshold ? 2 : 3 + threshold - age;
+      return 8 * stage + owner;
+    });
+  }
+  function emptyHexPatch(world2, position, radius) {
+    if (radius > 20 || !isotropic(world2.physics) || world2.physics.birthsFromVacuum) return false;
+    const ids = patchForStamp(world2, position.center, position.heading, disk(radius));
+    return !!ids && ids.every((id) => world2.cells[id] === 0);
+  }
+  function witness(world2, position, radius, threshold, horizon2) {
+    const offsets = disk(radius);
+    const projected = isotropic(world2.physics) && patchForStamp(world2, position.center, position.heading, offsets);
+    let ids = projected;
+    if (!ids) {
+      ids = [position.center];
+      const seen = new Set(ids);
+      let start = 0;
+      for (let r = 0; r < radius; r++) {
+        const end = ids.length;
+        for (let i = start; i < end; i++) for (let k = 0; k < world2.graph.deg[ids[i]]; k++) {
+          const next = world2.graph.adj[ids[i] * 6 + k];
+          if (!seen.has(next)) {
+            seen.add(next);
+            ids.push(next);
+          }
+        }
+        start = end;
+      }
+    }
+    return {
+      center: position.center,
+      heading: position.heading,
+      ids,
+      offsets: projected ? offsets : null,
+      threshold,
+      horizon: horizon2,
+      cells: fingerprint(world2, ids, threshold, horizon2)
+    };
+  }
+  function recognizes(world2, position, saved) {
+    if (!saved) return false;
+    const samePose = position.center === saved.center && position.heading === saved.heading;
+    const ids = samePose ? saved.ids : saved.offsets && patchForStamp(world2, position.center, position.heading, saved.offsets);
+    if (!ids) return false;
+    const cells2 = fingerprint(world2, ids, saved.threshold, saved.horizon);
+    return cells2.every((value, i) => value === saved.cells[i]);
+  }
+  function relocate(world2, trial) {
+    const { player, spot, brain: brain2, action, distance, context, saved, rivalId } = trial;
+    if (!saved?.offsets || !world2.ownerCells[rivalId]?.length) return null;
+    const cells2 = world2.ownerCells[rivalId], graph = world2.graph;
+    const targets = /* @__PURE__ */ new Set([spot.target]);
+    for (const id of [...targets]) for (let k = 0; k < graph.deg[id]; k++) {
+      const neighbor = graph.adj[id * 6 + k];
+      targets.add(neighbor);
+      for (let d = 0; d < graph.deg[neighbor]; d++) targets.add(graph.adj[neighbor * 6 + d]);
+    }
+    for (let i = 0; i < 12; i++) targets.add(sampleFront(world2, cells2, brain2.random));
+    let checks = 0;
+    for (const target of targets) {
+      if (world2.owners[target] !== rivalId) continue;
+      for (let direction = 0; direction < graph.deg[target]; direction++) {
+        if (signature(world2, player.id, { kind: "rival", target, direction }) !== context) continue;
+        const pose = placement(world2, { target, direction }, action.stamp, action.turn, distance);
+        if (pose && recognizes(world2, pose, saved)) return pose;
+        if (++checks >= 4) return null;
+      }
+    }
+    return null;
+  }
+
+  // src/bots/brain/strategy.js
+  function randomStream(seed) {
+    let x = seed >>> 0 || 1;
+    return () => {
+      x ^= x << 13;
+      x ^= x >>> 17;
+      x ^= x << 5;
+      return (x >>> 0) / 4294967296;
+    };
+  }
+  function normalized(value, scale) {
+    return value / (Math.abs(value) + Math.max(1, scale));
+  }
+  function actionKey(kind, stamp, turn, gap) {
+    return kind === "rival" || kind === "own" ? stamp.id + "@" + turn + "/" + gap : stamp.id;
+  }
+  function sampleAction(catalog2, player, spot, context, memory, random, price) {
+    let best, highest = -Infinity;
+    for (let i = 0; i < 12; i++) {
+      const stamp = catalog2[Math.floor(random() * catalog2.length)];
+      if (!stamp || stamp.offsets.length * price > player.reserve + 1e-9) continue;
+      const turn = Math.floor(random() * 6);
+      const gap = 2 + Math.floor(random() * 3);
+      const key2 = actionKey(spot.kind, stamp, turn, gap);
+      const broad = memory.lookup(player.id, spot.kind, stamp.id);
+      const local = spot.kind === "empty" ? broad : memory.lookup(player.id, context, key2);
+      const observed = memory.lookup(player.id, "field/" + spot.kind, stamp.id);
+      const evidence = local.count ? local.mean : broad.mean * 0.65;
+      const priority = evidence + 0.22 * observed.mean + 0.32 / Math.sqrt(1 + broad.count) + random() * 0.5;
+      if (priority > highest) {
+        highest = priority;
+        best = { stamp, turn, gap, key: key2, experience: broad.count, learnedPose: local.count > 0 && local.mean > 0 };
+      }
+    }
+    return best;
+  }
+  function evaluateTrial(result, brain2, kind) {
+    const deferred = !result.boundary && result.turns >= 32 && result.rivalDeferredMid < 0 && result.rivalDeferredFlow <= result.rivalDeferredMid && result.rivalDeferredTrend <= 0;
+    const projectedRival = result.rivalFlow + (deferred ? result.rivalDeferredFlow + Math.min(128, 2 * result.turns) * result.rivalDeferredTrend : 0);
+    const rivalEffect = result.rivalCash < -1e-7 || projectedRival < -1e-7;
+    const horizon2 = result.boundary || result.ownUnfunded ? 0 : kind === "rival" ? Math.min(deferred ? 12e4 : 12e3, brain2.payback) : brain2.payback;
+    const value = result.ownCash - brain2.rivalWeight * result.rivalCash + horizon2 * (result.ownFlow - brain2.rivalWeight * projectedRival);
+    const acceptable = value > 1e-8 && !result.ownUnfunded && (kind !== "rival" || rivalEffect);
+    return { value, acceptable, deferred };
+  }
+  function createThinkingStrategy(world2, game2, commitStamp2, options = {}) {
+    const catalog2 = stampCatalog(game2.gameplay.patterns).filter((p) => p.radius + 3 <= 20);
+    const kit = catalog2.filter((p) => Object.hasOwn(game2.gameplay.kit, p.id));
+    const byId = new Map(catalog2.map((stamp) => [stamp.id, stamp]));
+    const single = catalog2.find((s) => s.offsets.length === 1) ?? { id: "manual/single", offsets: [[0, 0]], radius: 0 };
+    const minimum = Math.min(...catalog2.map((s) => s.offsets.length));
+    const memory = game2.brainMemory;
+    let screen = createSeedScreen(world2.physics);
+    const seed = options.seed ?? 1;
+    const brains = game2.players.map((p) => {
+      const random = randomStream(seed ^ Math.imul(p.id, 2654435769));
+      return {
+        random,
+        payback: 12e4 + random() * 24e4,
+        rivalWeight: 0.45 + random(),
+        ready: null,
+        field: [],
+        recover: false,
+        surveyed: /* @__PURE__ */ new Set(),
+        rejected: /* @__PURE__ */ new Map(),
+        pilotSpent: 0,
+        pilotAt: -Infinity
+      };
+    });
+    const metrics = {
+      trials: 0,
+      completed: 0,
+      studies: 0,
+      screenVisits: 0,
+      inheritedProbes: 0,
+      investments: 0,
+      rescues: 0,
+      work: 0,
+      visits: 0,
+      actions: 0,
+      waits: 0,
+      invalidated: 0,
+      boundary: 0,
+      tactical: 0,
+      deferred: 0,
+      relocations: 0,
+      pilots: 0,
+      observed: 0,
+      byBot: Object.fromEntries(game2.players.map((p) => [
+        p.id,
+        { trials: 0, completed: 0, actions: 0, observed: 0, patterns: /* @__PURE__ */ Object.create(null) }
+      ]))
+    };
+    const capacity = 8192;
+    let credits = capacity, last = world2.gen - 1, earliest = 0, cursor = 1, pending2, survey;
+    function affordable(stamp, player) {
+      return stamp.offsets.length * game2.economy.stampCost <= player.reserve + 1e-9;
+    }
+    function realizedFlow(stamp, player) {
+      const mature = memory.lookup(player.id, "yield/mature", stamp.id);
+      const births = memory.lookup(player.id, "yield/births", stamp.id);
+      return mature.count && births.count ? marginalSeedFlow(births.mean, mature.mean, player, game2.economy) : null;
+    }
+    function selectInvestment(player, brain2) {
+      let best, highest = 0;
+      const consider = (stamp) => {
+        if (!affordable(stamp, player) || (brain2.rejected.get(stamp) ?? 0) > world2.gen) return;
+        const measure2 = screen.result(stamp);
+        const flow = realizedFlow(stamp, player) ?? expectedSeedFlow(measure2, player, game2.economy);
+        const cost = stamp.offsets.length * game2.economy.stampCost;
+        const rate = flow / Math.max(1, cost);
+        if (rate > Math.max(highest, 1 / brain2.payback)) {
+          best = stamp;
+          highest = rate;
+        }
+      };
+      for (const stamp of kit) if (screen.result(stamp)) consider(stamp);
+      for (const stamp of brain2.surveyed) if (!Object.hasOwn(game2.gameplay.kit, stamp.id)) consider(stamp);
+      if (best) return { stamp: best, investment: true };
+      if (!brain2.prior) {
+        const evidence = [
+          ...memory.ranked(player.id, "yield/empty", 16),
+          ...memory.ranked(player.id, "field/empty", 16),
+          ...memory.ranked(player.id, "empty").filter((row) => row.mean > 0)
+        ];
+        brain2.prior = [...new Set(evidence.map((row) => byId.get(row.action)).filter(Boolean))];
+      }
+      const unseen = (stamp) => !brain2.surveyed.has(stamp) && affordable(stamp, player);
+      let next = brain2.prior.find(unseen);
+      if (next) metrics.inheritedProbes++;
+      else {
+        let choices = kit.filter(unseen);
+        if (!choices.length && (player.stamps || !kit.length)) choices = catalog2.filter(unseen);
+        if (choices.length) next = choices[Math.floor(brain2.random() * choices.length)];
+      }
+      if (next) {
+        survey = { brain: brain2, stamp: next };
+        return null;
+      }
+      return { investment: false };
+    }
+    function propose(player, vacuumOpening = false) {
+      const brain2 = brains[player.id - 1];
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const recovery = brain2.recover && player.flowAverage < 0;
+        const restart = !world2.ownerCells[player.id].length && player.reserve + 1e-9 < minimum * game2.economy.stampCost;
+        const economic = !vacuumOpening && !world2.physics.birthsFromVacuum && (!player.stamps || recovery || brain2.random() < 0.44);
+        const pick = restart ? { stamp: single, investment: true } : economic ? selectInvestment(player, brain2) : { investment: false };
+        if (!pick) return null;
+        const spot = pick.investment || recovery ? {
+          kind: "empty",
+          target: player.seed,
+          direction: Math.floor(brain2.random() * 6)
+        } : selectSpot(world2, game2, player, brain2.random);
+        const context = signature(world2, player.id, spot);
+        const price = game2.economy.stampCost;
+        let pool = vacuumOpening ? catalog2.filter((p) => p.radius <= 2) : kit.length && brain2.random() < 0.55 ? kit : catalog2;
+        if (spot.kind === "rival" && brain2.random() < 0.35) {
+          const mobile = kit.filter((stamp2) => {
+            const drift = screen.result(stamp2)?.drift;
+            return drift && Math.max(Math.abs(drift[0]), Math.abs(drift[1]), Math.abs(drift[0] + drift[1])) >= 1.5;
+          });
+          if (mobile.length) pool = mobile;
+        }
+        const action = pick.stamp ? {
+          stamp: pick.stamp,
+          turn: Math.floor(brain2.random() * 6),
+          gap: 3,
+          key: pick.stamp.id,
+          experience: memory.lookup(player.id, "empty", pick.stamp.id).count
+        } : sampleAction(pool.length ? pool : catalog2, player, spot, context, memory, brain2.random, price);
+        if (!action) continue;
+        const { stamp } = action;
+        if (spot.kind === "rival" && !action.learnedPose && brain2.random() < 0.8) {
+          action.turn = aimAtTarget(screen.result(stamp), action.turn);
+          action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
+        }
+        const { turn } = action;
+        let distance = stamp.radius + action.gap;
+        if (pick.investment && player.stamps || recovery) distance = 16 + Math.floor(brain2.random() * 28);
+        else if (spot.kind === "empty") distance = player.stamps ? 4 + Math.floor(brain2.random() * 14) : Math.floor(brain2.random() * 9);
+        const position = placement(world2, spot, stamp, turn, distance);
+        if (!position) continue;
+        const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, stamp.radius + (pick.investment ? 9 : 5), spot.kind === "empty" ? 0 : distance + 3));
+        const horizon2 = vacuumOpening ? 2 : options.horizon ?? (pick.investment ? 18 : spot.kind === "rival" ? 64 : 24);
+        const measure2 = pick.investment && screen.result(stamp);
+        const halo = measure2 ? Math.max(3, measure2.reach + 2) : 0;
+        const proofCost = 1 + 3 * halo * (halo + 1) + (measure2 ? 2 * measure2.turns : 0);
+        let cached;
+        if (measure2 && halo <= 20 && !options.horizon) {
+          if (credits < proofCost) {
+            earliest = world2.gen + 1;
+            return null;
+          }
+          credits -= proofCost;
+          metrics.visits += proofCost;
+          if (emptyHexPatch(world2, position, halo)) cached = quoteEmptySeed(measure2, player, game2.economy);
+        }
+        const job = cached ? null : beginLocalTrial(world2, game2, player.id, position.center, position.ids, { radius, horizon: horizon2 });
+        if (!cached && !job) continue;
+        metrics.trials++;
+        metrics.byBot[player.id].trials++;
+        const site = { kind: "site", target: position.center, direction: turn };
+        const saved = spot.kind === "rival" ? witness(world2, position, radius, game2.economy.stableAfter, horizon2) : null;
+        return {
+          player,
+          brain: brain2,
+          recovery,
+          investment: pick.investment,
+          spot,
+          context,
+          action,
+          position,
+          distance,
+          site,
+          saved,
+          rivalId: world2.owners[spot.target],
+          before: signature(world2, player.id, site),
+          job,
+          cached
+        };
+      }
+      return null;
+    }
+    function finish(trial, result) {
+      const { player, brain: brain2, spot, context, action } = trial;
+      const { value, acceptable, deferred } = evaluateTrial(result, brain2, spot.kind);
+      const scale = Math.max(result.cost, game2.economy.stampCost, 1);
+      const utility = normalized(value, scale);
+      memory.observe(player.id, spot.kind, action.stamp.id, utility);
+      if (spot.kind !== "empty") memory.observe(player.id, context, action.key, utility);
+      metrics.completed++;
+      metrics.byBot[player.id].completed++;
+      if (result.boundary) metrics.boundary++;
+      const immature = result.turns < game2.economy.stableAfter;
+      const studyDuration = Math.max(128, game2.economy.stableAfter + 64);
+      const operatingRisk = Math.max(0, -result.ownFlow) * studyDuration;
+      const expanding = result.ownCore > 0 && result.ownCells > result.added * 1.2;
+      const riskFraction = expanding ? 0.55 : 0.2;
+      const pilot = !acceptable && spot.kind === "empty" && !brain2.field.length && !result.ownUnfunded && result.ownCore > 0 && (immature || expanding && result.boundary) && (!action.experience || !player.stamps && expanding) && world2.gen - brain2.pilotAt > studyDuration && brain2.pilotSpent + result.cost + operatingRisk <= Math.min(game2.init, player.reserve) * riskFraction;
+      const ownFuture = result.ownFlow + result.ownDeferredFlow + (expanding ? Math.max(0, result.ownDeferredTrend) * Math.min(512, 2 * game2.economy.stableAfter) : 0);
+      const measured = spot.kind === "empty" ? realizedFlow(action.stamp, player) : null;
+      const fundedYield = measured !== null && result.ownCore > 0 && result.ownCells >= result.added ? measured : ownFuture;
+      const unprofitable = measured !== null && measured * brain2.payback <= result.cost + operatingRisk;
+      const investment = trial.investment && !result.boundary && !result.ownUnfunded && fundedYield > 0 && fundedYield * brain2.payback > result.cost + operatingRisk && result.cost + operatingRisk <= player.reserve;
+      if (!investment && trial.investment && !acceptable && !result.boundary) brain2.rejected.set(action.stamp, world2.gen + 256);
+      if (!unprofitable && (acceptable || investment || pilot)) {
+        const ready = {
+          ...trial,
+          job: null,
+          pilot,
+          investment,
+          rescue: investment && trial.recovery,
+          result,
+          deferred,
+          expiry: world2.gen + Math.max(game2.interval * 2, 48)
+        };
+        brain2.ready = ready;
+      } else metrics.waits++;
+    }
+    function observeField(player, brain2) {
+      for (let i = brain2.field.length - 1; i >= 0; i--) {
+        const field = brain2.field[i];
+        if (world2.gen < field.due) continue;
+        const elapsed = world2.gen - field.from;
+        const excess = (p, start) => p.reserve + p.stampedEnergy - start.wealth - elapsed * start.flow;
+        const rival = game2.players[field.rivalId - 1];
+        const rivalReturn = rival ? excess(rival, field.rival) : 0;
+        const relative = excess(player, field.own) - field.cost - brain2.rivalWeight * rivalReturn;
+        memory.observe(player.id, "field/" + field.kind, field.stamp, normalized(relative, field.cost));
+        metrics.observed++;
+        metrics.byBot[player.id].observed++;
+        if (field.kind === "empty") {
+          const marginalFlow = excess(player, field.own) / elapsed;
+          const scale = Math.max(1e-4, field.cost / brain2.payback);
+          if (player.stamps === field.stamps) memory.observe(player.id, "yield/empty", field.stamp, normalized(marginalFlow, scale));
+          const copies = metrics.byBot[player.id].patterns[field.stamp];
+          if (field.late && copies === player.stamps && copies > 0 && elapsed > game2.economy.stableAfter) {
+            memory.observe(player.id, "yield/mature", field.stamp, player.stable / copies);
+            memory.observe(player.id, "yield/births", field.stamp, player.totalBirths / (copies * Math.max(1, world2.gen - brain2.firstStamp)));
+          }
+          if (player.flowAverage < 0 && marginalFlow < 0) brain2.recover = true;
+        }
+        if (field.late) {
+          brain2.field.splice(i, 1);
+        } else {
+          field.late = true;
+          field.due = world2.gen + Math.max(4096, 4 * game2.economy.stableAfter);
+        }
+      }
+    }
+    function think() {
+      const budget = options.budget ?? 96 * (game2.brainRate ?? 1);
+      if (world2.gen <= last) return;
+      credits = Math.min(capacity, credits + (world2.gen - last) * budget);
+      last = world2.gen;
+      if (world2.gen === 0 && world2.physics.birthsFromVacuum) {
+        for (const player of game2.players.slice(1)) {
+          const trial = propose(player, true);
+          if (!trial) continue;
+          const result2 = trial.job.step(2);
+          const visits = 2 * trial.job.nodes * trial.job.generations;
+          credits -= visits;
+          metrics.visits += visits;
+          metrics.work += trial.job.work;
+          finish(trial, result2);
+        }
+        return;
+      }
+      if (survey) {
+        const { brain: brain2, stamp } = survey;
+        const step2 = screen.run(stamp, game2.economy.stableAfter, Math.min(2400, credits));
+        metrics.visits += step2.visits;
+        metrics.screenVisits += step2.visits;
+        credits -= step2.visits;
+        if (step2.done) {
+          brain2.surveyed.add(stamp);
+          metrics.studies++;
+          survey = null;
+        }
+        return;
+      }
+      if (world2.gen < earliest) return;
+      if (!pending2) {
+        let player = game2.players[cursor];
+        const starters = game2.players.slice(1).some((p) => !p.out && !p.stamps && p.reserve >= game2.economy.stampCost && metrics.byBot[p.id].trials < 12 && !brains[p.id - 1].ready);
+        if (starters && metrics.completed % 4 !== 3) {
+          for (let i = 0; i < game2.players.length - 1; i++) {
+            if (!player.out && !player.stamps && !brains[player.id - 1].ready && metrics.byBot[player.id].trials < 12 && player.reserve >= game2.economy.stampCost) break;
+            cursor = cursor % (game2.players.length - 1) + 1;
+            player = game2.players[cursor];
+          }
+        }
+        cursor = cursor % (game2.players.length - 1) + 1;
+        earliest = world2.gen + (options.spacing ?? 4);
+        if (player.out || player.reserve + 1e-9 < game2.economy.stampCost || brains[player.id - 1].ready) return;
+        pending2 = propose(player);
+        if (!pending2) return;
+        if (pending2.cached) {
+          finish(pending2, pending2.cached);
+          pending2 = null;
+          return;
+        }
+      }
+      const { job } = pending2;
+      const pair = 2 * job.nodes;
+      const slice = Math.min(4, Math.floor(credits / pair), Math.max(1, Math.floor(2300 / pair)));
+      if (slice < 1) return;
+      const before = job.generations, oldWork = job.work;
+      const result = job.step(slice);
+      metrics.visits += (job.generations - before) * pair;
+      credits -= (job.generations - before) * pair;
+      metrics.work += job.work - oldWork;
+      if (result) {
+        finish(pending2, result);
+        pending2 = null;
+      }
+    }
+    function strategy(player) {
+      const brain2 = brains[player.id - 1];
+      observeField(player, brain2);
+      const ready = brain2.ready;
+      if (!ready) return;
+      const { spot, site, context, before, position, result, action, pilot, expiry } = ready;
+      if (world2.gen > expiry || player.out) {
+        brain2.ready = null;
+        metrics.invalidated++;
+        return;
+      }
+      let place = position;
+      const same = signature(world2, player.id, spot) === context && signature(world2, player.id, site) === before;
+      if (spot.kind === "rival") {
+        if (!same || !recognizes(world2, position, ready.saved)) {
+          if (world2.gen < (ready.retryAt ?? 0)) return;
+          ready.retryAt = world2.gen + 24;
+          place = relocate(world2, ready);
+          if (!place) return;
+        }
+      } else if (!same) return;
+      brain2.ready = null;
+      if (!commitStamp2(player.id, place.ids, false)) {
+        metrics.invalidated++;
+        return;
+      }
+      metrics.actions++;
+      brain2.firstStamp ?? (brain2.firstStamp = world2.gen);
+      if (place !== position) metrics.relocations++;
+      if (spot.kind === "rival") {
+        metrics.tactical++;
+        if (ready.deferred) metrics.deferred++;
+      }
+      const stats = metrics.byBot[player.id];
+      stats.actions++;
+      stats.patterns[action.stamp.id] = (stats.patterns[action.stamp.id] || 0) + 1;
+      if (ready.investment) metrics.investments++;
+      if (ready.rescue) metrics.rescues++;
+      if (pilot) {
+        metrics.pilots++;
+        brain2.pilotAt = world2.gen;
+        brain2.pilotSpent += result.cost;
+      }
+      if (brain2.field.length < 3) {
+        const baseline = (p) => ({ flow: p.flowAverage, wealth: p.reserve + p.stampedEnergy });
+        const rival = spot.kind === "rival" ? game2.players[ready.rivalId - 1] : null;
+        brain2.field.push({
+          stamp: action.stamp.id,
+          stamps: player.stamps,
+          kind: spot.kind,
+          from: world2.gen,
+          due: world2.gen + Math.min(8192, Math.max(128, game2.economy.stableAfter + 64)),
+          cost: result.cost,
+          own: baseline(player),
+          rivalId: rival?.id,
+          rival: rival && baseline(rival)
+        });
+      }
+    }
+    strategy.think = think;
+    strategy.metrics = metrics;
+    strategy.invalidate = () => {
+      pending2 = null;
+      survey = null;
+      screen = createSeedScreen(world2.physics);
+      for (const brain2 of brains) {
+        brain2.ready = null;
+        brain2.field = [];
+        brain2.recover = false;
+        brain2.prior = null;
+        brain2.surveyed.clear();
+        brain2.rejected.clear();
+      }
+    };
+    return strategy;
+  }
+
+  // src/bots/turns.js
+  function runBotTurns(world2, game2, defaultStrategy, strategies) {
+    if (game2.ended || !game2.players.length || world2.gen !== 1 && world2.gen % game2.interval !== 0) return;
+    for (let index = 1; index < 6; index++) {
+      const player = game2.players[index];
+      if (!player.out) (strategies.get(player.id) ?? defaultStrategy)(player);
+    }
+  }
+
+  // src/match/spawns.js
+  function sphereSpawns(g) {
+    const n = g.n, c = g.coords, cut = Math.max(8, Math.floor(g.f * 0.12)), picks = [g.farthest], separation = new Float64Array(n);
+    for (let k = 1; k < 6; k++) {
+      const anchor = 3 * picks[k - 1], x = c[anchor], y = c[anchor + 1], z = c[anchor + 2];
+      let best = -1, score = -Infinity;
+      for (let id = 0, j = 0; id < n; id++, j += 3) {
+        const distance = g.distance[id];
+        if (distance < cut) continue;
+        const d = 1 - (c[j] * x + c[j + 1] * y + c[j + 2] * z);
+        const min = k === 1 || d < separation[id] ? d : separation[id];
+        separation[id] = min;
+        const value = min + distance * 2e-6;
+        if (value > score) {
+          score = value;
+          best = id;
+        }
+      }
+      if (best < 0) throw Error("Não foi possível distribuir seis jogadores na esfera");
+      picks.push(best);
+    }
+    return picks;
+  }
+
+  // src/bots/spiral.js
+  function botSpiralPlan(g, seed) {
+    const seen = new Uint8Array(Math.ceil(g.n / 8));
+    seen[seed >>> 3] |= 1 << (seed & 7);
+    return {
+      seen,
+      base: basis(pointOnSphere(g, seed)),
+      ring: [seed],
+      radius: 0,
+      order: [],
+      index: 0
+    };
+  }
+  function nextBotAnchor(g, plan) {
+    const v = g.coords;
+    while (plan.index >= plan.order.length) {
+      if (!plan.ring.length) return -1;
+      const next = [], order = [], r = plan.radius;
+      for (const id of plan.ring) {
+        if (g.deg[id] === 6 && g.distance[id] >= 3) {
+          const i = id * 3, x = v[i], y = v[i + 1], z = v[i + 2], { right, up } = plan.base;
+          const angle = mod(
+            Math.atan2(
+              x * up[0] + y * up[1] + z * up[2],
+              x * right[0] + y * right[1] + z * right[2]
+            ) - r * 0.23,
+            Math.PI * 2
+          );
+          order.push({ id, angle });
+        }
+        for (let k = 0; k < g.deg[id]; k++) {
+          const n = g.adj[id * 6 + k], slot = n >>> 3, bit = 1 << (n & 7);
+          if (plan.seen[slot] & bit) continue;
+          plan.seen[slot] |= bit;
+          next.push(n);
+        }
+      }
+      order.sort((x, y) => x.angle - y.angle || x.id - y.id);
+      plan.ring = next;
+      plan.radius = r + 1;
+      plan.order = order;
+      plan.index = 0;
+    }
+    return plan.order[plan.index++].id;
+  }
+
+  // src/match/players.js
+  function resetPlayers(world2, game2) {
+    game2.humanHistory = {
+      births: 0,
+      deaths: 0,
+      placed: 0,
+      peak: null,
+      largest: null,
+      eliminated: null
+    };
+    const g = world2.graph, seedIds = g.spawnIds || (g.spawnIds = sphereSpawns(g));
+    game2.players = Array.from({ length: 6 }, (_, i) => ({
+      id: i + 1,
+      name: game2.names[i + 1],
+      symbol: game2.symbols[i + 1],
+      seed: seedIds[i],
+      reserve: game2.init,
+      stable: 0,
+      totalBirths: 0,
+      totalDeaths: 0,
+      lastBirths: 0,
+      lastDeaths: 0,
+      lastIncome: 0,
+      lastUpkeep: 0,
+      lastEroded: 0,
+      flowAverage: 0,
+      stamps: 0,
+      stampedEnergy: 0,
+      out: false,
+      debtCarry: 0,
+      tributeReceived: 0,
+      tributePaid: 0,
+      received: 0,
+      paid: 0,
+      eroded: 0,
+      lastFlow: 0,
+      pattern: i === 0 ? "manual" : game2.bots[i - 1]
+    }));
+    game2.recentBirthSites = game2.botMode === "learn" ? Array.from({ length: 7 }, () => new Int32Array(8).fill(-1)) : null;
+    world2.cellAges = new Uint8Array(world2.graph.n);
+    game2.botPlans = game2.players.map((p) => p.id === 1 ? null : botSpiralPlan(world2.graph, p.seed));
+    game2.botReserved = new Uint8Array(world2.graph.n);
+  }
+
   // src/match/biomass.js
   function randomIndex(game2, length) {
     let x = game2.rngState >>> 0;
@@ -1703,7 +3058,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         ages[id] = age;
       } else {
         ages[id] = 1;
-        if (owner >= 1 && owner <= 6) newborn[owner]++;
+        if (owner >= 1 && owner <= 6) {
+          const sites = game2.recentBirthSites?.[owner];
+          if (sites) sites[newborn[owner] % sites.length] = id;
+          newborn[owner]++;
+        }
       }
     }
     for (const p of game2.players) {
@@ -1746,7 +3105,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (const p of game2.players) {
       if (p.out) continue;
       p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
-      if (p.reserve <= 0 && world2.ownerCells[p.id].length === 0) p.out = true;
+      if (!world2.ownerCells[p.id].length && availableCells(p.reserve, e) < 1) p.out = true;
     }
     const alive = game2.players.filter((p) => !p.out);
     game2.average = alive.length ? alive.reduce((sum, p) => sum + world2.ownerCells[p.id].length, 0) / alive.length : 0;
@@ -1764,13 +3123,23 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/match/engine.js
-  function createMatchEngine(world2, game2, effects2 = {}, strategies = /* @__PURE__ */ new Map()) {
+  function createMatchEngine(world2, game2, effects2 = {}, strategies = /* @__PURE__ */ new Map(), brain2 = {}) {
     const population2 = createPopulation(world2, effects2);
     const stamps = createStampCommands(world2, game2, population2.addLive, effects2);
-    let strategy;
+    let strategy, archive;
     const finish = (alive) => finishIfDecided(game2, alive, effects2);
     function playBots() {
-      strategy ?? (strategy = game2.gameplay.createStrategy(world2, game2, stamps.commitStamp));
+      if (!strategy) {
+        if (game2.botMode === "learn") {
+          archive ?? (archive = brain2.archive ?? createBrainArchive());
+          game2.brainMemory ?? (game2.brainMemory = archive.open(brainNamespace(world2, game2)));
+          strategy = createThinkingStrategy(world2, game2, stamps.commitStamp, brain2);
+          game2.brainMetrics = strategy.metrics;
+        } else {
+          strategy = game2.gameplay.createStrategy(world2, game2, stamps.commitStamp);
+        }
+      }
+      strategy.think?.();
       runBotTurns(world2, game2, strategy, strategies);
     }
     function nextTick2() {
@@ -1798,15 +3167,25 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           reserveBefore
         );
       }
-      if (game2.ended) effects2.showResults?.();
-      else if (!openBeforeBirths) playBots();
+      if (game2.ended) {
+        game2.brainMemory?.finish();
+        effects2.showResults?.();
+      } else if (!openBeforeBirths) playBots();
     }
     return {
       ...population2,
       ...stamps,
       nextTick: nextTick2,
       patchForStamp: (...args) => patchForStamp(world2, ...args),
+      invalidateBrain() {
+        if (!game2.brainMemory || game2.ended) return;
+        game2.brainMemory.select(brainNamespace(world2, game2));
+        strategy?.invalidate();
+      },
       resetPlayers() {
+        game2.brainMemory?.finish();
+        game2.brainMemory = null;
+        game2.brainMetrics = null;
         strategy = void 0;
         resetPlayers(world2, game2);
       }
@@ -1871,24 +3250,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   var BAYS = compileTotalistic("B2/S35");
 
-  // src/patterns/rle.js
-  function decodeRLE(str) {
-    const out = [], re = /(\d*)([ob$!])/g;
-    let r = 0, c = 0, m;
-    while ((m = re.exec(str)) !== null) {
-      const n = Number(m[1] || 1);
-      if (m[2] === "o") {
-        for (let i = 0; i < n; i++) out.push([c + i - r, r]);
-        c += n;
-      } else if (m[2] === "b") c += n;
-      else if (m[2] === "$") {
-        r += n;
-        c = 0;
-      } else break;
-    }
-    return out;
-  }
-
   // src/match/founding.js
   function plantFounder(world2, game2, player, commitStamp2) {
     if (player.stamps || player.out) return false;
@@ -1906,81 +3267,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
     }
     return false;
-  }
-
-  // src/patterns/planar-simulation.js
-  var stride = 65536;
-  var adjacent = DIR.map(([q, r]) => q * stride + r);
-  function patternOffset(id) {
-    const q = Math.round(id / stride);
-    return [q, id - q * stride];
-  }
-  function seedPatternAges(pattern) {
-    return new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
-  }
-  var torusByFrame = /* @__PURE__ */ new WeakMap();
-  function makeTorus(ages) {
-    let reach = 0;
-    for (const id of ages.keys())
-      for (const coordinate of patternOffset(id)) reach = Math.max(reach, Math.abs(coordinate));
-    const side = Math.max(64, 2 * reach + 4);
-    const n = side * side, half = side / 2;
-    const graph = { n, adj: new Uint32Array(n * 6), deg: new Uint8Array(n).fill(6) };
-    const keys = new Float64Array(n);
-    for (let q = 0; q < side; q++) for (let r = 0; r < side; r++) {
-      const id = q * side + r;
-      keys[id] = (q - half) * stride + r - half;
-      for (let k = 0; k < 6; k++) {
-        const [dq, dr] = DIR[k];
-        graph.adj[id * 6 + k] = (q + dq + side) % side * side + (r + dr + side) % side;
-      }
-    }
-    return { graph, keys, cells: new Uint8Array(n), owners: new Uint8Array(n) };
-  }
-  function advanceTorus(ages, threshold, physics) {
-    const torus = torusByFrame.get(ages) ?? makeTorus(ages);
-    const { keys, cells: cells2, owners } = torus;
-    for (let i = 0; i < keys.length; i++) {
-      const age = ages.get(keys[i]) || 0;
-      cells2[i] = Number(age !== 0);
-      owners[i] = age > 0 ? 1 : age < 0 ? 7 : 0;
-    }
-    const fate = evaluateCell({ ...torus, physics });
-    const next = /* @__PURE__ */ new Map();
-    let births = 0, mature = 0;
-    for (let i = 0; i < keys.length; i++) {
-      const owner = fate(i);
-      if (!owner) continue;
-      const id = keys[i], age = Math.abs(ages.get(id) || 0) + 1;
-      next.set(id, owner === 1 ? age : -age);
-      if (owner !== 1) continue;
-      if (age === 1) births++;
-      if (age >= threshold) mature++;
-    }
-    torusByFrame.set(next, torus);
-    return { next, births, mature };
-  }
-  function advancePattern(ages, threshold, physics) {
-    const [birth, survive] = physics.tables[6];
-    if (birth[0]) return advanceTorus(ages, threshold, physics);
-    const masks = /* @__PURE__ */ new Map();
-    for (const id of ages.keys()) {
-      if (survive[0] && !masks.has(id)) masks.set(id, 0);
-      for (let k = 0; k < adjacent.length; k++) {
-        const target = id - adjacent[k];
-        masks.set(target, (masks.get(target) || 0) | 1 << k);
-      }
-    }
-    const next = /* @__PURE__ */ new Map();
-    let births = 0, mature = 0;
-    for (const [id, mask] of masks) {
-      const age = ages.get(id) || 0;
-      if (!(age ? survive : birth)[mask]) continue;
-      next.set(id, age + 1);
-      if (age === 0) births++;
-      if (age + 1 >= threshold) mature++;
-    }
-    return { next, births, mature };
   }
 
   // src/bots/oscillator-footprint.js
@@ -2481,7 +3767,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/match/state.js
-  function createMatchState(world2, { rule, notation, economy } = {}) {
+  function createMatchState(world2, { rule, notation, economy, botMode = "profile" } = {}) {
     const game2 = {
       colors: [
         "#000000",
@@ -2506,6 +3792,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       symbols: ["", "🦖", "🦊", "🐙", "🦂", "👾", "🤖", "⚪"],
       names: ["", "Você", "Raposa", "Polvo", "Escorpião", "Alien", "Robô"],
       players: [],
+      botMode,
+      brainRate: 8,
       tax: 0,
       interval: 10,
       average: 0,
@@ -2524,7 +3812,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/browser/game.js
   var effects = {};
-  function attachMatchEffects(handlers) {
+  var brain = {
+    get seed() {
+      return crypto.getRandomValues(new Uint32Array(1))[0];
+    }
+  };
+  function attachMatchEffects(handlers, archive) {
+    brain.archive = archive;
     Object.assign(effects, handlers);
   }
   var game = createMatchState(world);
@@ -2536,8 +3830,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     clearCells,
     nextTick,
     patchForStamp: patchForStamp2,
+    invalidateBrain,
     resetPlayers: resetPlayers2
-  } = createMatchEngine(world, game, effects);
+  } = createMatchEngine(world, game, effects, void 0, brain);
 
   // src/layout/elements.js
   var $ = (id) => document.getElementById(id);
@@ -3780,7 +5075,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function atlasState() {
     const r = cv.getBoundingClientRect(), s = atlasCamera.scale, up = atlasUp(), g = world.graph;
     const w = r.width, h = r.height, dpr = cv.width / Math.max(w, 1), look = atlasCamera.look, right = atlasCamera.right;
-    const signature = [w, h, dpr, s, ...look, ...right, ...up, Number(world.showFaults)].join("|");
+    const signature2 = [w, h, dpr, s, ...look, ...right, ...up, Number(world.showFaults)].join("|");
     if ((!atlasLayer || atlasLayer.g !== g) && !g.polygons) {
       atlasLayer = { g, base: document.createElement("canvas"), version: 0 };
       atlasPick.id = world.center;
@@ -3811,8 +5106,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       atlasPick.id = world.center;
     }
     const a = atlasLayer;
-    if (a.signature === signature) return a;
-    a.signature = signature;
+    if (a.signature === signature2) return a;
+    a.signature = signature2;
     a.version++;
     a.w = w;
     a.h = h;
@@ -4208,12 +5503,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var slotIds = Object.keys(resolveRuleProfile().gameplay.kit);
   var SLOT_COUNT = slotIds.length;
   var selectedSlot = 0;
-  var scope = DEFAULT_RULE;
+  var scope2 = DEFAULT_RULE;
   var loadouts = /* @__PURE__ */ new Map();
   function useSlots(gameplay, key2) {
-    if (key2 === scope) return;
-    loadouts.set(scope, { ids: [...slotIds], selectedSlot });
-    scope = key2;
+    if (key2 === scope2) return;
+    loadouts.set(scope2, { ids: [...slotIds], selectedSlot });
+    scope2 = key2;
     const saved = loadouts.get(key2);
     slotIds.splice(0, slotIds.length, ...saved?.ids ?? Object.keys(gameplay.kit));
     SLOT_COUNT = slotIds.length;
@@ -5434,6 +6729,46 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world.needsGrid = false;
   }
 
+  // src/bots/configuration-panel.js
+  function updateBrainProgress() {
+    const status = $("br-brain-progress");
+    status.hidden = game.botMode !== "learn";
+    if (status.hidden || !status.closest("details").open) return;
+    const trials = game.brainMetrics?.completed ?? 0;
+    const actions = game.brainMetrics?.actions ?? 0;
+    const learned = game.brainMemory?.stats().priorSamples ?? 0;
+    status.textContent = trials + " testes · " + actions + " jogadas · " + learned + " experiências herdadas";
+  }
+  function bindBotSelectors() {
+    const bots = $("br-bots");
+    bots.replaceChildren();
+    updateBrainProgress();
+    bots.hidden = game.botMode === "learn";
+    $("br-brain-rate-label").hidden = !bots.hidden;
+    if (bots.hidden) return;
+    const { choices } = getBotPlans(game.gameplay, game.economy);
+    for (let id = 2; id <= 6; id++) {
+      const label = document.createElement("label");
+      label.className = "br-botlabel";
+      label.textContent = game.symbols[id] + " " + game.names[id];
+      const select = document.createElement("select");
+      select.id = "br-bot-" + id;
+      for (const [value, name] of choices) {
+        const o = document.createElement("option");
+        o.value = value;
+        o.textContent = name;
+        select.append(o);
+      }
+      select.value = game.bots[id - 2];
+      select.onchange = () => {
+        game.bots[id - 2] = select.value;
+        if (game.players[id - 1]) game.players[id - 1].pattern = select.value;
+      };
+      label.append(select);
+      bots.append(label);
+    }
+  }
+
   // src/patterns/cycle-economy.js
   function cycleWindow(pattern) {
     if (pattern.period > 0) return { length: pattern.period, kind: "period" };
@@ -5957,7 +7292,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const p = game.players[0], peak = h.peak, field = world.ownerCells[1].length;
     $("br-diag-peak").textContent = peak && peak.field > 0 ? `Desde o pico de ${fmt3(peak.field)} células na geração ${fmt3(peak.gen)}, seu campo chegou a ${fmt3(field)}. Carimbadas +${fmt3(h.placed - peak.placed)}, nascidas +${fmt3(h.births - peak.births)}, mortas pelo autômato −${fmt3(h.deaths - peak.deaths)}, removidas por dívida −${fmt3(p.eroded - peak.eroded)}. Reserva ${fmt3(peak.reserve)} → ${fmt3(p.reserve)}, com ${fmt3(p.received - peak.received)} recebidas, ${fmt3(p.paid - peak.paid)} pagas da reserva e ${fmt3(p.stampedEnergy - peak.stampedEnergy)} gastas em carimbos.` : "Aguardando o primeiro carimbo.";
     $("br-diag-largest").textContent = e ? `Maior queda em uma geração (${fmt3(e.gen)}). Campo ${fmt3(e.before)} → ${fmt3(e.after)}. Nasceram ${fmt3(e.births)}, o autômato matou ${fmt3(e.deaths)} e a dívida removeu ${fmt3(e.erosion)}. Reserva ${fmt3(e.reserveBefore)} → ${fmt3(e.reserve)}.` : "";
-    $("br-diag-end").textContent = h.eliminated !== null ? `Eliminação na geração ${fmt3(h.eliminated)}, com zero no campo e zero na reserva.` : p.reserve === 0 && field > 0 ? `Você continua em jogo com ${fmt3(field)} células em campo e reserva zero.` : "";
+    $("br-diag-end").textContent = h.eliminated !== null ? `Eliminação na geração ${fmt3(h.eliminated)}. O campo ficou vazio e a reserva não cobria uma célula.` : p.reserve === 0 && field > 0 ? `Você continua em jogo com ${fmt3(field)} células em campo e reserva zero.` : "";
   }
 
   // src/match/hud/slider-limits.js
@@ -6025,7 +7360,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       slider.addEventListener("input", () => {
         if (key2 === "initialCells" && !beforeMatch()) return;
         const value = parameterValue(slider.value, Number(slider.max), Number(slider.step));
-        game.economy[key2] = value;
+        if (value !== game.economy[key2]) {
+          game.economy[key2] = value;
+          invalidateBrain();
+        }
         $(id + "-val").textContent = compact(value);
         if (beforeMatch() && (key2 === "initialCells" || key2 === "stampCost")) {
           game.init = initialEnergy(game.economy);
@@ -6098,6 +7436,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     $("hl-step").disabled = game.ended;
     syncPregameControls();
     updateEnergyPanel();
+    updateBrainProgress();
     const status = $("br-gamestatus");
     status.textContent = game.winner ? "Vencedor: " + game.symbols[game.winner] + " " + game.names[game.winner] : game.ended ? "Empate · todos eliminados" : `${alive.length} em jogo`;
     const ranked = [...game.players].sort(
@@ -6905,33 +8244,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     toast("Seis jogadores · " + game.init + " de energia inicial cada.");
   }
 
-  // src/bots/configuration-panel.js
-  function bindBotSelectors() {
-    const { choices } = getBotPlans(game.gameplay, game.economy);
-    const bots = $("br-bots");
-    bots.replaceChildren();
-    for (let id = 2; id <= 6; id++) {
-      const label = document.createElement("label");
-      label.className = "br-botlabel";
-      label.textContent = game.symbols[id] + " " + game.names[id];
-      const select = document.createElement("select");
-      select.id = "br-bot-" + id;
-      for (const [value, name] of choices) {
-        const o = document.createElement("option");
-        o.value = value;
-        o.textContent = name;
-        select.append(o);
-      }
-      select.value = game.bots[id - 2];
-      select.onchange = () => {
-        game.bots[id - 2] = select.value;
-        if (game.players[id - 1]) game.players[id - 1].pattern = select.value;
-      };
-      label.append(select);
-      bots.append(label);
-    }
-  }
-
   // src/patterns/editor/tabs.js
   function bindPatternTabs() {
     const tab = $("br-tabs");
@@ -7011,6 +8323,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return true;
   }
   function bindRuleControls() {
+    const mode = $("br-bot-mode");
+    if (new URLSearchParams(location.search).get("bots") === "learn") game.botMode = "learn";
+    mode.value = game.botMode;
+    const rate = $("br-brain-rate");
+    rate.value = String(game.brainRate);
+    rate.onchange = () => {
+      game.brainRate = Number(rate.value);
+    };
+    mode.onchange = () => {
+      game.botMode = mode.value;
+      bindBotSelectors();
+      resetGame();
+    };
     const rule = $("hl-rulechoice");
     for (const [id, profile] of Object.entries(ruleProfiles)) rule.add(new Option(profile.label, id));
     rule.onchange = () => chooseRule(rule.value);
@@ -7409,7 +8734,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/start.js
-  attachMatchEffects(browserMatchEffects);
+  attachMatchEffects(browserMatchEffects, browserBrainArchive());
   newStamp(11, false);
   bindMapGestures();
   bindEditorGestures();

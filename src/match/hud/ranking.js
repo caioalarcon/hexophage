@@ -1,3 +1,4 @@
+import { updateBrainProgress } from '../../bots/configuration-panel.js';
 import { game } from '../../browser/game.js';
 import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
@@ -26,6 +27,7 @@ function updateGamePanel(force = false) {
   $('hl-step').disabled = game.ended;
   syncPregameControls();
   updateEnergyPanel();
+  updateBrainProgress();
   const status = $('br-gamestatus');
   status.textContent = game.winner
     ? 'Vencedor: ' + game.symbols[game.winner] + ' ' + game.names[game.winner]

@@ -39,6 +39,8 @@ export function resetPlayers(world, game) {
     lastFlow: 0,
     pattern: i === 0 ? 'manual' : game.bots[i - 1],
   }));
+  game.recentBirthSites = game.botMode === 'learn'
+    ? Array.from({ length: 7 }, () => new Int32Array(8).fill(-1)) : null;
   world.cellAges = new Uint8Array(world.graph.n);
   game.botPlans = game.players.map((p) => (p.id === 1 ? null : botSpiralPlan(world.graph, p.seed)));
   // Each bot owns a compact reservation mask for its established oscillators.

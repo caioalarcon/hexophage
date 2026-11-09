@@ -1,6 +1,6 @@
 import { applyRuleProfile, resolveRuleProfile } from './rule-profiles.js';
 
-export function createMatchState(world, { rule, notation, economy } = {}) {
+export function createMatchState(world, { rule, notation, economy, botMode = 'profile' } = {}) {
   const game = {
     colors: [
       '#000000',
@@ -25,6 +25,8 @@ export function createMatchState(world, { rule, notation, economy } = {}) {
     symbols: ['', '🦖', '🦊', '🐙', '🦂', '👾', '🤖', '⚪'],
     names: ['', 'Você', 'Raposa', 'Polvo', 'Escorpião', 'Alien', 'Robô'],
     players: [],
+    botMode,
+    brainRate: 8,
     tax: 0,
     interval: 10,
     average: 0,

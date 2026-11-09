@@ -20,7 +20,7 @@ function updateHumanReport(showDetails) {
     : '';
   $('br-diag-end').textContent =
     h.eliminated !== null
-      ? `Eliminação na geração ${fmt(h.eliminated)}, com zero no campo e zero na reserva.`
+      ? `Eliminação na geração ${fmt(h.eliminated)}. O campo ficou vazio e a reserva não cobria uma célula.`
       : p.reserve === 0 && field > 0
         ? `Você continua em jogo com ${fmt(field)} células em campo e reserva zero.`
         : '';
