@@ -33,7 +33,7 @@ function chooseTarget(match,other,pick){
 }
 
 export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((_,i)=>i+2),
-  onOrder,beforeOrder,cards=atlasCards,budget=4,horizon=16,lookahead=48,interval=12,phaseWindow=18,adaptive=true}={}){
+  onOrder,beforeOrder,onDecision,cards=atlasCards,budget=4,horizon=16,lookahead=48,interval=12,phaseWindow=18,adaptive=true,recoveryOwners=owners}={}){
   if(!Number.isSafeInteger(budget)||budget<0||!Number.isSafeInteger(horizon)||horizon<4||
      !Number.isSafeInteger(phaseWindow)||phaseWindow<0||!Number.isFinite(lookahead)||lookahead<0||
      !Number.isSafeInteger(interval)||interval<1)throw RangeError('Invalid bot timing.');
@@ -44,10 +44,10 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     if(!byRule.has(card.rule))byRule.set(card.rule,[]);
     byRule.get(card.rule).push(card);
   }
-  const families=[...byRule.keys()];
+  const families=[...byRule.keys()], recoverySeats=new Set(recoveryOwners);
   const captains=(families.length?owners:[]).map(owner=>({owner,pick:random(seed^Math.imul(owner,0x9e3779b9)),decision:0,
-    pricedAt:-Infinity,prices:null,family:owner%families.length,raidFamily:owner%families.length,raidIndex:0,ready:null,next:1,lastBuy:-Infinity,job:null,memory:new Map()}));
-  const stats=Array.from({length:match.players.length},()=>({orders:0,raids:0,trials:0,raidTrials:0,raidHolds:0,raidInvalid:0,delayed:0,holds:0,invalidated:0,
+    pricedAt:-Infinity,prices:null,recoverySeen:new Set(),family:owner%families.length,raidFamily:owner%families.length,raidIndex:0,ready:null,next:1,lastBuy:-Infinity,job:null,memory:new Map()}));
+  const stats=Array.from({length:match.players.length},()=>({orders:0,raids:0,trials:0,raidTrials:0,raidHolds:0,raidInvalid:0,rescueTrials:0,rescueOrders:0,delayed:0,holds:0,invalidated:0,
     first:null,last:null,studied:new Set(),bought:new Set(),expected:0,work:0}));
   function investment(bot,cards){
     const p=match.players[bot.owner];
@@ -70,7 +70,8 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     if(!rivals.length)return;
     bot.decision++;
     const raid=bot.decision%3===0, other=rivals[pick(rivals.length)];
-    let item,center,ids,rotation,resolver,ballot;
+    const rescue=!raid && recoverySeats.has(owner) && match.gen-Math.max(0,bot.lastBuy)>=96;
+    let item,center,ids,rotation,resolver,ballot,scoped;
     if(raid){
       const family=families[bot.raidFamily++%families.length];
       const ships=byRule.get(family).filter(c=>c.group==='nave'&&!c.custom && c.rule===c.source)
@@ -92,7 +93,7 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     } else {
       const family=families[bot.family++%families.length];
       let pool=bot.decision%4===1?ranked:byRule.get(family);
-      if(adaptive && stats[owner].orders && match.economy.stableEnergy>0){
+      if(rescue || adaptive && stats[owner].orders && match.economy.stableEnergy>0){
         if(match.gen-bot.pricedAt>=48){
           const p=match.players[owner];
           const priced=rankCards(cards,match.economy,{reserve:p.reserve,mature:p.mature});
@@ -102,12 +103,21 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
           bot.pricedAt=match.gen;
         }
         const preferred=bot.prices.filter(q=>q.card.rule===family && q.flow>0);
-        pool=bot.decision%4===1||!preferred.length&&bot.decision%7!==0?bot.prices.map(q=>q.card):
-          preferred.length?preferred.map(q=>q.card):pool;
+        if(rescue){
+          const profitable=bot.prices.filter(q=>q.flow>0 && q.cost<=match.players[owner].reserve);
+          const heads=new Map();
+          for(const q of profitable)if(!heads.has(q.card.rule))heads.set(q.card.rule,q);
+          const alternatives=[...heads.values(),...profitable];
+          item=alternatives.find(q=>!bot.recoverySeen.has(q.card.key))?.card;
+          if(!item){bot.recoverySeen.clear();item=alternatives[0]?.card;}
+        }else{
+          pool=bot.decision%4===1||!preferred.length&&bot.decision%7!==0?bot.prices.map(q=>q.card):
+            preferred.length?preferred.map(q=>q.card):pool;
+        }
       }
-      item=investment(bot,pool);
+      item??=investment(bot,pool);
       if(!item)return;
-      const fortify=!item.custom && stats[owner].orders>0 && bot.decision%4===0;
+      const fortify=!rescue&&!item.custom && stats[owner].orders>0 && bot.decision%4===0;
       resolver=fortify?'guard':item.resolver;ballot=item.custom?item.ballot:ballots[pick(ballots.length)];
       const home=fortify?chooseTarget(match,owner,pick):undefined;
       for(let i=0;i<8;i++){
@@ -118,17 +128,25 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
         }
         if(match.graph.deg[center]!==6)continue;
         ids=patchForStamp({graph:match.graph},center,rotation,item.offsets);
-        if(ids&&match.canStamp(owner,item.rule,resolver,ids,ballot,item.sense))break;
+        if(ids&&match.canStamp(owner,item.rule,resolver,ids,ballot,item.sense)){
+          if(!rescue)break;
+          const sites=disk(match.graph,center).sites;
+          let occupied=0;for(const v of sites)if(match.cells.has(v))occupied++;
+          if(!scoped || occupied<scoped.occupied)scoped={sites,occupied,center,ids,rotation};
+          if(!occupied)break;
+        }
         ids=null;
       }
+      if(scoped)({center,ids,rotation}=scoped);
     }
     if(!ids)return;
-    const {sites}=disk(match.graph,center);
+    const sites=scoped?.sites??disk(match.graph,center).sites;
     if(ids.some(site=>!sites.has(site)))return;
     const hold=match.fork(sites),play=hold.fork();
     if(!play.stamp(owner,item.rule,resolver,ids,ballot,item.sense))return;
+    if(rescue){bot.recoverySeen.add(item.key);stats[owner].rescueTrials++;}
     const turns=raid?Math.max(18,horizon):horizon;
-    bot.job={hold,play,turns,owner,other,center,ids,rotation,resolver,ballot,item,raid,t:0,pose:raid?targetPose(match,center):null};
+    bot.job={hold,play,turns,owner,other,center,ids,rotation,resolver,ballot,item,raid,rescue,t:0,pose:raid?targetPose(match,center):null};
     stats[owner].studied.add(item.rule);stats[owner].trials++;stats[owner].raidTrials+=Number(raid);
   }
   function advance(bot){
@@ -148,10 +166,13 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     const cost=j.ids.length*match.stampPrice(j.resolver);
     const confidence=Math.max(-1,Math.min(1,pay/Math.max(1,cost)));
     bot.memory.set(item.key,.5*(bot.memory.get(item.key)??0)+.5*confidence);
-    if(own.out || !own.conventional || own.refused>hold.players[owner].refused ||
-       pay<=1e-8 || (raid && harm<=1e-8)){stat.holds++;stat.raidHolds+=Number(raid);return;}
+    const rejection=own.out||!own.conventional?'extinction':own.refused>hold.players[owner].refused?'unfunded':
+      pay<=1e-8?'return':raid&&harm<=1e-8?'target':null;
+    onDecision?.({gen:match.gen,owner,key:item.key,ids:j.ids,role:raid?'raid':'farm',pay,cost,flow:flow(owner),
+      modeledCash:gain(owner),rejection});
+    if(rejection){stat.holds++;stat.raidHolds+=Number(raid);return;}
     bot.ready={owner,gen:match.gen,key:item.key,rule:item.rule,resolver:j.resolver,ballot:j.ballot,sense:item.sense,
-      ids:j.ids,site:j.center,rotation:j.rotation,target:raid?other:0,role:raid?'raid':'farm',expected:pay,pose:j.pose};
+      ids:j.ids,site:j.center,rotation:j.rotation,target:raid?other:0,role:raid?'raid':'farm',expected:pay,recovery:j.rescue,pose:j.pose};
     execute(bot);
   }
   function execute(bot){
@@ -167,7 +188,7 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     }
     beforeOrder?.(o);
     if(!match.stamp(o.owner,o.rule,o.resolver,o.ids,o.ballot,o.sense))return;
-    bot.lastBuy=match.gen;stat.first??=match.gen;stat.last=match.gen;
+    bot.lastBuy=match.gen;bot.recoverySeen.clear();stat.rescueOrders+=Number(o.recovery);stat.first??=match.gen;stat.last=match.gen;
     stat.delayed+=Number(match.gen>o.gen);o.gen=match.gen;
     stat.orders++;stat.raids+=Number(raid);stat.bought.add(o.rule);stat.expected+=o.expected;
     onOrder?.(o);

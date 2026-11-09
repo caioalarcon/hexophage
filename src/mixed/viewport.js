@@ -45,6 +45,7 @@ export function syncField(match){
 
 export function loadViewport(session,storage){
   newWorld(session.graph.f,session.graph,storage);
+  world.rule='mixed';world.physics=null;
   syncField(session.match);
   centerOnPlayer(session.starts[1]);
 }

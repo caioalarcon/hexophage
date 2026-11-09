@@ -8,7 +8,7 @@ import {stampTargets} from '../patterns/placement/footprint.js';
 import {usePlacement} from '../patterns/placement/plant.js';
 import {requestSphere,cancelBuild} from '../world/build-dialog.js';
 import {setPlay,syncPlayButton} from '../match/controls/playback.js';
-import {createGameMatch,defaultGameOptions} from '../../experiments/typed-world/game/match.mjs';
+import {createGameMatch,defaultGameOptions,gameEconomies} from '../../experiments/typed-world/game/match.mjs';
 import {createGameBots} from '../../experiments/typed-world/game/bots.mjs';
 import {createGameAtlas} from '../../experiments/typed-world/game/atlas.mjs';
 import {resolverNames} from '../../experiments/typed-world/catalog.mjs';
@@ -85,7 +85,11 @@ export function startMixedGame(){
     if(atlas)atlas.refresh();dirty=true;hud();
     toast('Partida pronta · '+(options.players-1)+' bots');
   }
-  bindMixedViewport();reset({...defaultGameOptions,botInterval:12,botBudget:4});
+  const query=new URLSearchParams(location.search),requestedSeed=query.get('seed');
+  const initial={...defaultGameOptions,botInterval:12,botBudget:4};
+  if(Object.hasOwn(gameEconomies,query.get('economy')))initial.policy=query.get('economy');
+  if(requestedSeed!==null && /^\d{1,10}$/.test(requestedSeed) && Number(requestedSeed)<=0xffffffff)initial.seed=Number(requestedSeed);
+  bindMixedViewport();reset(initial);
   atlas=createGameAtlas({host:$('mx-atlas-host'),getWallet:()=>session.match.players[1],getEconomy:()=>session.match.economy,onSelect:hand.choose,onDeck:hand.fill});
   $('mx-atlas').onclick=()=>atlas.open(hand.selected);
   $('br-build-cancel').onclick=cancelBuild;

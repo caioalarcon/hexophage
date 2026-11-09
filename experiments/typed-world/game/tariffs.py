@@ -13,7 +13,7 @@ BASE=(12,1,8,1)
 
 def run(job):
     split,rates=job
-    args=['node',str(HERE/'bot-survey.mjs'),split,'512','32','4','48','16','18','1','stability',','.join(map(str,rates))]
+    args=['node',str(HERE/'bot-survey.mjs'),split,'512','32','4','48','16','18','1','stability',','.join(map(str,rates)),str(int(split=='tariff-final'))]
     rows=list(csv.DictReader(io.StringIO(subprocess.check_output(args,text=True))))
     records=[]
     for hold,live in zip(rows[::2],rows[1::2]):
@@ -35,10 +35,10 @@ def main():
         rates=[BASE,*itertools.product((8,24),(.5,1),(4,8),(1,2)),*itertools.product((8,),(.65,.75,.85),(6,8),(.75,1))]
     else:
         rates=[BASE,tuple(map(float,sys.argv[2].split(',')))]
-        assert split=='tariff-holdout'
+        assert split in ('tariff-holdout','tariff-final')
     with ThreadPoolExecutor(max_workers=4) as pool:
         records=[r for chunk in pool.map(run,[(split,p) for p in rates]) for r in chunk]
-    save('tariff-'+('holdout' if split=='tariff-holdout' else split)+'.csv',records)
+    save('tariff-'+split.removeprefix('tariff-')+'.csv',records)
     for group in rates:
         rows=[r for r in records if tuple(r[k] for k in ['stableAfter','stableEnergy','stampCost','birthCost'])==group]
         print(group, 'buys/raids/buyers/richer/larger',*[sum(int(r[k]) for r in rows) for k in ['purchases','raids','buyers','richerThanIdle','largerThanIdle']],

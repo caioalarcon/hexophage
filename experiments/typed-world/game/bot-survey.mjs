@@ -6,18 +6,18 @@ import {buildSphere} from '../../../src/world/sphere.js';
 import {createGameMatch,gameEconomies} from './match.mjs';
 import {createGameBots} from './bots.mjs';
 
-const [split='holdout',limit='512',frequency='32',work='4',projection='48',forecast='16',window='18',adaptive='1',filter='',variable='']=process.argv.slice(2);
+const [split='holdout',limit='512',frequency='32',work='4',projection='48',forecast='16',window='18',adaptive='1',filter='',variable='',rescue='1']=process.argv.slice(2);
 const rates=variable?Object.fromEntries(['stableAfter','stableEnergy','stampCost','birthCost'].map((k,i)=>[k,Number(variable.split(',')[i])])):{};
-const seeds={tune:[7,41,109],validation:[577,1723,4733,8221],holdout:[991,1933,3011,4289],endurance:[953,2933],'tariff-holdout':[15013,18181,20047,24763]}[split];
+const seeds={tune:[7,41,109],validation:[577,1723,4733,8221],holdout:[991,1933,3011,4289],endurance:[953,2933],'tariff-holdout':[15013,18181,20047,24763],'tariff-final':[30119,31481,32707,34847]}[split];
 assert(seeds);
 const graph=buildSphere(+frequency);
-const fields='split seed F horizon budget lookahead forecast phaseWindow adaptive policy arm gen winner buyers purchases firstBuy medianFirst medianGap longestGap raids raidTrials raidHolds raidInvalid delayed participants triedRules boughtRules holds invalidated work liveBots humanOutAt peakWorld meanCash meanIncome meanField matureIncome birthIncome deathIncome births deaths cuts paidFamilies paidResolvers idleCashLead idleFieldLead raidAuditGen raidAuditCashGain raidAuditTargetCells raidAuditCuts'.split(' ');
+const fields='split seed F horizon budget lookahead forecast phaseWindow adaptive rescue policy arm gen winner buyers purchases firstBuy medianFirst medianGap longestGap raids raidTrials raidHolds raidInvalid delayed rescueTrials rescueOrders participants triedRules boughtRules holds invalidated work liveBots humanOutAt peakWorld meanCash meanIncome meanField matureIncome birthIncome deathIncome births deaths cuts paidFamilies paidResolvers idleCashLead idleFieldLead raidAuditGen raidAuditCashGain raidAuditTargetCells raidAuditCuts'.split(' ');
 const median=arr=>arr.length?[...arr].sort((a,b)=>a-b)[Math.floor(arr.length/2)]:null;
 const rounded=n=>+n.toFixed(2);
 function run(seed,policy,arm,stop=+limit){
   const game=createGameMatch({graph,seed,policy,economy:rates}),m=game.match,events=[];
   let receipt,checked;
-  const bots=createGameBots(m,{seed,budget:+work,lookahead:+projection,horizon:+forecast,phaseWindow:+window,adaptive:!!+adaptive,owners:arm==='hold'?[]:[2,3,4,5,6],
+  const bots=createGameBots(m,{seed,budget:+work,lookahead:+projection,horizon:+forecast,phaseWindow:+window,adaptive:!!+adaptive,recoveryOwners:+rescue?[2,3,4,5,6]:[],owners:arm==='hold'?[]:[2,3,4,5,6],
     beforeOrder:o=>{if(o.target&&!checked)receipt=m.fork();},
     onOrder:o=>{
       events.push(o);
@@ -43,9 +43,9 @@ function run(seed,policy,arm,stop=+limit){
     const clock=[0,...orders,game.eliminatedAt[owner]??m.gen];
     for(let i=1;i<clock.length;i++)silent.push(clock[i]-clock[i-1]);
   }
-  return {split,seed,F:+frequency,horizon:+limit,budget:+work,lookahead:+projection,forecast:+forecast,phaseWindow:+window,adaptive:+adaptive,policy,arm,gen:m.gen,
+  return {split,seed,F:+frequency,horizon:+limit,budget:+work,lookahead:+projection,forecast:+forecast,phaseWindow:+window,adaptive:+adaptive,rescue:+rescue,policy,arm,gen:m.gen,
     winner:game.outcome??'open',buyers:stats.filter(s=>s.orders).length,purchases:events.length,firstBuy:events[0]?.gen??'',medianFirst:median(stats.map(s=>s.first).filter(x=>x!==null))??'',
-    medianGap:median(gaps)??'',longestGap:Math.max(...silent),raids:sum(stats,s=>s.raids),raidTrials:sum(stats,s=>s.raidTrials),raidHolds:sum(stats,s=>s.raidHolds),raidInvalid:sum(stats,s=>s.raidInvalid),delayed:sum(stats,s=>s.delayed),participants:stats.filter(s=>s.raids).length,
+    medianGap:median(gaps)??'',longestGap:Math.max(...silent),raids:sum(stats,s=>s.raids),raidTrials:sum(stats,s=>s.raidTrials),raidHolds:sum(stats,s=>s.raidHolds),raidInvalid:sum(stats,s=>s.raidInvalid),delayed:sum(stats,s=>s.delayed),rescueTrials:sum(stats,s=>s.rescueTrials),rescueOrders:sum(stats,s=>s.rescueOrders),participants:stats.filter(s=>s.raids).length,
     triedRules:new Set(stats.flatMap(s=>[...s.studied])).size,boughtRules:new Set(events.map(o=>o.rule)).size,
     holds:sum(stats,s=>s.holds),invalidated:sum(stats,s=>s.invalidated),work:sum(stats,s=>s.work),
     liveBots:game.alive.slice(2).filter(Boolean).length,humanOutAt:game.eliminatedAt[1]??'',peakWorld:peak,meanCash:mean('reserve'),meanIncome:mean('income'),meanField:mean('conventional'),

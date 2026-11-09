@@ -108,3 +108,5 @@
 #hexlab.mixed #mx-matrix{overflow-x:auto;font-size:11px}#hexlab.mixed #mx-matrix table{border-spacing:2px}
 #hexlab.mixed #mx-matrix button{font-size:10px;padding:4px;border-radius:3px}
 #hexlab.mixed #mx-matrix button[aria-pressed=true]{color:#0b201e;background:#66bfae}
+
+#hexlab.mixed .mx-mode select{font-size:12px}

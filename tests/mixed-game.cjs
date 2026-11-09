@@ -75,6 +75,10 @@ const {chromium}=require('playwright');
     await page.evaluate(()=>{const s=document.querySelector('#hl-rulechoice');s.value='mixed';s.dispatchEvent(new Event('change'));});
     await page.waitForFunction(()=>window.__hexophageMixed?.session);
     assert.equal(await page.locator('#hl-rulechoice').inputValue(),'mixed');
+    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?rule=mixed&economy=activity&seed=991');
+    await page.waitForFunction(()=>window.__hexophageMixed?.session);
+    assert.equal(await page.evaluate(()=>__hexophageMixed.session.opening[1].key),'bays/osc2');
+    assert(await page.evaluate(()=>__hexophageMixed.session.match.economy.deathEnergy>0&&__hexophageMixed.session.match.economy.birthEnergy>0));
     assert.deepEqual(errors,[]);
     console.log('PASS: default mixed match, 54 ranked cards, real paid canvas placements, inherited modifiers, active bots, economics, classic return and both orientations');
   }finally{await browser.close();}

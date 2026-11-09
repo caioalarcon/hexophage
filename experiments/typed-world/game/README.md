@@ -1,6 +1,6 @@
 # Partida mista
 
-[**Jogar contra cinco bots**](../../../index.html) · [Laboratório de colisões](../index.html) · [Voto material e travessia](EXISTENCE.md)
+[**Jogar contra cinco bots**](../../../index.html) · [Mesma semente com renda de atividade](../../../index.html?rule=mixed&economy=activity&seed=1) · [Laboratório de colisões](../index.html) · [Voto material e travessia](EXISTENCE.md)
 
 A página principal abre em **Mundo misto · experimental**. A célula recebe a física do carimbo que a gerou. Um único jogador pode cultivar e armar as nove físicas na mesma esfera. A partida começa pausada, com uma colônia comprada por participante. Perder a última célula convencional elimina a facção. A onda pode continuar se propagando enquanto a disputa entre as facções restantes estiver em curso.
 

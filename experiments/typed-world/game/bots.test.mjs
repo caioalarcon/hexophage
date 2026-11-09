@@ -49,3 +49,12 @@ test('purchases are deterministic, use real funds, share a single work budget an
   }
   assert.deepEqual(play(),play());
 });
+
+test('a solvent colony with repeated rejected investments tests a different crop on new terrain',()=>{
+  const g=createGameMatch({F:48,seed:991}),orders=[];
+  const bots=createGameBots(g.match,{seed:991,recoveryOwners:[2],onOrder:o=>{if(o.owner===2)orders.push(o);}});
+  while(g.outcome===null&&g.match.gen<256){g.step();if(g.outcome===null)bots.turn();}
+  assert(orders.some(o=>o.recovery&&o.expected>0&&o.gen>=orders[0].gen+96));
+  assert(orders.length>1);
+  assert.equal(g.eliminatedAt[5],75);
+});

@@ -21,6 +21,9 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: git diff --exit-code --stat -- experiments/typed-world/index.html
+      - name: Verify the published game matches its sources
+        if: github.event_name == 'pull_request'
+        run: git diff --exit-code --stat -- index.html
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
