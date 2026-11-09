@@ -1,0 +1,9 @@
+split,stableAfter,stableEnergy,stampCost,birthCost,seed,gen,winner,buyers,purchases,raids,firstBuy,medianGap,longestGap,cuts,idleIncome,idleCash,activeIncome,activeCash,richerThanIdle,largerThanIdle
+tariff-holdout,12,1,8,1,15013,512,open,5,18,4,19,63,381,431,4995.45,5591.45,19953.09,4660.69,2,5
+tariff-holdout,12,1,8,1,18181,512,open,5,24,3,19,70,301,60,4995.45,5591.45,17870.52,14047.72,5,5
+tariff-holdout,12,1,8,1,20047,512,open,5,14,3,19,88,430,298,4995.45,5591.45,17649.68,8632.28,3,5
+tariff-holdout,12,1,8,1,24763,512,open,5,24,5,19,62,351,1598,4995.45,5591.45,19028.6,2573.8,1,5
+tariff-holdout,8.0,0.75,8.0,1.0,15013,512,open,5,19,5,19,105,492,790,3776.59,4372.59,14117.01,1673.21,1,5
+tariff-holdout,8.0,0.75,8.0,1.0,18181,512,open,5,27,6,19,66,461,476,3776.59,4372.59,12195.8,4542.2,1,5
+tariff-holdout,8.0,0.75,8.0,1.0,20047,512,open,5,23,2,19,106,280,241,3776.59,4372.59,12877.5,9497.3,4,5
+tariff-holdout,8.0,0.75,8.0,1.0,24763,512,open,5,25,4,19,63,322,325,3776.59,4372.59,14280.74,2745.34,1,5

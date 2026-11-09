@@ -16,7 +16,8 @@ const equal=(cells,ref)=>{
 };
 const count=(w,id)=>{let n=0;for(const c of w.cells.values())if(c.owner===id)n++;return n;};
 let header=false;
-for(const name of ['glider-grower','slider-farm','glider-ship','ship-oscillator']){
+const playable=process.argv.includes('--playable');
+for(const name of playable?['glider-grower']:['glider-grower','slider-farm','glider-ship','ship-oscillator']){
   for(let angle=0;angle<6;angle++)for(const lane of [-1,0,1]){
     const warm=name==='glider-ship'?2:9;
     const f=poses(graph,name,angle,lane,warm);
@@ -24,6 +25,10 @@ for(const name of ['glider-grower','slider-farm','glider-ship','ship-oscillator'
     const period=(g.atlas??g.patterns).find(p=>p.id===f.raider.id).period;
     for(const bank of [240,16384])for(const priority of [0,1])for(const dp of ['contact','guard']){
       const options={wallets:[bank,16384],seed:18457,economy:{phasePriority:priority,guardStampExtra:0,eraseCost:24}};
+      if(playable){
+        Object.assign(options,{existence:'majority',eligibility:'contest',arbitration:'ballot',passage:priority?'literal':'legacy'});
+        options.economy.phasePriority=0;
+      }
       const hit=createTypedWorld(graph,options), solo=createTypedWorld(graph,options);
       assert(hit.stamp(2,f.target.rule,dp,f.base));
       for(let t=0;t<warm;t++){hit.step();solo.step();}
@@ -45,7 +50,7 @@ for(const name of ['glider-grower','slider-farm','glider-ship','ship-oscillator'
         }
       }
       const p=hit.players[1];
-      const row={name,angle,lane,bank,phasePriority:priority,defender:dp,close,firstPaid,firstDifference,
+      const row={name,angle,lane,bank,...(playable?{passage:options.passage}:{phasePriority:priority}),defender:dp,close,firstPaid,firstDifference,
         period,erased:p.erased,paid:p.eraseSpent,refused:p.refused,shotPop:count(hit,1),soloPop:count(solo,1),
         wholePath:Number(firstDifference<0 && count(solo,1)>0),
         twoPeriods:firstPaid>0 && cutAt<=horizon?Number(identical&&survived):''};

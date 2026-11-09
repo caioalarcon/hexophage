@@ -1,0 +1,33 @@
+<template id="mx-panel-template">
+ <section class="mx-console">
+  <div class="mx-mode"><label for="hl-rulechoice">Autômato da partida</label><span id="mx-mode-slot"></span></div>
+  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Configurar partida" title="Configurar partida">⚙</button></div>
+  <div class="mx-metrics"><div><small>RESERVA</small><strong id="mx-cash"></strong></div><div><small>CAMPO</small><strong id="mx-field"></strong></div><div><small title="Média recente da renda menos nascimentos e cortes">FLUXO / G</small><strong id="mx-flow"></strong></div></div>
+  <div class="mx-speed" id="mx-speed-slot"></div>
+  <div class="mx-rail-links"><button id="mx-profile-button" type="button" title="Ajustes econômicos da partida"></button><button id="mx-globe" type="button">Globo</button></div>
+  <details id="mx-league" open><summary>Classificação</summary><ol id="mx-score"></ol></details>
+  <details id="mx-conflicts"><summary>Disputas em campo</summary><div id="mx-event">Avance para observar.</div><button id="mx-locate" type="button" hidden>Ver no mapa</button></details>
+ </section>
+ <aside class="mx-arsenal" aria-label="Carimbos da partida">
+  <header><h2>Carimbos <small id="mx-count"></small></h2><button id="mx-atlas" type="button">Atlas ↗</button></header>
+  <div class="mx-tools" aria-label="Modificadores do carimbo">
+   <div class="mx-current"><strong id="mx-selected"></strong><span id="mx-price"></span></div>
+   <div class="mx-modline"><div id="mx-transform"></div><div id="mx-resolver" role="group" aria-label="Interação do próximo carimbo"><button type="button" data-mode="contact" title="Interage com a vizinhança material">Contato</button><button type="button" data-mode="guard" title="Guarda apoiada resiste à travessia">Guarda</button><button type="button" data-mode="phase" title="Ignora as outras linhagens e paga pelas células adversárias substituídas">Travessia</button><button type="button" data-mode="antimatter" title="Acende uma onda B2/S245 financiada pela sua carteira">Antimatéria</button></div></div>
+   <div class="mx-vote"><label for="mx-ballot">Voto da linhagem</label><select id="mx-ballot"><option value="support">Apoio</option><option value="age">Idade</option><option value="robustness">Robustez</option><option value="geometry">Posição</option></select></div>
+  </div>
+  <div id="mx-hand" role="group" aria-label="Baralho por relevância econômica"></div>
+ </aside>
+ <dialog id="mx-settings" aria-labelledby="mx-settings-title">
+  <header><h2 id="mx-settings-title">Partida e bots</h2><button type="button" id="mx-settings-close" aria-label="Fechar configurações">×</button></header>
+  <form id="mx-setup">
+   <fieldset><legend>Partida</legend><label>Esfera<select id="mx-size"></select></label><label>Semente<input type="number" id="mx-seed" min="0" max="4294967295" step="1" required></label><label>Reserva inicial<input type="number" id="mx-bank" min="0" step="any" placeholder="Do perfil"></label></fieldset>
+   <fieldset><legend>Bots</legend><label>Intervalo de compra (G)<input type="number" id="mx-bot-interval" min="1" step="1" required></label><label>Passos de pesquisa por G<input type="number" id="mx-bot-budget" min="0" step="1" required></label></fieldset>
+   <fieldset><legend>Economia</legend><label class="mx-wide">Gerar energia por<select id="mx-economy"><option value="stability">Células fixas maduras</option><option value="birth">Nascimentos</option><option value="death">Mortes</option><option value="activity">Nascimentos e mortes</option></select></label><div id="mx-tariffs" class="mx-wide"></div></fieldset>
+   <fieldset><legend>Colisões</legend><label>Vida ou vazio<select id="mx-existence"><option value="majority">Maioria das linhagens</option><option value="support">Maioria por apoio</option><option value="any">Basta um sim</option><option value="unanimous">Unanimidade</option><option value="legacy">Só propostas positivas</option></select></label><label>Quem ocupa<select id="mx-identity"><option value="ballot">Voto do carimbo</option><option value="ecology">Maioria ecológica</option><option value="support">Apoio local</option><option value="cycle">Ciclo entre interações</option><option value="dominant">Dominante designado</option><option value="majority">Maioria de três critérios</option><option value="fixed">Ordem fixa</option><option value="matrix">Matriz editável</option><option value="phase">Preferência à travessia</option><option value="legacy">Original</option></select></label>
+   <div id="mx-families" class="mx-wide" hidden><label>Comparar por<select id="mx-axis"><option value="resolver">Interação</option><option value="rule">Autômato</option></select></label><label id="mx-order-line"><span id="mx-order-label"></span><input id="mx-order" type="text" spellcheck="false"></label><div id="mx-matrix" hidden></div></div>
+   <label class="mx-check mx-wide"><input type="checkbox" id="mx-friendly"> Permitir substituição de aliadas sobreviventes</label></fieldset>
+   <p id="mx-error" role="alert"></p><footer><button type="submit" class="primary">Nova partida com estes ajustes</button></footer>
+  </form>
+ </dialog>
+ <div id="mx-atlas-host"></div>
+</template>

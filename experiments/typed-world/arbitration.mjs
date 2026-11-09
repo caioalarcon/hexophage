@@ -98,8 +98,22 @@ function election(policy,pool,rank) {
   return {winner,cycle:top.length>1,anyCycle};
 }
 
-export function rankProposals(policy,claims,rank,empty,phasePriority) {
+function literalCrossing(claims,passage){
+  return passage==='literal' && claims.some(c=>c.type.resolver==='phase') && claims.some(c=>material(c.type));
+}
+
+export function rankProposals(policy,claims,rank,empty,phasePriority,passage='legacy') {
   let cycle=false,anyCycle=false;
+  if(literalCrossing(claims,passage)){
+    // In literal passage, conventional matter cannot preempt a funded phase.
+    // Other spectral proposals still compete with it. Material is the second
+    // tier when every spectral claimant fails, including for lack of funds.
+    const spectral=claims.filter(c=>!material(c.type)), ordinary=claims.filter(c=>material(c.type));
+    const a=rankProposals(policy,spectral,rank,empty,phasePriority);
+    const b=rankProposals(policy,ordinary,rank,empty,phasePriority);
+    claims.splice(0,claims.length,...spectral,...ordinary);
+    return {cycle:a.cycle,anyCycle:a.anyCycle || b.anyCycle};
+  }
   if(claims.length>1) {
     if(['legacy','phase','support'].includes(policy.mode)){
       const phaseFirst=phasePasses(policy,claims,empty,phasePriority);
@@ -132,23 +146,26 @@ export function explainContest(input,event) {
   // an injective permutation. A duplicated parent is an invalid transcript.
   if(geometric.size!==claims.length || claims.some(c=>!Number.isInteger(c.geometry)))
     throw Error('Invalid physical parent witness');
-  const rank=id=>geometric.get(id),fallback=event.eligibility==='legacy'?claims.find(c=>c.kind==='survival'):null;
+  const rank=id=>geometric.get(id),fallback=(event.passiveResident??(event.eligibility==='legacy'))?claims.find(c=>c.kind==='survival'):null;
   const pool=claims.filter(c=>c!==fallback),rounds=[];
   const simple=['legacy','support','phase'].includes(mode);
-  const phaseFirst=phasePasses(policy,pool,!event.incumbent,event.phasePriority);
+  const literal=literalCrossing(pool,event.passage);
+  const phaseFirst=!literal && phasePasses(policy,pool,!event.incumbent,event.phasePriority);
   const paid=event.winner?claims.find(c=>c.parent===event.winner.parent):null;
   while(pool.length){
-    const edges=[],reach=pool.map((a,i)=>pool.map((b,j)=>Number(i===j)));
+    const spectral=literal?pool.filter(c=>!material(c.type)):[];
+    const eligible=spectral.length?spectral:pool;
+    const edges=[],reach=eligible.map((a,i)=>eligible.map((b,j)=>Number(i===j)));
     const voterTypes=new Map();
-    for(const c of pool){
-      const key=[c.owner,c.rule,c.resolver,c.ballot,c.wave].join('/');
+    for(const c of eligible){
+      const key=[c.owner,c.rule,c.resolver,c.ballot,c.sense,c.wave].join('/');
       if(!voterTypes.has(key))voterTypes.set(key,c);
     }
     const voters=mode==='ballot'?[...voterTypes.values()].map(c=>({key:c.ballot,voter:c.index})):
       ['majority','ecology'].includes(mode)?(mode==='ecology'?ecologyCriteria:majorityCriteria).map(key=>({key,voter:null})):[];
     const criteria=voters.map(v=>v.key);
-    for(let i=0;i<pool.length;i++)for(let j=i+1;j<pool.length;j++){
-      const a=pool[i],b=pool[j];
+    for(let i=0;i<eligible.length;i++)for(let j=i+1;j<eligible.length;j++){
+      const a=eligible[i],b=eligible[j];
       const p=simple?physicalPriority(a,b,rank,phaseFirst):pairPreference(policy,a,b,criteria,rank);
       const winner=p>0?a:b,loser=p>0?b:a;
       reach[p>0?i:j][p>0?j:i]=1;
@@ -168,9 +185,10 @@ export function explainContest(input,event) {
       else reason=a.support===b.support?'geometry':'support';
       edges.push({winner:winner.index,loser:loser.index,for:yes,against:no,abstain:votes.length-yes-no,reason,votes});
     }
-    const top=sourceComponent(reach).map(i=>pool[i]);
+    const top=sourceComponent(reach).map(i=>eligible[i]);
     const chosen=top.reduce((a,b)=>a.geometry>b.geometry?a:b);
-    rounds.push({eligible:pool.map(c=>c.index),top:top.map(c=>c.index),preferred:chosen.index,accepted:chosen===paid,edges});
+    rounds.push({eligible:eligible.map(c=>c.index),held:pool.filter(c=>!eligible.includes(c)).map(c=>c.index),
+      top:top.map(c=>c.index),preferred:chosen.index,accepted:chosen===paid,edges});
     if(chosen===paid)break;
     pool.splice(pool.indexOf(chosen),1);
   }

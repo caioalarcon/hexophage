@@ -54,11 +54,15 @@ myRule: {
 
 For a positional rule, use `compileHexRule((alive, mask, degree) => ...)`. The bits follow the local ordered ring of five or six neighbours. A rule that depends on an absolute compass direction also needs an orientation convention across the sphere. The match, atlas, combat and bot previews use the compiled transition tables. To supply known patterns, add `gameplay: explorationGameplay(catalog, openingId)` from [gameplay.js](src/match/gameplay.js). With only physics configured, the editor and bots use geometric seeds. A specialized gameplay profile can supply a different loadout, opening, bot plans and strategy. A custom `economy.generationQuote(births, mature, settings)` returns `{ income, upkeep }` for both the match and the atlas.
 
-The main game uses one automaton per match. The sparse planar atlas measures isolated seeds. For B0 it uses a finite torus so spontaneous births can be represented and accounted for separately from the player's cells.
+The single-rule modes use one automaton per match. The sparse planar atlas measures isolated seeds. For B0 it uses a finite torus so spontaneous births can be represented and accounted for separately from the player's cells.
 
 ## Mixed-physics matches
 
-**Partida e bots → Mundo misto** opens a playable match with one shared treasury per player. Each stamp carries its own rule, orientation and conflict policy. Pick a pattern from the 409-card atlas, change its inherited rule independently and save the combination in your hand. The nine-rule frontier puts all nine automata in every portfolio. Inspect a contested site to see the inherited ballots and its funded occupant, or edit the complete rule-to-rule precedence matrix. [Nine-rule arbitration experiments](experiments/typed-world/general/README.md). [Play the mixed world](experiments/typed-world/index.html) · [Experiments, precedence and tariffs](experiments/typed-world/README.md).
+The preview opens the six-player mixed game at [the main entry](index.html). One human and five bots share a sphere. Every stamp supplies its own automaton, and the owner shares a single treasury across all of its lineages. The **Autômato da partida** selector also offers the original single-rule games.
+
+In landscape, controls, wallets and the globe are on the left. The right rail offers 54 economically ranked stamps in three columns. In portrait the controls move above the map and the hand below it. Choose interaction and ballot beside rotate/mirror for the next placement. The atlas supports all 409 native cards, isolated evolution, editing and persistent custom shapes. Settings let you replay a seed and compare mature-cell, birth, death or activity income.
+
+[Playing the mixed game](experiments/typed-world/game/README.md) · [Existence, ownership and paid passage](experiments/typed-world/game/EXISTENCE.md) · [Nine-rule arbitration laboratory](experiments/typed-world/index.html)
 
 ## An isolated match
 
@@ -79,7 +83,7 @@ A player with an empty field is eliminated at settlement when its remaining rese
 
 ## Learning bots (experimental)
 
-Choose **Partida e bots → Bots → Aprendizes** or open the game with `?bots=learn`. The five learners have individual random seeds and share a per-generation planning budget. Each compares a legal placement with waiting on copies of one neighbourhood of the spherical graph. Purchases still go through the real match's credit and placement checks. The settings panel counts trials, purchases, checked forecasts and inherited observations. **Última previsão conferida** shows the predicted and observed local flow advantage for a paid move. **Ritmo de pesquisa** changes the shared reasoning budget live, from 1× (96 local visits per generation) to 16×, with 8× selected initially. The planner measures isolated seeds, retrieves prior field outcomes and checks marginal operating yield against the current colony before reinvesting.
+Choose **Partida e bots → Bots → Aprendizes** or open the single-rule game with `?rule=callahan&bots=learn`. The five learners have individual random seeds and share a per-generation planning budget. Each compares a legal placement with waiting on copies of one neighbourhood of the spherical graph. Purchases still go through the real match's credit and placement checks. The settings panel counts trials, purchases, checked forecasts and inherited observations. **Última previsão conferida** shows the predicted and observed local flow advantage for a paid move. **Ritmo de pesquisa** changes the shared reasoning budget live, from 1× (96 local visits per generation) to 16×, with 8× selected initially. The planner measures isolated seeds, retrieves prior field outcomes and checks marginal operating yield against the current colony before reinvesting.
 
 Each bot learns privately during play. The browser periodically checkpoints the current match and flushes it when the tab is hidden or closed. Later matches on the same browser origin inherit the combined evidence for their physics, stamp catalog and tariffs. New contexts keep a bounded number of recent observations. A headless match accepts `{ botMode: 'learn', brain: { archive, seed } }`. Pass one `createBrainArchive()` to consecutive matches to study transfer, or a new archive for a cold start. Call `invalidateBrain()` after changing tariffs directly in headless mode.
 

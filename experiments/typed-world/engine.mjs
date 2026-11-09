@@ -2,10 +2,12 @@
 // Genotype, ownership and age belong to a site; the treasury belongs to its owner.
 import {ruleProfiles} from '../../src/match/rule-profiles.js';
 import {ballots,configureArbitration,material,rankProposals,resolvers} from './arbitration.mjs';
+import {existenceModes,passageModes,senses,sensorMask,voteOnExistence} from './existence.mjs';
 
 export {resolvers};
+export {existenceModes,passageModes,senses};
 export const defaultEconomy = Object.freeze({
-  stampCost:8, birthCost:1, eraseCost:24, stableEnergy:1,
+  stampCost:8, birthCost:1, eraseCost:24, stableEnergy:1,birthEnergy:0,deathEnergy:0,
   stableAfter:12, productionScale:60, salvage:8, protectedMature:0, blastBirthCost:4, guardMultiplier:2, guardStampExtra:0, phasePriority:0,
 });
 const bitCount = Array.from({length:64}, (_, i)=>i.toString(2).replaceAll('0','').length);
@@ -15,7 +17,8 @@ function mix(x) {
   return (x ^ (x >>> 16)) >>> 0;
 }
 function account(reserve) {
-  return {reserve, income:0, births:0, stampSpent:0, birthSpent:0, eraseSpent:0,
+  return {reserve, income:0, matureIncome:0,birthIncome:0,deathIncome:0,deaths:0,conventional:0,
+    births:0, stampSpent:0, birthSpent:0, eraseSpent:0,
     erased:0, lost:0, friendlyErased:0, ownLost:0, friendlyEraseSpent:0, field:0, mature:0, refused:0, eroded:0, detonations:0, waveBirths:0, waveErased:0,
     requested:0, requestedCost:0, unfundedCost:0, salvageIncome:0, lastFieldAt:0, out:false};
 }
@@ -37,9 +40,10 @@ function robustTables(tables) {
 }
 
 export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:overrides={},
-  arbitration='legacy',eligibility='legacy',friendlyFire=false,onContest,onBirth}={}) {
+  arbitration='legacy',eligibility='legacy',friendlyFire=false,existence='legacy',passage='legacy',onContest,onBirth,onExistence}={}) {
   const policy=configureArbitration(arbitration);
-  if(!['legacy','contest'].includes(eligibility) || typeof friendlyFire!=='boolean')
+  if(!['legacy','contest'].includes(eligibility) || typeof friendlyFire!=='boolean' ||
+      !existenceModes.includes(existence) || !passageModes.includes(passage))
     throw RangeError('Invalid claim eligibility');
   const economy = Object.freeze({...defaultEconomy,...overrides});
   if (!wallets.length || wallets.some(v=>!Number.isFinite(v) || v<0) ||
@@ -49,21 +53,22 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
     throw new RangeError('phasePriority must be 0 or 1');
   const rules = new Map(Object.entries(ruleProfiles).filter(([,p])=>p.physics && !p.physics.birthsFromVacuum));
   const types = new Map();
-  function genotype(owner, rule, resolver, ballot='support', wave=false) {
-    const key = owner+'/'+rule+'/'+resolver+'/'+ballot+'/'+Number(wave);
-    if (!types.has(key)) types.set(key, Object.freeze({owner,rule,resolver,ballot,wave,
+  function genotype(owner, rule, resolver, ballot='support', sense='native',wave=false) {
+    const key = owner+'/'+rule+'/'+resolver+'/'+ballot+'/'+sense+'/'+Number(wave);
+    if (!types.has(key)) types.set(key, Object.freeze({owner,rule,resolver,ballot,sense,wave,
       tables:rules.get(rule).physics.tables,robust:robustTables(rules.get(rule).physics.tables)}));
     return types.get(key);
   }
-  const cell = (type, age) => Object.freeze({owner:type.owner,rule:type.rule,resolver:type.resolver,ballot:type.ballot,wave:type.wave,age,type});
+  const cell = (type, age) => Object.freeze({owner:type.owner,rule:type.rule,resolver:type.resolver,ballot:type.ballot,
+    sense:type.sense,wave:type.wave,age,type});
 
   function instance(cells, players, gen, lastIgnitions=[], domain=null, outside=null,observe=false) {
     const {adj,deg}=graph;
     const stampPrice=resolver=>economy.stampCost+(resolver==='guard'?economy.guardStampExtra:0);
-    function canStamp(owner, rule, resolver, ids, ballot='support') {
+    function canStamp(owner, rule, resolver, ids, ballot='support',sense='native') {
       if (!Number.isInteger(owner) || owner<1 || owner>=players.length) return false;
       const p=players[owner];
-      if (!p || p.out || !rules.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !ids?.length ||
+      if (!p || p.out || !rules.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !senses.includes(sense) || !ids?.length ||
           new Set(ids).size!==ids.length || p.reserve+EPS<ids.length*stampPrice(resolver)) return false;
       for (const id of ids) {
         if (!Number.isSafeInteger(id) || id<0 || id>=graph.n || (domain && !domain.has(id)) || cells.has(id)) return false;
@@ -74,25 +79,29 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       }
       return true;
     }
-    function stamp(owner,rule,resolver,ids,ballot='support') {
-      if(!canStamp(owner,rule,resolver,ids,ballot))return false;
+    function stamp(owner,rule,resolver,ids,ballot='support',sense='native') {
+      if(!canStamp(owner,rule,resolver,ids,ballot,sense))return false;
       const p=players[owner];
-      p.field+=ids.length;
+      p.field+=ids.length;p.conventional+=ids.length;
       if(economy.stableAfter<=1)p.mature+=ids.length;
       p.stampSpent+=ids.length*stampPrice(resolver);
       p.reserve=Math.max(0,p.reserve-ids.length*stampPrice(resolver));
       p.lastFieldAt=gen;
-      for(const site of ids) cells.set(site,cell(genotype(owner,rule,resolver,ballot),1));
+      for(const site of ids) cells.set(site,cell(genotype(owner,rule,resolver,ballot,sense),1));
       return true;
     }
     function step(hooks) {
       const contestEvent=hooks?.onContest??(observe && onContest);
       const birthEvent=hooks?.onBirth??(observe && onBirth);
+      const existenceEvent=hooks?.onExistence??(observe && onExistence);
+      const decisions=existenceEvent && existence!=='legacy'?new Map():null;
+      const births=new Uint32Array(players.length),priorField=new Uint32Array(players.length),sales=new Uint32Array(players.length);
       const salt=mix(seed ^ mix(gen+1));
       const rank=id=>mix(id ^ salt);
       const next=new Map(), candidates=new Set(), mature=new Uint32Array(players.length);
       const fuses=[], spent=new Set(), ignitionClaims=new Map();
       for (const [id,c] of cells) {
+        priorField[c.owner]++;
         candidates.add(id);
         for (let k=0;k<deg[id];k++) {
           const n=adj[id*6+k];
@@ -107,7 +116,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         const p=players[id], n=mature[id]+(outside?.[id].mature??0);
         const income=economy.stableEnergy*(economy.productionScale
           ? n/(1+n/economy.productionScale) : n);
-        p.reserve+=income; p.income+=income;
+        p.reserve+=income; p.income+=income;p.matureIncome+=income;
       }
       lastIgnitions=[];
       const visited=new Set();
@@ -131,7 +140,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         const flank=rank(flanks[0])>rank(flanks[1])?flanks[0]:flanks[1];
         // Clipping a forecast must never move its charge to a different vertex.
         const sites=domain && !domain.has(flank)?[site,target]:[site,target,flank];
-        const wave=genotype(t.owner,'hex-b2s245','antimatter',t.ballot,true);
+        const wave=genotype(t.owner,'hex-b2s245','antimatter',t.ballot,t.sense,true);
         for(const id of group)spent.add(id);
         for(const id of sites) {
           if(!ignitionClaims.has(id))ignitionClaims.set(id,[]);
@@ -158,25 +167,37 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
           masks.set(c.type,(masks.get(c.type)??0)|(1<<k));
         }
         const oldType=incumbent?.type;
-        const oldMask=material(oldType)?materialMask:masks.get(oldType)??0;
-        const survives=incumbent && !spent.has(id) && oldType.tables[degree][1][oldMask];
+        const decision=existence==='legacy'?null:voteOnExistence(existence,degree,materialMask,masks,oldType);
+        if(decisions && decision.votes.size)decisions.set(id,decision);
+        const oldMask=oldType?sensorMask(oldType,materialMask,masks.get(oldType)??0):0;
+        const survives=incumbent && !spent.has(id) && oldType.tables[degree][1][oldMask] &&
+          (!decision || !material(oldType) || decision.approve);
         const guarded=survives && oldType.resolver==='guard' && bitCount[masks.get(oldType)??0]>=2;
         const claims=[];
         for(const [type,mask] of masks) {
+          const voted=decision && material(type);
+          const observed=sensorMask(type,materialMask,mask);
+          // On an occupied material site the explicit ballot tests S for every
+          // potential successor. Its YES is an identity claim if life passes.
+          const state=voted && material(oldType)?1:0;
+          if(voted && !decision.approve || !type.tables[degree][state][observed])continue;
           if(incumbent){
             if(incumbent.type===type)continue;
-            if(eligibility==='legacy' && (material(type) || !type.wave && (incumbent.owner===type.owner || guarded)))continue;
-            if(eligibility==='contest' && !friendlyFire && !type.wave && incumbent.owner===type.owner)continue;
+            if(voted && material(oldType)){
+              if(survives && !friendlyFire && incumbent.owner===type.owner)continue;
+            }else {
+              if(eligibility==='legacy' && (material(type) || !type.wave && (incumbent.owner===type.owner || guarded)))continue;
+              if(eligibility==='contest' && !friendlyFire && !type.wave && incumbent.owner===type.owner)continue;
+            }
+            if(passage==='literal' && type.resolver==='phase' && guarded)continue;
           }
-          const observed=material(type)?materialMask:mask;
-          if(!type.tables[degree][0][observed])continue;
           let parent,age=0;
           for(let k=0;k<degree;k++)if(mask&(1<<k)) {
             const n=adj[6*id+k];
             if(parent===undefined || rank(n)>rank(parent))parent=n;
             age=Math.max(age,cells.get(n).age);
           }
-          claims.push({type,support:bitCount[mask],age,robustness:type.robust[degree][0][observed],parent,kind:'birth'});
+          claims.push({type,support:bitCount[mask],age,robustness:type.robust[degree][state][observed],parent,kind:'birth'});
         }
         for(const c of ignitionClaims.get(id)??[]) {
           if(incumbent?.type!==c.type)claims.push(c);
@@ -192,16 +213,18 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         // contest the physically viable incumbent also casts a ballot and bids.
         const resident=survives?{type:oldType,support:bitCount[masks.get(oldType)??0],age:incumbent.age,
           robustness:oldType.robust[degree][1][oldMask],parent:id,kind:'survival'}:null;
-        if(resident && eligibility==='contest')claims.push(resident);
-        const {cycle,anyCycle}=rankProposals(policy,claims,rank,!incumbent,economy.phasePriority);
-        if(resident && eligibility==='legacy')claims.push(resident);
-        bySite.set(id,{incumbent,guarded,claims,cycle,anyCycle,resident});
+        const passive=resident && eligibility==='legacy' && !(decision && material(oldType)) &&
+          !(passage==='literal' && oldType.resolver==='phase');
+        if(resident && !passive)claims.push(resident);
+        const {cycle,anyCycle}=rankProposals(policy,claims,rank,!incumbent,economy.phasePriority,passage);
+        if(passive)claims.push(resident);
+        bySite.set(id,{incumbent,guarded,claims,cycle,anyCycle,resident,passive:!!passive});
       }
       // A player can sell unchallenged non-wave survivors for a shock only.
       // Reject an unaffordable cut before killing anything or liquidating assets.
       const sortedCollateral=new Set();
       for (const id of [...bySite.keys()].sort((a,b)=>rank(a)-rank(b))) {
-        const {incumbent,guarded,claims,cycle,anyCycle,resident}=bySite.get(id);
+        const {incumbent,guarded,claims,cycle,anyCycle,resident,passive}=bySite.get(id);
         let winner=null;
         for(const claim of claims) {
           const {type,kind}=claim;
@@ -235,10 +258,10 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
             p.refused++; p.unfundedCost+=cost;continue;
           }
           for(let n=0;n<needed;n++) {
-            seized.add(pile.pop());p.eroded++;
+            seized.add(pile.pop());p.eroded++;sales[type.owner]++;
             p.reserve+=economy.salvage;p.salvageIncome+=economy.salvage;
           }
-          p.reserve=Math.max(0,p.reserve-cost);p.births++;p.birthSpent+=birth;
+          p.reserve=Math.max(0,p.reserve-cost);p.births++;births[type.owner]++;p.birthSpent+=birth;
           if(type.wave)p.waveBirths++;
           if(enemy){p.eraseSpent+=fee;p.erased++;players[incumbent.owner].lost++;if(type.wave)p.waveErased++;}
           if(friendly){p.friendlyEraseSpent+=fee;p.friendlyErased++;p.ownLost++;}
@@ -248,25 +271,40 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         }
         if(contestEvent && claims.length>=2){
           // Emit only the observed state, never the shared transition tables.
-          const observed=incumbent && {owner:incumbent.owner,rule:incumbent.rule,resolver:incumbent.resolver,
-            ballot:incumbent.ballot,wave:incumbent.wave,age:incumbent.age};
+          const observed=incumbent && observedCell(incumbent);
           const ordered=claims.map(c=>describe(c,rank));
-          contestEvent({gen:gen+1,site:id,incumbent:observed??null,eligibility,phasePriority:economy.phasePriority,
+          contestEvent({gen:gen+1,site:id,incumbent:observed??null,eligibility,passage,passiveResident:passive,phasePriority:economy.phasePriority,
             survives:!!resident,claims:ordered,preferred:ordered[0],winner:winner?ordered[claims.indexOf(winner)]:null,cycle,anyCycle});
         }
       }
       for(const id of seized)next.delete(id);
+      if(decisions)for(const [site,d] of decisions){
+        const votes=[...d.votes].map(([type,v])=>({owner:type.owner,rule:type.rule,resolver:type.resolver,ballot:type.ballot,sense:type.sense,...v}));
+        const old=cells.get(site),winner=next.get(site);
+        existenceEvent({gen:gen+1,site,policy:existence,aliveBefore:d.aliveBefore,approved:d.approve,yes:d.yes,no:d.no,
+          weightYes:d.weightYes,weightNo:d.weightNo,votes,incumbent:old?observedCell(old):null,winner:winner?observedCell(winner):null});
+      }
       gen++; cells=next;
       for(let id=1;id<players.length;id++) {
         players[id].field=outside?.[id].field??0;
         players[id].mature=outside?.[id].mature??0;
+        players[id].conventional=outside?.[id].conventional??0;
       }
       for(const c of next.values()){
         players[c.owner].field++;
+        if(!c.wave)players[c.owner].conventional++;
         if(c.age>=economy.stableAfter)players[c.owner].mature++;
       }
       for(let id=1;id<players.length;id++) {
         const p=players[id];
+        // Registered changes of identity count as a birth for the new owner
+        // and a death for the old one. Stamp placement and asset liquidation
+        // have separate ledgers. Closing revenue cannot fund its own event.
+        const deaths=priorField[id]+births[id]-(p.field-(outside?.[id].field??0))-sales[id];
+        const born=births[id]*economy.birthEnergy, dead=deaths*economy.deathEnergy;
+        p.deaths+=deaths;p.birthIncome+=born;p.deathIncome+=dead;
+        p.income+=born+dead;p.reserve+=born+dead;
+        p.lastBirths=births[id];p.lastDeaths=deaths;
         if(p.field)p.lastFieldAt=gen;
         else if(p.reserve+EPS<economy.stampCost)p.out=true;
       }
@@ -277,22 +315,26 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       const accounts=players.map(p=>p&&{...p});
       if(!sites)return instance(new Map(cells),accounts,gen,lastIgnitions.map(e=>({...e,sites:[...e.sites]})),domain,outside);
       const cut=new Set(domain ? [...sites].filter(id=>domain.has(id)) : sites), snapshot=new Map();
-      const remote=players.map(p=>p&&{field:p.field,mature:p.mature});
+      const remote=players.map(p=>p&&{field:p.field,mature:p.mature,conventional:p.conventional});
       for(const id of cut){
         const c=cells.get(id);
         if(!c)continue;
         snapshot.set(id,c);
         remote[c.owner].field--;
         if(c.age>=economy.stableAfter)remote[c.owner].mature--;
+        if(!c.wave)remote[c.owner].conventional--;
       }
       return instance(snapshot,accounts,gen,[],cut,remote);
     }
-    return {graph,economy,arbitration:policy,eligibility,friendlyFire,players,stamp,canStamp,step,fork,get cells(){return cells;},get gen(){return gen;},
+    return {graph,economy,arbitration:policy,eligibility,friendlyFire,existence,passage,players,stampPrice,stamp,canStamp,step,fork,get cells(){return cells;},get gen(){return gen;},
       get lastIgnitions(){return lastIgnitions;}};
   }
   return instance(new Map(),[null,...wallets.map(account)],0,[],null,null,true);
 }
 
-function describe({type:{owner,rule,resolver,ballot,wave},support,age,robustness,parent,kind},rank) {
-  return {owner,rule,resolver,ballot,wave,support,age,robustness,parent,geometry:rank(parent),kind};
+function observedCell({owner,rule,resolver,ballot,sense,wave,age}){
+  return {owner,rule,resolver,ballot,sense,wave,age};
+}
+function describe({type:{owner,rule,resolver,ballot,sense,wave},support,age,robustness,parent,kind},rank) {
+  return {owner,rule,resolver,ballot,sense,wave,support,age,robustness,parent,geometry:rank(parent),kind};
 }

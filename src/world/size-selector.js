@@ -30,7 +30,7 @@ function bindWorldSize() {
       (10 * f * f + 2).toLocaleString('pt-BR') +
       ' células.';
   };
-  $('hl-rebuild').onclick = requestSphere;
+  $('hl-rebuild').onclick = () => requestSphere();
   $('br-build-cancel').onclick = cancelBuild;
   $('br-building').addEventListener('cancel', (e) => {
     e.preventDefault();

@@ -1,0 +1,13 @@
+seed,existence,steps,disagreements,approvedDisagreements,conventionalSuccessions,alliedSuccessions,spectralBypasses,firstAllied
+1,any,64,2902,2902,846,126,0,2/3634/2/bays245/ashley/1/1/1/2
+1,majority,64,167,1,0,0,1,
+1,unanimous,64,167,0,0,0,1,
+1,support,64,234,81,8,0,0,
+17,any,64,3506,3506,969,147,0,2/5400/2/hex-b2s245/hex-b2s34/1/1/1/3
+17,majority,64,145,0,0,0,1,
+17,unanimous,64,145,0,0,0,1,
+17,support,64,198,77,17,3,1,11/5416/2/hex-b2s34/hex-b2s245/1/1/2/1
+33,any,64,3068,3068,861,318,0,2/264/2/hex-b2s245/hex-b2s34/1/2/1/3
+33,majority,64,318,9,3,0,1,
+33,unanimous,64,260,0,0,0,3,
+33,support,64,552,229,16,9,2,6/303/1/bays245/hex-b2s245/1/1/2/1

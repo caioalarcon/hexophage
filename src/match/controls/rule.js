@@ -1,3 +1,4 @@
+import {MIXED_MODE,navigateToMode,populateModeSelector} from './mode.js';
 import { ACTIVITY_ECONOMY, STABILITY_ECONOMY } from '../constructive-economy.js';
 import { bindBotSelectors } from '../../bots/configuration-panel.js';
 import { game, invalidateBrain } from '../../browser/game.js';
@@ -84,8 +85,8 @@ export function bindRuleControls() {
     resetGame();
   };
   const rule = $('hl-rulechoice');
-  for (const [id, profile] of Object.entries(ruleProfiles)) rule.add(new Option(profile.label, id));
-  rule.onchange = () => chooseRule(rule.value);
+  populateModeSelector(rule);
+  rule.onchange = () => rule.value===MIXED_MODE?navigateToMode(MIXED_MODE):chooseRule(rule.value);
   $('hl-rule').onchange = event => chooseRule(rule.value, event.target.value);
   $('br-economy-policy').onchange = event => {
     const policy = event.target.value;

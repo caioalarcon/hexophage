@@ -1,5 +1,7 @@
 # Mundo misto
 
+[Jogar a partida de seis no mapa principal](../../index.html) · [Atlas, baralho e economia jogáveis](game/README.md)
+
 [**Abrir a partida experimental**](index.html)
 
 O carimbo identifica o desenho, a orientação, o autômato e o resolutor. Os descendentes herdam o dono, o autômato e o resolutor. Uma fazenda e uma nave de um único jogador podem seguir físicas diferentes e pagar tudo da mesma carteira. O seletor oferece os 409 desenhos do atlas e as nove físicas. Ao selecionar um desenho, a interface sugere sua física de origem. Você pode trocar o autômato antes de plantar e guardar a combinação no navegador.

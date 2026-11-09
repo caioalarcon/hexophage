@@ -9,7 +9,7 @@ const {chromium} = require('playwright');
   const browser = await chromium.launch({executablePath: process.env.CHROMIUM_PATH, args: ['--disable-webgl']});
   try {
     const page = await browser.newPage({viewport: {width: 1366, height: 768}});
-    await page.goto(pathToFileURL(path.join(__dirname, '..', 'index.html')).href);
+    await page.goto(pathToFileURL(path.join(__dirname, '..', 'index.html')).href+'?rule=callahan');
     const report = await page.evaluate(async () => {
       const lab = window.__sphereLab, cv = document.getElementById('hl-world');
       lab.newWorld(320);
