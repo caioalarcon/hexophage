@@ -5,12 +5,14 @@ module.exports = async function verifyRuleSwitching(page) {
   const economy = page.locator('#br-economy-policy');
   const input = page.locator('#hl-rule');
   const conflict = page.locator('#br-conflict');
+  const growth = page.locator('#br-growth'), limit = page.locator('#br-growth-threshold');
   if (await page.locator('#br-panel-toggle').getAttribute('aria-expanded') !== 'true')
     await page.locator('#br-panel-toggle').click();
   const settings = page.locator('details').filter({ has: rule });
   if (!await settings.evaluate(el => el.open)) await settings.locator('summary').click();
   assert(await rule.isVisible() && await economy.isVisible() && await conflict.isVisible());
   assert.equal(await conflict.inputValue(), 'lineage');
+  assert.equal(await growth.inputValue(), 'contained');
   await page.evaluate(() => { window.originalPlanet = __sphereLab.world.graph; });
   const state = () => page.evaluate(() => {
     const { game, world } = __sphereLab;
@@ -35,6 +37,12 @@ module.exports = async function verifyRuleSwitching(page) {
   const beforeConflict = await state();
   const balances = () => page.evaluate(() => __sphereLab.game.players.map(p=>p.reserve));
   const beforeCash = await balances();
+  await growth.selectOption('classic');
+  assert.equal(await limit.isVisible(), false);
+  await growth.selectOption('contained');
+  await limit.fill('192');
+  await limit.press('Tab');
+  assert.equal(await page.evaluate(()=>__sphereLab.world.physics.growthThreshold), 192);
   await conflict.selectOption('block');
   assert.deepEqual(await state(), beforeConflict);
   assert.deepEqual(await balances(), beforeCash);
@@ -66,7 +74,13 @@ module.exports = async function verifyRuleSwitching(page) {
   await input.press('Tab');
   assert.equal((await state()).gen, 0);
   assert.equal((await state()).key, 'custom/B3/S23');
+  await input.fill('B0/S23');
+  await input.press('Tab');
+  assert.equal(await growth.isDisabled(), true);
+  assert.equal(await growth.inputValue(), 'classic');
   await rule.selectOption('callahan');
+  assert.equal(await limit.inputValue(), '192');
+  assert.equal(await growth.isEnabled(), true);
   assert.equal((await state()).cards.length, 15);
   await conflict.selectOption('lineage');
   await economy.selectOption('activity');

@@ -44,6 +44,7 @@ export function brainNamespace(world, game) {
   const scope = [...key, quoteKey(economy), ...ECONOMY_KEYS.map(k => economy[k])];
   // Keep historical memories for exactly their original arbitration.
   if (game.conflict && game.conflict !== 'legacy') scope.push(game.conflict);
+  if (world.physics.growthThreshold) scope.push('growth', world.physics.growthThreshold);
   return JSON.stringify(scope);
 }
 

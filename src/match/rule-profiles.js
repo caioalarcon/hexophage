@@ -1,4 +1,5 @@
 import { BAYS, CALLAHAN, compileTotalistic } from '../simulation/rules.js';
+import { DEFAULT_GROWTH, DEFAULT_GROWTH_THRESHOLD, withGrowth } from '../simulation/growth.js';
 import { DEFAULT_CONFLICT, withConflict } from '../simulation/conflict.js';
 import { catalogRules } from '../simulation/catalog-rules.js';
 import { ACTIVITY_ECONOMY, STABILITY_ECONOMY, initialEnergy } from './constructive-economy.js';
@@ -42,13 +43,22 @@ export function resolveRuleProfile(id = DEFAULT_RULE, notation) {
 }
 
 export function setConflictPolicy(world, game, id) {
-  world.physics = withConflict(game.profile.physics, id);
+  world.physics = withGrowth(withConflict(game.profile.physics, id),
+    game.growth ?? DEFAULT_GROWTH, game.growthThreshold ?? DEFAULT_GROWTH_THRESHOLD);
   game.conflict = id;
+}
+
+export function setGrowthPolicy(world, game, id, threshold = game.growthThreshold ?? DEFAULT_GROWTH_THRESHOLD) {
+  world.physics = withGrowth(withConflict(game.profile.physics, game.conflict), id, threshold);
+  game.growth = id;
+  game.growthThreshold = threshold;
 }
 
 export function applyRuleProfile(world, game, profile, overrides) {
   world.rule = profile.id;
   game.profile = profile;
+  game.growth ??= DEFAULT_GROWTH;
+  game.growthThreshold ??= DEFAULT_GROWTH_THRESHOLD;
   setConflictPolicy(world, game, game.conflict ?? DEFAULT_CONFLICT);
   game.gameplay = profile.gameplay;
   game.economy = { ...STABILITY_ECONOMY, ...profile.economy, ...overrides };

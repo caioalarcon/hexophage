@@ -20,7 +20,7 @@ const scenarios = [4751, 8329, 1049, 6203];
 function play(seed, storage, round) {
   const brain = { seed, archive: createBrainArchive(storage) };
   if (values.budget) brain.budget = Number(values.budget);
-  const m = createHeadlessMatch(graph, { conflict: 'legacy', rule:values.rule, botMode:'learn', brain });
+  const m = createHeadlessMatch(graph, { growth:'classic', conflict: 'legacy', rule:values.rule, botMode:'learn', brain });
   const { world, game } = m;
   const bots = game.players.slice(1), stats = bots.map(() => ({ first:null, second:null, profitable:null, streak:0 }));
   const samples = [], checkpoints = new Set([256,1000,4000,horizon]);

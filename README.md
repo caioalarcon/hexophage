@@ -38,7 +38,9 @@ Choose **Painel de jogo → Partida e bots → Autômato** to start a match on t
 
 **Nascimento em disputa** sets how births shared by opponents are resolved. The default gives the birth to a team with the most parents, with a repeatable, team-independent tie-break on the sphere. The selector applies immediately. The original neutral ties and a veto on mixed-team births are available for experiments. [Conflict study and paired replays](experiments/conflict-survey/README.md).
 
-The [nine-rule survey](experiments/rule-survey/README.md) covers 409 atlas stamps, learned purchases, operating income and paired collisions. Open `?rule=ashley15&bots=learn&economy=activity&conflict=lineage` to play the combat candidate. The earlier B2/S245 experiment can be reproduced with `?rule=hex-b2s245&bots=learn&economy=stability&conflict=legacy`.
+The browser opens with autonomous learners. `?bots=profile` selects the fixed strategies. **Partida e bots → Surtos** changes outbreak handling live. The default removes an interacting region when it reaches 384 natural births in one generation. Separate regions have separate counts, regardless of ownership. Change the threshold or select **Crescimento livre** for the native automaton. B0 rules keep their spontaneous background. [Outbreak trials and comparison](experiments/outbreak/STUDY.md) · [Bot discovery and transfer across matches](experiments/outbreak/learning.md).
+
+The [nine-rule survey](experiments/rule-survey/README.md) covers 409 atlas stamps, learned purchases, operating income and paired collisions. Open `?rule=ashley15&bots=learn&economy=activity&conflict=lineage` to play the combat candidate. Use `?rule=hex-b2s245&bots=learn&economy=stability&conflict=legacy&growth=classic` to inspect the earlier B2/S245 physics. Replay historical learner choices with the commit named in the corresponding study.
 
 Add one entry to [the registry](src/match/rule-profiles.js). For example, a binary radius-one rule can start with just a name and physics:
 

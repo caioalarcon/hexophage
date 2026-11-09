@@ -39,7 +39,7 @@ const cellKey=([q,r])=>q+','+r;
 function examine(f,policy) {
   const {gameplay}=resolveRuleProfile(f.rule);
   const lookup=new Map(gameplay.patterns.map(p=>[p.id,p]));
-  const make=()=>createHeadlessMatch(graph,{rule:f.rule,conflict:policy,economy:STABILITY_ECONOMY});
+  const make=()=>createHeadlessMatch(graph,{ growth:'classic',rule:f.rule,conflict:policy,economy:STABILITY_ECONOMY});
   const ref=make(), anchor=graph.farthest;
   const founding=ref.patchForStamp(anchor,0,centered(lookup.get(f.target)));
   function setup(m,attack) {

@@ -12,7 +12,7 @@ assert(['organic','inbound','outbound','hold'].includes(mode));
 assert(['lineage','block','legacy'].includes(conflict));
 assert(['activity','stability'].includes(policy));
 const graph=buildSphere(F);
-const m=createHeadlessMatch(graph,{rule,conflict,botMode:'learn',brain:{seed:Number(seed)},
+const m=createHeadlessMatch(graph,{ growth:'classic',rule,conflict,botMode:'learn',brain:{seed:Number(seed)},
   economy:policy==='activity'?ACTIVITY_ECONOMY:STABILITY_ECONOMY});
 const {world,game}=m;
 if (conflict!=='legacy') assert.equal(game.conflict??world.physics.conflict, conflict, 'Selected conflict policy must be active');

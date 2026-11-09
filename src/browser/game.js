@@ -11,7 +11,7 @@ export function attachMatchEffects(handlers, archive) {
   Object.assign(effects, handlers);
 }
 
-const game = createMatchState(world);
+const game = createMatchState(world, { botMode:'learn' });
 
 const {
   addLive,

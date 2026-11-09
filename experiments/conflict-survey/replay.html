@@ -27,9 +27,20 @@ footer{font-size:.85rem;color:#95a8b9}a{color:#75dfc5}
 <footer>G+0 é o instante do disparo. As contagens cobrem toda a esfera F32, com 10.242 posições. Os quadros mostram intervalos maiores depois do impacto.</footer>
 <script src="contacts-replay-data.js"></script>
 <script>
+function render(extra){
 const replay=collisionReplay, get=id=>document.getElementById(id);
+if(extra){
+  document.title='Contenção do surto · Hexophage';
+  document.querySelector('h1').textContent='Conter a expansão depois do impacto';
+  document.querySelector('header p').textContent='A mesma nave P6 atinge a mesma fazenda em B2/S245. Os três mundos usam herança por time e a mesma economia. O limiar de contenção é de '+extra.threshold+' nascimentos simultâneos no mesmo foco.';
+}
 const colors=['#263b4d','#60e5bb','#ff918c','#b8c8da'];
-const modes=[
+const frames=extra?{classic:replay.frames.lineage,...extra.frames}:replay.frames;
+const modes=extra?[
+  ['classic','Crescimento livre','A reação evolui pela regra original.'],
+  ['contained','Contenção desde o início','O foco colapsa ao atingir o limiar.'],
+  ['late','Ativar após G+144','A mesma regra entra após o quadro G+144.'],
+]:[
   ['legacy','Empate neutro','A célula em empate nasce sem time.'],
   ['lineage','Herdar de um time','O desempate escolhe uma linhagem parental.'],
   ['block','Bloquear nascimento misto','Pais de dois times impedem o nascimento.'],
@@ -57,7 +68,7 @@ const panels=modes.map(([key,name,description])=>{
     dt.textContent=label;dd.className=cls;group.append(dt,dd);article.querySelector('dl').append(group);return dd;
   });
   get('panels').append(article);
-  return {canvas,values,frames:replay.frames[key].map(f=>({...f,packed:unpack(f.owners)}))};
+  return {canvas,values,frames:frames[key].map(f=>({...f,packed:unpack(f.owners)}))};
 });
 function hex(ctx,x,y,r){
   ctx.beginPath();
@@ -105,4 +116,12 @@ get('play').onclick=()=>{
   timer=setInterval(()=>{const i=Number(get('time').value)+1;set(i);if(i===replay.times.length-1)stop();},700);
 };
 new ResizeObserver(draw).observe(get('panels'));draw();
+}
+if(new URLSearchParams(location.search).get('comparison')==='growth'){
+  const dataset=document.createElement('script');
+  dataset.src='../outbreak/replay-data.js';
+  dataset.onload=()=>render(outbreakReplay);
+  dataset.onerror=()=>document.querySelector('header p').textContent='Não foi possível carregar o replay de contenção.';
+  document.head.append(dataset);
+}else render();
 </script></html>

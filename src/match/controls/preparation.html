@@ -18,9 +18,16 @@
     <label for="br-conflict">Nascimento em disputa</label>
     <select id="br-conflict" title="Aplicar aos próximos nascimentos da partida"></select>
   </div>
+  <div class="br-worldpick">
+    <label for="br-growth">Surtos</label><select id="br-growth" title="Aplicar na próxima geração"></select>
+  </div>
+  <div class="br-worldpick" id="br-growth-limit">
+    <label for="br-growth-threshold">Nascimentos por foco</label>
+    <input id="br-growth-threshold" type="number" min="1" step="1" title="Limiar de nascimentos simultâneos em uma reação conectada">
+  </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="br-worldpick"><label for="br-bot-mode">Bots</label>
-    <select id="br-bot-mode" title="Trocar inicia outra partida"><option value="profile">Estratégias do autômato</option><option value="learn">Aprendizes · simulação local</option></select>
+    <select id="br-bot-mode" title="Trocar inicia outra partida"><option value="learn">Aprendizes · simulação local</option><option value="profile">Estratégias do autômato</option></select>
   </div>
   <label id="br-brain-rate-label" for="br-brain-rate" hidden>Ritmo de pesquisa
     <select id="br-brain-rate" title="Esforço dos cinco aprendizes por geração"><option value="1">1×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select>

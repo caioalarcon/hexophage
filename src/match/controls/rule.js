@@ -1,19 +1,30 @@
 import { bindBotSelectors } from '../../bots/configuration-panel.js';
 import { game, invalidateBrain } from '../../browser/game.js';
 import { conflictPolicies } from '../../simulation/conflict.js';
+import { growthPolicies } from '../../simulation/growth.js';
 import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
 import { syncGameplayControls } from '../../patterns/editor/gameplay-controls.js';
-import { applyRuleProfile, resolveRuleProfile, ruleProfiles, setConflictPolicy } from '../rule-profiles.js';
+import { applyRuleProfile, resolveRuleProfile, ruleProfiles, setConflictPolicy, setGrowthPolicy } from '../rule-profiles.js';
 import { resetGame } from './new-match.js';
 
 const savedNotations = new Map();
 let comparisonPolicy;
 
+function syncGrowthControls() {
+  const select = $('br-growth'), spontaneous = world.physics.birthsFromVacuum;
+  select.disabled = spontaneous;
+  select.value = spontaneous ? 'classic' : game.growth;
+  select.title = spontaneous ? 'Regras B0 geram células no vazio' : 'Aplicar na próxima geração';
+  $('br-growth-threshold').value = String(game.growthThreshold);
+  $('br-growth-limit').hidden = select.value === 'classic';
+}
+
 function syncRuleControls() {
   const profile = game.profile;
   $('hl-rulechoice').value = profile.id;
   $('br-conflict').value = game.conflict;
+  syncGrowthControls();
   $('hl-ruleconfig').classList.toggle('show', !!profile.compile);
   $('hl-rule-error').textContent = '';
   $('hl-rule').removeAttribute('aria-invalid');
@@ -56,7 +67,8 @@ export function chooseRule(id, notation) {
 export function bindRuleControls() {
   const mode = $('br-bot-mode');
   const params = new URLSearchParams(location.search);
-  if (params.get('bots') === 'learn') game.botMode = 'learn';
+  const requestedBots = params.get('bots');
+  if (requestedBots === 'learn' || requestedBots === 'profile') game.botMode = requestedBots;
   if (['stability', 'activity'].includes(params.get('economy'))) comparisonPolicy = params.get('economy');
   mode.value = game.botMode;
   const rate = $('br-brain-rate');
@@ -90,6 +102,26 @@ export function bindRuleControls() {
     setConflictPolicy(world, game, conflict.value);
     invalidateBrain();
   };
+  const growth = $('br-growth'), threshold = $('br-growth-threshold');
+  for (const [id, label] of Object.entries(growthPolicies)) growth.add(new Option(label, id));
+  growth.onchange = () => {
+    setGrowthPolicy(world, game, growth.value);
+    invalidateBrain();
+    syncGrowthControls();
+  };
+  threshold.onchange = () => {
+    const value = threshold.valueAsNumber;
+    if (Number.isSafeInteger(value) && value > 0 && value !== game.growthThreshold) {
+      setGrowthPolicy(world, game, game.growth, value);
+      invalidateBrain();
+    }
+    syncGrowthControls();
+  };
+  const requestedGrowth = params.get('growth');
+  const requestedThreshold = Number(params.get('growthThreshold'));
+  if (Object.hasOwn(growthPolicies, requestedGrowth))
+    setGrowthPolicy(world, game, requestedGrowth,
+      Number.isSafeInteger(requestedThreshold) && requestedThreshold > 0 ? requestedThreshold : game.growthThreshold);
   const requestedConflict = params.get('conflict');
   if (Object.hasOwn(conflictPolicies, requestedConflict))
     setConflictPolicy(world, game, requestedConflict);

@@ -24,7 +24,7 @@ function tick(m) {
   gameEconomyTick(m.world,m.game,m.removeLive,()=>{});
 }
 function prepare(rule,points) {
-  const m=createHeadlessMatch(graph,{rule,economy,conflict:'legacy'});
+  const m=createHeadlessMatch(graph,{ growth:'classic',rule,economy,conflict:'legacy'});
   assert(m.commitStamp(1,m.patchForStamp(graph.farthest,0,points),false));
   for(let n=0;n<warm;n++)tick(m);
   return m;

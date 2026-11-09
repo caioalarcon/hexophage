@@ -12,7 +12,7 @@ const {chromium}=require('playwright');
     const page=await browser.newPage({viewport:{width:1440,height:900}});
     const errors=[];
     page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(pathToFileURL(path.resolve(__dirname,'..','index.html')).href);
+    await page.goto(pathToFileURL(path.resolve(__dirname,'..','index.html')).href+'?bots=profile');
     await page.waitForFunction(()=>window.__sphereLab?.world?.graph && window.__sphereLab.game.players.length===6,{timeout:90000});
     const buttons=await page.locator('.br-transform button').evaluateAll(nodes=>nodes.map(node=>{
       const r=node.getBoundingClientRect();

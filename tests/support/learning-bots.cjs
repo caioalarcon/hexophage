@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 
 module.exports = async function verifyLearningReload(page) {
   const url = new URL(page.url());
-  url.searchParams.set('bots', 'learn');
+  url.searchParams.delete('bots');
   const ready = () => page.waitForFunction(() => window.__sphereLab?.game.players.length === 6);
   await page.goto(url.href);
   await ready();

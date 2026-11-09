@@ -101,7 +101,8 @@ test('a live policy switch isolates learned memories, preserves balances and sur
   assert.notEqual(key(),original);
   setConflictPolicy(world,game,'legacy');
   assert.equal(key(),original);
-  assert.equal(world.physics,originalPhysics);
+  assert.equal(world.physics.birthOwner,originalPhysics.birthOwner);
+  assert.equal(world.physics.growthThreshold,originalPhysics.growthThreshold);
   setConflictPolicy(world,game,'lineage');
   applyRuleProfile(world,game,resolveRuleProfile('bays'));
   assert.equal(game.conflict,'lineage');

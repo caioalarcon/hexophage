@@ -1,7 +1,7 @@
 import { createSeedScreen, expectedSeedFlow, marginalSeedFlow, quoteEmptySeed } from './seed-screen.js';
 import { beginLocalTrial } from './local-world.js';
 import { aimAtTarget } from './aim.js';
-import { emptyHexPatch, placement, recognizes, relocate, selectSpot, signature, stampCatalog, witness } from './proposals.js';
+import { MAX_EMPTY_PATCH_SCAN, emptyHexPatch, placement, recognizes, relocate, selectSpot, signature, stampCatalog, witness } from './proposals.js';
 
 function randomStream(seed) {
   let x = (seed >>> 0) || 1;
@@ -76,7 +76,7 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
   const brains = game.players.map(p => {
     const random = randomStream(seed ^ Math.imul(p.id, 0x9e3779b9));
     return { random, payback: 120000 + random() * 240000, rivalWeight: .45 + random(),
-      ready: null, field: [], recover: false, surveyed: new Set(), rejected: new Map(), pilotSpent: 0, pilotAt: -Infinity };
+      ready: null, field: [], recover: false, surveyed: new Set(), investmentTurns: 0, rejected: new Map(), pilotSpent: 0, pilotAt: -Infinity };
   });
   const metrics = {
     trials: 0, completed: 0, studies: 0, screenVisits: 0, inheritedProbes: 0, investments: 0, rescues: 0, work: 0, visits: 0, actions: 0, waits: 0, invalidated: 0, boundary: 0, tactical: 0, deferred: 0, relocations: 0, pilots: 0, observed: 0,
@@ -98,6 +98,18 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     return mature.count && births.count ? marginalSeedFlow(births.mean, mature.mean, player, game.economy) : null;
   }
 
+  function learnSeed(player, brain, stamp) {
+    brain.surveyed.add(stamp);
+    const measure = screen.result(stamp);
+    if (!measure) return;
+    // Persist an actual requested measurement, including those obtained from
+    // the physics cache. The archived score is only a prior for a new trial.
+    const flow = expectedSeedFlow(measure, player, game.economy);
+    const cost = stamp.offsets.length * game.economy.stampCost;
+    const value = Number.isFinite(flow) ? normalized(flow * measure.turns, cost) : -1;
+    memory.observe(player.id, 'yield/survey', stamp.id, value);
+  }
+
   function selectInvestment(player, brain) {
     let best, highest = 0;
     const consider = stamp => {
@@ -108,13 +120,16 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       const rate = flow / Math.max(1, cost);
       if (rate > Math.max(highest, 1 / brain.payback)) { best = stamp; highest = rate; }
     };
-    for (const stamp of kit) if (screen.result(stamp)) consider(stamp);
-    for (const stamp of brain.surveyed) if (!Object.hasOwn(game.gameplay.kit, stamp.id)) consider(stamp);
-    if (best) return { stamp: best, investment: true };
+    for (const stamp of brain.surveyed) if (screen.result(stamp)) consider(stamp);
+    // Keep funding useful openings, with every other private investment decision
+    // available for an affordable alternative until the pool has been seen.
+    if (best && (survey || brain.surveyed.size === catalog.length || ++brain.investmentTurns % 2 !== 0))
+      return { stamp: best, investment: true };
     // The persisted v1 field signal includes the stamp price, even when a farm
     // subsequently produced revenue. Reassess those shapes ahead of new ones.
     if (!brain.prior) {
-      const evidence = [...memory.ranked(player.id, 'yield/empty', 16), ...memory.ranked(player.id, 'field/empty', 16),
+      const evidence = [...memory.ranked(player.id, 'yield/survey', 16).filter(row => row.mean > 0),
+        ...memory.ranked(player.id, 'yield/empty', 16), ...memory.ranked(player.id, 'field/empty', 16),
         ...memory.ranked(player.id, 'empty').filter(row => row.mean > 0)];
       brain.prior = [...new Set(evidence.map(row => byId.get(row.action)).filter(Boolean))];
     }
@@ -123,14 +138,21 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
     if (next) metrics.inheritedProbes++;
     else {
       let choices = kit.filter(unseen);
-      if (!choices.length && (player.stamps || !kit.length)) choices = catalog.filter(unseen);
+      if (!choices.length) choices = catalog.filter(unseen);
       if (choices.length) next = choices[Math.floor(brain.random() * choices.length)];
     }
     if (next) {
-      survey = { brain, stamp: next };
-      return null;
+      // Memoize deterministic physics, but only reveal it to a learner after
+      // that learner has selected this card for its own survey.
+      if (screen.result(next) === undefined) {
+        survey = { player, brain, stamp: next };
+        if (!best) return null;
+      } else {
+        learnSeed(player, brain, next);
+        if (screen.result(next)) consider(next);
+      }
     }
-    return { investment: false };
+    return best ? { stamp: best, investment: true } : { investment: false };
   }
 
   function propose(player, vacuumOpening = false) {
@@ -151,7 +173,7 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
         kit.length && brain.random() < .55 ? kit : catalog;
       if (spot.kind === 'rival' && brain.random() < .35) {
         const mobile = kit.filter(stamp => {
-          const drift = screen.result(stamp)?.drift;
+          const drift = brain.surveyed.has(stamp) && screen.result(stamp)?.drift;
           return drift && Math.max(Math.abs(drift[0]), Math.abs(drift[1]), Math.abs(drift[0] + drift[1])) >= 1.5;
         });
         if (mobile.length) pool = mobile;
@@ -162,7 +184,7 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       if (!action) continue;
       const { stamp } = action;
       if (spot.kind === 'rival' && !action.learnedPose && brain.random() < .8) {
-        action.turn = aimAtTarget(screen.result(stamp), action.turn);
+        action.turn = aimAtTarget(brain.surveyed.has(stamp) ? screen.result(stamp) : null, action.turn);
         action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
       }
       const { turn } = action;
@@ -172,11 +194,15 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
         : Math.floor(brain.random() * 9);
       const position = placement(world, spot, stamp, turn, distance);
       if (!position) continue;
-      const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, stamp.radius + (pick.investment ? 9 : 5), spot.kind === 'empty' ? 0 : distance + 3));
-      const horizon = vacuumOpening ? 2 : options.horizon ?? (pick.investment ? 18 : spot.kind === 'rival' ? 64 : 24);
       const measure = pick.investment && screen.result(stamp);
       const halo = measure ? Math.max(3, measure.reach + 2) : 0;
-      const proofCost = 1 + 3 * halo * (halo + 1) + (measure ? 2 * measure.turns : 0);
+      // A growing or traveling seed can leave the stamp-sized disk before
+      // the forecast ends, even though its observed trajectory fits the lab.
+      const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, halo,
+        stamp.radius + (pick.investment ? 9 : 5), spot.kind === 'empty' ? 0 : distance + 3));
+      const horizon = vacuumOpening ? 2 : options.horizon ?? (pick.investment ? 18 : spot.kind === 'rival' ? 64 : 24);
+      const scanCost = world.physics.growthThreshold && world.activeCount <= MAX_EMPTY_PATCH_SCAN ? world.activeCount : 0;
+      const proofCost = 1 + 3 * halo * (halo + 1) + (measure ? 2 * measure.turns : 0) + scanCost;
       let cached;
       if (measure && halo <= 20 && !options.horizon) {
         if (credits < proofCost) {
@@ -184,7 +210,7 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
           return null;
         }
         credits -= proofCost; metrics.visits += proofCost;
-        if (emptyHexPatch(world, position, halo)) cached = quoteEmptySeed(measure, player, game.economy);
+        if (emptyHexPatch(world, position, halo, measure.turns)) cached = quoteEmptySeed(measure, player, game.economy);
       }
       const job = cached ? null : beginLocalTrial(world, game, player.id, position.center, position.ids, { radius, horizon });
       if (!cached && !job) continue;
@@ -293,11 +319,11 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       return;
     }
     if (survey) {
-      const { brain, stamp } = survey;
+      const { player, brain, stamp } = survey;
       const step = screen.run(stamp, game.economy.stableAfter, Math.min(2400, credits));
       metrics.visits += step.visits; metrics.screenVisits += step.visits;
       credits -= step.visits;
-      if (step.done) { brain.surveyed.add(stamp); metrics.studies++; survey = null; }
+      if (step.done) { learnSeed(player, brain, stamp); metrics.studies++; survey = null; }
       return;
     }
     if (world.gen < earliest) return;
@@ -380,7 +406,7 @@ export function createThinkingStrategy(world, game, commitStamp, options = {}) {
       brain.ready = null;
       brain.field = [];
       brain.recover = false;
-      brain.prior = null; brain.surveyed.clear(); brain.rejected.clear();
+      brain.prior = null; brain.surveyed.clear(); brain.investmentTurns = 0; brain.rejected.clear();
     }
   };
   return strategy;

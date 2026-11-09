@@ -16,7 +16,7 @@ function step(m) {advanceGeneration(m.world);gameEconomyTick(m.world,m.game,m.re
 const coord=[];
 for(let q=-12;q<=12;q++)for(let r=-12;r<=12;r++)if(Math.abs(q+r)<=12)coord.push([q,r]);
 function view(trial) {
-  const branches=Array.from({length:3},()=>createHeadlessMatch(graph,{rule:trial.rule,conflict:'lineage',economy:STABILITY_ECONOMY}));
+  const branches=Array.from({length:3},()=>createHeadlessMatch(graph,{ growth:'classic',rule:trial.rule,conflict:'lineage',economy:STABILITY_ECONOMY}));
   const m=branches[0],sites=m.patchForStamp(origin,0,coord),ix=new Map(sites.map((id,i)=>[id,i]));
   const p=m.game.gameplay.patterns.find(p=>p.id===trial.target),shape=decodeRLE(p.rle);
   const mid=[0,1].map(i=>Math.round(shape.reduce((n,v)=>n+v[i],0)/shape.length));

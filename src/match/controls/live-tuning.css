@@ -25,4 +25,5 @@
 #hexlab .br-diagnostic h3 {font-size:14px;margin:8px 0 4px}
 #hexlab .br-diagnostic p {max-width:76ch;font-size:12px;line-height:1.5;margin:4px 0}
 #hexlab .br-diagnostic p:empty {display:none}
-#hexlab #br-wire-preview[hidden]{display:none}
+#hexlab #br-wire-preview[hidden],#hexlab #br-growth-limit[hidden]{display:none}
+#hexlab #br-growth-threshold{width:7em}

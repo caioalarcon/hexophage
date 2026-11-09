@@ -2,6 +2,8 @@
 
 **Ashley 2015 com nascimentos remunerados e herança por time é a combinação que eu levaria para um playtest.** Em três partidas F320 os aprendizes escolheram 38 ataques até G65.536. Reproduzimos cada compra e medimos o que ela mudou em relação a esperar. B2/S245, apesar das excelentes fazendas, transforma quase qualquer tiro bem apontado contra elas numa expansão maciça. A autoria decide a quem a expansão pertence. [Resultados por partida](./activity.csv) · [Efeito individual dos ataques](./attacks.csv)
 
+A correção seguinte introduziu contenção física de surtos. As medições abaixo registram a rodada anterior, no commit `52212557`, com crescimento livre. [Antes e depois da contenção](../outbreak/STUDY.md)
+
 ## O campo cinzento
 
 Na versão anterior, dois pais de times diferentes empatavam ao produzir um nascimento B2. O filho recebia o proprietário 7, neutro. Esses filhos continuam vivos, influenciam seus vizinhos e podem ter descendência neutra. Esse proprietário não tem reserva, não paga nascimentos e não passa por erosão por insolvência. O contador de células dos jogadores podia chegar a zero enquanto a esfera permanecia cheia de vida.

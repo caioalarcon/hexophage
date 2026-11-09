@@ -10,13 +10,14 @@ const population = Uint8Array.from({ length: 128 }, (_, mask) => {
 export function recordCombatDeath(world, id, victim, claims) {
   const { adj, deg } = world.graph, degree = deg[id], before = world.nextOwners;
   const survive = world.physics.tables[degree][1];
-  let rivals = 0, background = 0;
+  let rivals = 0, background = 0, occupied = 0;
   for (let k = 0; k < degree; k++) {
     const owner = before[adj[id * 6 + k]];
+    if (owner) occupied |= 1 << k;
     if (owner === victim || owner === 7) background |= 1 << k;
     else if (owner) rivals |= 1 << owner;
   }
-  if (!rivals || !survive[background]) return;
+  if (!rivals || !survive[background] || survive[occupied]) return;
 
   let credited = rivals;
   if (population[rivals] > 1) {

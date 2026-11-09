@@ -20,7 +20,7 @@ export function trace(graph, anchor, orientation, verify=false){
   if(!placed || new Set(placed).size!==seed.length)return null;
   let reference=null;
   if(verify){
-    reference=createHeadlessMatch(graph,{ conflict: 'legacy',init:1e9,strategies:new Map([2,3,4,5,6].map(i=>[i,()=>{}])),economy:{stableEnergy:0,birthCost:0,combatFee:0}});
+    reference=createHeadlessMatch(graph,{ growth:'classic', conflict: 'legacy',init:1e9,strategies:new Map([2,3,4,5,6].map(i=>[i,()=>{}])),economy:{stableEnergy:0,birthCost:0,combatFee:0}});
     assert(reference.commitStamp(1,placed,false));
   }
   let change=placed,count=seed.length;

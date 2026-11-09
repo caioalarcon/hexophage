@@ -49,7 +49,7 @@ function tick(m,funded=true) {
   if(funded) gameEconomyTick(m.world,m.game,m.removeLive,()=>{});
 }
 function trial(defender,ship,rotation,lane,warm,owners='opposed',funded=true,details=false,observer,conflict=policy) {
-  const m=createHeadlessMatch(graph,{rule,economy:STABILITY_ECONOMY,conflict});
+  const m=createHeadlessMatch(graph,{rule,economy:STABILITY_ECONOMY,conflict,growth:'classic'});
   const shipPhase=warm%2;
   let body=shape(ship,shipPhase), v=velocity(ship);
   for(let i=0;i<rotation;i++){body=body.map(rotate);v=rotate(v);}
@@ -66,6 +66,7 @@ function trial(defender,ship,rotation,lane,warm,owners='opposed',funded=true,det
     shots=null;
   }
   if(!shots) return;
+  if(mode==='fixtures'||mode==='fixture')return {rule,F,ship:ship.id,target:defender.id,rotation,lane,warm,defendIds,shots};
   if(owners==='ship-only') {
     // Keep the graph and launch sites identical. Erase only the defending
     // colony; the ship buyer still has the same reserve as in the paired run.
@@ -125,7 +126,7 @@ function trial(defender,ship,rotation,lane,warm,owners='opposed',funded=true,det
   if(details && owners==='ship-only') Object.assign(row,{firstPentagonHalo:halo,firstDifferentShipPopulation:departure,departureDistance});
   return row;
 }
-if(mode==='screen') {
+if(mode==='screen'||mode==='fixtures') {
   const ships=patterns.filter(p=>p.group==='nave'&&p.cells<=70).sort((a,b)=>a.cells-b.cells);
   // Broader sample of legally affordable attack shapes for the reported rule.
   const selected=ships.slice(0,rule==='hex-b2s245'?6:2);
@@ -134,6 +135,7 @@ if(mode==='screen') {
     for(const rotation of [0,1,2,3,4,5]) for(const lane of [-2,0,2]) for(const warm of [16,17]) {
       const row=trial(lookup.get(target),ship,rotation,lane,warm,shipId??'opposed');
       if(!row)continue;
+      if(mode==='fixtures'){console.log(JSON.stringify(row));continue;}
       if(!header) { console.log(Object.keys(row).join(','));header=true; }
       console.log(Object.values(row).join(','));
     }
@@ -166,6 +168,10 @@ if(mode==='screen') {
     trial(lookup.get(defenderId),lookup.get(shipId),Number(rot),Number(offset),Number(stage),'opposed',true,false,observe,conflict);
   }
   console.log('const collisionReplay = '+JSON.stringify({F,n:graph.n,anchor,rule,ship:shipId,target:defenderId,times,coords:coords.toString('base64'),local,frames})+';');
+} else if(mode==='fixture') {
+  const row=trial(lookup.get(defenderId),lookup.get(shipId),Number(rot),Number(offset),Number(stage));
+  assert(row,'Invalid placement');
+  console.log(JSON.stringify(row));
 } else if(mode==='case') {
   const row=trial(lookup.get(defenderId),lookup.get(shipId),Number(rot),Number(offset),Number(stage),ownerMode,ledger==='on',true);
   assert(row,'Invalid placement');

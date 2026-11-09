@@ -13,10 +13,10 @@ import {ACTIVITY_ECONOMY} from '../../src/match/constructive-economy.js';
 
 const [rule='ashley15', f='40', generations='65536', seed='4751', conflict='lineage', sample='all']=process.argv.slice(2);
 const graph=buildSphere(+f), orders=[], economy=ACTIVITY_ECONOMY;
-const live=createHeadlessMatch(graph,{rule,conflict,economy,botMode:'learn',
+const live=createHeadlessMatch(graph,{ growth:'classic',rule,conflict,economy,botMode:'learn',
   brain:{seed:+seed,onPlacement:o=>orders.push(o)}});
 const silent=new Map([2,3,4,5,6].map(id=>[id,()=>{}]));
-const replay=createHeadlessMatch(graph,{rule,conflict,economy,strategies:silent});
+const replay=createHeadlessMatch(graph,{ growth:'classic',rule,conflict,economy,strategies:silent});
 live.game.players[0].out=replay.game.players[0].out=true;
 
 function branch(m) {

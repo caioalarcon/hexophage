@@ -396,7 +396,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-diagnostic h3 {font-size:14px;margin:8px 0 4px}
 #hexlab .br-diagnostic p {max-width:76ch;font-size:12px;line-height:1.5;margin:4px 0}
 #hexlab .br-diagnostic p:empty {display:none}
-#hexlab #br-wire-preview[hidden]{display:none}
+#hexlab #br-wire-preview[hidden],#hexlab #br-growth-limit[hidden]{display:none}
+#hexlab #br-growth-threshold{width:7em}
 /* Hexophage gameplay HUD (existing engine and the Callahan physics are unchanged). */
 #hexlab .br-top{display:grid;grid-template-columns:minmax(150px,205px) minmax(0,1fr);align-items:stretch}
 #hexlab .hl-head{padding:4px 9px;min-height:36px}
@@ -587,6 +588,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .hl-shell{flex:1 1 auto;min-height:0;min-width:0;display:grid!important;grid-template-columns:minmax(0,1fr) clamp(184px,19vw,255px)!important;grid-template-rows:minmax(0,1fr)!important;overflow:hidden}
 #hexlab .hl-left{grid-column:1;grid-row:1;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;border:0}
 #hexlab .br-stage{flex:1 1 auto;min-height:0;width:100%;position:relative}
+#hexlab #br-outbreak-event{position:absolute;right:8px;bottom:7px;padding:2px 6px;border-radius:4px;background:#142735e6;color:#eed4a4;font-size:11px}
 #hexlab #hl-worldbox{min-height:0!important;height:100%;width:100%}
 #hexlab .br-hotbar{flex:0 0 auto;min-height:77px;width:100%;min-width:0;align-items:center;border-top:1px solid #354a61;padding:5px 7px}
 #hexlab .br-deck{flex:1 1 0;min-width:0}
@@ -783,7 +785,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <div id="hl-grid" aria-hidden="true"></div>
  <canvas id="hl-world" aria-label="Janela plana do universo esférico ou inspeção 3D do globo"></canvas>
  <canvas id="hl-globe-gpu" aria-hidden="true"></canvas>
-</div></div>
+</div><output id="br-outbreak-event" hidden aria-live="off"></output></div>
    <div class="br-hotbar" aria-label="Carimbos da partida">
  <div class="br-deck" id="br-deck" role="group" aria-label="Selecione um carimbo"></div>
  <div class="br-transform" role="group" aria-label="Transformar carimbo selecionado">
@@ -846,9 +848,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     <label for="br-conflict">Nascimento em disputa</label>
     <select id="br-conflict" title="Aplicar aos próximos nascimentos da partida"></select>
   </div>
+  <div class="br-worldpick">
+    <label for="br-growth">Surtos</label><select id="br-growth" title="Aplicar na próxima geração"></select>
+  </div>
+  <div class="br-worldpick" id="br-growth-limit">
+    <label for="br-growth-threshold">Nascimentos por foco</label>
+    <input id="br-growth-threshold" type="number" min="1" step="1" title="Limiar de nascimentos simultâneos em uma reação conectada">
+  </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="br-worldpick"><label for="br-bot-mode">Bots</label>
-    <select id="br-bot-mode" title="Trocar inicia outra partida"><option value="profile">Estratégias do autômato</option><option value="learn">Aprendizes · simulação local</option></select>
+    <select id="br-bot-mode" title="Trocar inicia outra partida"><option value="learn">Aprendizes · simulação local</option><option value="profile">Estratégias do autômato</option></select>
   </div>
   <label id="br-brain-rate-label" for="br-brain-rate" hidden>Ritmo de pesquisa
     <select id="br-brain-rate" title="Esforço dos cinco aprendizes por geração"><option value="1">1×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select>
@@ -1058,6 +1067,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     const scope3 = [...key2, quoteKey(economy), ...ECONOMY_KEYS.map((k) => economy[k])];
     if (game2.conflict && game2.conflict !== "legacy") scope3.push(game2.conflict);
+    if (world2.physics.growthThreshold) scope3.push("growth", world2.physics.growthThreshold);
     return JSON.stringify(scope3);
   }
   function put(map, key2, value, limit) {
@@ -1371,7 +1381,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/simulation/population.js
   function allocateCells(n) {
-    const store = {};
+    const store = { lastOutbreak: null };
     store.cells = new Uint8Array(n);
     store.next = new Uint8Array(n);
     store.owners = new Uint8Array(n);
@@ -1440,10 +1450,69 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       world2.activeCount = 0;
       world2.nextActiveCount = 0;
       world2.gen = 0;
+      world2.lastOutbreak = null;
       world2.evaluated = 0;
       effects2.populationCleared?.();
     }
     return { addLive: addLive2, removeLive, clearCells: clearCells2 };
+  }
+
+  // src/simulation/growth.js
+  var DEFAULT_GROWTH = "contained";
+  var DEFAULT_GROWTH_THRESHOLD = 384;
+  var growthPolicies = Object.freeze({
+    contained: "Conter surtos",
+    classic: "Crescimento livre"
+  });
+  function withGrowth(physics, id, threshold = DEFAULT_GROWTH_THRESHOLD) {
+    if (!Object.hasOwn(growthPolicies, id)) throw new RangeError("Crescimento desconhecido: " + id);
+    if (!Number.isSafeInteger(threshold) || threshold < 1) throw new RangeError("Limiar de crescimento inválido");
+    if (id === "contained" && !physics.birthsFromVacuum) return { ...physics, growthThreshold: threshold };
+    if (!physics.growthThreshold) return physics;
+    const { growthThreshold, ...free } = physics;
+    return free;
+  }
+  function hotCells(liveIds, threshold, born, take, expand) {
+    const hot = [], queue = [];
+    const visit = (id) => {
+      if (take(id)) queue.push(id);
+    };
+    for (const first of liveIds) {
+      if (!take(first)) continue;
+      queue.length = 0;
+      queue.push(first);
+      let births = 0;
+      for (let i = 0; i < queue.length; i++) {
+        const id = queue[i];
+        if (born(id)) births++;
+        expand(id, visit);
+      }
+      if (births >= threshold) for (const id of queue) hot.push(id);
+    }
+    return hot;
+  }
+  function quenchReactions(liveIds, threshold, born, expand, remove) {
+    const remaining = new Set(liveIds);
+    for (const id of hotCells(remaining, threshold, born, (id2) => remaining.delete(id2), expand)) remove(id);
+  }
+  function quenchGraph({ adj, deg }, before, after, liveIds, threshold, remove) {
+    const take = (id) => {
+      if (after[id] !== 1) return false;
+      after[id] = 2;
+      return true;
+    };
+    const hot = hotCells(liveIds, threshold, (id) => !before[id], take, (id, visit) => {
+      for (let k = 0; k < deg[id]; k++) {
+        const near = adj[6 * id + k];
+        if (after[near] === 1) visit(near);
+        for (let j = 0; j < deg[near]; j++) {
+          const far = adj[6 * near + j];
+          if (after[far] === 1) visit(far);
+        }
+      }
+    });
+    for (const id of liveIds) after[id] = 1;
+    for (const id of hot) remove(id);
   }
 
   // src/simulation/cell-fate.js
@@ -1461,7 +1530,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/simulation/generation.js
   function advanceGeneration(world2) {
-    let births = 0;
+    let births = 0, totalBirths = 0;
     const a = world2.cells, b = world2.next, oa = world2.owners, ob = world2.nextOwners, g = world2.graph, adj = g.adj, deg = g.deg, n = g.n;
     const act = world2.active, actCount = world2.activeCount, positions = world2.positionsActive;
     const useDense = world2.physics.birthsFromVacuum || actCount * 7 >= n;
@@ -1484,7 +1553,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (const items of nextOwnerCells) items.length = 0;
     const calc = evaluateCell(world2);
     const store = (id, owner) => {
-      if (owner === 1 && !a[id]) births++;
+      if (!a[id]) {
+        totalBirths++;
+        if (owner === 1) births++;
+      }
       b[id] = 1;
       ob[id] = owner;
       newActive[nextCount] = id;
@@ -1536,6 +1608,20 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world2.nextActiveCount = actCount;
     world2.ownerCells = nextOwnerCells;
     world2.nextOwnerCells = oldOwnerCells;
+    const limit = world2.physics.growthThreshold;
+    if (limit && totalBirths >= limit) {
+      let suppressed = 0, suppressedBirths = 0;
+      const { removeLive } = createPopulation(world2, {});
+      quenchGraph(g, a, b, newActive.subarray(0, nextCount), limit, (id) => {
+        suppressed++;
+        if (!a[id]) {
+          suppressedBirths++;
+          if (ob[id] === 1) births--;
+        }
+        removeLive(id);
+      });
+      if (suppressed) world2.lastOutbreak = { gen: world2.gen + 1, cells: suppressed, births: suppressedBirths };
+    }
     world2.gen++;
     world2.evaluated = evaluated;
     world2.statCount++;
@@ -1695,6 +1781,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   // src/patterns/planar-simulation.js
   var stride = 65536;
   var adjacent = DIR.map(([q, r]) => q * stride + r);
+  var reactionLinks = [.../* @__PURE__ */ new Set([...adjacent, ...adjacent.flatMap((a) => adjacent.map((b) => a + b))])].filter((d) => d !== 0);
   function patternSite(q, r) {
     return q * stride + r;
   }
@@ -1766,6 +1853,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       next.set(id, age + 1);
       if (age === 0) births++;
       if (age + 1 >= threshold) mature++;
+    }
+    const limit = physics.growthThreshold;
+    if (limit && births >= limit) {
+      quenchReactions(next.keys(), limit, (id) => !ages.has(id), (id, visit) => {
+        for (const d of reactionLinks) visit(id + d);
+      }, (id) => {
+        const age = next.get(id);
+        if (age === 1) births--;
+        if (age >= threshold) mature--;
+        next.delete(id);
+      });
     }
     return { next, births, mature };
   }
@@ -1983,13 +2081,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function recordCombatDeath(world2, id, victim, claims) {
     const { adj, deg } = world2.graph, degree = deg[id], before = world2.nextOwners;
     const survive = world2.physics.tables[degree][1];
-    let rivals = 0, background = 0;
+    let rivals = 0, background = 0, occupied = 0;
     for (let k = 0; k < degree; k++) {
       const owner = before[adj[id * 6 + k]];
+      if (owner) occupied |= 1 << k;
       if (owner === victim || owner === 7) background |= 1 << k;
       else if (owner) rivals |= 1 << owner;
     }
-    if (!rivals || !survive[background]) return;
+    if (!rivals || !survive[background] || survive[occupied]) return;
     let credited = rivals;
     if (population[rivals] > 1) {
       const masks = new Uint8Array(7);
@@ -2068,11 +2167,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const n = ids.length, complete = n === source.n;
     const interior = complete ? n : rings[radius];
     const edge = complete ? n : rings[radius - 1];
-    const deg = new Uint8Array(n), adj = new Uint16Array(6 * interior);
-    for (let i = 0; i < interior; i++) {
+    const deg = new Uint8Array(n), adj = new Uint16Array(6 * n);
+    for (let i = 0; i < n; i++) {
       const id = ids[i];
-      deg[i] = source.deg[id];
-      for (let k = 0; k < deg[i]; k++) adj[i * 6 + k] = index.get(source.adj[id * 6 + k]);
+      for (let k = 0; k < source.deg[id]; k++) {
+        const local = index.get(source.adj[id * 6 + k]);
+        if (local !== void 0) adj[i * 6 + deg[i]++] = local;
+      }
     }
     return { ids, index, n, interior, edge, deg, adj };
   }
@@ -2102,13 +2203,27 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     mature.fill(0);
     live.fill(0);
     let changed = false, claims;
-    const before = { graph, physics: state.physics, nextOwners: state.owners };
-    for (let i = 0; i < graph.interior; i++) {
-      const prev = state.owners[i], owner = state.steady ? prev : state.fate(i);
-      if (!state.steady) {
+    if (!state.steady) {
+      let naturalBirths = 0;
+      for (let i = 0; i < graph.interior; i++) {
+        const owner = state.fate(i);
         state.nextOwners[i] = owner;
         state.nextCells[i] = Number(owner !== 0);
+        if (owner && !state.cells[i]) naturalBirths++;
+        if (owner && state.physics.growthThreshold && i >= graph.edge) state.touchedBoundary = true;
       }
+      const limit = state.physics.growthThreshold;
+      if (limit && naturalBirths >= limit) {
+        const live2 = [];
+        for (let i = 0; i < graph.n; i++) if (state.nextCells[i]) live2.push(i);
+        quenchGraph(graph, state.cells, state.nextCells, live2, limit, (i) => {
+          if (i < graph.interior) state.nextCells[i] = state.nextOwners[i] = 0;
+        });
+      }
+    }
+    const before = { graph, physics: state.physics, nextOwners: state.owners };
+    for (let i = 0; i < graph.interior; i++) {
+      const prev = state.owners[i], owner = state.steady ? prev : state.nextOwners[i];
       if (prev !== owner) {
         changed = true;
         if (prev && prev < 7 && !owner && economy.combatFee > 0) {
@@ -2199,7 +2314,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const action = branch(snapshot, graph, world2.physics, game2.players);
     const cost = energyCost(fresh.length, economy);
     action.players[owner - 1].reserve -= cost;
-    let boundary = graph.interior < graph.n && (world2.physics.birthsFromVacuum || snapshot.cells.subarray(graph.interior).some(Boolean));
+    let boundary = graph.interior < graph.n && (world2.physics.birthsFromVacuum || snapshot.cells.subarray(world2.physics.growthThreshold ? graph.edge : graph.interior).some(Boolean));
     let turns = 0, work = 0, result, halfway;
     const mid = Math.floor(horizon2 / 2), observedAge = Math.min(16, Math.max(2, mid));
     function deferred() {
@@ -2221,6 +2336,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         while (!result && turns < end) {
           const baseErodes = advance(control, economy, outside), actionErodes = advance(action, economy, outside);
           work += 2 * graph.interior;
+          boundary || (boundary = !!(action.touchedBoundary || control.touchedBoundary));
           for (let i = graph.edge; !boundary && i < graph.interior; i++)
             if (action.owners[i] || control.owners[i]) boundary = true;
           for (const p of action.players)
@@ -2401,8 +2517,20 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       return 8 * stage + owner;
     });
   }
-  function emptyHexPatch(world2, position, radius) {
+  var MAX_EMPTY_PATCH_SCAN = 2048;
+  function emptyHexPatch(world2, position, radius, turns = 0) {
     if (radius > 20 || !isotropic(world2.physics) || world2.physics.birthsFromVacuum) return false;
+    if (world2.physics.growthThreshold && turns && world2.activeCount) {
+      const { coords, f } = world2.graph;
+      if (!coords || !f || world2.activeCount > MAX_EMPTY_PATCH_SCAN) return false;
+      const reach = 2 * (radius + turns) / f + 1e-6;
+      const c = position.center * 3;
+      for (let i = 0; i < world2.activeCount; i++) {
+        const s = world2.active[i] * 3;
+        const x = coords[c] - coords[s], y = coords[c + 1] - coords[s + 1], z = coords[c + 2] - coords[s + 2];
+        if (x * x + y * y + z * z <= reach * reach) return false;
+      }
+    }
     const ids = patchForStamp(world2, position.center, position.heading, disk(radius));
     return !!ids && ids.every((id) => world2.cells[id] === 0);
   }
@@ -2532,6 +2660,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         field: [],
         recover: false,
         surveyed: /* @__PURE__ */ new Set(),
+        investmentTurns: 0,
         rejected: /* @__PURE__ */ new Map(),
         pilotSpent: 0,
         pilotAt: -Infinity
@@ -2571,6 +2700,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const births = memory.lookup(player.id, "yield/births", stamp.id);
       return mature.count && births.count ? marginalSeedFlow(births.mean, mature.mean, player, game2.economy) : null;
     }
+    function learnSeed(player, brain2, stamp) {
+      brain2.surveyed.add(stamp);
+      const measure2 = screen.result(stamp);
+      if (!measure2) return;
+      const flow = expectedSeedFlow(measure2, player, game2.economy);
+      const cost = stamp.offsets.length * game2.economy.stampCost;
+      const value = Number.isFinite(flow) ? normalized(flow * measure2.turns, cost) : -1;
+      memory.observe(player.id, "yield/survey", stamp.id, value);
+    }
     function selectInvestment(player, brain2) {
       let best, highest = 0;
       const consider = (stamp) => {
@@ -2584,11 +2722,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           highest = rate;
         }
       };
-      for (const stamp of kit) if (screen.result(stamp)) consider(stamp);
-      for (const stamp of brain2.surveyed) if (!Object.hasOwn(game2.gameplay.kit, stamp.id)) consider(stamp);
-      if (best) return { stamp: best, investment: true };
+      for (const stamp of brain2.surveyed) if (screen.result(stamp)) consider(stamp);
+      if (best && (survey || brain2.surveyed.size === catalog2.length || ++brain2.investmentTurns % 2 !== 0))
+        return { stamp: best, investment: true };
       if (!brain2.prior) {
         const evidence = [
+          ...memory.ranked(player.id, "yield/survey", 16).filter((row) => row.mean > 0),
           ...memory.ranked(player.id, "yield/empty", 16),
           ...memory.ranked(player.id, "field/empty", 16),
           ...memory.ranked(player.id, "empty").filter((row) => row.mean > 0)
@@ -2600,14 +2739,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (next) metrics.inheritedProbes++;
       else {
         let choices = kit.filter(unseen);
-        if (!choices.length && (player.stamps || !kit.length)) choices = catalog2.filter(unseen);
+        if (!choices.length) choices = catalog2.filter(unseen);
         if (choices.length) next = choices[Math.floor(brain2.random() * choices.length)];
       }
       if (next) {
-        survey = { brain: brain2, stamp: next };
-        return null;
+        if (screen.result(next) === void 0) {
+          survey = { player, brain: brain2, stamp: next };
+          if (!best) return null;
+        } else {
+          learnSeed(player, brain2, next);
+          if (screen.result(next)) consider(next);
+        }
       }
-      return { investment: false };
+      return best ? { stamp: best, investment: true } : { investment: false };
     }
     function propose(player, vacuumOpening = false) {
       const brain2 = brains[player.id - 1];
@@ -2627,7 +2771,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         let pool = vacuumOpening ? catalog2.filter((p) => p.radius <= 2) : kit.length && brain2.random() < 0.55 ? kit : catalog2;
         if (spot.kind === "rival" && brain2.random() < 0.35) {
           const mobile = kit.filter((stamp2) => {
-            const drift = screen.result(stamp2)?.drift;
+            const drift = brain2.surveyed.has(stamp2) && screen.result(stamp2)?.drift;
             return drift && Math.max(Math.abs(drift[0]), Math.abs(drift[1]), Math.abs(drift[0] + drift[1])) >= 1.5;
           });
           if (mobile.length) pool = mobile;
@@ -2642,7 +2786,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if (!action) continue;
         const { stamp } = action;
         if (spot.kind === "rival" && !action.learnedPose && brain2.random() < 0.8) {
-          action.turn = aimAtTarget(screen.result(stamp), action.turn);
+          action.turn = aimAtTarget(brain2.surveyed.has(stamp) ? screen.result(stamp) : null, action.turn);
           action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
         }
         const { turn } = action;
@@ -2651,11 +2795,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         else if (spot.kind === "empty") distance = player.stamps ? 4 + Math.floor(brain2.random() * 14) : Math.floor(brain2.random() * 9);
         const position = placement(world2, spot, stamp, turn, distance);
         if (!position) continue;
-        const radius = vacuumOpening ? 5 : Math.min(20, Math.max(5, stamp.radius + (pick.investment ? 9 : 5), spot.kind === "empty" ? 0 : distance + 3));
-        const horizon2 = vacuumOpening ? 2 : options.horizon ?? (pick.investment ? 18 : spot.kind === "rival" ? 64 : 24);
         const measure2 = pick.investment && screen.result(stamp);
         const halo = measure2 ? Math.max(3, measure2.reach + 2) : 0;
-        const proofCost = 1 + 3 * halo * (halo + 1) + (measure2 ? 2 * measure2.turns : 0);
+        const radius = vacuumOpening ? 5 : Math.min(20, Math.max(
+          5,
+          halo,
+          stamp.radius + (pick.investment ? 9 : 5),
+          spot.kind === "empty" ? 0 : distance + 3
+        ));
+        const horizon2 = vacuumOpening ? 2 : options.horizon ?? (pick.investment ? 18 : spot.kind === "rival" ? 64 : 24);
+        const scanCost = world2.physics.growthThreshold && world2.activeCount <= MAX_EMPTY_PATCH_SCAN ? world2.activeCount : 0;
+        const proofCost = 1 + 3 * halo * (halo + 1) + (measure2 ? 2 * measure2.turns : 0) + scanCost;
         let cached;
         if (measure2 && halo <= 20 && !options.horizon) {
           if (credits < proofCost) {
@@ -2664,7 +2814,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           }
           credits -= proofCost;
           metrics.visits += proofCost;
-          if (emptyHexPatch(world2, position, halo)) cached = quoteEmptySeed(measure2, player, game2.economy);
+          if (emptyHexPatch(world2, position, halo, measure2.turns)) cached = quoteEmptySeed(measure2, player, game2.economy);
         }
         const job = cached ? null : beginLocalTrial(world2, game2, player.id, position.center, position.ids, { radius, horizon: horizon2 });
         if (!cached && !job) continue;
@@ -2778,13 +2928,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return;
       }
       if (survey) {
-        const { brain: brain2, stamp } = survey;
+        const { player, brain: brain2, stamp } = survey;
         const step2 = screen.run(stamp, game2.economy.stableAfter, Math.min(2400, credits));
         metrics.visits += step2.visits;
         metrics.screenVisits += step2.visits;
         credits -= step2.visits;
         if (step2.done) {
-          brain2.surveyed.add(stamp);
+          learnSeed(player, brain2, stamp);
           metrics.studies++;
           survey = null;
         }
@@ -2904,6 +3054,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         brain2.recover = false;
         brain2.prior = null;
         brain2.surveyed.clear();
+        brain2.investmentTurns = 0;
         brain2.rejected.clear();
       }
     };
@@ -4403,12 +4554,23 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     };
   }
   function setConflictPolicy(world2, game2, id) {
-    world2.physics = withConflict(game2.profile.physics, id);
+    world2.physics = withGrowth(
+      withConflict(game2.profile.physics, id),
+      game2.growth ?? DEFAULT_GROWTH,
+      game2.growthThreshold ?? DEFAULT_GROWTH_THRESHOLD
+    );
     game2.conflict = id;
+  }
+  function setGrowthPolicy(world2, game2, id, threshold = game2.growthThreshold ?? DEFAULT_GROWTH_THRESHOLD) {
+    world2.physics = withGrowth(withConflict(game2.profile.physics, game2.conflict), id, threshold);
+    game2.growth = id;
+    game2.growthThreshold = threshold;
   }
   function applyRuleProfile(world2, game2, profile, overrides) {
     world2.rule = profile.id;
     game2.profile = profile;
+    game2.growth ?? (game2.growth = DEFAULT_GROWTH);
+    game2.growthThreshold ?? (game2.growthThreshold = DEFAULT_GROWTH_THRESHOLD);
     setConflictPolicy(world2, game2, game2.conflict ?? DEFAULT_CONFLICT);
     game2.gameplay = profile.gameplay;
     game2.economy = { ...STABILITY_ECONOMY, ...profile.economy, ...overrides };
@@ -4417,7 +4579,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/match/state.js
-  function createMatchState(world2, { rule, notation, economy, conflict, botMode = "profile" } = {}) {
+  function createMatchState(world2, { rule, notation, economy, conflict, growth, growthThreshold, botMode = "profile" } = {}) {
     const game2 = {
       colors: [
         "#000000",
@@ -4444,6 +4606,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       players: [],
       botMode,
       conflict,
+      growth,
+      growthThreshold,
       brainRate: 8,
       tax: 0,
       interval: 10,
@@ -4472,7 +4636,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     brain.archive = archive;
     Object.assign(effects, handlers);
   }
-  var game = createMatchState(world);
+  var game = createMatchState(world, { botMode: "learn" });
   var {
     addLive,
     stampAdditions,
@@ -6260,8 +6424,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/match/hud/status.js
+  var reportedOutbreak = null;
   function updateStats() {
     updateStampReadiness();
+    const event = world.lastOutbreak ?? null;
+    if (event !== reportedOutbreak) {
+      const label = $("br-outbreak-event");
+      label.hidden = !event;
+      if (event) {
+        label.textContent = "Surto contido · G" + event.gen;
+        label.title = event.births + " nascimentos impedidos · " + (event.cells - event.births) + " células sobreviventes removidas";
+      }
+      reportedOutbreak = event;
+    }
     $("hl-gen").textContent = world.gen.toLocaleString("pt-BR");
     $("hl-pop").textContent = world.activeCount.toLocaleString("pt-BR");
     $("hl-eval").textContent = world.evaluated.toLocaleString("pt-BR");
@@ -8954,10 +9129,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   // src/match/controls/rule.js
   var savedNotations = /* @__PURE__ */ new Map();
   var comparisonPolicy;
+  function syncGrowthControls() {
+    const select = $("br-growth"), spontaneous = world.physics.birthsFromVacuum;
+    select.disabled = spontaneous;
+    select.value = spontaneous ? "classic" : game.growth;
+    select.title = spontaneous ? "Regras B0 geram células no vazio" : "Aplicar na próxima geração";
+    $("br-growth-threshold").value = String(game.growthThreshold);
+    $("br-growth-limit").hidden = select.value === "classic";
+  }
   function syncRuleControls() {
     const profile = game.profile;
     $("hl-rulechoice").value = profile.id;
     $("br-conflict").value = game.conflict;
+    syncGrowthControls();
     $("hl-ruleconfig").classList.toggle("show", !!profile.compile);
     $("hl-rule-error").textContent = "";
     $("hl-rule").removeAttribute("aria-invalid");
@@ -8997,7 +9181,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function bindRuleControls() {
     const mode = $("br-bot-mode");
     const params = new URLSearchParams(location.search);
-    if (params.get("bots") === "learn") game.botMode = "learn";
+    const requestedBots = params.get("bots");
+    if (requestedBots === "learn" || requestedBots === "profile") game.botMode = requestedBots;
     if (["stability", "activity"].includes(params.get("economy"))) comparisonPolicy = params.get("economy");
     mode.value = game.botMode;
     const rate = $("br-brain-rate");
@@ -9033,6 +9218,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       setConflictPolicy(world, game, conflict.value);
       invalidateBrain();
     };
+    const growth = $("br-growth"), threshold = $("br-growth-threshold");
+    for (const [id, label] of Object.entries(growthPolicies)) growth.add(new Option(label, id));
+    growth.onchange = () => {
+      setGrowthPolicy(world, game, growth.value);
+      invalidateBrain();
+      syncGrowthControls();
+    };
+    threshold.onchange = () => {
+      const value = threshold.valueAsNumber;
+      if (Number.isSafeInteger(value) && value > 0 && value !== game.growthThreshold) {
+        setGrowthPolicy(world, game, game.growth, value);
+        invalidateBrain();
+      }
+      syncGrowthControls();
+    };
+    const requestedGrowth = params.get("growth");
+    const requestedThreshold = Number(params.get("growthThreshold"));
+    if (Object.hasOwn(growthPolicies, requestedGrowth))
+      setGrowthPolicy(
+        world,
+        game,
+        requestedGrowth,
+        Number.isSafeInteger(requestedThreshold) && requestedThreshold > 0 ? requestedThreshold : game.growthThreshold
+      );
     const requestedConflict = params.get("conflict");
     if (Object.hasOwn(conflictPolicies, requestedConflict))
       setConflictPolicy(world, game, requestedConflict);
@@ -9337,7 +9546,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
     }
     try {
-      job.url = URL.createObjectURL(new Blob(['(() => {\n  // src/world/sphere.js\n  function* sphereStages(f) {\n    if (!Number.isInteger(f) || f < 1 || f > 4096) throw Error("Frequência de esfera inválida.");\n    const t = (1 + Math.sqrt(5)) / 2;\n    const bases = [\n      [-1, t, 0],\n      [1, t, 0],\n      [-1, -t, 0],\n      [1, -t, 0],\n      [0, -1, t],\n      [0, 1, t],\n      [0, -1, -t],\n      [0, 1, -t],\n      [t, 0, -1],\n      [t, 0, 1],\n      [-t, 0, -1],\n      [-t, 0, 1]\n    ];\n    const faces = [\n      [0, 11, 5],\n      [0, 5, 1],\n      [0, 1, 7],\n      [0, 7, 10],\n      [0, 10, 11],\n      [1, 5, 9],\n      [5, 11, 4],\n      [11, 10, 2],\n      [10, 7, 6],\n      [7, 1, 8],\n      [3, 9, 4],\n      [3, 4, 2],\n      [3, 2, 6],\n      [3, 6, 8],\n      [3, 8, 9],\n      [4, 9, 5],\n      [2, 4, 11],\n      [6, 2, 10],\n      [8, 6, 7],\n      [9, 8, 1]\n    ];\n    const n = 10 * f * f + 2, coords = new Float32Array(n * 3), adj = new Uint32Array(n * 6), deg = new Uint8Array(n);\n    const positions = f <= 96 ? new Float64Array(n * 3) : coords;\n    const edgeIds = new Int32Array(144 * (f + 1)).fill(-1), baseIds = new Int32Array(12).fill(-1);\n    const polygons = f <= 96 ? new Float32Array(n * 18) : null, backSlot = f <= 96 ? new Uint8Array(n * 6) : null, pents = [];\n    const edgeKey = (u, v, wv) => u < v ? (u * 12 + v) * (f + 1) + wv : (v * 12 + u) * (f + 1) + f - wv;\n    let total = 0;\n    function triangle(a, b, c) {\n      adj[a * 6 + deg[a]++] = b;\n      adj[b * 6 + deg[b]++] = c;\n      adj[c * 6 + deg[c]++] = a;\n    }\n    for (let fi = 0; fi < faces.length; fi++) {\n      const [aa, bb, cc] = faces[fi], a = bases[aa], b = bases[bb], c = bases[cc];\n      let older = new Uint32Array(f + 1), prev = new Uint32Array(f + 1), row = new Uint32Array(f + 1);\n      for (let i = 0; i <= f; i++) {\n        const len = f - i + 1;\n        for (let j = 0; j < len; j++) {\n          const w = f - i - j;\n          let base = -1, edge = -1, id = -1;\n          if (w === f) base = aa;\n          else if (i === f) base = bb;\n          else if (j === f) base = cc;\n          else if (!w) edge = edgeKey(bb, cc, j);\n          else if (!i) edge = edgeKey(aa, cc, j);\n          else if (!j) edge = edgeKey(aa, bb, i);\n          if (base >= 0) id = baseIds[base];\n          else if (edge >= 0) id = edgeIds[edge];\n          if (id === -1) {\n            id = total++;\n            if (base >= 0) baseIds[base] = id;\n            else if (edge >= 0) edgeIds[edge] = id;\n            const wa = w / f, wb = i / f, wc = j / f;\n            const x = wa * a[0] + wb * b[0] + wc * c[0], y = wa * a[1] + wb * b[1] + wc * c[1], z = wa * a[2] + wb * b[2] + wc * c[2];\n            const len2 = Math.hypot(x, y, z), k = id * 3;\n            coords[k] = positions[k] = x / len2;\n            coords[k + 1] = positions[k + 1] = y / len2;\n            coords[k + 2] = positions[k + 2] = z / len2;\n          }\n          row[j] = id;\n        }\n        if (i)\n          for (let j = 0; j < len; j++) {\n            triangle(prev[j], row[j], prev[j + 1]);\n            if (j + 1 < len) triangle(row[j], row[j + 1], prev[j + 1]);\n          }\n        if (!polygons && i >= 2)\n          for (let j = 1; j < len; j++) {\n            const k = prev[j] * 6;\n            adj[k] = row[j];\n            adj[k + 1] = prev[j + 1];\n            adj[k + 2] = older[j + 1];\n            adj[k + 3] = older[j];\n            adj[k + 4] = prev[j - 1];\n            adj[k + 5] = row[j - 1];\n          }\n        const tmp = older;\n        older = prev;\n        prev = row;\n        row = tmp;\n      }\n      yield Math.round((fi + 1) * 1.25);\n    }\n    if (total !== n) throw Error("Quantidade de vértices incorreta.");\n    const ang = new Float64Array(6), boundaries = [];\n    if (!polygons) {\n      for (const id of baseIds) boundaries.push(id);\n      for (const id of edgeIds) if (id >= 0) boundaries.push(id);\n      boundaries.sort((a, b) => a - b);\n    }\n    const sortedCount = polygons ? n : boundaries.length;\n    for (let sorted = 0; sorted < sortedCount; sorted++) {\n      const v = polygons ? sorted : boundaries[sorted], j = 6 * v, h = 3 * v, d = deg[v], px = positions[h], py = positions[h + 1], pz = positions[h + 2];\n      if (d === 5) {\n        pents.push(v);\n        adj[j + 5] = 4294967295;\n      } else if (d !== 6) throw Error("Vizinhança incompleta.");\n      const polar = Math.abs(py) >= 0.85;\n      let ex = polar ? 0 : pz, ey = polar ? -pz : 0, ez = polar ? py : -px;\n      const scale = Math.hypot(ex, ey, ez);\n      ex /= scale;\n      ey /= scale;\n      ez /= scale;\n      const nx = py * ez - pz * ey, ny = pz * ex - px * ez, nz = px * ey - py * ex;\n      for (let k = 0; k < d; k++) {\n        const id = adj[j + k], i = 3 * id, x = positions[i], y = positions[i + 1], z = positions[i + 2];\n        const angle = Math.atan2(x * nx + y * ny + z * nz, x * ex + y * ey + z * ez);\n        let p = k;\n        while (p > 0 && ang[p - 1] > angle) {\n          ang[p] = ang[p - 1];\n          adj[j + p] = adj[j + p - 1];\n          p--;\n        }\n        ang[p] = angle;\n        adj[j + p] = id;\n      }\n      if (polygons) {\n        for (let k = 0; k < d; k++) {\n          const i = adj[j + k] * 3, b = adj[j + (k + 1) % d] * 3, s = (j + k) * 3;\n          const x = px + positions[i] + positions[b], y = py + positions[i + 1] + positions[b + 1], z = pz + positions[i + 2] + positions[b + 2];\n          const len = Math.hypot(x, y, z);\n          polygons[s] = x / len;\n          polygons[s + 1] = y / len;\n          polygons[s + 2] = z / len;\n        }\n      }\n      if ((sorted & 262143) === 0) yield 25 + Math.floor(35 * sorted / sortedCount);\n    }\n    if (pents.length !== 12) throw Error("A esfera precisa de 12 pentágonos.");\n    if (backSlot)\n      for (let v = 0; v < n; v++) {\n        for (let k = 0; k < deg[v]; k++) {\n          const a = v * 6 + k, u = adj[a];\n          if (u <= v) continue;\n          let j = 0;\n          while (j < deg[u] && adj[u * 6 + j] !== v) j++;\n          if (j === deg[u]) throw Error("Aresta sem retorno.");\n          backSlot[a] = j;\n          backSlot[u * 6 + j] = k;\n        }\n        if ((v & 262143) === 0) yield 60 + Math.floor(18 * v / n);\n      }\n    const distance = new Uint16Array(n).fill(65535), nearest = new Uint8Array(n), queue = new Uint32Array(n);\n    let front = 0, back = 0;\n    for (let i = 0; i < pents.length; i++) {\n      const id = pents[i];\n      distance[id] = 0;\n      nearest[id] = i;\n      queue[back++] = id;\n    }\n    while (front < back) {\n      const u = queue[front++];\n      for (let k = 0; k < deg[u]; k++) {\n        const v = adj[u * 6 + k];\n        if (distance[v] !== 65535) continue;\n        distance[v] = distance[u] + 1;\n        nearest[v] = nearest[u];\n        queue[back++] = v;\n      }\n      if ((front & 262143) === 0) yield 78 + Math.floor(18 * front / n);\n    }\n    let farthest = 0;\n    for (let i = 0; i < n; i++) if (distance[i] > distance[farthest]) farthest = i;\n    const edges = 3 * n - 6;\n    return { n, f, adj, deg, coords, polygons, backSlot, pents, distance, nearest, edges, farthest };\n  }\n  function buildSphere(f, onProgress) {\n    const stages = sphereStages(f);\n    for (let step = stages.next(); ; step = stages.next()) {\n      if (step.done) return step.value;\n      if (onProgress) onProgress(step.value);\n    }\n  }\n\n  // src/match/spawns.js\n  function sphereSpawns(g) {\n    const n = g.n, c = g.coords, cut = Math.max(8, Math.floor(g.f * 0.12)), picks = [g.farthest], separation = new Float64Array(n);\n    for (let k = 1; k < 6; k++) {\n      const anchor = 3 * picks[k - 1], x = c[anchor], y = c[anchor + 1], z = c[anchor + 2];\n      let best = -1, score = -Infinity;\n      for (let id = 0, j = 0; id < n; id++, j += 3) {\n        const distance = g.distance[id];\n        if (distance < cut) continue;\n        const d = 1 - (c[j] * x + c[j + 1] * y + c[j + 2] * z);\n        const min = k === 1 || d < separation[id] ? d : separation[id];\n        separation[id] = min;\n        const value = min + distance * 2e-6;\n        if (value > score) {\n          score = value;\n          best = id;\n        }\n      }\n      if (best < 0) throw Error("Não foi possível distribuir seis jogadores na esfera");\n      picks.push(best);\n    }\n    return picks;\n  }\n\n  // src/simulation/population.js\n  function allocateCells(n) {\n    const store = {};\n    store.cells = new Uint8Array(n);\n    store.next = new Uint8Array(n);\n    store.owners = new Uint8Array(n);\n    store.nextOwners = new Uint8Array(n);\n    store.ownerIndex = new Uint32Array(n);\n    store.ownerCells = Array.from({ length: 8 }, () => []);\n    store.nextOwnerCells = Array.from({ length: 8 }, () => []);\n    const workSize = Math.min(n, 4096);\n    store.active = new Uint32Array(workSize);\n    store.nextActive = new Uint32Array(workSize);\n    store.positionsActive = new Uint32Array(n);\n    store.candidates = new Uint32Array(workSize);\n    store.marks = new Uint32Array(Math.ceil(n / 32));\n    return store;\n  }\n\n  // src/world/planet.worker.js\n  self.onmessage = ({ data: frequency }) => {\n    try {\n      const g = buildSphere(frequency, (p) => self.postMessage({ p }));\n      self.postMessage({ p: 96 });\n      g.spawnIds = sphereSpawns(g);\n      self.postMessage({ p: 99 });\n      const buffers = allocateCells(g.n);\n      const arrays = [...Object.values(g), ...Object.values(buffers)].filter(ArrayBuffer.isView);\n      self.postMessage({ g, buffers }, [...new Set(arrays.map((array) => array.buffer))]);\n    } catch (error) {\n      self.postMessage({ error: error.message });\n    }\n  };\n})();\n'], { type: "text/javascript" }));
+      job.url = URL.createObjectURL(new Blob(['(() => {\n  // src/world/sphere.js\n  function* sphereStages(f) {\n    if (!Number.isInteger(f) || f < 1 || f > 4096) throw Error("Frequência de esfera inválida.");\n    const t = (1 + Math.sqrt(5)) / 2;\n    const bases = [\n      [-1, t, 0],\n      [1, t, 0],\n      [-1, -t, 0],\n      [1, -t, 0],\n      [0, -1, t],\n      [0, 1, t],\n      [0, -1, -t],\n      [0, 1, -t],\n      [t, 0, -1],\n      [t, 0, 1],\n      [-t, 0, -1],\n      [-t, 0, 1]\n    ];\n    const faces = [\n      [0, 11, 5],\n      [0, 5, 1],\n      [0, 1, 7],\n      [0, 7, 10],\n      [0, 10, 11],\n      [1, 5, 9],\n      [5, 11, 4],\n      [11, 10, 2],\n      [10, 7, 6],\n      [7, 1, 8],\n      [3, 9, 4],\n      [3, 4, 2],\n      [3, 2, 6],\n      [3, 6, 8],\n      [3, 8, 9],\n      [4, 9, 5],\n      [2, 4, 11],\n      [6, 2, 10],\n      [8, 6, 7],\n      [9, 8, 1]\n    ];\n    const n = 10 * f * f + 2, coords = new Float32Array(n * 3), adj = new Uint32Array(n * 6), deg = new Uint8Array(n);\n    const positions = f <= 96 ? new Float64Array(n * 3) : coords;\n    const edgeIds = new Int32Array(144 * (f + 1)).fill(-1), baseIds = new Int32Array(12).fill(-1);\n    const polygons = f <= 96 ? new Float32Array(n * 18) : null, backSlot = f <= 96 ? new Uint8Array(n * 6) : null, pents = [];\n    const edgeKey = (u, v, wv) => u < v ? (u * 12 + v) * (f + 1) + wv : (v * 12 + u) * (f + 1) + f - wv;\n    let total = 0;\n    function triangle(a, b, c) {\n      adj[a * 6 + deg[a]++] = b;\n      adj[b * 6 + deg[b]++] = c;\n      adj[c * 6 + deg[c]++] = a;\n    }\n    for (let fi = 0; fi < faces.length; fi++) {\n      const [aa, bb, cc] = faces[fi], a = bases[aa], b = bases[bb], c = bases[cc];\n      let older = new Uint32Array(f + 1), prev = new Uint32Array(f + 1), row = new Uint32Array(f + 1);\n      for (let i = 0; i <= f; i++) {\n        const len = f - i + 1;\n        for (let j = 0; j < len; j++) {\n          const w = f - i - j;\n          let base = -1, edge = -1, id = -1;\n          if (w === f) base = aa;\n          else if (i === f) base = bb;\n          else if (j === f) base = cc;\n          else if (!w) edge = edgeKey(bb, cc, j);\n          else if (!i) edge = edgeKey(aa, cc, j);\n          else if (!j) edge = edgeKey(aa, bb, i);\n          if (base >= 0) id = baseIds[base];\n          else if (edge >= 0) id = edgeIds[edge];\n          if (id === -1) {\n            id = total++;\n            if (base >= 0) baseIds[base] = id;\n            else if (edge >= 0) edgeIds[edge] = id;\n            const wa = w / f, wb = i / f, wc = j / f;\n            const x = wa * a[0] + wb * b[0] + wc * c[0], y = wa * a[1] + wb * b[1] + wc * c[1], z = wa * a[2] + wb * b[2] + wc * c[2];\n            const len2 = Math.hypot(x, y, z), k = id * 3;\n            coords[k] = positions[k] = x / len2;\n            coords[k + 1] = positions[k + 1] = y / len2;\n            coords[k + 2] = positions[k + 2] = z / len2;\n          }\n          row[j] = id;\n        }\n        if (i)\n          for (let j = 0; j < len; j++) {\n            triangle(prev[j], row[j], prev[j + 1]);\n            if (j + 1 < len) triangle(row[j], row[j + 1], prev[j + 1]);\n          }\n        if (!polygons && i >= 2)\n          for (let j = 1; j < len; j++) {\n            const k = prev[j] * 6;\n            adj[k] = row[j];\n            adj[k + 1] = prev[j + 1];\n            adj[k + 2] = older[j + 1];\n            adj[k + 3] = older[j];\n            adj[k + 4] = prev[j - 1];\n            adj[k + 5] = row[j - 1];\n          }\n        const tmp = older;\n        older = prev;\n        prev = row;\n        row = tmp;\n      }\n      yield Math.round((fi + 1) * 1.25);\n    }\n    if (total !== n) throw Error("Quantidade de vértices incorreta.");\n    const ang = new Float64Array(6), boundaries = [];\n    if (!polygons) {\n      for (const id of baseIds) boundaries.push(id);\n      for (const id of edgeIds) if (id >= 0) boundaries.push(id);\n      boundaries.sort((a, b) => a - b);\n    }\n    const sortedCount = polygons ? n : boundaries.length;\n    for (let sorted = 0; sorted < sortedCount; sorted++) {\n      const v = polygons ? sorted : boundaries[sorted], j = 6 * v, h = 3 * v, d = deg[v], px = positions[h], py = positions[h + 1], pz = positions[h + 2];\n      if (d === 5) {\n        pents.push(v);\n        adj[j + 5] = 4294967295;\n      } else if (d !== 6) throw Error("Vizinhança incompleta.");\n      const polar = Math.abs(py) >= 0.85;\n      let ex = polar ? 0 : pz, ey = polar ? -pz : 0, ez = polar ? py : -px;\n      const scale = Math.hypot(ex, ey, ez);\n      ex /= scale;\n      ey /= scale;\n      ez /= scale;\n      const nx = py * ez - pz * ey, ny = pz * ex - px * ez, nz = px * ey - py * ex;\n      for (let k = 0; k < d; k++) {\n        const id = adj[j + k], i = 3 * id, x = positions[i], y = positions[i + 1], z = positions[i + 2];\n        const angle = Math.atan2(x * nx + y * ny + z * nz, x * ex + y * ey + z * ez);\n        let p = k;\n        while (p > 0 && ang[p - 1] > angle) {\n          ang[p] = ang[p - 1];\n          adj[j + p] = adj[j + p - 1];\n          p--;\n        }\n        ang[p] = angle;\n        adj[j + p] = id;\n      }\n      if (polygons) {\n        for (let k = 0; k < d; k++) {\n          const i = adj[j + k] * 3, b = adj[j + (k + 1) % d] * 3, s = (j + k) * 3;\n          const x = px + positions[i] + positions[b], y = py + positions[i + 1] + positions[b + 1], z = pz + positions[i + 2] + positions[b + 2];\n          const len = Math.hypot(x, y, z);\n          polygons[s] = x / len;\n          polygons[s + 1] = y / len;\n          polygons[s + 2] = z / len;\n        }\n      }\n      if ((sorted & 262143) === 0) yield 25 + Math.floor(35 * sorted / sortedCount);\n    }\n    if (pents.length !== 12) throw Error("A esfera precisa de 12 pentágonos.");\n    if (backSlot)\n      for (let v = 0; v < n; v++) {\n        for (let k = 0; k < deg[v]; k++) {\n          const a = v * 6 + k, u = adj[a];\n          if (u <= v) continue;\n          let j = 0;\n          while (j < deg[u] && adj[u * 6 + j] !== v) j++;\n          if (j === deg[u]) throw Error("Aresta sem retorno.");\n          backSlot[a] = j;\n          backSlot[u * 6 + j] = k;\n        }\n        if ((v & 262143) === 0) yield 60 + Math.floor(18 * v / n);\n      }\n    const distance = new Uint16Array(n).fill(65535), nearest = new Uint8Array(n), queue = new Uint32Array(n);\n    let front = 0, back = 0;\n    for (let i = 0; i < pents.length; i++) {\n      const id = pents[i];\n      distance[id] = 0;\n      nearest[id] = i;\n      queue[back++] = id;\n    }\n    while (front < back) {\n      const u = queue[front++];\n      for (let k = 0; k < deg[u]; k++) {\n        const v = adj[u * 6 + k];\n        if (distance[v] !== 65535) continue;\n        distance[v] = distance[u] + 1;\n        nearest[v] = nearest[u];\n        queue[back++] = v;\n      }\n      if ((front & 262143) === 0) yield 78 + Math.floor(18 * front / n);\n    }\n    let farthest = 0;\n    for (let i = 0; i < n; i++) if (distance[i] > distance[farthest]) farthest = i;\n    const edges = 3 * n - 6;\n    return { n, f, adj, deg, coords, polygons, backSlot, pents, distance, nearest, edges, farthest };\n  }\n  function buildSphere(f, onProgress) {\n    const stages = sphereStages(f);\n    for (let step = stages.next(); ; step = stages.next()) {\n      if (step.done) return step.value;\n      if (onProgress) onProgress(step.value);\n    }\n  }\n\n  // src/match/spawns.js\n  function sphereSpawns(g) {\n    const n = g.n, c = g.coords, cut = Math.max(8, Math.floor(g.f * 0.12)), picks = [g.farthest], separation = new Float64Array(n);\n    for (let k = 1; k < 6; k++) {\n      const anchor = 3 * picks[k - 1], x = c[anchor], y = c[anchor + 1], z = c[anchor + 2];\n      let best = -1, score = -Infinity;\n      for (let id = 0, j = 0; id < n; id++, j += 3) {\n        const distance = g.distance[id];\n        if (distance < cut) continue;\n        const d = 1 - (c[j] * x + c[j + 1] * y + c[j + 2] * z);\n        const min = k === 1 || d < separation[id] ? d : separation[id];\n        separation[id] = min;\n        const value = min + distance * 2e-6;\n        if (value > score) {\n          score = value;\n          best = id;\n        }\n      }\n      if (best < 0) throw Error("Não foi possível distribuir seis jogadores na esfera");\n      picks.push(best);\n    }\n    return picks;\n  }\n\n  // src/simulation/population.js\n  function allocateCells(n) {\n    const store = { lastOutbreak: null };\n    store.cells = new Uint8Array(n);\n    store.next = new Uint8Array(n);\n    store.owners = new Uint8Array(n);\n    store.nextOwners = new Uint8Array(n);\n    store.ownerIndex = new Uint32Array(n);\n    store.ownerCells = Array.from({ length: 8 }, () => []);\n    store.nextOwnerCells = Array.from({ length: 8 }, () => []);\n    const workSize = Math.min(n, 4096);\n    store.active = new Uint32Array(workSize);\n    store.nextActive = new Uint32Array(workSize);\n    store.positionsActive = new Uint32Array(n);\n    store.candidates = new Uint32Array(workSize);\n    store.marks = new Uint32Array(Math.ceil(n / 32));\n    return store;\n  }\n\n  // src/world/planet.worker.js\n  self.onmessage = ({ data: frequency }) => {\n    try {\n      const g = buildSphere(frequency, (p) => self.postMessage({ p }));\n      self.postMessage({ p: 96 });\n      g.spawnIds = sphereSpawns(g);\n      self.postMessage({ p: 99 });\n      const buffers = allocateCells(g.n);\n      const arrays = [...Object.values(g), ...Object.values(buffers)].filter(ArrayBuffer.isView);\n      self.postMessage({ g, buffers }, [...new Set(arrays.map((array) => array.buffer))]);\n    } catch (error) {\n      self.postMessage({ error: error.message });\n    }\n  };\n})();\n'], { type: "text/javascript" }));
       job.worker = new Worker(job.url);
       job.worker.onmessage = ({ data }) => {
         if (buildJob !== job) return;
