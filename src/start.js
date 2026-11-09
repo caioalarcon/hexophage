@@ -1,3 +1,4 @@
+import { browserBrainArchive } from './browser/brain-archive.js';
 import { frame } from './browser/frame.js';
 import { browserMatchEffects } from './browser/game-effects.js';
 import { attachMatchEffects } from './browser/game.js';
@@ -23,7 +24,7 @@ import { bindWorldSize } from './world/size-selector.js';
 import { exposeSphereLab } from './browser/inspection.js';
 import { bindAtlasBrowser } from './patterns/atlas-browser.js';
 
-attachMatchEffects(browserMatchEffects);
+attachMatchEffects(browserMatchEffects, browserBrainArchive());
 newStamp(11, false);
 
 bindMapGestures();

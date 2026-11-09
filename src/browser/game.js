@@ -3,7 +3,11 @@ import { createMatchEngine } from '../match/engine.js';
 import { createMatchState } from '../match/state.js';
 
 const effects = {};
-export function attachMatchEffects(handlers) {
+const brain = {
+  get seed() { return crypto.getRandomValues(new Uint32Array(1))[0]; },
+};
+export function attachMatchEffects(handlers, archive) {
+  brain.archive = archive;
   Object.assign(effects, handlers);
 }
 
@@ -17,8 +21,9 @@ const {
   clearCells,
   nextTick,
   patchForStamp,
+  invalidateBrain,
   resetPlayers,
-} = createMatchEngine(world, game, effects);
+} = createMatchEngine(world, game, effects, undefined, brain);
 
 export {
   addLive,
@@ -28,6 +33,7 @@ export {
   game,
   nextTick,
   patchForStamp,
+  invalidateBrain,
   resetPlayers,
   stampAdditions,
 };

@@ -1,3 +1,4 @@
+import { bindBotSelectors } from '../../bots/configuration-panel.js';
 import { game } from '../../browser/game.js';
 import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
@@ -50,6 +51,14 @@ export function chooseRule(id, notation) {
 }
 
 export function bindRuleControls() {
+  const mode = $('br-bot-mode');
+  if (new URLSearchParams(location.search).get('bots') === 'learn') game.botMode = 'learn';
+  mode.value = game.botMode;
+  mode.onchange = () => {
+    game.botMode = mode.value;
+    bindBotSelectors();
+    resetGame();
+  };
   const rule = $('hl-rulechoice');
   for (const [id, profile] of Object.entries(ruleProfiles)) rule.add(new Option(profile.label, id));
   rule.onchange = () => chooseRule(rule.value);

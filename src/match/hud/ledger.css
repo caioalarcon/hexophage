@@ -22,6 +22,7 @@
 #hexlab .br-tabs button{font-size:11px;padding:6px 9px;flex:0 0 auto}
 #hexlab .br-botlabel{font-size:10px;color:#b2d6de}
 #hexlab .br-botlabel select{font-size:11px;max-width:100%;width:100%}
+#hexlab .br-bots[hidden]{display:none}
 #hexlab .br-bots{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#0e1a29;border-radius:7px;padding:8px}
 #hexlab .br-status{padding:5px 9px;border-radius:6px;color:#bcddff;background:#152c43;border:1px solid #29425d;font-size:11px}
 #hexlab .br-boardwrap{overflow:auto}

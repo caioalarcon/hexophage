@@ -1,9 +1,22 @@
 import { game } from '../browser/game.js';
 import { $ } from '../layout/elements.js';
 import { getBotPlans } from '../match/gameplay.js';
+export function updateBrainProgress() {
+  const status = $('br-brain-progress');
+  status.hidden = game.botMode !== 'learn';
+  if (status.hidden || !status.closest('details').open) return;
+  const trials = game.brainMetrics?.completed ?? 0;
+  const actions = game.brainMetrics?.actions ?? 0;
+  const learned = game.brainMemory?.stats().priorSamples ?? 0;
+  status.textContent = trials + ' testes · ' + actions + ' jogadas · ' + learned + ' experiências herdadas';
+}
+
 export function bindBotSelectors() {
-  const { choices } = getBotPlans(game.gameplay, game.economy);
   const bots=$('br-bots');bots.replaceChildren();
+  updateBrainProgress();
+  bots.hidden = game.botMode === 'learn';
+  if (bots.hidden) return;
+  const { choices } = getBotPlans(game.gameplay, game.economy);
   for(let id=2;id<=6;id++) {
     const label=document.createElement('label');label.className='br-botlabel';
     label.textContent=game.symbols[id]+' '+game.names[id];

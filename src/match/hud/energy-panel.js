@@ -1,4 +1,4 @@
-import { game } from '../../browser/game.js';
+import { game, invalidateBrain } from '../../browser/game.js';
 import { world } from '../../browser/world-state.js';
 import { availableCells, initialEnergy, parameterValue } from '../constructive-economy.js';
 import { bindSliderLimits } from './slider-limits.js';
@@ -18,7 +18,10 @@ export function bindEnergyPanel() {
     slider.addEventListener('input', () => {
       if (key === 'initialCells' && !beforeMatch()) return;
       const value = parameterValue(slider.value, Number(slider.max), Number(slider.step));
-      game.economy[key] = value;
+      if (value !== game.economy[key]) {
+        game.economy[key] = value;
+        invalidateBrain();
+      }
       $(id+'-val').textContent = compact(value);
       if (beforeMatch() && (key === 'initialCells' || key === 'stampCost')) {
         game.init = initialEnergy(game.economy);

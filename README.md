@@ -65,6 +65,14 @@ To select another profile, pass `{ rule: 'bays' }` or `{ rule: 'custom', notatio
 
 Each instance owns its players, RNG, population buffers and bot reservations. Supply a `strategies` Map keyed by bot player ID to override individual decisions. The turn scheduler invokes each live bot on its configured turn. The current oscillator strategy and any replacement use the same `commitStamp(owner, ids)` command for placement and biomass accounting.
 
+## Learning bots (experimental)
+
+Choose **Partida e bots → Bots → Aprendizes** or open the game with `?bots=learn`. The five learners have individual random seeds and share a per-generation planning budget. Each compares a legal placement with waiting on copies of one neighbourhood of the spherical graph. Purchases still go through the real match's credit and placement checks. The settings panel counts completed trials, purchases and inherited observations.
+
+Each bot learns privately during play. The browser periodically checkpoints the current match and flushes it when the tab is hidden or closed. Later matches on the same browser origin inherit the combined evidence for their physics, stamp catalog and tariffs. New contexts keep a bounded number of recent observations. A headless match accepts `{ botMode: 'learn', brain: { archive, seed } }`. Pass one `createBrainArchive()` to consecutive matches to study transfer, or a new archive for a cold start. Call `invalidateBrain()` after changing tariffs directly in headless mode.
+
+[Headless experiments and results](experiments/learning-bots/README.md)
+
 ## Verification
 
 Unit tests live beside the feature they exercise. For example, `node --test src/simulation/rules.test.js` checks the rule tables independently. The retained 600-generation integration test checks the five bots against independently recorded oscillator periods.
