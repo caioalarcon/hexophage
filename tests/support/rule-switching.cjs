@@ -23,7 +23,8 @@ module.exports = async function verifyRuleSwitching(page) {
   });
   await rule.selectOption('bays');
   const bays = await state();
-  assert.deepEqual(bays.cards.slice(0, 2), ['glider', 'osc2']);
+  assert(bays.cards.includes('glider') && bays.cards.includes('osc2'),
+    'Bays keeps its original patterns while economic ordering changes their position');
   assert.equal(bays.cards.length, 15);
   assert.equal(bays.policy, 'activity');
   assert.equal(bays.samePlanet, true);

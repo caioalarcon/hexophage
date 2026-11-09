@@ -60,7 +60,11 @@ const {chromium}=require('playwright');
     await page.keyboard.press('Escape');
     assert.equal(await tuningToggle.getAttribute('aria-expanded'),'false');
     const cards=page.locator('.br-stampcard');
-    assert.deepEqual((await cards.evaluateAll(nodes=>nodes.map(n=>n.dataset.pattern))).slice(0,5),['stalk','glider','gun20','gun42','p42']);
+    const initialCards=await cards.evaluateAll(nodes=>nodes.map(n=>n.dataset.pattern));
+    assert.equal(initialCards[0],'stalk');
+    assert(initialCards.indexOf('p2')<initialCards.indexOf('gun20'),'the initial hand is economically ordered');
+    assert(['glider','gun20','gun42','p42'].every(id=>initialCards.includes(id)),
+      'economic sorting preserves the curated offensive cards');
     assert.equal(await cards.count(),15);
     assert.equal(await cards.first().getAttribute('aria-pressed'),'true');
     assert.equal(await cards.first().locator('.br-stampprice').textContent(),'◈360000');
