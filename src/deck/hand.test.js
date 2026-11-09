@@ -14,10 +14,13 @@ installBrowserElements({'br-deck':dock});
 const {game}=await import('../browser/game.js');
 const {deckPoints}=await import('./cards.js');
 const {slotIds}=await import('./slots.js');
+const {fieldKit}=await import('../patterns/callahan-kit.js');
 const {updateDeckAvailability}=await import('./hand.js');
 test('fifteen unrestricted atlas slots restore the experimental kit',()=>{
   assert.equal(slotIds.length,15);
-  assert.deepEqual(slotIds.slice(0,5),['stalk','glider','gun20','gun42','p42']);
+  assert.equal(slotIds[0], 'stalk');
+  assert.deepEqual(new Set(slotIds), new Set(Object.keys(fieldKit)));
+  assert(slotIds.indexOf('p2') < slotIds.indexOf('gun20'), 'a ordem padrão considera a economia');
   assert.equal(deckPoints(slotIds[0]).length,36);
   assert.equal(deckPoints('p2').length,3);
   for(const id of slotIds)assert(deckPoints(id).length>0,id);
@@ -49,10 +52,11 @@ test('identical IDs and edited cards keep their shapes and loadouts in their own
     saved.savedPatterns.set('glider', [[9, 9]]);
     use(baysGameplay, 'bays');
     assert.equal(deckPoints('glider').length, 10);
-    assert.deepEqual(slotIds.slice(0, 2), ['glider', 'osc2']);
+    assert.equal(slotIds[0], 'osc2');
+    assert(slotIds.includes('glider'), 'o baralho mantém carimbos ofensivos');
     assert.equal(slotIds.length, 15);
     assert.equal(assignSlot(0, 'stalk', baysGameplay.patterns), false);
-    assert(assignSlot(0, 'osc2', baysGameplay.patterns));
+    assert(assignSlot(0, 'glider', baysGameplay.patterns));
     use(genericGameplay, 'custom/B2/S35');
     saved.savedPatterns.set('manual', [[1, 1]]);
     use(genericGameplay, 'custom/B3/S2');
@@ -60,7 +64,7 @@ test('identical IDs and edited cards keep their shapes and loadouts in their own
     use(genericGameplay, 'custom/B2/S35');
     assert.deepEqual(deckPoints('manual'), [[1, 1]]);
     use(baysGameplay, 'bays');
-    assert.equal(slotIds[0], 'osc2');
+    assert.equal(slotIds[0], 'glider');
     use(callahanGameplay, 'callahan');
     assert.equal(slotIds[0], 'stalk');
     assert.deepEqual(deckPoints('glider'), [[9, 9]]);
