@@ -1,8 +1,7 @@
-import { patterns } from './catalog.js';
 import { decodeRLE } from './rle.js';
+import { advancePattern, patternOffset, seedPatternAges } from './planar-simulation.js';
 import { cycleWindow } from './cycle-economy.js';
 import { cancelCycleAnalysis, showCycleAnalysis } from './atlas-cycle-panel.js';
-import { DIR } from '../world/geometry.js';
 import { game } from '../browser/game.js';
 import { world } from '../browser/world-state.js';
 import { $ } from '../layout/elements.js';
@@ -10,33 +9,19 @@ import { slotIds, assignSlot, selectSlot, registerSlotPicker } from '../deck/slo
 import { loadPattern, currentPatternId } from './editor/selection.js';
 import { renderDeck } from '../deck/hand.js';
 
-const catalog=patterns.callahan.filter(p=>p.group);
-const map=new Map(catalog.map(p=>[p.id,p]));
-let targetSlot=0, current=null, cells=new Set(),previous=new Set(),generation=0,timer=null;
+let catalog = [];
+let targetSlot=0, current=null, cells=new Map(),previous=new Map(),generation=0,timer=null;
 let cycleTimer = null;
-const at=(q,r)=>q+','+r;
-const coords=s=>s.split(',').map(Number);
 const fmt=v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:2});
 const el=id=>$(id);
 function step(paint = true) {
   if(cells.size>20000) {stop();return;}
   previous=cells;
-  const candidate=new Set(cells);
-  for(const pos of cells) {
-    const [q,r]=coords(pos);
-    for(const [dq,dr] of DIR)candidate.add(at(q+dq,r+dr));
-  }
-  const next=new Set();
-  for(const pos of candidate) {
-    const [q,r]=coords(pos);let bits=0;
-    for(let k=0;k<6;k++)if(cells.has(at(q+DIR[k][0],r+DIR[k][1])))bits|=1<<k;
-    if((cells.has(pos)?world.callSurv6:world.callBirth6)[bits])next.add(pos);
-  }
-  cells=next;generation++;if(paint)draw();
+  cells=advancePattern(cells, 1, world.physics).next;generation++;if(paint)draw();
 }
 function reset() {
-  cells=new Set(decodeRLE(current?.rle||'!').map(([q,r])=>at(q,r)));
-  previous=new Set(cells);generation=0;draw();
+  cells=seedPatternAges(current ?? {rle:'!'});
+  previous=cells;generation=0;draw();
 }
 function cycleButton() {
   const { length, kind } = cycleWindow(current || {});
@@ -67,15 +52,15 @@ function play() {
   if(timer!==null){stop();return;}
   stop();
   el('br-atlas-play').textContent='⏸ Pausar';
-  timer=setInterval(()=>{step();if(cells.size>20000||!cells.size||generation>1800)stop()},170);
+  timer=setInterval(()=>{step();if(cells.size>20000||(!cells.size&&!world.physics.tables[6][0][0])||generation>1800)stop()},170);
 }
 function choose(p) {
   current=p;stop();reset();renderList();
   el('br-atlas-name').textContent=p.name;
   el('br-atlas-label').textContent=p.period?'P'+p.period:p.group;
-  el('br-atlas-description').textContent=
-    p.group+' · '+p.cells+' células iniciais · '+p.origin+
-    '. A prévia usa a mesma regra Callahan da partida e não modifica seu mundo.';
+  el('br-atlas-description').textContent = [p.group, p.cells+' células iniciais', p.origin,
+    world.physics.tables[6][0][0] ? 'Toro finito · cinza = neutras' : '']
+    .filter(Boolean).join(' · ');
   renderProperties(p);
 }
 function renderProperties(p) {
@@ -84,7 +69,7 @@ function renderProperties(p) {
     ['Células iniciais',fmt(p.cells)],
     ['Custo atual',fmt(p.cells*game.economy.stampCost)+' energia'],
     [kind==='emission'?'Período nominal do emissor':kind==='window'?'Janela de observação':'Período',length+' ger.'],
-    ...(p.period ? [
+    ...(p.period && Number.isFinite(p.birthsCycle) ? [
       ['Nascimentos / ciclo',fmt(p.birthsCycle)],
       ['Mortes / ciclo',fmt(p.deathsCycle)],
       ['Núcleo sempre vivo',fmt(p.stableCore)],
@@ -98,7 +83,7 @@ function renderProperties(p) {
     const box=document.createElement('div'),a=document.createElement('small'),b=document.createElement('b');
     a.textContent=label;b.textContent=String(value);box.append(a,b);el('br-atlas-metrics').append(box);
   }
-  showCycleAnalysis(p, game.economy);
+  showCycleAnalysis(p, game.economy, world.physics);
 }
 function renderList() {
   const query=el('br-atlas-query').value.trim().toLowerCase(),
@@ -126,38 +111,55 @@ function draw() {
   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
   const c=canvas.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
   c.fillStyle='#0b1929';c.fillRect(0,0,w,h);
-  const visible=new Set([...cells,...previous]);
+  el('br-atlas-gen').textContent='Geração '+generation;
+  const visible=new Set([...cells.keys(),...previous.keys()]);
   if(!visible.size) {c.fillStyle='#accbd4';c.fillText('Sem células vivas',20,24);return;}
   let left=Infinity,right=-Infinity,top=Infinity,bottom=-Infinity;
   for(const pos of visible) {
-    const [q,r]=coords(pos),x=Math.sqrt(3)*(q+r/2),y=1.5*r;
+    const [q,r]=patternOffset(pos),x=Math.sqrt(3)*(q+r/2),y=1.5*r;
     left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
   }
   const size=Math.min(24,(w-42)/(right-left+3),(h-42)/(bottom-top+3));
   const cx=w/2-(left+right)*size/2,cy=h/2-(top+bottom)*size/2;
-  const hex=(x,y,color,stroke)=>{
-    const a=coords(x),px=cx+Math.sqrt(3)*(a[0]+a[1]/2)*size,py=cy+1.5*a[1]*size;
+  const hex=(position,color)=>{
+    const a=patternOffset(position),px=cx+Math.sqrt(3)*(a[0]+a[1]/2)*size,py=cy+1.5*a[1]*size;
     if(px<0||px>w||py<0||py>h)return;
     c.beginPath();
     for(let k=0;k<6;k++) {
       const angle=(30+k*60)*Math.PI/180,xp=px+size*.92*Math.cos(angle),yp=py+size*.92*Math.sin(angle);
       if(k)c.lineTo(xp,yp);else c.moveTo(xp,yp);
     }
-    c.closePath();if(color){c.fillStyle=color;c.fill()}
-    c.lineWidth=1;c.strokeStyle=stroke||'#2b5765';c.stroke();
+    c.closePath();c.fillStyle=color;c.fill();
+    c.lineWidth=1;c.strokeStyle='#2b5765';c.stroke();
   };
-  for(const pos of previous)if(!cells.has(pos))hex(pos,null,'#e57869',undefined);
-  for(const pos of cells)hex(pos,null,previous.has(pos)?'#9bdc83':'#63e2c7');
-  const born=[...cells].filter(p=>!previous.has(p)).length;
-  const deaths=[...previous].filter(p=>!cells.has(p)).length;
+  for(const pos of previous.keys())if(!cells.has(pos))hex(pos,'#e57869');
+  for(const pos of cells.keys())hex(pos,cells.get(pos)<0?'#758597':previous.has(pos)?'#9bdc83':'#63e2c7');
+  const born=[...cells.keys()].filter(p=>!previous.has(p)).length;
+  const deaths=[...previous.keys()].filter(p=>!cells.has(p)).length;
   c.font='12px system-ui';c.fillStyle='#9db9ca';
   c.fillText('Vivas '+cells.size+'   +'+born+' nascimentos   −'+deaths+' mortes',12,18);
-  el('br-atlas-gen').textContent='Geração '+generation;
+}
+export function syncAtlasCatalog(gameplay) {
+  const dialog = el('br-atlas-dialog');
+  if (dialog.open) dialog.close();
+  stop();
+  cancelCycleAnalysis();
+  current = null;
+  catalog = (gameplay.atlas ?? gameplay.patterns).map(p => ({
+    ...p, group: p.group || 'semente', cells: p.cells ?? decodeRLE(p.rle).length,
+  }));
+  el('br-atlas-heading').textContent = 'Atlas · ' + game.profile.label + ' · ' + catalog.length + ' estruturas';
+  el('br-atlas-query').value = '';
+  const groups = el('br-atlas-class');
+  groups.replaceChildren(new Option('Todos', ''));
+  for (const group of new Set(catalog.map(p => p.group))) groups.add(new Option(group, group));
+  el('br-open-atlas').disabled = !catalog.length;
 }
 export function openAtlasBrowser(slot=0) {
+  if (!catalog.length) return;
   targetSlot=slot;
   el('br-atlas-slot-label').textContent='Slot '+(slot+1)+' · trocar padrão';
-  if(!current||current.id!==slotIds[slot])choose(map.get(slotIds[slot])||catalog[0]);
+  if(!current||current.id!==slotIds[slot])choose(catalog.find(p => p.id === slotIds[slot]) || catalog[0]);
   else renderProperties(current);
   renderList();
   const dialog=el('br-atlas-dialog');

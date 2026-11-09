@@ -1,6 +1,7 @@
 // Every paid catalog pattern, including the 3-cell flipper, is ranked on the
 // same footing. Operating cash excludes the stamp, and all formations are
 // isolated and fully funded. This is a financial ranking, not a PvP rating.
+import { CALLAHAN } from '../../src/simulation/rules.js';
 import {writeFileSync} from 'node:fs';
 import {atlasPatterns} from '../../src/patterns/atlas-data.js';
 import {advancePattern, cycleWindow, seedPatternAges} from '../../src/patterns/cycle-economy.js';
@@ -9,7 +10,7 @@ const horizon=1200;
 export function catalogTrace(p, turns, threshold) {
   let live=seedPatternAges(p);const result=[];
   for(let g=1;g<=turns;g++){
-    const row=advancePattern(live,threshold);live=row.next;result.push([row.births,row.mature]);
+    const row=advancePattern(live,threshold,CALLAHAN);live=row.next;result.push([row.births,row.mature]);
   }
   return result;
 }

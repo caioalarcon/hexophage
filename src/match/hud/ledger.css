@@ -27,6 +27,5 @@
 #hexlab .br-boardwrap{overflow:auto}
 #hexlab .br-sidegutter{display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap}
 #hexlab .br-sidegutter button{font-size:11px}
-#hexlab #hl-rulechoice, #hexlab #hl-ruleconfig {display:none!important}
 #hexlab #hl-demo, #hexlab #hl-seed, #hexlab #hl-mode {display:none!important}
 @media(max-width:720px){#hexlab .br-table{font-size:11px}#hexlab .br-table th,#hexlab .br-table td{padding:5px 4px}#hexlab .br-controls input{width:78px}}

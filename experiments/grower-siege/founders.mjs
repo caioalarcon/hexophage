@@ -4,16 +4,13 @@ import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {createHeadlessMatch} from '../../src/match/headless.js';
 import {writeFileSync} from 'node:fs';
-import {createSimulationState} from '../../src/simulation/state.js';
-import {initRuleTables} from '../../src/simulation/rules.js';
+import {CALLAHAN} from '../../src/simulation/rules.js';
 import {patchForStamp} from '../../src/patterns/spherical-patch.js';
 import {atlasPatterns} from '../../src/patterns/atlas-data.js';
 import {decodeRLE} from '../../src/patterns/rle.js';
 import {sphereSpawns} from '../../src/match/spawns.js';
 import {buildSphere} from '../../src/world/sphere.js';
 import {eastAt} from '../../src/world/geometry.js';
-const rule=createSimulationState();
-initRuleTables(rule);
 const seed=decodeRLE(atlasPatterns.find(p=>p.id==='stalk').rle);
 export const thresholds=[64,128,256,400];
 const horizon=12000;
@@ -38,7 +35,7 @@ export function trace(graph, anchor, orientation, verify=false){
       seen[id]=g;
       const d=graph.deg[id];let mask=0;
       for(let i=0;i<d;i++)mask|=alive[graph.adj[id*6+i]]<<i;
-      const table=d===6?(alive[id]?rule.callSurv6:rule.callBirth6):(alive[id]?rule.callSurv5:rule.callBirth5);
+      const table=CALLAHAN.tables[d][alive[id]];
       if(alive[id]!==table[mask])changed.push(id);
     };
     for(const id of change){test(id);for(let i=0;i<graph.deg[id];i++)test(graph.adj[id*6+i]);}

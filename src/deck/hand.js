@@ -1,7 +1,6 @@
 import { game } from '../browser/game.js';
-import { fieldKit } from './field-kit.js';
 import { drawDeckIcon } from './card-icon.js';
-import { deckNames, deckPoints } from './cards.js';
+import { deckPoints } from './cards.js';
 import { slotIds, selectedSlot, selectSlot, requestSlotPicker } from './slots.js';
 import { $ } from '../layout/elements.js';
 import { energyCost } from '../match/constructive-economy.js';
@@ -22,11 +21,11 @@ function renderDeck(currentPatternId, loadPattern) {
       b.addEventListener('contextmenu',e=>{e.preventDefault();requestSlotPicker(Number(b.dataset.slot))});
     }
     b.dataset.pattern=id;
-    const pts=deckPoints(id),name=deckNames[id]||id;
+    const pts=deckPoints(id),name=game.gameplay.patterns.find(p => p.id === id)?.name || id;
     const price=energyCost(pts.length,game.economy);
     b.querySelector('.br-stampname').textContent=name;
     b.querySelector('.br-stampprice').textContent=price?'◈'+price:'◈0';
-    b.title = [name, fieldKit[id]?.use, 'Clique nos três pontos para trocar.'].filter(Boolean).join(' · ');
+    b.title = [name, game.gameplay.kit[id]?.use, 'Clique nos três pontos para trocar.'].filter(Boolean).join(' · ');
     drawDeckIcon(b.querySelector('canvas'),pts);
     b.classList.toggle('selected',slot===selectedSlot && id===currentPatternId);
     b.setAttribute('aria-pressed',String(slot===selectedSlot && id===currentPatternId));

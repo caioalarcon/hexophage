@@ -1,7 +1,7 @@
-import { DEFAULT_ECONOMY, initialEnergy } from './constructive-economy.js';
+import { applyRuleProfile, resolveRuleProfile } from './rule-profiles.js';
 
-export function createMatchState() {
-  return {
+export function createMatchState(world, { rule, notation, economy } = {}) {
+  const game = {
     colors: [
       '#000000',
       '#52e0b4',
@@ -24,10 +24,7 @@ export function createMatchState() {
     ],
     symbols: ['', '🦖', '🦊', '🐙', '🦂', '👾', '🤖', '⚪'],
     names: ['', 'Você', 'Raposa', 'Polvo', 'Escorpião', 'Alien', 'Robô'],
-    bots: ['farmer', 'cycler', 'core', 'slow', 'diverse'],
     players: [],
-    economy: { ...DEFAULT_ECONOMY },
-    init: initialEnergy(DEFAULT_ECONOMY),
     tax: 0,
     interval: 10,
     average: 0,
@@ -40,4 +37,6 @@ export function createMatchState() {
     nextSpawn: [],
     rngState: 0x6d2b79f5,
   };
+  applyRuleProfile(world, game, resolveRuleProfile(rule, notation), economy);
+  return game;
 }

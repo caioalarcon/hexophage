@@ -1,9 +1,9 @@
 import { DIR, key } from '../world/geometry.js';
-import { advancePattern, patternOffset, seedPatternAges } from '../patterns/cycle-economy.js';
+import { advancePattern, patternOffset, seedPatternAges } from '../patterns/planar-simulation.js';
 
 // Guard a full stationary cycle. A stalk has no closing cycle, so protect
 // its seed and the corridor swept by its growing tip in the first 32 turns.
-export function createFootprintLookup() {
+export function createFootprintLookup(world) {
   const cache = new Map();
   function botProtectedOffsets(pattern) {
     if (cache.has(pattern.id)) return cache.get(pattern.id);
@@ -14,7 +14,7 @@ export function createFootprintLookup() {
     let ages = seedPatternAges(pattern);
     const initial = new Set(ages.keys()), footprint = new Set(initial);
     for (let gen = 0; gen < turns; gen++) {
-      ages = advancePattern(ages, 2).next;
+      ages = advancePattern(ages, 2, world.physics).next;
       for (const id of ages.keys()) footprint.add(id);
     }
     if (!grower && (ages.size !== initial.size || [...ages.keys()].some(id => !initial.has(id))))

@@ -7,11 +7,9 @@ export function attachMatchEffects(handlers) {
   Object.assign(effects, handlers);
 }
 
-const game = createMatchState();
+const game = createMatchState(world);
 
 const {
-  initRuleTables,
-  parseRule,
   addLive,
   stampAdditions,
   applyStamp,
@@ -28,9 +26,7 @@ export {
   clearCells,
   commitStamp,
   game,
-  initRuleTables,
   nextTick,
-  parseRule,
   patchForStamp,
   resetPlayers,
   stampAdditions,

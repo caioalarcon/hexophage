@@ -14,8 +14,7 @@ export function advanceGeneration(world) {
   const act = world.active,
     actCount = world.activeCount,
     positions = world.positionsActive;
-  const callahan = world.rule === 'callahan';
-  const useDense = (!callahan && world.birth[0]) || actCount * 7 >= n;
+  const useDense = world.physics.birthsFromVacuum || actCount * 7 >= n;
   const bound = useDense ? n : actCount * 7;
   const newActive = (world.nextActive = fitIndexBuffer(world.nextActive, bound, n));
   if (!useDense) world.candidates = fitIndexBuffer(world.candidates, bound, n);

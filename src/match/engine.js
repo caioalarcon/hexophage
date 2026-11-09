@@ -1,8 +1,6 @@
-import { initRuleTables, parseRule } from '../simulation/rules.js';
 import { createPopulation } from '../simulation/population.js';
 import { advanceGeneration } from '../simulation/generation.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
-import { createGrowthStrategy } from '../bots/growth-strategy.js';
 import { runBotTurns } from '../bots/turns.js';
 import { recordHumanTurn } from './field-history.js';
 import { resetPlayers } from './players.js';
@@ -14,14 +12,22 @@ import { finishIfDecided } from './outcome.js';
 export function createMatchEngine(world, game, effects = {}, strategies = new Map()) {
   const population = createPopulation(world, effects);
   const stamps = createStampCommands(world, game, population.addLive, effects);
-  const growthStrategy = createGrowthStrategy(world, game, stamps.commitStamp);
+  let strategy;
   const finish = (alive) => finishIfDecided(game, alive, effects);
+
+  function playBots() {
+    strategy ??= game.gameplay.createStrategy(world, game, stamps.commitStamp);
+    runBotTurns(world, game, strategy, strategies);
+  }
 
   function nextTick() {
     if (game.ended) return;
     const human = game.players[0],
       before = world.ownerCells[1].length;
     const reserveBefore = human?.reserve ?? 0;
+    // Spontaneous neutral births can occupy every empty sector on the first tick.
+    const openBeforeBirths = world.gen === 0 && world.physics.birthsFromVacuum;
+    if (openBeforeBirths) playBots();
     const births = advanceGeneration(world);
     effects.populationChanged?.();
     effects.redraw?.();
@@ -43,16 +49,17 @@ export function createMatchEngine(world, game, effects = {}, strategies = new Ma
       );
     }
     if (game.ended) effects.showResults?.();
-    else runBotTurns(world, game, growthStrategy, strategies);
+    else if (!openBeforeBirths) playBots();
   }
 
   return {
     ...population,
     ...stamps,
     nextTick,
-    initRuleTables: () => initRuleTables(world),
-    parseRule: (value) => parseRule(world, value),
     patchForStamp: (...args) => patchForStamp(world, ...args),
-    resetPlayers: () => resetPlayers(world, game),
+    resetPlayers() {
+      strategy = undefined;
+      resetPlayers(world, game);
+    },
   };
 }

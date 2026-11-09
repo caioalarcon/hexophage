@@ -1,6 +1,6 @@
 import { world } from '../../browser/world-state.js';
 import { $ } from '../../layout/elements.js';
-import { patterns } from '../catalog.js';
+import { game } from '../../browser/game.js';
 import { newStamp, stampFromPoints, stampOffsets } from './stamp-grid.js';
 import { slotIds } from '../../deck/slots.js';
 import { renderDeck } from '../../deck/hand.js';
@@ -12,7 +12,7 @@ let currentPatternId = slotIds[0];
 
 function loadPattern(id) {
   currentPatternId = id;
-  const pat = patterns[world.rule].find((p) => p.id === id);
+  const pat = game.gameplay.patterns.find((p) => p.id === id);
   const previous = savedPatterns.get(id);
   if (previous?.length) stampFromPoints(previous);
   else if (pat) stampFromPoints(decodeRLE(pat.rle));

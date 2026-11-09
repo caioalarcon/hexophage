@@ -1,16 +1,18 @@
-import { atlasPatterns } from '../patterns/atlas-data.js';
-import { advancePattern, patternOffset, seedPatternAges } from '../patterns/cycle-economy.js';
+import { energyCost, generationEnergy } from '../match/constructive-economy.js';
+import { advancePattern, patternOffset, seedPatternAges } from '../patterns/planar-simulation.js';
 import { decodeRLE } from '../patterns/rle.js';
 import { patchForStamp } from '../patterns/spherical-patch.js';
 
-const weapons = new Map();
+const weaponCache = new WeakMap();
 // Place the target in the measured firing lane. The P4 travels along +q.
 // The two emitters fire along −r at different offsets from their RLE origins.
 const aim = {glider: [-8, -2], gun20: [-3, 16], gun42: [-13, 16]};
 
-function weapon(id) {
-  if (weapons.has(id)) return weapons.get(id);
-  const pattern = atlasPatterns.find(p => p.id === id);
+function weapon(id, world, game) {
+  let weapons = weaponCache.get(world.physics);
+  if (!weapons) weaponCache.set(world.physics, weapons = new WeakMap());
+  const pattern = game.gameplay.patterns.find(p => p.id === id);
+  if (weapons.has(pattern)) return weapons.get(pattern);
   const [dq, dr] = aim[id];
   const offsets = decodeRLE(pattern.rle).map(([q,r]) => [q+dq,r+dr]);
   const period = id === 'glider' ? 4 : Number(id.slice(3));
@@ -20,7 +22,7 @@ function weapon(id) {
   const latest = id === 'glider' ? 30 : id === 'gun20' ? 100 : 140;
   // Finance the first 256 generations even when the first shots miss.
   for (let g = 0; g < 256; g++) {
-    const turn = advancePattern(ages, 2);
+    const turn = advancePattern(ages, 2, world.physics);
     births += turn.births;
     if (g < period) firstCycleBirths += turn.births;
     ages = turn.next;
@@ -34,20 +36,22 @@ function weapon(id) {
     }
   }
   const profile = {offsets, births, period, firstCycleBirths, trace:[...trajectories.values()]};
-  weapons.set(id, profile);
+  weapons.set(pattern, profile);
   return profile;
 }
 
-export function raidBudget(economy, id) {
-  const w = weapon(id);
-  return w.offsets.length * economy.stampCost + w.births * economy.birthCost;
+export function raidBudget(game, world, id) {
+  const economy = game.economy;
+  const w = weapon(id, world, game);
+  return energyCost(w.offsets.length, economy) + generationEnergy(w.births, 0, economy).upkeep;
 }
 
 // A firing lane aimed 16 hexes from the target has roughly 32 generations
 // of travel. Every launched P4 consumes five births per generation in flight.
-export function expectedGunExpense(economy, id) {
-  const {period, firstCycleBirths} = weapon(id);
-  return (firstCycleBirths + 32 * 5) / period * economy.birthCost;
+export function expectedGunExpense(game, world, id) {
+  const economy = game.economy;
+  const {period, firstCycleBirths} = weapon(id, world, game);
+  return generationEnergy((firstCycleBirths + 32 * 5) / period, 0, economy).upkeep;
 }
 
 // Project the weapon's actual Callahan flight path onto the spherical mesh.
@@ -68,7 +72,7 @@ export function projectedRaidScore(world, rival, attacker, target, dir, trace, m
 export function raidMatureCore(world, game, player, commitStamp, id='glider') {
   const rivals=game.players.filter(p=>p!==player&&!p.out&&p.stable)
     .sort((a,b)=>b.stable-a.stable).slice(0,2);
-  const {offsets,trace}=weapon(id);
+  const {offsets,trace}=weapon(id, world, game);
   let best=null;
   for (const rival of rivals) {
     const cells=world.ownerCells[rival.id], targetIds=[];

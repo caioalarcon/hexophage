@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createPopulation, allocateCells, fitIndexBuffer } from './population.js';
 import { createSimulationState } from './state.js';
 import { advanceGeneration } from './generation.js';
-import { parseRule } from './rules.js';
+import { compileTotalistic } from './rules.js';
 
 test('swap removal preserves both active and per-owner reverse indexes', () => {
   const world = { ...createSimulationState(), ...allocateCells(20), graph: { n: 20 } };
@@ -59,13 +59,13 @@ test('B0 births examine empty space and then clear the previous dense generation
   const graph = { n: 7, deg: new Uint8Array(7).fill(6), adj: new Uint32Array(42) };
   for (let i = 0; i < 7; i++) for (let d = 0; d < 6; d++) graph.adj[6 * i + d] = (i + d + 1) % 7;
   const world = { ...createSimulationState(), ...allocateCells(7), graph };
-  parseRule(world, 'B0/S');
+  world.physics = compileTotalistic('B0/S');
   advanceGeneration(world);
   assert.equal(world.evaluated, 7);
   assert.deepEqual([...world.owners], Array(7).fill(7));
   advanceGeneration(world);
   assert.equal(world.activeCount, 0);
-  parseRule(world, 'B2/S35');
+  world.physics = compileTotalistic('B2/S35');
   advanceGeneration(world);
   assert.equal(world.evaluated, 0);
   assert.deepEqual([...world.cells], Array(7).fill(0));

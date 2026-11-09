@@ -2,6 +2,7 @@
 // Sample at least two complete cycles, ending on or after generation 1200.
 // Each isolated seed is funded: workingCapital is the largest deficit after
 // purchase over the full observation. Blank paybackGen means no observed return.
+import { CALLAHAN } from '../../src/simulation/rules.js';
 import { DEFAULT_ECONOMY } from '../../src/match/constructive-economy.js';
 import { atlasPatterns } from '../../src/patterns/atlas-data.js';
 import { analyzePatternCycles, cycleWindow } from '../../src/patterns/cycle-economy.js';
@@ -15,7 +16,7 @@ for (const pattern of atlasPatterns) {
   const { length } = cycleWindow(pattern);
   const cycles = Math.max(2, Math.ceil(1200 / length));
   const { rows, initialCost, workingCapital, paybackGeneration } =
-    await analyzePatternCycles(pattern, DEFAULT_ECONOMY, { cycles });
+    await analyzePatternCycles(pattern, DEFAULT_ECONOMY, { cycles, physics: CALLAHAN });
   const first = rows[0], near200 = rows.find(row => row.to >= 200), last = rows.at(-1);
   const perGen = total => Number((total / length).toFixed(4));
   console.log([pattern.id, pattern.group, pattern.cells, initialCost, workingCapital,

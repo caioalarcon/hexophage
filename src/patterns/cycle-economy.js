@@ -1,66 +1,24 @@
 import { energyCost, generationEnergy, initialEnergy } from '../match/constructive-economy.js';
-import { initRuleTables } from '../simulation/rules.js';
-import { createSimulationState } from '../simulation/state.js';
-import { DIR } from '../world/geometry.js';
-import { decodeRLE } from './rle.js';
+import { advancePattern, seedPatternAges } from './planar-simulation.js';
 
-// An emitter repeats its mechanism while its descendants keep moving. The P43/86
-// mechanism has a two-pulse, 86-generation window.
-const emissionWindows = new Map([
-  ['gun20', 20], ['gun42', 42], ['gun43', 86],
-  ['gun200', 200], ['gun210', 210], ['gun840', 840],
-]);
+export { advancePattern, patternOffset, seedPatternAges } from './planar-simulation.js';
 
 export function cycleWindow(pattern) {
   if (pattern.period > 0) return { length: pattern.period, kind: 'period' };
-  if (emissionWindows.has(pattern.id)) return { length: emissionWindows.get(pattern.id), kind: 'emission' };
+  if (pattern.emissionWindow) return { length: pattern.emissionWindow, kind: 'emission' };
   return { length: 20, kind: 'window' };
 }
 
-// With at most 25,200 steps, even cells moving one position every generation
-// have disjoint keys on different axial columns. There are no wrapping edges.
-const stride = 65536;
-const adjacent = DIR.map(([q, r]) => q * stride + r);
-const rules = createSimulationState();
-initRuleTables(rules);
-
-export function patternOffset(id) {
-  const q = Math.round(id / stride);
-  return [q, id - q * stride];
-}
-
-export function seedPatternAges(pattern) {
-  return new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
-}
-
-export function advancePattern(ages, threshold) {
-  const masks = new Map();
-  for (const id of ages.keys()) {
-    for (let k = 0; k < adjacent.length; k++) {
-      const target = id - adjacent[k];
-      masks.set(target, (masks.get(target) || 0) | (1 << k));
-    }
-  }
-  const next = new Map();
-  let births = 0, mature = 0;
-  for (const [id, mask] of masks) {
-    const age = ages.get(id) || 0;
-    if (!(age ? rules.callSurv6 : rules.callBirth6)[mask]) continue;
-    next.set(id, age + 1);
-    if (age === 0) births++;
-    if (age + 1 >= threshold) mature++;
-  }
-  return { next, births, mature };
-}
+export class AnalysisLimit extends Error {}
 
 // Fund the seed through the full observation so its intrinsic costs remain
 // comparable. Separately report when the game's initial reserve would first
 // fail, before any erosion could perturb the measured trajectory.
-export async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
+export async function analyzePatternCycles(pattern, economy, { cycles, signal, physics } = {}) {
   const { length, kind } = cycleWindow(pattern);
   // A grower first has to establish a long mature trail before it can
   // amortize its births. Ordinary periodic patterns need a shorter horizon.
-  const defaultCycles = Math.max(24, Math.ceil((pattern.id === 'stalk' ? 2000 : 160) / length));
+  const defaultCycles = Math.max(24, Math.ceil((pattern.analysisHorizon ?? 160) / length));
   const maxGenerations = cycles == null ? 8400 : 25200;
   const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
   // Keep one coherent quote even if a slider changes while this pass yields.
@@ -71,10 +29,12 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
   const startingReserve = initialEnergy(economy);
   const rows = [];
   const unitIncome = new Float64Array(length + 1);
+  const unitUpkeep = new Float64Array(length + 1);
   let operatingBalance = 0, workingCapital = 0;
   let firstPositiveCycle = null, profitableFromCycle = null;
   let paybackGeneration = initialCost === 0 ? 0 : null;
   let firstErosionGeneration = startingReserve < initialCost ? 0 : null;
+  let work = 0;
   let lastYield = performance.now();
   signal?.throwIfAborted();
 
@@ -82,7 +42,11 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
     const from = (cycle - 1) * length + 1, to = cycle * length;
     let births = 0, stableCellTurns = 0, income = 0, upkeep = 0;
     for (let generation = from; generation <= to; generation++) {
-      const turn = advancePattern(ages, stableAfter);
+      work += ages.size;
+      if (ages.size > 20000 || work > 20000000)
+        throw new AnalysisLimit('Análise interrompida na geração ' + (generation - 1) +
+          ' (' + ages.size.toLocaleString('pt-BR') + ' células vivas). Limite de simulação do atlas.');
+      const turn = advancePattern(ages, stableAfter, physics);
       ages = turn.next;
       births += turn.births;
       stableCellTurns += turn.mature;
@@ -90,10 +54,10 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
       income += flow.income;
       upkeep += flow.upkeep;
       const step = generation - from + 1;
-      // Prefix integral of income per mature site. Historical lab callbacks
-      // can pay births instead, so separate their earnings from mature income.
-      const matureIncome = economy.generationQuote ? generationEnergy(0, turn.mature, economy).income : flow.income;
-      unitIncome[step] = unitIncome[step - 1] + (turn.mature ? matureIncome / turn.mature : 0);
+      // Attribute the effect of mature cells while holding actual births fixed.
+      const birthsOnly = generationEnergy(turn.births, 0, economy);
+      unitIncome[step] = unitIncome[step - 1] + (turn.mature ? (flow.income - birthsOnly.income) / turn.mature : 0);
+      unitUpkeep[step] = unitUpkeep[step - 1] + (turn.mature ? (flow.upkeep - birthsOnly.upkeep) / turn.mature : 0);
       operatingBalance += flow.income - flow.upkeep;
       workingCapital = Math.max(workingCapital, -operatingBalance);
       if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation;
@@ -109,20 +73,22 @@ export async function analyzePatternCycles(pattern, economy, { cycles, signal } 
     // End age > window length means this exact position never died in the
     // window, including at its starting boundary. During warm-up, only the
     // generations after it reaches the selected age earn income.
-    let fixedCore = 0, fixedIncome = 0;
+    let owned = 0, fixedCore = 0, fixedIncome = 0, fixedUpkeep = 0;
     for (const age of ages.values()) {
+      if (age > 0) owned++;
       if (age <= length) continue;
       fixedCore++;
       const productiveTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
       fixedIncome += unitIncome[length] - unitIncome[length - productiveTurns];
+      fixedUpkeep += unitUpkeep[length] - unitUpkeep[length - productiveTurns];
     }
     const net = income - upkeep;
     if (net > 0) {
       firstPositiveCycle ??= cycle;
       profitableFromCycle ??= cycle;
     } else profitableFromCycle = null;
-    rows.push({ cycle, from, to, births, stableCellTurns, income, upkeep, fixedCore, fixedIncome,
-      net, cumulative: operatingBalance - initialCost, live: ages.size });
+    rows.push({ cycle, from, to, births, stableCellTurns, income, upkeep, fixedCore, fixedIncome, fixedUpkeep,
+      net, cumulative: operatingBalance - initialCost, live: owned });
   }
   return { cycleLength: length, kind, generations: observedCycles * length, initialCost, workingCapital,
     firstPositiveCycle, profitableFromCycle, paybackGeneration, firstErosionGeneration, rows };

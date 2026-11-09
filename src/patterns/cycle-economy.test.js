@@ -1,3 +1,4 @@
+import { CALLAHAN } from '../simulation/rules.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { atlasPatterns } from './atlas-data.js';
@@ -7,7 +8,7 @@ import { analyzePatternCycles, cycleWindow } from './cycle-economy.js';
 const pattern = id => atlasPatterns.find(p => p.id === id);
 const linear = { stableEnergy: 3, birthCost: 1, stampCost: 30, stableAfter: 16, initialCells: 4, productionScale: 0 };
 const measure = (id, settings = {}, options = {}) =>
-  analyzePatternCycles(pattern(id), { ...DEFAULT_ECONOMY, ...linear, ...settings }, options);
+  analyzePatternCycles(pattern(id), { ...DEFAULT_ECONOMY, ...linear, ...settings }, { physics: CALLAHAN, ...options });
 
 test('the linear comparison tariff lets the flipper pay back its stamp after warm-up', async () => {
   const a = await measure('p2');
@@ -18,7 +19,7 @@ test('the linear comparison tariff lets the flipper pay back its stamp after war
   assert.equal(a.firstErosionGeneration, null);
   assert.deepEqual(a.rows[0], {
     cycle: 1, from: 1, to: 2, births: 4, stableCellTurns: 0,
-    income: 0, upkeep: 4, fixedCore: 1, fixedIncome: 0, net: -4, cumulative: -94, live: 3,
+    income: 0, upkeep: 4, fixedCore: 1, fixedIncome: 0, fixedUpkeep: 0, net: -4, cumulative: -94, live: 3,
   });
   assert.deepEqual(a.rows.slice(7).map(r => r.net), Array(a.rows.length - 7).fill(2));
 });
@@ -85,8 +86,8 @@ test('a nonlinear quote is integrated per generation and distributed to the core
   const source = pattern('p4f');
   const tariff = { ...DEFAULT_ECONOMY, stableAfter: 2, stableEnergy: 1, birthCost: 1,
     generationQuote: (births, mature) => ({ income: mature / (1 + mature / 2), upkeep: births }) };
-  const block = (await analyzePatternCycles(source, tariff, { cycles: 1 })).rows[0];
-  const steps = (await analyzePatternCycles({ ...source, period: 1 }, tariff, { cycles: source.period })).rows;
+  const block = (await analyzePatternCycles(source, tariff, { physics: CALLAHAN, cycles: 1 })).rows[0];
+  const steps = (await analyzePatternCycles({ ...source, period: 1 }, tariff, { physics: CALLAHAN, cycles: source.period })).rows;
   const close = (a, b) => assert(Math.abs(a-b) < 1e-9);
   close(block.income, steps.reduce((s, r) => s + r.income, 0));
   close(block.net, steps.reduce((s, r) => s + r.net, 0));

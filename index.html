@@ -130,7 +130,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .br-boardwrap{overflow:auto}
 #hexlab .br-sidegutter{display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap}
 #hexlab .br-sidegutter button{font-size:11px}
-#hexlab #hl-rulechoice, #hexlab #hl-ruleconfig {display:none!important}
 #hexlab #hl-demo, #hexlab #hl-seed, #hexlab #hl-mode {display:none!important}
 @media(max-width:720px){#hexlab .br-table{font-size:11px}#hexlab .br-table th,#hexlab .br-table td{padding:5px 4px}#hexlab .br-controls input{width:78px}}
 /* Match HUD and independently sized playing surface. */
@@ -760,7 +759,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <section class="br-diagnostic" aria-labelledby="br-diag-label"><h3 id="br-diag-label">Seu campo e sua reserva</h3>
  <p id="br-diag-peak"></p><p id="br-diag-largest"></p><p id="br-diag-end"></p>
 </section>
- <div class="br-note">¹ O saldo soma a produção e os tributos recebidos e desconta os nascimentos e tributos pagos. O painel de energia mostra separadamente o gasto em carimbos. O ganho por célula madura diminui conforme cresce a população madura do dono. Cada nascimento natural custa energia ao dono. Se a produção e a reserva não cobrirem o custo, a dívida corrói células do próprio jogador.</div>
+ <div class="br-note">¹ O saldo inclui a receita, o custo operacional pago e os tributos. O gasto em carimbos aparece no painel de energia.</div>
 </dialog>
  <div class="hl-shell">
   <main class="hl-left">
@@ -811,7 +810,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <div id="br-tabs" class="br-tabs" hidden></div>
 <div class="hl-section br-loadout-manager">
  <div class="hl-subhead">Carimbos</div>
- <div class="hl-muted">15 slots · 160 padrões no atlas.</div>
  <button type="button" id="br-open-atlas" class="primary">Escolher padrões</button>
  <div id="br-deck-config" class="br-deck-config"></div>
 </div>
@@ -831,19 +829,23 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <div class="br-controls">
   <label>Seu emoji<input id="br-myemoji" type="text" maxlength="12" value="🦖" style="width:56px;text-align:center" aria-label="Emoji do jogador"></label>
   <button class="primary" id="br-reset">Nova partida · 6 jogadores</button>
-  <div class="br-summary">Iniciar planta uma colmeia. Você pode posicioná-la manualmente e plantar outras. Ajuste os valores em Economia.</div>
+  <div class="br-summary">Iniciar planta a abertura da regra.</div>
 </div>
+  <div class="br-worldpick">
+    <label for="hl-rulechoice">Autômato</label><select id="hl-rulechoice" title="Trocar reinicia a partida neste planeta"></select>
+  </div>
+  <div id="hl-ruleconfig" class="hl-ruleconfig"><label for="hl-rule">Regra B/S</label><input id="hl-rule" class="hl-rule" value="B2/S35" aria-describedby="hl-rule-error"><small id="hl-rule-error" role="status"></small></div>
+  <div class="br-worldpick">
+    <label for="br-economy-policy">Economia</label>
+    <select id="br-economy-policy" title="Trocar reinicia a partida com as tarifas atuais">
+      <option value="stability">Células maduras geram</option><option value="activity">Nascimentos geram</option>
+    </select>
+  </div>
   <div class="hl-subhead">Tamanho do mundo · antes da partida</div><div class="br-worldpick"><label for="hl-frequency">Esfera</label><select id="hl-frequency" title="Resolução e número total de células"></select><button id="hl-rebuild" title="Carregar a resolução escolhida e iniciar outra partida">Carregar</button></div><div class="hl-smallline" id="br-world-note">Carregar inicia uma nova partida.</div>
   <div class="hl-subhead">Estratégia dos bots</div><div id="br-bots" class="br-bots"></div>
   </div></details>
    <details class="br-panelgroup"><summary>Planeta e inspeção</summary><div class="br-groupitems">
  <button id="hl-rotateccw" title="Girar a visão 60 graus">↶ 60°</button><button id="hl-rotatecw" title="Girar a visão 60 graus">↷ 60°</button><button id="hl-sideflip">Espelhar / <span id="hl-side">Exterior</span></button><button id="hl-pentagon">Ir até anomalia</button>
-<div class="hl-section">
- <label class="hl-section-label" for="hl-rulechoice">Regra do autômato</label>
- <select id="hl-rulechoice"><option value="callahan" selected>B2o/S2m34 · Callahan</option><option value="bays">B2/S35 · Bays</option><option value="custom">B/S personalizada</option></select>
- <div class="hl-muted" id="hl-rulehelp"></div>
-</div>
-<div id="hl-ruleconfig" class="hl-ruleconfig"><label class="hl-section-label" for="hl-rule">Regra personalizada</label><input id="hl-rule" class="hl-rule" value="B2/S35"></div>
  <label class="hl-smallline"><input type="checkbox" id="hl-debug"> Mostrar pentágonos (inspeção)</label>
  <label class="hl-smallline" for="hl-meshdetail">Malha 3D:</label>
  <select id="hl-meshdetail" title="Somente os contornos visuais: não altera o grafo nem a simulação" style="max-width:140px;font-size:12px;padding:5px"><option value="auto">Adaptativa</option><option value="full">Detalhe máximo visível</option><option value="none">Sem contornos</option></select>
@@ -869,9 +871,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <section class="br-energy-panel" id="br-energy-panel" aria-label="Economia">
  <h3>Economia <small>Parâmetros ao vivo</small></h3>
  <div class="br-energy-sliders" id="br-energy-sliders">
-  <label for="eco-stable-energy">Renda por célula madura <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
-  <label for="eco-scale">Escala de produção <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="1" max="16000" step="1" value="8000" data-energy="productionScale"></label>
-  <label for="eco-birth-cost">Custo por nascimento <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
+  <label for="eco-stable-energy"><span id="eco-mature-label">Renda por célula madura</span> <output id="eco-stable-energy-val">0,02</output><input id="eco-stable-energy" type="range" min="0" max="0.2" step="0.001" value="0.02" data-energy="stableEnergy"></label>
+  <label for="eco-scale">Escala das células maduras <output id="eco-scale-val">8000</output><input id="eco-scale" type="range" min="0" max="16000" step="1" value="8000" data-energy="productionScale"></label>
+  <label for="eco-birth-cost"><span id="eco-birth-label">Custo por nascimento</span> <output id="eco-birth-cost-val">1</output><input id="eco-birth-cost" type="range" min="0" max="100" step="1" value="1" data-energy="birthCost"></label>
   <label for="eco-combat-fee">Tributo por morte <output id="eco-combat-fee-val">0,25</output><input id="eco-combat-fee" type="range" min="0" max="100" step="0.01" value="0.25" data-energy="combatFee"></label>
   <label for="eco-age">Maturação (gerações) <output id="eco-age-val">256</output><input id="eco-age" type="range" min="0" max="1024" step="1" value="256" data-energy="stableAfter"></label>
   <label for="eco-stamp">Custo por célula <output id="eco-stamp-val">10000</output><input id="eco-stamp" type="range" min="0" max="30000" step="1" value="10000" data-energy="stampCost"></label>
@@ -902,8 +904,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <div><span>Mortes naturais (total)</span><b id="eco-deaths-total">0</b></div>
   <div><span>Receita/ger.</span><b id="eco-income">+0</b></div>
   <div><span>Receita (total)</span><b id="eco-income-total">0</b></div>
-  <div><span>Nascimentos: custo/ger.</span><b id="eco-maintenance">−0</b></div>
-  <div><span>Nascimentos: custo total</span><b id="eco-maintenance-total">0</b></div>
+  <div><span>Custo operacional/ger.</span><b id="eco-maintenance">−0</b></div>
+  <div><span>Custo operacional total</span><b id="eco-maintenance-total">0</b></div>
   <div><span>Tributos recebidos</span><b id="eco-tribute-in">0</b></div>
   <div><span>Tributos pagos</span><b id="eco-tribute-out">0</b></div>
   <div><span>Carimbos: gasto total</span><b id="eco-stamped-total">0</b></div>
@@ -922,16 +924,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  </div>
 
 <dialog class="br-atlas-dialog" id="br-atlas-dialog" aria-labelledby="br-atlas-heading">
- <div class="br-atlas-head"><div><h2 id="br-atlas-heading">Atlas Callahan · 160 estruturas</h2><p>Selecione um padrão para cada slot. Clique para pesquisar e simular sua evolução.</p></div><button type="button" id="br-atlas-close" aria-label="Fechar atlas">✕</button></div>
+ <div class="br-atlas-head"><div><h2 id="br-atlas-heading">Atlas de padrões</h2><p>Selecione um padrão para cada slot. Clique para pesquisar e simular sua evolução.</p></div><button type="button" id="br-atlas-close" aria-label="Fechar atlas">✕</button></div>
  <div class="br-atlas-body">
   <section class="br-atlas-search"><div class="br-atlas-filters">
    <label>Buscar<input id="br-atlas-query" placeholder="Nome, período, classe, custo…" type="search"></label>
-   <label>Tipo<select id="br-atlas-class"><option value="">Todos</option><option value="oscilador">Osciladores</option><option value="nave">Naves</option><option value="gerador">Geradores</option><option value="crescedor">Crescedores</option><option value="interação">Interações</option></select></label>
+   <label>Tipo<select id="br-atlas-class"><option value="">Todos</option></select></label>
    <label>Ordem<select id="br-atlas-order"><option value="cost">Menor custo inicial</option><option value="activity">Mais nascimentos/célula</option><option value="core">Maior núcleo fixo</option><option value="period">Menor período</option></select></label>
   </div><div id="br-atlas-results" class="br-atlas-results"></div></section>
   <section class="br-atlas-detail">
-   <div class="br-atlas-title"><h3 id="br-atlas-name">Crescedor de colmeia</h3><span id="br-atlas-label">Crescedor</span></div>
-   <p id="br-atlas-description">Evolução da estrutura na regra Callahan.</p>
+   <div class="br-atlas-title"><h3 id="br-atlas-name">Padrão</h3><span id="br-atlas-label"></span></div>
+   <p id="br-atlas-description"></p>
    <canvas id="br-atlas-canvas" width="520" height="300" aria-label="Evolução da estrutura escolhida, geração por geração"></canvas>
    <div class="br-atlas-play"><button type="button" id="br-atlas-play">▶ Simular</button><button type="button" id="br-atlas-step">+1</button><button type="button" id="br-atlas-cycle">+1 ciclo</button><button type="button" id="br-atlas-reset">Reiniciar</button><button type="button" id="br-atlas-show-economy">Economia ↓</button><span id="br-atlas-gen">Geração 0</span></div>
    <div id="br-atlas-metrics" class="br-atlas-metrics"></div>
@@ -948,15 +950,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   </dl>
   <p id="br-cycle-trend"></p>
   <figure class="br-cycle-figure">
-   <figcaption><span>Energia por <span id="br-cycle-unit">ciclo</span></span><span class="br-cycle-income">Produção</span><span class="br-cycle-upkeep">Custo dos nascimentos</span></figcaption>
-   <svg id="br-cycle-plot" viewBox="0 0 570 92" role="img" aria-label="Energia produzida e custo dos nascimentos por intervalo"></svg>
+   <figcaption><span>Energia por <span id="br-cycle-unit">ciclo</span></span><span class="br-cycle-income">Produção</span><span class="br-cycle-upkeep">Custo operacional</span></figcaption>
+   <svg id="br-cycle-plot" viewBox="0 0 570 92" role="img" aria-label="Energia produzida e custo operacional por intervalo"></svg>
   </figure>
   <p class="br-cycle-muted" id="br-cycle-solvency"></p>
   <details class="br-cycle-ledger"><summary>Ver valores por intervalo</summary>
    <div class="br-cycle-scroll" role="region" aria-label="Detalhamento econômico" tabindex="0">
-    <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Produção</th><th scope="col">Custo dos nascimentos</th><th scope="col">Produção do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
+    <table><thead><tr><th scope="col" id="br-cycle-column">Ciclo</th><th scope="col">Gerações</th><th scope="col">Nascimentos</th><th scope="col">Produção</th><th scope="col">Custo operacional</th><th scope="col">Saldo do núcleo¹</th><th scope="col">Saldo</th><th scope="col">Acumulado²</th></tr></thead><tbody id="br-cycle-rows"></tbody></table>
    </div>
-   <p class="br-cycle-muted">¹ Parcela da produção recebida pelas células que permaneceram vivas no mesmo lugar durante todo o intervalo. ² O acumulado desconta o carimbo inicial.</p>
+   <p class="br-cycle-muted">¹ Contribuição das células que permaneceram vivas no mesmo lugar durante todo o intervalo, depois da maturação. ² O acumulado desconta o carimbo inicial.</p>
   </details>
  </div>
 </section>
@@ -991,13 +993,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       epoch: 0,
       gen: 0,
       evaluated: 0,
-      rule: "bays",
-      birth: new Uint8Array(7),
-      survival: new Uint8Array(7),
-      callBirth6: new Uint8Array(64),
-      callSurv6: new Uint8Array(64),
-      callBirth5: new Uint8Array(32),
-      callSurv5: new Uint8Array(32),
+      rule: null,
+      physics: null,
       statCount: 0
     };
   }
@@ -1044,34 +1041,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     lastTickDraw: 0,
     stampRotation: 0
   };
-
-  // src/simulation/rules.js
-  function initRuleTables(world2) {
-    for (const degree of [5, 6])
-      for (let bits = 0; bits < 1 << degree; bits++) {
-        let n = 0;
-        for (let b = bits; b; b &= b - 1) n++;
-        let adjacent2 = false, meta = false;
-        if (n === 2)
-          for (let k = 0; k < degree; k++) {
-            if (bits === (1 << k | 1 << (k + 1) % degree)) adjacent2 = true;
-            if (bits === (1 << k | 1 << (k + 2) % degree)) meta = true;
-          }
-        const birth = degree === 6 ? world2.callBirth6 : world2.callBirth5;
-        const survive = degree === 6 ? world2.callSurv6 : world2.callSurv5;
-        birth[bits] = n === 2 && adjacent2 ? 1 : 0;
-        survive[bits] = n === 3 || n === 4 || n === 2 && meta ? 1 : 0;
-      }
-  }
-  function parseRule(world2, value) {
-    const m = /^B([0-6]*)\s*\/\s*S([0-6]*)$/i.exec(value.trim());
-    if (!m) return false;
-    world2.birth.fill(0);
-    world2.survival.fill(0);
-    for (const c of m[1]) world2.birth[+c] = 1;
-    for (const c of m[2]) world2.survival[+c] = 1;
-    return true;
-  }
 
   // src/simulation/population.js
   function allocateCells(n) {
@@ -1151,50 +1120,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/simulation/cell-fate.js
-  function evaluateCell(world2) {
-    const {
-      cells: a,
-      owners: oa,
-      graph: { adj, deg }
-    } = world2;
-    const callahan = world2.rule === "callahan";
-    const ownerCounts = new Uint8Array(8);
+  function evaluateCell({ cells: cells2, owners, graph: { adj, deg }, physics }) {
+    const { tables, birthOwner } = physics;
+    const counts = new Uint8Array(8);
     return (id) => {
-      const j = id * 6, d = deg[id];
-      let count = 0, mask = 0;
-      for (let k = 0; k < d; k++) {
-        const bit = a[adj[j + k]];
-        count += bit;
-        mask |= bit << k;
-      }
-      const live = callahan ? d === 6 ? a[id] ? world2.callSurv6[mask] : world2.callBirth6[mask] : a[id] ? world2.callSurv5[mask] : world2.callBirth5[mask] : a[id] ? world2.survival[count] : world2.birth[count];
-      if (!live) return 0;
-      if (a[id]) return oa[id];
-      if (callahan) {
-        let first = 0;
-        for (let k = 0; k < d; k++)
-          if (mask >>> k & 1) {
-            const parent = oa[adj[j + k]];
-            if (first && first !== parent) return 7;
-            first = parent;
-          }
-        return first || 7;
-      }
-      ownerCounts.fill(0);
-      let best = 0, winning = 7, tied = false;
-      for (let k = 0; k < d; k++)
-        if (mask >> k & 1) {
-          const idOwner = oa[adj[j + k]];
-          ownerCounts[idOwner]++;
-        }
-      for (let owner = 1; owner <= 7; owner++) {
-        if (ownerCounts[owner] > best) {
-          best = ownerCounts[owner];
-          winning = owner;
-          tied = false;
-        } else if (ownerCounts[owner] === best && best > 0) tied = true;
-      }
-      return tied || winning === 7 ? 7 : winning;
+      const offset = id * 6, degree = deg[id];
+      let mask = 0;
+      for (let k = 0; k < degree; k++) mask |= cells2[adj[offset + k]] << k;
+      if (!tables[degree][cells2[id]][mask]) return 0;
+      return cells2[id] ? owners[id] : birthOwner(owners, adj, offset, degree, mask, counts);
     };
   }
 
@@ -1203,8 +1137,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     let births = 0;
     const a = world2.cells, b = world2.next, oa = world2.owners, ob = world2.nextOwners, g = world2.graph, adj = g.adj, deg = g.deg, n = g.n;
     const act = world2.active, actCount = world2.activeCount, positions = world2.positionsActive;
-    const callahan = world2.rule === "callahan";
-    const useDense = !callahan && world2.birth[0] || actCount * 7 >= n;
+    const useDense = world2.physics.birthsFromVacuum || actCount * 7 >= n;
     const bound = useDense ? n : actCount * 7;
     const newActive = world2.nextActive = fitIndexBuffer(world2.nextActive, bound, n);
     if (!useDense) world2.candidates = fitIndexBuffer(world2.candidates, bound, n);
@@ -1414,544 +1347,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return ids;
   }
 
-  // src/match/constructive-economy.js
-  var DEFAULT_ECONOMY = Object.freeze({
-    combatFee: 0.25,
-    stableEnergy: 0.02,
-    productionScale: 8e3,
-    birthCost: 1,
-    stableAfter: 256,
-    stampCost: 1e4,
-    initialCells: 82
-  });
-  var ECONOMY_KEYS = Object.freeze(Object.keys(DEFAULT_ECONOMY));
-  function generationEnergy(births, stable, economy) {
-    if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
-    const effective = economy.productionScale > 0 ? stable / (1 + stable / economy.productionScale) : stable;
-    return { income: effective * economy.stableEnergy, upkeep: births * economy.birthCost };
-  }
-  function energyCost(cells3, economy) {
-    return cells3 * economy.stampCost;
-  }
-  function availableCells(reserve, economy) {
-    return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
-  }
-  function parameterValue(value, maximum = 100, step2 = 1) {
-    const units = Math.round((Number(value) || 0) / step2);
-    const places = String(step2).split(".")[1]?.length ?? 0;
-    return Math.max(0, Math.min(maximum, Number((units * step2).toFixed(places))));
-  }
-  function initialEnergy(economy) {
-    return economy.initialCells * economy.stampCost;
-  }
-
-  // src/patterns/atlas-data.js
-  var rows = "p2|Oscilador mínimo (flipper)|oscilador|2|3|4|4|1|bo$bo$2bo!\ncenso-oscillator-5-p2-1|Oscilador P2 · C5-1|oscilador|2|5|6|6|3|2o$o$b2o!\np4f|Flipper P4|oscilador|4|5|16|16|1|3o$3bo$4bo!\ncenso-oscillator-6-p2-1|Oscilador P2 · C6-1|oscilador|2|6|6|6|6|2o$obo$b2o!\ncenso-oscillator-6-p2-2|Oscilador P2 · C6-2|oscilador|2|6|6|6|3|2bo$3o$2bo$3bo!\np8f|Flipper P8|oscilador|8|6|30|30|2|bo$b2o$3bo$3b2o!\nglider|Glider P4|nave|4|6|20|20|0|2bob$3bo$o2bo$3bo$3bo!\ncenso-oscillator-7-p2-1|Oscilador P2 · C7-1|oscilador|2|7|7|7|4|2bo$obo$b3o$4bo!\ncenso-oscillator-8-p2-1|Oscilador P2 · C8-1|oscilador|2|8|8|8|5|2bo$obo$b3o$4bo$4bo!\ncenso-oscillator-8-p4-1|Oscilador P4 · C8-1|oscilador|4|8|28|28|2|o$bo$2b4o$6bo$7bo!\ncenso-oscillator-9-p2-1|Oscilador P2 · C9-1|oscilador|2|9|8|8|5|o$obo$b4o$4bo$5bo!\ncenso-oscillator-9-p2-2|Oscilador P2 · C9-2|oscilador|2|9|9|9|6|2b2o$obo$b3o$4bo$4bo!\ncenso-oscillator-9-p2-3|Oscilador P2 · C9-3|oscilador|2|9|8|8|5|bo$obo$b4o$4bo$5bo!\ncenso-oscillator-9-p2-4|Oscilador P2 · C9-4|oscilador|2|9|8|8|5|bo$obo$b5o$4bo!\ncenso-oscillator-9-p2-5|Oscilador P2 · C9-5|oscilador|2|9|8|8|5|2bo$obo$b5o$4bo!\ncenso-oscillator-9-p2-6|Oscilador P2 · C9-6|oscilador|2|9|8|8|5|bo$2bo$5o$2bo$3bo!\ncenso-oscillator-9-p2-7|Oscilador P2 · C9-7|oscilador|2|9|8|8|5|2bo$2bo$4o$2bobo$3bo!\ncenso-oscillator-9-p4-1|Oscilador P4 · C9-1|oscilador|4|9|18|18|4|3bo$4o$3bo$3b2o$5bo!\ncenso-oscillator-9-p4-2|Oscilador P4 · C9-2|oscilador|4|9|24|24|3|3bo$3bo$4o$3bo$4bo$5bo!\ncenso-oscillator-9-p5-1|Oscilador P5 · C9-1|oscilador|5|9|24|24|5|2bo$obo$b4o$2bo$3bo!\ncenso-oscillator-9-p5-2|Oscilador P5 · C9-2|oscilador|5|9|24|24|5|bo$obo$b3o$2bobo$3bo!\ncenso-oscillator-9-p6-1|Oscilador P6 · C9-1|oscilador|6|9|26|26|7|ob2o$b2obo$4bo$5b2o!\ncenso-oscillator-9-p10-1|Oscilador P10 · C9-1|oscilador|10|9|44|44|5|bo$obo$b4o$2bo$3bo!\ncenso-oscillator-10-p2-1|Oscilador P2 · C10-1|oscilador|2|10|12|12|6|2o$o$b4o$5bo$4b2o!\ncenso-oscillator-10-p2-10|Oscilador P2 · C10-10|oscilador|2|10|8|8|8|2bo$3o$obo$b3o$4bo!\ncenso-oscillator-10-p2-2|Oscilador P2 · C10-2|oscilador|2|10|9|9|6|o$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-3|Oscilador P2 · C10-3|oscilador|2|10|8|8|8|2o$obo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-4|Oscilador P2 · C10-4|oscilador|2|10|8|8|6|obo$ob3o$b2obo$5bo!\ncenso-oscillator-10-p2-5|Oscilador P2 · C10-5|oscilador|2|10|9|9|6|bo$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-6|Oscilador P2 · C10-6|oscilador|2|10|9|9|6|2bo$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-7|Oscilador P2 · C10-7|oscilador|2|10|9|9|6|bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-8|Oscilador P2 · C10-8|oscilador|2|10|9|9|6|2b2o$obo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-9|Oscilador P2 · C10-9|oscilador|2|10|9|9|6|2bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-10-p4-1|Oscilador P4 · C10-1|oscilador|4|10|19|19|5|3bo$o2bo$b4o$3bo$4b2o!\ncenso-oscillator-10-p4-2|Oscilador P4 · C10-2|oscilador|4|10|19|19|5|3bo$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-10-p5-1|Oscilador P5 · C10-1|oscilador|5|10|24|24|5|2bo$2bo$5o$b2o$2bo!\ncenso-oscillator-10-p6-1|Oscilador P6 · C10-1|oscilador|6|10|26|26|7|ob2o$b2obo$4bo$4b2o$6bo!\ncenso-oscillator-10-p6-2|Oscilador P6 · C10-2|oscilador|6|10|28|28|7|3bo$4bo$ob3o$b2obo$5bo!\ncenso-oscillator-10-p10-1|Oscilador P10 · C10-1|oscilador|10|10|49|49|6|2b2o$obo$b4o$2bo$3bo!\ncenso-oscillator-10-p10-2|Oscilador P10 · C10-2|oscilador|10|10|49|49|6|bo$obobo$b4o$2bo$3bo!\ncenso-oscillator-11-p2-1|Oscilador P2 · C11-1|oscilador|2|11|9|9|9|2o$obo$b5o$4bo$4bo!\ncenso-oscillator-11-p2-10|Oscilador P2 · C11-10|oscilador|2|11|10|10|7|bo$obo$b5o$4bo$5b2o!\ncenso-oscillator-11-p2-11|Oscilador P2 · C11-11|oscilador|2|11|10|10|7|bo$obo$b5o$4bobo$5bo!\ncenso-oscillator-11-p2-12|Oscilador P2 · C11-12|oscilador|2|11|10|10|7|2bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-11-p2-13|Oscilador P2 · C11-13|oscilador|2|11|9|9|9|2b2o$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p2-14|Oscilador P2 · C11-14|oscilador|2|11|8|8|8|2bo$6o$2bobo$3b2o!\ncenso-oscillator-11-p2-15|Oscilador P2 · C11-15|oscilador|2|11|9|9|7|bo$5o$3bobo$3bo$4b2o!\ncenso-oscillator-11-p2-2|Oscilador P2 · C11-2|oscilador|2|11|10|10|7|o$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-3|Oscilador P2 · C11-3|oscilador|2|11|10|10|7|o$obo$b5o$4bo$5b2o!\ncenso-oscillator-11-p2-4|Oscilador P2 · C11-4|oscilador|2|11|10|10|7|o$obo$b4o$4bobo$5b2o!\ncenso-oscillator-11-p2-5|Oscilador P2 · C11-5|oscilador|2|11|10|10|7|o2bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p2-6|Oscilador P2 · C11-6|oscilador|2|11|10|10|7|o$obo$b5o$4bobo$5bo!\ncenso-oscillator-11-p2-7|Oscilador P2 · C11-7|oscilador|2|11|10|10|7|bo$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-8|Oscilador P2 · C11-8|oscilador|2|11|10|10|7|2bo$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-9|Oscilador P2 · C11-9|oscilador|2|11|10|10|7|bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-11-p4-1|Oscilador P4 · C11-1|oscilador|4|11|31|31|4|o$bo4bo$2b5o$6bo$7bo$7bo!\ncenso-oscillator-11-p4-10|Oscilador P4 · C11-10|oscilador|4|11|22|22|5|2bo$3bo$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-11-p4-11|Oscilador P4 · C11-11|oscilador|4|11|20|20|6|o$bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-2|Oscilador P4 · C11-2|oscilador|4|11|40|40|3|o$bo$2b4o$6bo$7bo$8b3o!\ncenso-oscillator-11-p4-3|Oscilador P4 · C11-3|oscilador|4|11|22|22|6|o3bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-4|Oscilador P4 · C11-4|oscilador|4|11|19|19|8|3bo$o2bo$b4o$3bobo$4b2o!\ncenso-oscillator-11-p4-5|Oscilador P4 · C11-5|oscilador|4|11|22|22|5|3bo$o2bo$b4o$3bobo$4bobo!\ncenso-oscillator-11-p4-6|Oscilador P4 · C11-6|oscilador|4|11|21|21|6|2bobo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-7|Oscilador P4 · C11-7|oscilador|4|11|21|21|6|3b2o$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-11-p4-8|Oscilador P4 · C11-8|oscilador|4|11|21|21|6|3b2o$o2bo$b5o$3bo$4bo!\ncenso-oscillator-11-p4-9|Oscilador P4 · C11-9|oscilador|4|11|21|21|6|3bo$o2bobo$b5o$3bo$4bo!\ncenso-oscillator-11-p6-1|Oscilador P6 · C11-1|oscilador|6|11|31|31|8|2b2o$obo$b3o$4bo$4bo$5b2o!\ncenso-oscillator-11-p10-1|Oscilador P10 · C11-1|oscilador|10|11|49|49|9|2b2o$obobo$b4o$2bo$3bo!\ncenso-oscillator-12-p2-1|Oscilador P2 · C12-1|oscilador|2|12|10|10|8|o$obo$b4o$4bo$4bobo$5b2o!\ncenso-oscillator-12-p2-10|Oscilador P2 · C12-10|oscilador|2|12|10|10|7|bo$obobo$b4o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-11|Oscilador P2 · C12-11|oscilador|2|12|10|10|7|bo$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-12|Oscilador P2 · C12-12|oscilador|2|12|10|10|7|bo$obobo$b6o$4bo$4bo!\ncenso-oscillator-12-p2-13|Oscilador P2 · C12-13|oscilador|2|12|10|10|7|2bo$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-14|Oscilador P2 · C12-14|oscilador|2|12|10|10|7|2bo$obobo$b6o$4bo$4bo!\ncenso-oscillator-12-p2-15|Oscilador P2 · C12-15|oscilador|2|12|10|10|10|2b2o$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p2-16|Oscilador P2 · C12-16|oscilador|2|12|10|10|7|2bo$obobo$b6o$4bo$5bo!\ncenso-oscillator-12-p2-17|Oscilador P2 · C12-17|oscilador|2|12|9|9|9|2b2o$obobo$b6o$4bo!\ncenso-oscillator-12-p2-18|Oscilador P2 · C12-18|oscilador|2|12|10|10|8|2bo$3o$obo$3bobo$3b3o$3bo!\ncenso-oscillator-12-p2-19|Oscilador P2 · C12-19|oscilador|2|12|10|10|8|2o$2bo$obo$b5o$4bo$4bo!\ncenso-oscillator-12-p2-2|Oscilador P2 · C12-2|oscilador|2|12|10|10|10|2o$obo$b5o$4bobo$4bo!\ncenso-oscillator-12-p2-20|Oscilador P2 · C12-20|oscilador|2|12|10|10|8|2bo$3o$2bo$3b2o$5bo$5b3o$5bo!\ncenso-oscillator-12-p2-21|Oscilador P2 · C12-21|oscilador|2|12|8|8|8|2bo$5o$2bobo$3b3o$6bo!\ncenso-oscillator-12-p2-22|Oscilador P2 · C12-22|oscilador|2|12|10|10|8|3bo$obobo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-23|Oscilador P2 · C12-23|oscilador|2|12|9|9|8|bob2o$3o2bo$3b3o$5bo$6bo!\ncenso-oscillator-12-p2-24|Oscilador P2 · C12-24|oscilador|2|12|9|9|9|2bo$3o$obo$b4o$4bo$5bo!\ncenso-oscillator-12-p2-25|Oscilador P2 · C12-25|oscilador|2|12|10|10|8|2b2o$obo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-26|Oscilador P2 · C12-26|oscilador|2|12|10|10|8|2bo$obobo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-27|Oscilador P2 · C12-27|oscilador|2|12|9|9|9|2bo$3bo$ob2o$b3o$4bo$4bo$5b2o!\ncenso-oscillator-12-p2-28|Oscilador P2 · C12-28|oscilador|2|12|9|9|9|bo$2bo$6o$2bobo$3b2o!\ncenso-oscillator-12-p2-29|Oscilador P2 · C12-29|oscilador|2|12|10|10|8|b2o$3bo$6o$2bo$3b2o!\ncenso-oscillator-12-p2-3|Oscilador P2 · C12-3|oscilador|2|12|10|10|7|o$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-30|Oscilador P2 · C12-30|oscilador|2|12|10|10|7|4bo$2bobo$6o$2bo3bo$3bo!\ncenso-oscillator-12-p2-31|Oscilador P2 · C12-31|oscilador|2|12|8|8|8|bo$bo$4o$3b4o$5bo$5bo!\ncenso-oscillator-12-p2-32|Oscilador P2 · C12-32|oscilador|2|12|8|8|8|bo$bo$4obo$3b3o$5bo$6bo!\ncenso-oscillator-12-p2-4|Oscilador P2 · C12-4|oscilador|2|12|10|10|7|o3bo$obobo$b5o$4bo$4bo!\ncenso-oscillator-12-p2-5|Oscilador P2 · C12-5|oscilador|2|12|10|10|10|2o$obo$b5o$4bo$5b2o!\ncenso-oscillator-12-p2-6|Oscilador P2 · C12-6|oscilador|2|12|10|10|10|2o$obo$b4o$4bobo$5b2o!\ncenso-oscillator-12-p2-7|Oscilador P2 · C12-7|oscilador|2|12|11|11|8|o2bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p2-8|Oscilador P2 · C12-8|oscilador|2|12|10|10|8|obo$ob4o$b2obo$5b2o!\ncenso-oscillator-12-p2-9|Oscilador P2 · C12-9|oscilador|2|12|10|10|8|obo$ob4o$b2obobo$5bo!\ncenso-oscillator-12-p3-1|Oscilador P3 · C12-1|oscilador|3|12|12|12|12|b2o$2obo$o2bo$b2obo$3b2o!\ncenso-oscillator-12-p4-1|Oscilador P4 · C12-1|oscilador|4|12|30|30|5|o$bo4bo$2b5o$6bo$6b2o$8bo!\ncenso-oscillator-12-p4-10|Oscilador P4 · C12-10|oscilador|4|12|21|21|9|3b2o$o2bo$b4o$3bobo$4b2o!\ncenso-oscillator-12-p4-11|Oscilador P4 · C12-11|oscilador|4|12|23|23|6|3b2o$o2bo$b4o$3bobo$4bobo!\ncenso-oscillator-12-p4-12|Oscilador P4 · C12-12|oscilador|4|12|23|23|6|3b2o$o2bo$b6o$3bo$4bo!\ncenso-oscillator-12-p4-13|Oscilador P4 · C12-13|oscilador|4|12|22|22|7|2bobo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p4-14|Oscilador P4 · C12-14|oscilador|4|12|22|22|8|2b2o$3o$obo$b3o$4b2o!\ncenso-oscillator-12-p4-15|Oscilador P4 · C12-15|oscilador|4|12|23|23|6|o$bo$obo$b6o$4bo$5bo!\ncenso-oscillator-12-p4-2|Oscilador P4 · C12-2|oscilador|4|12|30|30|5|o$bo4bo$2b7o$6bo$6bo!\ncenso-oscillator-12-p4-3|Oscilador P4 · C12-3|oscilador|4|12|32|32|5|o4bo$bo4bo$2b5o$6bo$7bo$7bo!\ncenso-oscillator-12-p4-4|Oscilador P4 · C12-4|oscilador|4|12|35|35|4|o5bo$bo4bo$2b5o$6bo$7bo$8bo!\ncenso-oscillator-12-p4-5|Oscilador P4 · C12-5|oscilador|4|12|22|22|7|obo$ob5o$b2obo$5bo!\ncenso-oscillator-12-p4-6|Oscilador P4 · C12-6|oscilador|4|12|21|21|9|2o$obo2bo$b5o$4bo$4bo!\ncenso-oscillator-12-p4-7|Oscilador P4 · C12-7|oscilador|4|12|23|23|7|o2bo$obobo$b4o$4bo$5bo$5bo!\ncenso-oscillator-12-p4-8|Oscilador P4 · C12-8|oscilador|4|12|24|24|6|2o$o$b4o$4b4o$4bo!\ncenso-oscillator-12-p4-9|Oscilador P4 · C12-9|oscilador|4|12|23|23|7|o3bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p5-1|Oscilador P5 · C12-1|oscilador|5|12|24|24|10|3o$bob2o$2b2obo$4b3o!\ncenso-oscillator-12-p5-2|Oscilador P5 · C12-2|oscilador|5|12|24|24|8|3bo$3bo$ob4o$b3o$2bo$3bo!\ncenso-oscillator-12-p5-3|Oscilador P5 · C12-3|oscilador|5|12|24|24|8|2bo$3bo$ob3o$b3obo$2bo$3bo!\ncenso-oscillator-12-p6-1|Oscilador P6 · C12-1|oscilador|6|12|32|32|9|ob2o$b2obo$4bo$4b2o$6bo$5b2o!\ncenso-oscillator-12-p6-2|Oscilador P6 · C12-2|oscilador|6|12|30|30|9|ob2o$b6o$5bo$4b2o!\ncenso-oscillator-12-p6-3|Oscilador P6 · C12-3|oscilador|6|12|32|32|10|ob2o$b2ob2o$6bo$5b2o$5bo$6bo!\ncenso-oscillator-12-p6-4|Oscilador P6 · C12-4|oscilador|6|12|30|30|8|ob2obo$b2ob2o$5bo$5b2o$5bo!\ncenso-oscillator-12-p6-5|Oscilador P6 · C12-5|oscilador|6|12|26|26|10|2b2o$3obo$2bobo$3b3o$6bo!\ncenso-oscillator-12-p6-6|Oscilador P6 · C12-6|oscilador|6|12|31|31|8|2bo$3o$obo2bo$3b3o$5bo$6bo!\ncenso-oscillator-12-p6-7|Oscilador P6 · C12-7|oscilador|6|12|31|31|8|4bo$4bo$ob4o$b2obobo$5bo!\ncenso-oscillator-12-p6-8|Oscilador P6 · C12-8|oscilador|6|12|31|31|8|3bo$4bo$ob5o$b2obo$5bo!\ncenso-oscillator-12-p6-9|Oscilador P6 · C12-9|oscilador|6|12|31|31|8|2bo$b2o$obo$b3o$4bo$4bo$5b2o!\ncenso-oscillator-12-p10-1|Oscilador P10 · C12-1|oscilador|10|12|44|44|8|2bo$3bo$ob4o$b3o$2bo$3bo!\ncenso-oscillator-12-p30-1|Oscilador P30 · C12-1|oscilador|30|12|167|167|8|bo$obob2o$b4obo$2bo$3bo!\np42rot|Oscilador rotativo P42|oscilador|42|12|300|300|0|2b2ob$b3ob$3bob$4ob$2ob!\np48|Nave P48|nave|48|12|334|334|0|obo4b$b2o4b$b3obob$2b2o2bo$3bo3b!\np42|Oscilador refletor P42|oscilador|42|17|256|256|12|b2o3b$bobo2b$4o2b$o3bob$b5o$3bo2b$3bo2b!\np14|Oscilador P14|oscilador|14|21|88|88|3|b3ob$2obob$o3b2ob$2ob2ob$2b2ob2ob$2bob2ob$4bob!\np11b|Oscilador principal P11 (B)|oscilador|33|24|222|222|20|2obob$o2b2ob$2b2obob$3ob2ob$bob2obob$2b2ob2ob$4b2ob!\np66|Oscilador P66 tentáculo|oscilador|66|25|573|573|19|2b2ob$3obob$obobob$b2ob2ob$bob2obobob$5b2ob3ob$7b2ob!\np29pure26|Oscilador P29 puro (26 células)|oscilador|29|26|272|272|18|2b3o$4obo$bo2b2o$2b4o$2b2o2bo$2bob4o$3b3o!\np15|Nave P15|nave|15|26|150|150|4|bobo5b$2b3o4b$3obo4b$2bobo4b$3b2o4b$9b$4b2o3b$4bobo2b$3b3obob$6b3o$6bobo!\np22|Oscilador principal P22|oscilador|22|27|201|201|14|bob$2bob$5ob$2bobob$2b5ob$3bobob2ob$6b4ob$6b2ob$b$10bob$11b2ob!\nreflect20_demo|Reflexão de glider em estrutura P20 (exemplo publicado)|interação|0|29|0|0|0|2bob$ob$bob$2bob$3b2ob$b$b$b$b$4b3ob$6b2ob$6bobob$7b2ob$7bobob$8b2ob$8bob$9bob$9bob$7b4ob$9bobob$10bob!\np7b|Oscilador principal P7 (B)|oscilador|28|30|261|261|24|ob$ob$b2ob$2b3ob$b2o2b2obob$bo4b3ob$2bo5bob$9bob$8b2ob$8bob$9bobob$8b4ob$11bob$12bob!\nreflect42_demo|Reflexão de glider em estrutura P42 (exemplo publicado)|interação|0|31|0|0|0|2bob$ob$bob$2bob$3b2ob$b$b$b$4bob$5b2ob$4b4ob$6b3ob$6bobob$7b4ob$7bo3bob$7b5ob$10bob$11bob!\np11a|Oscilador principal P11 (A)|oscilador|22|33|164|164|24|2bob$b2ob$2b2obob$3obobob$2bobo2b2ob$2b6ob3ob$2bo3b2o2bob$8b3ob$10bob$11bob!\np46|Oscilador principal P46|oscilador|46|33|364|364|19|3bob$3b3ob$b3obob$obob5ob$b5o2bob$2bobobo2bob$b6ob$4bob$4bob!\np17|Oscilador principal P17|oscilador|102|34|785|785|26|2bob$2bob$6ob$2bob2ob$3b2ob$b$3b2o2bob$2b2ob2ob$2bo2bobob$3b2ob2ob$5b2ob2ob$7b2ob$7bob!\np9|Oscilador P9|oscilador|9|35|73|73|32|2b2ob$3obob$bob2ob$b3obob$4b2ob$4bob$3b3ob$3bo2bob$2b3obob$2bobo2bob$3b2ob2ob$5b2ob$6bob!\nstalk|Crescedor de colmeia (stalk)|crescedor|0|36|0|0|0|ob2o7b$b2obo6b$2ob2o6b$2b2obo5b$2bob2o5b$3b2obo4b$3bob2o4b$3b3obo3b$6b2o3b$6bobo2b$6b3o2b$8b3o!\np18|Oscilador P18|oscilador|18|44|149|149|24|bobob$2b3ob$b2obob$2ob2ob3obob$ob2obobob4ob$b2ob5ob2ob$3b2obob3obob$3bobo4bob!\np29|Oscilador principal P29|oscilador|87|45|669|669|30|3bob$3b2ob$2b2ob2ob$3o4b3ob$bobo3bobob$2b4o2b3ob$4o2b3ob$2o2b4ob$b3obobob$2bo2bob$b$6bob!\np19|Oscilador principal P19|oscilador|95|46|879|879|30|bo3bob$2o2b3obob$ob2obob3ob$b2ob5obob$bob2o2bob2ob$3bobob3ob2ob$7b2ob3ob$8b3o2bob$10bob!\np26|Oscilador principal P26|oscilador|78|48|767|767|35|bob$bobob$5ob$bobob2ob$bo2b2obob$3b2o2bob$5b5ob$7bobob$5b6ob$2b2obobobobob$4bob2obob$8b3ob$8bo2bob$11bob!\np7a|Oscilador principal P7 (A)|oscilador|21|52|157|157|43|3bob$2b2ob$b2ob2obob$3bob3ob$ob2obo2b2ob$b2obo3bob$2ob4o2bob$2b2o3bobob$2bobob2o2bob$2b3ob2ob3ob$5b2ob2ob$7b2ob!\ngun20|Gun P20|gerador|0|52|0|0|0|8b2ob$8bob$b$5b6ob$5bob$2bo5bob$b5ob$2bob2o8bob$3b2o8b3o4bob$2b2o9b2ob2o2bob$3o12b2ob4ob$2bo14bo2bobob$b3o17bob$4bob!\ndup42_demo|Duplicador P42 (exemplo publicado)|interação|0|54|0|0|0|12bobob$4bo8b2obob$11b3ob2ob$8bo3bobobob$5b4o3b4obob$14bob3ob$17bob$2ob3ob$ob6ob$bobob2ob$3ob2obob$3b2ob$4bob!\ndup20_demo|Duplicador P20 (exemplo publicado)|interação|0|55|0|0|0|2bo7bob$5bo2b4ob$5bo3b2ob3ob$5bo5b2obob$bo2b2o7b2ob$obo12b2ob$3bo13b3ob$bobo14bob$2bobo13b3ob$3b2o13bob$3bobob$4b2ob$6bob$6bob$7bobob$6b4ob$9bob$10bob!\ngun42|Gun P42 (catálogo do jogo)|gerador|0|64|0|0|0|17b2o$2bo15b2obo$b2obo13bob2o$2ob3o13b2ob2o$2bobobo13bobo$2b2ob4o3b2o6bob2o$2bob2obo5b3o4b3obo$13bobo6bo$12b4o$12bo3bo$13b5o$15bo$15bo!\ngun43|Gun de pulso P43/86|gerador|0|80|0|0|0|11b2ob$2o11bobob$2bobo8b3ob$2b3o8bobob$2bobo9b4ob$3b3o8bo2bob$2b2o2bo7b5ob$4b3o8b2ob$4b2obo8bob$4bob2ob$2bo2bobob$b3o2b2ob$o5bob$b$b$b$b$b$b$b$b$18bo2bob$19b3ob$20bob3ob$20bobobobob$20b7ob$21bo2bob$25bob!\ngun200|Gun P200|gerador|0|100|0|0|0|5bob$6b3ob$7bob$7b3ob$3bo2b2ob$2b2ob2ob$obob2ob$b3ob2ob$4b2obo11bob$6b4o7b3ob$8bo10bob$9bo9b2ob$18b2obob$17b2ob$16b2ob2ob$5bo8b3ob2ob$6bo9b3obob$6bobo7bo2bob$7bobob$8bo5b2ob$7bo5b3ob$13b3ob$8bo5bobob$8b2o5b2ob$8bobo4bobob$15b3ob$18bob$18bob$19bobob$18b4ob$21bob$22bob!\ngun210|Gun P210 (relé de refletores)|gerador|0|111|0|0|0|49bo$50bo$48b5o$49bo3bo$50b4o$50bobobo$51bob3o$50b2obo$52bo10b2o$2bo50b2o6b3ob3o$b2o45b4o2bo2bo4bobobo$2b2o44bo9bo4b3obo$3ob2o50bo2bo3bo2b3o$bob4o53bobo2b2o$2bobobo53bob4o$2bob2o$56bo$54bobo$53b4o$54bobobo$55b6o$54b2o3bo$56b4o$56bobo$58bo!\ngun840|Gun P840|gerador|0|131|0|0|0|4bob$3bobob$4b4ob$5bob$5bob$6bob$4b3ob$5bobob$5b3o5b2ob$2o5b2o4bob$bo6bo14bob$b2o18b3ob$2bo20bob$23b2ob$22b2obob$2bo18b2ob$2bo17b2obob$2bo2bo14bob3ob$2bo18b2ob$3bo8b2o8bob$14bob$15bob$16bob$10b2o2bob$9b3ob$8b2obo11bo3b2ob$8bob3o11b4obob$9bobo11b3obobob$9b2ob2o3b3o6b2ob2ob$9bob2o6b3o6b2obob$11bo7bobo7bob$20b5ob$19b2o3bob$21b5ob$21bobob$24bob!";
-  var atlasPatterns = rows.split("\n").map((row) => {
-    const [id, name, group, period, cells3, birthsCycle, deathsCycle, stableCore, rle] = row.split("|");
-    return {
-      id,
-      name,
-      group,
-      period: Number(period),
-      cells: Number(cells3),
-      birthsCycle: Number(birthsCycle),
-      deathsCycle: Number(deathsCycle),
-      stableCore: Number(stableCore),
-      rle,
-      info: group + " · " + cells3 + " células · " + (Number(period) ? "P" + period : "evolução não periódica"),
-      origin: id.startsWith("censo-") ? "censo ≤12 células" : "atlas/documentação de Callahan"
-    };
-  });
-
-  // src/patterns/rle.js
-  function decodeRLE(str) {
-    const out = [], re = /(\d*)([ob$!])/g;
-    let r = 0, c = 0, m;
-    while ((m = re.exec(str)) !== null) {
-      const n = Number(m[1] || 1);
-      if (m[2] === "o") {
-        for (let i = 0; i < n; i++) out.push([c + i - r, r]);
-        c += n;
-      } else if (m[2] === "b") c += n;
-      else if (m[2] === "$") {
-        r += n;
-        c = 0;
-      } else break;
-    }
-    return out;
-  }
-
-  // src/match/founding.js
-  var founderId = "stalk";
-  var cells = decodeRLE(atlasPatterns.find((p) => p.id === founderId).rle);
-  function plantFounder(world2, game2, player, commitStamp2) {
-    if (player.stamps || player.out || player.reserve < cells.length * game2.economy.stampCost) return false;
-    const graph = world2.graph;
-    const neighbors = graph.adj.subarray(6 * player.seed, 6 * player.seed + graph.deg[player.seed]);
-    for (const center of [player.seed, ...neighbors]) {
-      const east = eastAt(graph, center);
-      for (let turn = 0; turn < 6; turn++) {
-        const ids = patchForStamp(world2, center, (east + turn) % 6, cells, true);
-        if (ids && commitStamp2(player.id, ids, false)) return true;
-      }
-    }
-    return false;
-  }
-
-  // src/patterns/catalog.js
-  var patterns = {
-    bays: [
-      {
-        id: "glider",
-        name: "Glider · P5",
-        rle: "bo$o2bo$5bo$bo2bo$3bo$2bo3bo$5bo!",
-        info: "Carter Bays (2005). Período 5; movimento em malha hexagonal."
-      },
-      { id: "osc2", name: "Oscilador · P2", rle: "2o!", info: "Oscilador simples, período 2." }
-    ],
-    callahan: [
-      ...atlasPatterns,
-      {
-        id: "gun",
-        name: "Glider gun · P42",
-        rle: "17b2o$2bo15b2obo$b2obo13bob2o$2ob3o13b2ob2o$2bobobo13bobo$2b2ob4o3b2o6bob2o$2bob2obo5b3o4b3obo$13bobo6bo$12b4o$12bo3bo$13b5o$15bo$15bo!",
-        info: "Paul Callahan. 64 células; gera um glider a cada 42 gerações."
-      },
-      {
-        id: "osc42",
-        name: "Oscilador · P42",
-        rle: "b2o3b$bobo2b$4o2b$o3bob$b5o$3bo2b$3bo2b!",
-        info: "Oscilador estacionário P42 de Paul Callahan."
-      },
-      {
-        id: "osc66",
-        name: "Oscilador · P66",
-        rle: "2b2ob$3obob$obobob$b2ob2ob$bob2obobob$5b2ob3ob$7b2ob!",
-        info: "Oscilador P66 de Callahan, com tentáculo oscilante."
-      },
-      {
-        id: "osc9",
-        name: "Oscilador · P9",
-        rle: "2b2ob$3obob$bob2ob$b3obob$4b2ob$4bob$3b3ob$3bo2bob$2b3obob$2bobo2bob$3b2ob2ob$5b2ob$6bob!",
-        info: "Oscilador estacionário P9 documentado por Paul Callahan."
-      },
-      {
-        id: "osc14",
-        name: "Oscilador · P14",
-        rle: "b3ob$2obob$o3b2ob$2ob2ob$2b2ob2ob$2bob2ob$4bob!",
-        info: "Oscilador estacionário P14 documentado por Paul Callahan."
-      },
-      {
-        id: "osc18",
-        name: "Oscilador · P18",
-        rle: "bobob$2b3ob$b2obob$2ob2ob3obob$ob2obobob4ob$b2ob5ob2ob$3b2obob3obob$3bobo4bob!",
-        info: "Oscilador estacionário P18 documentado por Paul Callahan."
-      }
-    ],
-    custom: []
-  };
-
-  // src/bots/spiral.js
-  function botSpiralPlan(g, seed) {
-    const seen = new Uint8Array(Math.ceil(g.n / 8));
-    seen[seed >>> 3] |= 1 << (seed & 7);
-    return {
-      seen,
-      base: basis(pointOnSphere(g, seed)),
-      ring: [seed],
-      radius: 0,
-      order: [],
-      index: 0
-    };
-  }
-  function nextBotAnchor(g, plan) {
-    const v = g.coords;
-    while (plan.index >= plan.order.length) {
-      if (!plan.ring.length) return -1;
-      const next = [], order = [], r = plan.radius;
-      for (const id of plan.ring) {
-        if (g.deg[id] === 6 && g.distance[id] >= 3) {
-          const i = id * 3, x = v[i], y = v[i + 1], z = v[i + 2], { right, up } = plan.base;
-          const angle = mod(
-            Math.atan2(
-              x * up[0] + y * up[1] + z * up[2],
-              x * right[0] + y * right[1] + z * right[2]
-            ) - r * 0.23,
-            Math.PI * 2
-          );
-          order.push({ id, angle });
-        }
-        for (let k = 0; k < g.deg[id]; k++) {
-          const n = g.adj[id * 6 + k], slot = n >>> 3, bit = 1 << (n & 7);
-          if (plan.seen[slot] & bit) continue;
-          plan.seen[slot] |= bit;
-          next.push(n);
-        }
-      }
-      order.sort((x, y) => x.angle - y.angle || x.id - y.id);
-      plan.ring = next;
-      plan.radius = r + 1;
-      plan.order = order;
-      plan.index = 0;
-    }
-    return plan.order[plan.index++].id;
-  }
-
-  // src/patterns/cycle-economy.js
-  var emissionWindows = /* @__PURE__ */ new Map([
-    ["gun20", 20],
-    ["gun42", 42],
-    ["gun43", 86],
-    ["gun200", 200],
-    ["gun210", 210],
-    ["gun840", 840]
-  ]);
-  function cycleWindow(pattern) {
-    if (pattern.period > 0) return { length: pattern.period, kind: "period" };
-    if (emissionWindows.has(pattern.id)) return { length: emissionWindows.get(pattern.id), kind: "emission" };
-    return { length: 20, kind: "window" };
-  }
-  var stride = 65536;
-  var adjacent = DIR.map(([q, r]) => q * stride + r);
-  var rules = createSimulationState();
-  initRuleTables(rules);
-  function patternOffset(id) {
-    const q = Math.round(id / stride);
-    return [q, id - q * stride];
-  }
-  function seedPatternAges(pattern) {
-    return new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
-  }
-  function advancePattern(ages, threshold) {
-    const masks = /* @__PURE__ */ new Map();
-    for (const id of ages.keys()) {
-      for (let k = 0; k < adjacent.length; k++) {
-        const target = id - adjacent[k];
-        masks.set(target, (masks.get(target) || 0) | 1 << k);
-      }
-    }
-    const next = /* @__PURE__ */ new Map();
-    let births = 0, mature = 0;
-    for (const [id, mask] of masks) {
-      const age = ages.get(id) || 0;
-      if (!(age ? rules.callSurv6 : rules.callBirth6)[mask]) continue;
-      next.set(id, age + 1);
-      if (age === 0) births++;
-      if (age + 1 >= threshold) mature++;
-    }
-    return { next, births, mature };
-  }
-  async function analyzePatternCycles(pattern, economy, { cycles, signal } = {}) {
-    const { length, kind } = cycleWindow(pattern);
-    const defaultCycles = Math.max(24, Math.ceil((pattern.id === "stalk" ? 2e3 : 160) / length));
-    const maxGenerations = cycles == null ? 8400 : 25200;
-    const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
-    economy = { ...economy };
-    const { stableAfter } = economy;
-    let ages = seedPatternAges(pattern);
-    const initialCost = energyCost(ages.size, economy);
-    const startingReserve = initialEnergy(economy);
-    const rows2 = [];
-    const unitIncome = new Float64Array(length + 1);
-    let operatingBalance = 0, workingCapital = 0;
-    let firstPositiveCycle = null, profitableFromCycle = null;
-    let paybackGeneration = initialCost === 0 ? 0 : null;
-    let firstErosionGeneration = startingReserve < initialCost ? 0 : null;
-    let lastYield = performance.now();
-    signal?.throwIfAborted();
-    for (let cycle = 1; cycle <= observedCycles; cycle++) {
-      const from = (cycle - 1) * length + 1, to = cycle * length;
-      let births = 0, stableCellTurns = 0, income = 0, upkeep = 0;
-      for (let generation2 = from; generation2 <= to; generation2++) {
-        const turn = advancePattern(ages, stableAfter);
-        ages = turn.next;
-        births += turn.births;
-        stableCellTurns += turn.mature;
-        const flow = generationEnergy(turn.births, turn.mature, economy);
-        income += flow.income;
-        upkeep += flow.upkeep;
-        const step2 = generation2 - from + 1;
-        const matureIncome = economy.generationQuote ? generationEnergy(0, turn.mature, economy).income : flow.income;
-        unitIncome[step2] = unitIncome[step2 - 1] + (turn.mature ? matureIncome / turn.mature : 0);
-        operatingBalance += flow.income - flow.upkeep;
-        workingCapital = Math.max(workingCapital, -operatingBalance);
-        if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation2;
-        if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < -1e-9) {
-          firstErosionGeneration = generation2;
-        }
-        if (performance.now() - lastYield >= 10) {
-          await new Promise((resolve) => setTimeout(resolve, 0));
-          signal?.throwIfAborted();
-          lastYield = performance.now();
-        }
-      }
-      let fixedCore = 0, fixedIncome = 0;
-      for (const age of ages.values()) {
-        if (age <= length) continue;
-        fixedCore++;
-        const productiveTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
-        fixedIncome += unitIncome[length] - unitIncome[length - productiveTurns];
-      }
-      const net = income - upkeep;
-      if (net > 0) {
-        firstPositiveCycle ?? (firstPositiveCycle = cycle);
-        profitableFromCycle ?? (profitableFromCycle = cycle);
-      } else profitableFromCycle = null;
-      rows2.push({
-        cycle,
-        from,
-        to,
-        births,
-        stableCellTurns,
-        income,
-        upkeep,
-        fixedCore,
-        fixedIncome,
-        net,
-        cumulative: operatingBalance - initialCost,
-        live: ages.size
-      });
-    }
-    return {
-      cycleLength: length,
-      kind,
-      generations: observedCycles * length,
-      initialCost,
-      workingCapital,
-      firstPositiveCycle,
-      profitableFromCycle,
-      paybackGeneration,
-      firstErosionGeneration,
-      rows: rows2
-    };
-  }
-
-  // src/bots/oscillator-footprint.js
-  function createFootprintLookup() {
-    const cache = /* @__PURE__ */ new Map();
-    function botProtectedOffsets(pattern) {
-      if (cache.has(pattern.id)) return cache.get(pattern.id);
-      const grower = pattern.group === "crescedor";
-      const turns = grower ? 32 : pattern.period ?? Number(pattern.id.slice(3));
-      if (!Number.isInteger(turns) || turns < 1 || turns > 256)
-        throw Error("Período inválido: " + pattern.id);
-      let ages = seedPatternAges(pattern);
-      const initial = new Set(ages.keys()), footprint = new Set(initial);
-      for (let gen = 0; gen < turns; gen++) {
-        ages = advancePattern(ages, 2).next;
-        for (const id of ages.keys()) footprint.add(id);
-      }
-      if (!grower && (ages.size !== initial.size || [...ages.keys()].some((id) => !initial.has(id))))
-        throw Error("O padrão do bot não é estacionário em " + turns + " gerações: " + pattern.id);
-      const guarded = /* @__PURE__ */ new Set();
-      for (const id of footprint) {
-        const [q, r] = patternOffset(id);
-        guarded.add(key(q, r));
-        for (const [dq, dr] of DIR) guarded.add(key(q + dq, r + dr));
-      }
-      const offsets = [...guarded].map((c) => c.split(",").map(Number));
-      cache.set(pattern.id, offsets);
-      return offsets;
-    }
-    return { botProtectedOffsets };
-  }
-
-  // src/bots/oscillator-strategy.js
-  function createOscillatorStrategy(world2, game2, commitStamp2) {
-    const { botProtectedOffsets } = createFootprintLookup();
-    const seeds = /* @__PURE__ */ new Map();
-    return function plantOscillator(player, chosenId = player.pattern) {
-      const pat = patterns.callahan.find((x) => x.id === chosenId);
-      if (!pat) return;
-      if (!seeds.has(chosenId)) seeds.set(chosenId, decodeRLE(pat.rle));
-      const offsets = seeds.get(chosenId);
-      const protectedOffsets = botProtectedOffsets(pat);
-      const plan = game2.botPlans[player.id - 1];
-      if (!plan || player.reserve + 1e-9 < energyCost(offsets.length, game2.economy)) return;
-      const spiral = pat.group === "crescedor" ? plan.growerSpiral ?? (plan.growerSpiral = botSpiralPlan(world2.graph, player.seed)) : plan;
-      let tried = 0;
-      while (tried++ < 100) {
-        const anchor = nextBotAnchor(world2.graph, spiral);
-        if (anchor === -1) break;
-        const orientation = eastAt(world2.graph, anchor);
-        const ids = patchForStamp(world2, anchor, orientation, offsets, true);
-        if (!ids) continue;
-        const protectedIds = patchForStamp(world2, anchor, orientation, protectedOffsets, false);
-        if (!protectedIds) continue;
-        let independent = true;
-        for (const id of protectedIds) {
-          if (game2.botReserved[id] === player.id || world2.cells[id]) {
-            independent = false;
-            break;
-          }
-        }
-        if (!independent) continue;
-        if (commitStamp2(player.id, ids, false)) {
-          for (const id of protectedIds) game2.botReserved[id] = player.id;
-          return true;
-        }
-      }
-      return false;
-    };
-  }
-
-  // src/bots/investments.js
-  function createInvestmentQuotes(economy) {
-    const cache = /* @__PURE__ */ new Map();
-    let lastSettings;
-    return function quote(id) {
-      const { stableEnergy, birthCost, stableAfter, stampCost } = economy;
-      const settings = [stableEnergy, birthCost, stableAfter, stampCost, economy.productionScale].join("/");
-      if (settings !== lastSettings) {
-        cache.clear();
-        lastSettings = settings;
-      }
-      if (cache.has(id)) return cache.get(id);
-      const pattern = atlasPatterns.find((p) => p.id === id);
-      let ages = seedPatternAges(pattern);
-      const price = energyCost(ages.size, economy);
-      const delayed = Math.max(0, stableAfter - 72);
-      const cyclesSkipped = Math.floor(delayed / pattern.period);
-      const turnsSkipped = cyclesSkipped * pattern.period;
-      const maturity = stableAfter - turnsSkipped;
-      const turns = Math.max(2 * pattern.period, maturity + pattern.period);
-      let capital = 0, balance = 0, recent = 0, cycleCost = 0;
-      for (let gen = 1; gen <= turns; gen++) {
-        const { next, births, mature } = advancePattern(ages, maturity);
-        ages = next;
-        const { income, upkeep } = generationEnergy(births, mature, economy);
-        const net = income - upkeep;
-        if (gen <= pattern.period) cycleCost += upkeep;
-        balance += net;
-        capital = Math.max(capital, -balance);
-        if (gen > turns - pattern.period) recent += net;
-      }
-      const delayedCost = cyclesSkipped * cycleCost;
-      const result = { id, budget: price + capital + delayedCost, yield: recent / pattern.period };
-      cache.set(id, result);
-      return result;
-    };
-  }
-
-  // src/bots/raids.js
-  var weapons = /* @__PURE__ */ new Map();
-  var aim = { glider: [-8, -2], gun20: [-3, 16], gun42: [-13, 16] };
-  function weapon(id) {
-    if (weapons.has(id)) return weapons.get(id);
-    const pattern = atlasPatterns.find((p) => p.id === id);
-    const [dq, dr] = aim[id];
-    const offsets = decodeRLE(pattern.rle).map(([q, r]) => [q + dq, r + dr]);
-    const period = id === "glider" ? 4 : Number(id.slice(3));
-    let ages = seedPatternAges(pattern), births = 0, firstCycleBirths = 0;
-    const trajectories = /* @__PURE__ */ new Map();
-    const earliest = id === "glider" ? 6 : id === "gun20" ? 24 : 50;
-    const latest = id === "glider" ? 30 : id === "gun20" ? 100 : 140;
-    for (let g = 0; g < 256; g++) {
-      const turn = advancePattern(ages, 2);
-      births += turn.births;
-      if (g < period) firstCycleBirths += turn.births;
-      ages = turn.next;
-      if (g + 1 >= earliest && g + 1 <= latest) {
-        for (const pos of ages.keys()) {
-          const [q, r] = patternOffset(pos), x = q + dq, y = r + dr;
-          if (Math.max(Math.abs(x), Math.abs(y), Math.abs(x + y)) > 5) continue;
-          const key2 = x + "," + y;
-          if (!trajectories.has(key2)) trajectories.set(key2, { offset: [x, y], generation: g + 1 });
-        }
-      }
-    }
-    const profile = { offsets, births, period, firstCycleBirths, trace: [...trajectories.values()] };
-    weapons.set(id, profile);
-    return profile;
-  }
-  function raidBudget(economy, id) {
-    const w = weapon(id);
-    return w.offsets.length * economy.stampCost + w.births * economy.birthCost;
-  }
-  function expectedGunExpense(economy, id) {
-    const { period, firstCycleBirths } = weapon(id);
-    return (firstCycleBirths + 32 * 5) / period * economy.birthCost;
-  }
-  function projectedRaidScore(world2, rival, attacker, target, dir, trace, maturity) {
-    const predicted = patchForStamp(world2, target, dir, trace.map((v) => v.offset), false);
-    if (!predicted) return -Infinity;
-    let score = 0, earliest = Infinity;
-    for (let i = 0; i < predicted.length; i++) {
-      const owner = world2.owners[predicted[i]], age = world2.cellAges[predicted[i]];
-      if (owner === rival.id) {
-        score += age === 1 ? 6 : age >= maturity ? 2 : 1;
-        earliest = Math.min(earliest, trace[i].generation);
-      } else if (owner === attacker.id) score -= 4;
-    }
-    return earliest === Infinity ? -Infinity : score / (1 + earliest / 100);
-  }
-  function raidMatureCore(world2, game2, player, commitStamp2, id = "glider") {
-    const rivals = game2.players.filter((p) => p !== player && !p.out && p.stable).sort((a, b) => b.stable - a.stable).slice(0, 2);
-    const { offsets, trace } = weapon(id);
-    let best = null;
-    for (const rival of rivals) {
-      const cells3 = world2.ownerCells[rival.id], targetIds = [];
-      for (const cell of cells3) {
-        if (world2.cellAges[cell] === 1) targetIds.push(cell);
-        if (targetIds.length === 4) break;
-      }
-      const stride2 = Math.max(1, Math.ceil(cells3.length / 4));
-      for (let i = world2.gen % stride2; i < cells3.length; i += stride2)
-        if (world2.cellAges[cells3[i]] >= game2.economy.stableAfter) targetIds.push(cells3[i]);
-      for (const target of targetIds) for (let dir = 0; dir < 6; dir++) {
-        const score = projectedRaidScore(world2, rival, player, target, dir, trace, game2.economy.stableAfter);
-        if (score <= 0 || best && score <= best.score) continue;
-        const ids = patchForStamp(world2, target, dir, offsets, true);
-        if (ids && ids.every((site) => !world2.cells[site])) best = { score, ids };
-      }
-    }
-    return best ? commitStamp2(player.id, best.ids, false) : false;
-  }
-
-  // src/bots/growth-strategy.js
-  var farmCandidates = ["censo-oscillator-6-p2-1", "censo-oscillator-12-p3-1", "p7a", "p2"];
-  function growthMargin(economy, stable, fronts) {
-    const before = generationEnergy(0, stable, economy).income;
-    const after = generationEnergy(143 / 24, stable + stable / fronts, economy);
-    return after.income - after.upkeep - before;
-  }
-  function createGrowthStrategy(world2, game2, commitStamp2) {
-    const plant = createOscillatorStrategy(world2, game2, commitStamp2);
-    const quote = createInvestmentQuotes(game2.economy);
-    return (player) => {
-      const e = game2.economy, plan = game2.botPlans[player.id - 1];
-      if (!player.stamps) {
-        if (plantFounder(world2, game2, player, commitStamp2)) {
-          plan.fronts = 1;
-        } else {
-          const profitable = farmCandidates.map(quote).filter((q) => q.yield > 0 && player.reserve >= q.budget);
-          profitable.sort((a, b) => a.budget / a.yield - b.budget / b.yield);
-          if (profitable.length) plant(player, profitable[0].id);
-        }
-        return;
-      }
-      const growerPrice = 36 * e.stampCost;
-      const growerBudget = growerPrice + (e.stableAfter + 24) * 6 * e.birthCost;
-      const farmer = player.pattern === "farmer" || player.pattern === "core";
-      if (farmer && player.stable && growthMargin(e, player.stable, plan.fronts || 1) > 0) {
-        if (player.reserve < growerBudget) return;
-        if (plant(player, "stalk")) {
-          plan.fronts = (plan.fronts || 0) + 1;
-          return;
-        }
-      }
-      let weapon2 = player.pattern === "slow" ? "gun42" : player.pattern === "diverse" ? "gun20" : "glider";
-      let savings = player.pattern === "core" ? growerBudget : 0;
-      if (weapon2 !== "glider" && player.flowAverage < expectedGunExpense(e, weapon2)) {
-        savings = raidBudget(e, weapon2) / 2;
-        weapon2 = "glider";
-      }
-      if (player.flowAverage <= 0 || player.reserve < savings + raidBudget(e, weapon2)) return;
-      raidMatureCore(world2, game2, player, commitStamp2, weapon2);
-    };
-  }
-
   // src/bots/turns.js
   function runBotTurns(world2, game2, defaultStrategy, strategies) {
     if (game2.ended || !game2.players.length || world2.gen !== 1 && world2.gen % game2.interval !== 0) return;
@@ -2023,6 +1418,52 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return picks;
   }
 
+  // src/bots/spiral.js
+  function botSpiralPlan(g, seed) {
+    const seen = new Uint8Array(Math.ceil(g.n / 8));
+    seen[seed >>> 3] |= 1 << (seed & 7);
+    return {
+      seen,
+      base: basis(pointOnSphere(g, seed)),
+      ring: [seed],
+      radius: 0,
+      order: [],
+      index: 0
+    };
+  }
+  function nextBotAnchor(g, plan) {
+    const v = g.coords;
+    while (plan.index >= plan.order.length) {
+      if (!plan.ring.length) return -1;
+      const next = [], order = [], r = plan.radius;
+      for (const id of plan.ring) {
+        if (g.deg[id] === 6 && g.distance[id] >= 3) {
+          const i = id * 3, x = v[i], y = v[i + 1], z = v[i + 2], { right, up } = plan.base;
+          const angle = mod(
+            Math.atan2(
+              x * up[0] + y * up[1] + z * up[2],
+              x * right[0] + y * right[1] + z * right[2]
+            ) - r * 0.23,
+            Math.PI * 2
+          );
+          order.push({ id, angle });
+        }
+        for (let k = 0; k < g.deg[id]; k++) {
+          const n = g.adj[id * 6 + k], slot = n >>> 3, bit = 1 << (n & 7);
+          if (plan.seen[slot] & bit) continue;
+          plan.seen[slot] |= bit;
+          next.push(n);
+        }
+      }
+      order.sort((x, y) => x.angle - y.angle || x.id - y.id);
+      plan.ring = next;
+      plan.radius = r + 1;
+      plan.order = order;
+      plan.index = 0;
+    }
+    return plan.order[plan.index++].id;
+  }
+
   // src/match/players.js
   function resetPlayers(world2, game2) {
     game2.humanHistory = {
@@ -2064,6 +1505,49 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world2.cellAges = new Uint8Array(world2.graph.n);
     game2.botPlans = game2.players.map((p) => p.id === 1 ? null : botSpiralPlan(world2.graph, p.seed));
     game2.botReserved = new Uint8Array(world2.graph.n);
+  }
+
+  // src/match/constructive-economy.js
+  var rates = {
+    combatFee: 0.25,
+    stableEnergy: 0.02,
+    productionScale: 8e3,
+    birthCost: 1,
+    stableAfter: 256,
+    stampCost: 1e4,
+    initialCells: 82
+  };
+  var ECONOMY_KEYS = Object.freeze(Object.keys(rates));
+  var STABILITY_ECONOMY = Object.freeze({ ...rates, policy: "stability" });
+  var ACTIVITY_ECONOMY = Object.freeze({ ...rates, policy: "activity" });
+  var DEFAULT_ECONOMY = STABILITY_ECONOMY;
+  var policies = /* @__PURE__ */ new Map([
+    ["stability", (birthValue, matureValue) => ({ income: matureValue, upkeep: birthValue })],
+    ["activity", (birthValue, matureValue) => ({ income: birthValue, upkeep: matureValue })]
+  ]);
+  function isStabilityEconomy(economy) {
+    return !economy.generationQuote && (economy.policy ?? "stability") === "stability";
+  }
+  function generationEnergy(births, stable, economy) {
+    if (economy.generationQuote) return economy.generationQuote(births, stable, economy);
+    const quote = policies.get(economy.policy ?? "stability");
+    if (!quote) throw new RangeError("Unknown economy policy: " + economy.policy);
+    const effective = economy.productionScale > 0 ? stable / (1 + stable / economy.productionScale) : stable;
+    return quote(births * economy.birthCost, effective * economy.stableEnergy);
+  }
+  function energyCost(cells2, economy) {
+    return cells2 * economy.stampCost;
+  }
+  function availableCells(reserve, economy) {
+    return economy.stampCost === 0 ? Infinity : Math.floor((reserve + 1e-9) / economy.stampCost);
+  }
+  function parameterValue(value, maximum = 100, step2 = 1) {
+    const units = Math.round((Number(value) || 0) / step2);
+    const places = String(step2).split(".")[1]?.length ?? 0;
+    return Math.max(0, Math.min(maximum, Number((units * step2).toFixed(places))));
+  }
+  function initialEnergy(economy) {
+    return economy.initialCells * economy.stampCost;
   }
 
   // src/match/stamping.js
@@ -2114,19 +1598,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (; mask; mask &= mask - 1) count++;
     return count;
   });
-  function survives(world2, degree, mask) {
-    if (world2.rule !== "callahan") return world2.survival[population[mask]];
-    return (degree === 5 ? world2.callSurv5 : world2.callSurv6)[mask];
-  }
   function recordCombatDeath(world2, id, victim, claims) {
     const { adj, deg } = world2.graph, degree = deg[id], before = world2.nextOwners;
+    const survive = world2.physics.tables[degree][1];
     let rivals = 0, background = 0;
     for (let k = 0; k < degree; k++) {
       const owner = before[adj[id * 6 + k]];
       if (owner === victim || owner === 7) background |= 1 << k;
       else if (owner) rivals |= 1 << owner;
     }
-    if (!rivals || !survives(world2, degree, background)) return;
+    if (!rivals || !survive[background]) return;
     let credited = rivals;
     if (population[rivals] > 1) {
       const masks = new Uint8Array(7);
@@ -2140,7 +1621,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if ((group & rivals) !== group || lethal.some((s) => (s & group) === s)) continue;
         let mask = background;
         for (let owner = 1; owner <= 6; owner++) if (group & 1 << owner) mask |= masks[owner];
-        if (!survives(world2, degree, mask)) {
+        if (!survive[mask]) {
           lethal.push(group);
           credited |= group;
         }
@@ -2286,12 +1767,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function createMatchEngine(world2, game2, effects2 = {}, strategies = /* @__PURE__ */ new Map()) {
     const population2 = createPopulation(world2, effects2);
     const stamps = createStampCommands(world2, game2, population2.addLive, effects2);
-    const growthStrategy = createGrowthStrategy(world2, game2, stamps.commitStamp);
+    let strategy;
     const finish = (alive) => finishIfDecided(game2, alive, effects2);
+    function playBots() {
+      strategy ?? (strategy = game2.gameplay.createStrategy(world2, game2, stamps.commitStamp));
+      runBotTurns(world2, game2, strategy, strategies);
+    }
     function nextTick2() {
       if (game2.ended) return;
       const human = game2.players[0], before = world2.ownerCells[1].length;
       const reserveBefore = human?.reserve ?? 0;
+      const openBeforeBirths = world2.gen === 0 && world2.physics.birthsFromVacuum;
+      if (openBeforeBirths) playBots();
       const births = advanceGeneration(world2);
       effects2.populationChanged?.();
       effects2.redraw?.();
@@ -2312,22 +1799,690 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         );
       }
       if (game2.ended) effects2.showResults?.();
-      else runBotTurns(world2, game2, growthStrategy, strategies);
+      else if (!openBeforeBirths) playBots();
     }
     return {
       ...population2,
       ...stamps,
       nextTick: nextTick2,
-      initRuleTables: () => initRuleTables(world2),
-      parseRule: (value) => parseRule(world2, value),
       patchForStamp: (...args) => patchForStamp(world2, ...args),
-      resetPlayers: () => resetPlayers(world2, game2)
+      resetPlayers() {
+        strategy = void 0;
+        resetPlayers(world2, game2);
+      }
     };
   }
 
-  // src/match/state.js
-  function createMatchState() {
+  // src/simulation/rules.js
+  function compileHexRule(transition, mixedOwner = pluralityOwner) {
+    const tables = [];
+    for (const degree of [5, 6]) {
+      tables[degree] = [0, 1].map((alive) => Uint8Array.from({ length: 1 << degree }, (_, mask) => Number(!!transition(alive, mask, degree))));
+    }
+    return { tables, birthOwner: inheritOwner(mixedOwner), birthsFromVacuum: !!(tables[5][0][0] || tables[6][0][0]) };
+  }
+  function countBits(mask) {
+    let n = 0;
+    for (; mask; mask &= mask - 1) n++;
+    return n;
+  }
+  function inheritOwner(mixedOwner) {
+    return (owners, adj, offset, degree, mask, counts) => {
+      let first = 0;
+      for (let k = 0; k < degree; k++) {
+        if (!(mask & 1 << k)) continue;
+        const owner = owners[adj[offset + k]];
+        if (first && first !== owner) {
+          counts.fill(0);
+          for (let j = 0; j < degree; j++)
+            if (mask & 1 << j) counts[owners[adj[offset + j]]]++;
+          const winner = mixedOwner(counts);
+          return counts[winner] ? winner : 7;
+        }
+        first = owner;
+      }
+      return first || 7;
+    };
+  }
+  function pluralityOwner(counts) {
+    let best = 0, winner = 7;
+    for (let owner = 1; owner <= 7; owner++) {
+      if (counts[owner] > best) {
+        best = counts[owner];
+        winner = owner;
+      } else if (counts[owner] === best) winner = 7;
+    }
+    return winner;
+  }
+  var CALLAHAN = compileHexRule((alive, mask, degree) => {
+    const count = countBits(mask);
+    if (count !== 2) return alive && (count === 3 || count === 4);
+    const distance = alive ? 2 : 1;
+    for (let k = 0; k < degree; k++)
+      if (mask === (1 << k | 1 << (k + distance) % degree)) return true;
+    return false;
+  }, () => 7);
+  function compileTotalistic(value) {
+    const parsed = /^B([0-6]*)\s*\/\s*S([0-6]*)$/i.exec(value.trim());
+    if (!parsed) return null;
+    const [birth, survival] = parsed.slice(1).map((digits) => [...new Set(digits)].sort().join(""));
+    const rule = compileHexRule((alive, mask) => (alive ? survival : birth).includes(String(countBits(mask))));
+    return { ...rule, notation: "B" + birth + "/S" + survival };
+  }
+  var BAYS = compileTotalistic("B2/S35");
+
+  // src/patterns/rle.js
+  function decodeRLE(str) {
+    const out = [], re = /(\d*)([ob$!])/g;
+    let r = 0, c = 0, m;
+    while ((m = re.exec(str)) !== null) {
+      const n = Number(m[1] || 1);
+      if (m[2] === "o") {
+        for (let i = 0; i < n; i++) out.push([c + i - r, r]);
+        c += n;
+      } else if (m[2] === "b") c += n;
+      else if (m[2] === "$") {
+        r += n;
+        c = 0;
+      } else break;
+    }
+    return out;
+  }
+
+  // src/match/founding.js
+  function plantFounder(world2, game2, player, commitStamp2) {
+    if (player.stamps || player.out) return false;
+    const pattern = game2.gameplay.patterns.find((p) => p.id === game2.gameplay.opening);
+    if (!pattern) return false;
+    const cells2 = decodeRLE(pattern.rle);
+    if (player.reserve < cells2.length * game2.economy.stampCost) return false;
+    const graph = world2.graph;
+    const neighbors = graph.adj.subarray(6 * player.seed, 6 * player.seed + graph.deg[player.seed]);
+    for (const center of [player.seed, ...neighbors]) {
+      const east = eastAt(graph, center);
+      for (let turn = 0; turn < 6; turn++) {
+        const ids = patchForStamp(world2, center, (east + turn) % 6, cells2, true);
+        if (ids && commitStamp2(player.id, ids, false)) return true;
+      }
+    }
+    return false;
+  }
+
+  // src/patterns/planar-simulation.js
+  var stride = 65536;
+  var adjacent = DIR.map(([q, r]) => q * stride + r);
+  function patternOffset(id) {
+    const q = Math.round(id / stride);
+    return [q, id - q * stride];
+  }
+  function seedPatternAges(pattern) {
+    return new Map(decodeRLE(pattern.rle).map(([q, r]) => [q * stride + r, 1]));
+  }
+  var torusByFrame = /* @__PURE__ */ new WeakMap();
+  function makeTorus(ages) {
+    let reach = 0;
+    for (const id of ages.keys())
+      for (const coordinate of patternOffset(id)) reach = Math.max(reach, Math.abs(coordinate));
+    const side = Math.max(64, 2 * reach + 4);
+    const n = side * side, half = side / 2;
+    const graph = { n, adj: new Uint32Array(n * 6), deg: new Uint8Array(n).fill(6) };
+    const keys = new Float64Array(n);
+    for (let q = 0; q < side; q++) for (let r = 0; r < side; r++) {
+      const id = q * side + r;
+      keys[id] = (q - half) * stride + r - half;
+      for (let k = 0; k < 6; k++) {
+        const [dq, dr] = DIR[k];
+        graph.adj[id * 6 + k] = (q + dq + side) % side * side + (r + dr + side) % side;
+      }
+    }
+    return { graph, keys, cells: new Uint8Array(n), owners: new Uint8Array(n) };
+  }
+  function advanceTorus(ages, threshold, physics) {
+    const torus = torusByFrame.get(ages) ?? makeTorus(ages);
+    const { keys, cells: cells2, owners } = torus;
+    for (let i = 0; i < keys.length; i++) {
+      const age = ages.get(keys[i]) || 0;
+      cells2[i] = Number(age !== 0);
+      owners[i] = age > 0 ? 1 : age < 0 ? 7 : 0;
+    }
+    const fate = evaluateCell({ ...torus, physics });
+    const next = /* @__PURE__ */ new Map();
+    let births = 0, mature = 0;
+    for (let i = 0; i < keys.length; i++) {
+      const owner = fate(i);
+      if (!owner) continue;
+      const id = keys[i], age = Math.abs(ages.get(id) || 0) + 1;
+      next.set(id, owner === 1 ? age : -age);
+      if (owner !== 1) continue;
+      if (age === 1) births++;
+      if (age >= threshold) mature++;
+    }
+    torusByFrame.set(next, torus);
+    return { next, births, mature };
+  }
+  function advancePattern(ages, threshold, physics) {
+    const [birth, survive] = physics.tables[6];
+    if (birth[0]) return advanceTorus(ages, threshold, physics);
+    const masks = /* @__PURE__ */ new Map();
+    for (const id of ages.keys()) {
+      if (survive[0] && !masks.has(id)) masks.set(id, 0);
+      for (let k = 0; k < adjacent.length; k++) {
+        const target = id - adjacent[k];
+        masks.set(target, (masks.get(target) || 0) | 1 << k);
+      }
+    }
+    const next = /* @__PURE__ */ new Map();
+    let births = 0, mature = 0;
+    for (const [id, mask] of masks) {
+      const age = ages.get(id) || 0;
+      if (!(age ? survive : birth)[mask]) continue;
+      next.set(id, age + 1);
+      if (age === 0) births++;
+      if (age + 1 >= threshold) mature++;
+    }
+    return { next, births, mature };
+  }
+
+  // src/bots/oscillator-footprint.js
+  function createFootprintLookup(world2) {
+    const cache = /* @__PURE__ */ new Map();
+    function botProtectedOffsets(pattern) {
+      if (cache.has(pattern.id)) return cache.get(pattern.id);
+      const grower = pattern.group === "crescedor";
+      const turns = grower ? 32 : pattern.period ?? Number(pattern.id.slice(3));
+      if (!Number.isInteger(turns) || turns < 1 || turns > 256)
+        throw Error("Período inválido: " + pattern.id);
+      let ages = seedPatternAges(pattern);
+      const initial = new Set(ages.keys()), footprint = new Set(initial);
+      for (let gen = 0; gen < turns; gen++) {
+        ages = advancePattern(ages, 2, world2.physics).next;
+        for (const id of ages.keys()) footprint.add(id);
+      }
+      if (!grower && (ages.size !== initial.size || [...ages.keys()].some((id) => !initial.has(id))))
+        throw Error("O padrão do bot não é estacionário em " + turns + " gerações: " + pattern.id);
+      const guarded = /* @__PURE__ */ new Set();
+      for (const id of footprint) {
+        const [q, r] = patternOffset(id);
+        guarded.add(key(q, r));
+        for (const [dq, dr] of DIR) guarded.add(key(q + dq, r + dr));
+      }
+      const offsets = [...guarded].map((c) => c.split(",").map(Number));
+      cache.set(pattern.id, offsets);
+      return offsets;
+    }
+    return { botProtectedOffsets };
+  }
+
+  // src/bots/oscillator-strategy.js
+  function createOscillatorStrategy(world2, game2, commitStamp2) {
+    const { botProtectedOffsets } = createFootprintLookup(world2);
+    const seeds = /* @__PURE__ */ new Map();
+    return function plantOscillator(player, chosenId = player.pattern) {
+      const pat = game2.gameplay.patterns.find((x) => x.id === chosenId);
+      if (!pat) return;
+      if (!seeds.has(chosenId)) seeds.set(chosenId, decodeRLE(pat.rle));
+      const offsets = seeds.get(chosenId);
+      const protectedOffsets = botProtectedOffsets(pat);
+      const plan = game2.botPlans[player.id - 1];
+      if (!plan || player.reserve + 1e-9 < energyCost(offsets.length, game2.economy)) return;
+      const spiral = pat.group === "crescedor" ? plan.growerSpiral ?? (plan.growerSpiral = botSpiralPlan(world2.graph, player.seed)) : plan;
+      let tried = 0;
+      while (tried++ < 100) {
+        const anchor = nextBotAnchor(world2.graph, spiral);
+        if (anchor === -1) break;
+        const orientation = eastAt(world2.graph, anchor);
+        const ids = patchForStamp(world2, anchor, orientation, offsets, true);
+        if (!ids) continue;
+        const protectedIds = patchForStamp(world2, anchor, orientation, protectedOffsets, false);
+        if (!protectedIds) continue;
+        let independent = true;
+        for (const id of protectedIds) {
+          if (game2.botReserved[id] === player.id || world2.cells[id]) {
+            independent = false;
+            break;
+          }
+        }
+        if (!independent) continue;
+        if (commitStamp2(player.id, ids, false)) {
+          for (const id of protectedIds) game2.botReserved[id] = player.id;
+          return true;
+        }
+      }
+      return false;
+    };
+  }
+
+  // src/bots/investments.js
+  function createInvestmentQuotes(economy, catalog2, physics) {
+    const cache = /* @__PURE__ */ new Map();
+    let lastSettings, lastQuote;
+    return function quote(id) {
+      const { stableEnergy, birthCost, stableAfter, stampCost } = economy;
+      const settings = [stableEnergy, birthCost, stableAfter, stampCost, economy.productionScale, economy.policy].join("/");
+      if (settings !== lastSettings || lastQuote !== economy.generationQuote) {
+        cache.clear();
+        lastSettings = settings;
+        lastQuote = economy.generationQuote;
+      }
+      if (cache.has(id)) return cache.get(id);
+      const pattern = catalog2.find((p) => p.id === id);
+      let ages = seedPatternAges(pattern);
+      const price = energyCost(ages.size, economy);
+      const delayed = Math.max(0, stableAfter - Math.max(72, pattern.period + 2));
+      const cyclesSkipped = Math.floor(delayed / pattern.period);
+      const turnsSkipped = cyclesSkipped * pattern.period;
+      const maturity = stableAfter - turnsSkipped;
+      const turns = Math.max(2 * pattern.period, maturity + pattern.period);
+      let capital = 0, balance = 0, recent = 0;
+      for (let gen = 1; gen <= turns; gen++) {
+        const { next, births, mature } = advancePattern(ages, maturity, physics);
+        ages = next;
+        const { income, upkeep } = generationEnergy(births, mature, economy);
+        const net = income - upkeep;
+        balance += net;
+        capital = Math.max(capital, -balance);
+        if (gen === pattern.period && cyclesSkipped) {
+          capital += cyclesSkipped * Math.max(0, -balance);
+          balance += cyclesSkipped * balance;
+        }
+        if (gen > turns - pattern.period) recent += net;
+      }
+      const result = { id, budget: price + capital, yield: recent / pattern.period };
+      cache.set(id, result);
+      return result;
+    };
+  }
+
+  // src/bots/raids.js
+  var weaponCache = /* @__PURE__ */ new WeakMap();
+  var aim = { glider: [-8, -2], gun20: [-3, 16], gun42: [-13, 16] };
+  function weapon(id, world2, game2) {
+    let weapons = weaponCache.get(world2.physics);
+    if (!weapons) weaponCache.set(world2.physics, weapons = /* @__PURE__ */ new WeakMap());
+    const pattern = game2.gameplay.patterns.find((p) => p.id === id);
+    if (weapons.has(pattern)) return weapons.get(pattern);
+    const [dq, dr] = aim[id];
+    const offsets = decodeRLE(pattern.rle).map(([q, r]) => [q + dq, r + dr]);
+    const period = id === "glider" ? 4 : Number(id.slice(3));
+    let ages = seedPatternAges(pattern), births = 0, firstCycleBirths = 0;
+    const trajectories = /* @__PURE__ */ new Map();
+    const earliest = id === "glider" ? 6 : id === "gun20" ? 24 : 50;
+    const latest = id === "glider" ? 30 : id === "gun20" ? 100 : 140;
+    for (let g = 0; g < 256; g++) {
+      const turn = advancePattern(ages, 2, world2.physics);
+      births += turn.births;
+      if (g < period) firstCycleBirths += turn.births;
+      ages = turn.next;
+      if (g + 1 >= earliest && g + 1 <= latest) {
+        for (const pos of ages.keys()) {
+          const [q, r] = patternOffset(pos), x = q + dq, y = r + dr;
+          if (Math.max(Math.abs(x), Math.abs(y), Math.abs(x + y)) > 5) continue;
+          const key2 = x + "," + y;
+          if (!trajectories.has(key2)) trajectories.set(key2, { offset: [x, y], generation: g + 1 });
+        }
+      }
+    }
+    const profile = { offsets, births, period, firstCycleBirths, trace: [...trajectories.values()] };
+    weapons.set(pattern, profile);
+    return profile;
+  }
+  function raidBudget(game2, world2, id) {
+    const economy = game2.economy;
+    const w = weapon(id, world2, game2);
+    return energyCost(w.offsets.length, economy) + generationEnergy(w.births, 0, economy).upkeep;
+  }
+  function expectedGunExpense(game2, world2, id) {
+    const economy = game2.economy;
+    const { period, firstCycleBirths } = weapon(id, world2, game2);
+    return generationEnergy((firstCycleBirths + 32 * 5) / period, 0, economy).upkeep;
+  }
+  function projectedRaidScore(world2, rival, attacker, target, dir, trace, maturity) {
+    const predicted = patchForStamp(world2, target, dir, trace.map((v) => v.offset), false);
+    if (!predicted) return -Infinity;
+    let score = 0, earliest = Infinity;
+    for (let i = 0; i < predicted.length; i++) {
+      const owner = world2.owners[predicted[i]], age = world2.cellAges[predicted[i]];
+      if (owner === rival.id) {
+        score += age === 1 ? 6 : age >= maturity ? 2 : 1;
+        earliest = Math.min(earliest, trace[i].generation);
+      } else if (owner === attacker.id) score -= 4;
+    }
+    return earliest === Infinity ? -Infinity : score / (1 + earliest / 100);
+  }
+  function raidMatureCore(world2, game2, player, commitStamp2, id = "glider") {
+    const rivals = game2.players.filter((p) => p !== player && !p.out && p.stable).sort((a, b) => b.stable - a.stable).slice(0, 2);
+    const { offsets, trace } = weapon(id, world2, game2);
+    let best = null;
+    for (const rival of rivals) {
+      const cells2 = world2.ownerCells[rival.id], targetIds = [];
+      for (const cell of cells2) {
+        if (world2.cellAges[cell] === 1) targetIds.push(cell);
+        if (targetIds.length === 4) break;
+      }
+      const stride2 = Math.max(1, Math.ceil(cells2.length / 4));
+      for (let i = world2.gen % stride2; i < cells2.length; i += stride2)
+        if (world2.cellAges[cells2[i]] >= game2.economy.stableAfter) targetIds.push(cells2[i]);
+      for (const target of targetIds) for (let dir = 0; dir < 6; dir++) {
+        const score = projectedRaidScore(world2, rival, player, target, dir, trace, game2.economy.stableAfter);
+        if (score <= 0 || best && score <= best.score) continue;
+        const ids = patchForStamp(world2, target, dir, offsets, true);
+        if (ids && ids.every((site) => !world2.cells[site])) best = { score, ids };
+      }
+    }
+    return best ? commitStamp2(player.id, best.ids, false) : false;
+  }
+
+  // src/bots/growth-strategy.js
+  var farmCandidates = ["censo-oscillator-6-p2-1", "censo-oscillator-12-p3-1", "p7a", "p2"];
+  function growthMargin(economy, stable, fronts) {
+    const before = generationEnergy(0, stable, economy);
+    const after = generationEnergy(143 / 24, stable + stable / fronts, economy);
+    return after.income - after.upkeep - (before.income - before.upkeep);
+  }
+  function createGrowthStrategy(world2, game2, commitStamp2) {
+    const plant = createOscillatorStrategy(world2, game2, commitStamp2);
+    const quote = createInvestmentQuotes(game2.economy, game2.gameplay.patterns, world2.physics);
+    return (player) => {
+      const e = game2.economy, plan = game2.botPlans[player.id - 1];
+      if (!player.stamps) {
+        if (plantFounder(world2, game2, player, commitStamp2)) {
+          plan.fronts = 1;
+        } else {
+          const profitable = farmCandidates.map(quote).filter((q) => q.yield > 0 && player.reserve >= q.budget);
+          profitable.sort((a, b) => a.budget / a.yield - b.budget / b.yield);
+          if (profitable.length) plant(player, profitable[0].id);
+        }
+        return;
+      }
+      const growerPrice = 36 * e.stampCost;
+      const growerBudget = growerPrice + (e.stableAfter + 24) * generationEnergy(6, 0, e).upkeep;
+      const farmer = player.pattern === "farmer" || player.pattern === "core";
+      if (farmer && player.stable && growthMargin(e, player.stable, plan.fronts || 1) > 0) {
+        if (player.reserve < growerBudget) return;
+        if (plant(player, "stalk")) {
+          plan.fronts = (plan.fronts || 0) + 1;
+          return;
+        }
+      }
+      let weapon2 = player.pattern === "slow" ? "gun42" : player.pattern === "diverse" ? "gun20" : "glider";
+      let savings = player.pattern === "core" ? growerBudget : 0;
+      if (weapon2 !== "glider" && player.flowAverage < expectedGunExpense(game2, world2, weapon2)) {
+        savings = raidBudget(game2, world2, weapon2) / 2;
+        weapon2 = "glider";
+      }
+      if (player.flowAverage <= 0 || player.reserve < savings + raidBudget(game2, world2, weapon2)) return;
+      raidMatureCore(world2, game2, player, commitStamp2, weapon2);
+    };
+  }
+
+  // src/bots/exploration-strategy.js
+  function createExplorationStrategy(world2, game2, commitStamp2) {
+    const candidates = Object.keys(game2.gameplay.kit).map((id) => {
+      const pattern = game2.gameplay.patterns.find((p) => p.id === id);
+      return { pattern, offsets: decodeRLE(pattern.rle) };
+    });
+    const histories = /* @__PURE__ */ new Map();
+    let threshold;
+    function observe(seed) {
+      if (threshold !== game2.economy.stableAfter) {
+        threshold = game2.economy.stableAfter;
+        histories.clear();
+      }
+      if (histories.has(seed)) return histories.get(seed);
+      let ages = seedPatternAges(seed.pattern);
+      const turns = [];
+      for (let i = 0; i < 8; i++) {
+        const { births, mature, next } = advancePattern(ages, threshold, world2.physics);
+        turns.push({ births, mature, living: next.size });
+        ages = next;
+      }
+      histories.set(seed, turns);
+      return turns;
+    }
+    return (player) => {
+      if (!player.stamps && plantFounder(world2, game2, player, commitStamp2)) return;
+      let affordable = candidates.filter((seed) => energyCost(seed.offsets.length, game2.economy) <= player.reserve);
+      if (!world2.physics.birthsFromVacuum) {
+        const scored = affordable.map((seed) => {
+          let net = 0, living = 0;
+          for (const turn of observe(seed)) {
+            const { income, upkeep } = generationEnergy(turn.births, turn.mature, game2.economy);
+            net += income - upkeep;
+            living = turn.living;
+          }
+          return { seed, net: net / seed.offsets.length, living: living / seed.offsets.length };
+        });
+        const metric = player.pattern === "income" ? "net" : "living";
+        const tie = metric === "net" ? "living" : "net";
+        scored.sort((a, b) => b[metric] - a[metric] || b[tie] - a[tie]);
+        affordable = scored.map((item) => item.seed);
+      }
+      const plan = game2.botPlans[player.id - 1];
+      for (let attempt = 0; attempt < 32 && affordable.length; attempt++) {
+        const center = nextBotAnchor(world2.graph, plan);
+        if (center < 0) break;
+        const direction = eastAt(world2.graph, center);
+        for (const seed of affordable) {
+          const ids = patchForStamp(world2, center, direction, seed.offsets, true);
+          if (ids && commitStamp2(player.id, ids, false)) return;
+        }
+      }
+    };
+  }
+
+  // src/patterns/atlas-data.js
+  var rows = "p2|Oscilador mínimo (flipper)|oscilador|2|3|4|4|1|bo$bo$2bo!\ncenso-oscillator-5-p2-1|Oscilador P2 · C5-1|oscilador|2|5|6|6|3|2o$o$b2o!\np4f|Flipper P4|oscilador|4|5|16|16|1|3o$3bo$4bo!\ncenso-oscillator-6-p2-1|Oscilador P2 · C6-1|oscilador|2|6|6|6|6|2o$obo$b2o!\ncenso-oscillator-6-p2-2|Oscilador P2 · C6-2|oscilador|2|6|6|6|3|2bo$3o$2bo$3bo!\np8f|Flipper P8|oscilador|8|6|30|30|2|bo$b2o$3bo$3b2o!\nglider|Glider P4|nave|4|6|20|20|0|2bob$3bo$o2bo$3bo$3bo!\ncenso-oscillator-7-p2-1|Oscilador P2 · C7-1|oscilador|2|7|7|7|4|2bo$obo$b3o$4bo!\ncenso-oscillator-8-p2-1|Oscilador P2 · C8-1|oscilador|2|8|8|8|5|2bo$obo$b3o$4bo$4bo!\ncenso-oscillator-8-p4-1|Oscilador P4 · C8-1|oscilador|4|8|28|28|2|o$bo$2b4o$6bo$7bo!\ncenso-oscillator-9-p2-1|Oscilador P2 · C9-1|oscilador|2|9|8|8|5|o$obo$b4o$4bo$5bo!\ncenso-oscillator-9-p2-2|Oscilador P2 · C9-2|oscilador|2|9|9|9|6|2b2o$obo$b3o$4bo$4bo!\ncenso-oscillator-9-p2-3|Oscilador P2 · C9-3|oscilador|2|9|8|8|5|bo$obo$b4o$4bo$5bo!\ncenso-oscillator-9-p2-4|Oscilador P2 · C9-4|oscilador|2|9|8|8|5|bo$obo$b5o$4bo!\ncenso-oscillator-9-p2-5|Oscilador P2 · C9-5|oscilador|2|9|8|8|5|2bo$obo$b5o$4bo!\ncenso-oscillator-9-p2-6|Oscilador P2 · C9-6|oscilador|2|9|8|8|5|bo$2bo$5o$2bo$3bo!\ncenso-oscillator-9-p2-7|Oscilador P2 · C9-7|oscilador|2|9|8|8|5|2bo$2bo$4o$2bobo$3bo!\ncenso-oscillator-9-p4-1|Oscilador P4 · C9-1|oscilador|4|9|18|18|4|3bo$4o$3bo$3b2o$5bo!\ncenso-oscillator-9-p4-2|Oscilador P4 · C9-2|oscilador|4|9|24|24|3|3bo$3bo$4o$3bo$4bo$5bo!\ncenso-oscillator-9-p5-1|Oscilador P5 · C9-1|oscilador|5|9|24|24|5|2bo$obo$b4o$2bo$3bo!\ncenso-oscillator-9-p5-2|Oscilador P5 · C9-2|oscilador|5|9|24|24|5|bo$obo$b3o$2bobo$3bo!\ncenso-oscillator-9-p6-1|Oscilador P6 · C9-1|oscilador|6|9|26|26|7|ob2o$b2obo$4bo$5b2o!\ncenso-oscillator-9-p10-1|Oscilador P10 · C9-1|oscilador|10|9|44|44|5|bo$obo$b4o$2bo$3bo!\ncenso-oscillator-10-p2-1|Oscilador P2 · C10-1|oscilador|2|10|12|12|6|2o$o$b4o$5bo$4b2o!\ncenso-oscillator-10-p2-10|Oscilador P2 · C10-10|oscilador|2|10|8|8|8|2bo$3o$obo$b3o$4bo!\ncenso-oscillator-10-p2-2|Oscilador P2 · C10-2|oscilador|2|10|9|9|6|o$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-3|Oscilador P2 · C10-3|oscilador|2|10|8|8|8|2o$obo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-4|Oscilador P2 · C10-4|oscilador|2|10|8|8|6|obo$ob3o$b2obo$5bo!\ncenso-oscillator-10-p2-5|Oscilador P2 · C10-5|oscilador|2|10|9|9|6|bo$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-6|Oscilador P2 · C10-6|oscilador|2|10|9|9|6|2bo$obo$b5o$4bo$4bo!\ncenso-oscillator-10-p2-7|Oscilador P2 · C10-7|oscilador|2|10|9|9|6|bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-8|Oscilador P2 · C10-8|oscilador|2|10|9|9|6|2b2o$obo$b4o$4bo$5bo!\ncenso-oscillator-10-p2-9|Oscilador P2 · C10-9|oscilador|2|10|9|9|6|2bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-10-p4-1|Oscilador P4 · C10-1|oscilador|4|10|19|19|5|3bo$o2bo$b4o$3bo$4b2o!\ncenso-oscillator-10-p4-2|Oscilador P4 · C10-2|oscilador|4|10|19|19|5|3bo$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-10-p5-1|Oscilador P5 · C10-1|oscilador|5|10|24|24|5|2bo$2bo$5o$b2o$2bo!\ncenso-oscillator-10-p6-1|Oscilador P6 · C10-1|oscilador|6|10|26|26|7|ob2o$b2obo$4bo$4b2o$6bo!\ncenso-oscillator-10-p6-2|Oscilador P6 · C10-2|oscilador|6|10|28|28|7|3bo$4bo$ob3o$b2obo$5bo!\ncenso-oscillator-10-p10-1|Oscilador P10 · C10-1|oscilador|10|10|49|49|6|2b2o$obo$b4o$2bo$3bo!\ncenso-oscillator-10-p10-2|Oscilador P10 · C10-2|oscilador|10|10|49|49|6|bo$obobo$b4o$2bo$3bo!\ncenso-oscillator-11-p2-1|Oscilador P2 · C11-1|oscilador|2|11|9|9|9|2o$obo$b5o$4bo$4bo!\ncenso-oscillator-11-p2-10|Oscilador P2 · C11-10|oscilador|2|11|10|10|7|bo$obo$b5o$4bo$5b2o!\ncenso-oscillator-11-p2-11|Oscilador P2 · C11-11|oscilador|2|11|10|10|7|bo$obo$b5o$4bobo$5bo!\ncenso-oscillator-11-p2-12|Oscilador P2 · C11-12|oscilador|2|11|10|10|7|2bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-11-p2-13|Oscilador P2 · C11-13|oscilador|2|11|9|9|9|2b2o$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p2-14|Oscilador P2 · C11-14|oscilador|2|11|8|8|8|2bo$6o$2bobo$3b2o!\ncenso-oscillator-11-p2-15|Oscilador P2 · C11-15|oscilador|2|11|9|9|7|bo$5o$3bobo$3bo$4b2o!\ncenso-oscillator-11-p2-2|Oscilador P2 · C11-2|oscilador|2|11|10|10|7|o$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-3|Oscilador P2 · C11-3|oscilador|2|11|10|10|7|o$obo$b5o$4bo$5b2o!\ncenso-oscillator-11-p2-4|Oscilador P2 · C11-4|oscilador|2|11|10|10|7|o$obo$b4o$4bobo$5b2o!\ncenso-oscillator-11-p2-5|Oscilador P2 · C11-5|oscilador|2|11|10|10|7|o2bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p2-6|Oscilador P2 · C11-6|oscilador|2|11|10|10|7|o$obo$b5o$4bobo$5bo!\ncenso-oscillator-11-p2-7|Oscilador P2 · C11-7|oscilador|2|11|10|10|7|bo$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-8|Oscilador P2 · C11-8|oscilador|2|11|10|10|7|2bo$obo$b5o$4bobo$4bo!\ncenso-oscillator-11-p2-9|Oscilador P2 · C11-9|oscilador|2|11|10|10|7|bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-11-p4-1|Oscilador P4 · C11-1|oscilador|4|11|31|31|4|o$bo4bo$2b5o$6bo$7bo$7bo!\ncenso-oscillator-11-p4-10|Oscilador P4 · C11-10|oscilador|4|11|22|22|5|2bo$3bo$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-11-p4-11|Oscilador P4 · C11-11|oscilador|4|11|20|20|6|o$bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-2|Oscilador P4 · C11-2|oscilador|4|11|40|40|3|o$bo$2b4o$6bo$7bo$8b3o!\ncenso-oscillator-11-p4-3|Oscilador P4 · C11-3|oscilador|4|11|22|22|6|o3bo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-4|Oscilador P4 · C11-4|oscilador|4|11|19|19|8|3bo$o2bo$b4o$3bobo$4b2o!\ncenso-oscillator-11-p4-5|Oscilador P4 · C11-5|oscilador|4|11|22|22|5|3bo$o2bo$b4o$3bobo$4bobo!\ncenso-oscillator-11-p4-6|Oscilador P4 · C11-6|oscilador|4|11|21|21|6|2bobo$obobo$b4o$4bo$5bo!\ncenso-oscillator-11-p4-7|Oscilador P4 · C11-7|oscilador|4|11|21|21|6|3b2o$o2bo$b4o$3bobo$4bo!\ncenso-oscillator-11-p4-8|Oscilador P4 · C11-8|oscilador|4|11|21|21|6|3b2o$o2bo$b5o$3bo$4bo!\ncenso-oscillator-11-p4-9|Oscilador P4 · C11-9|oscilador|4|11|21|21|6|3bo$o2bobo$b5o$3bo$4bo!\ncenso-oscillator-11-p6-1|Oscilador P6 · C11-1|oscilador|6|11|31|31|8|2b2o$obo$b3o$4bo$4bo$5b2o!\ncenso-oscillator-11-p10-1|Oscilador P10 · C11-1|oscilador|10|11|49|49|9|2b2o$obobo$b4o$2bo$3bo!\ncenso-oscillator-12-p2-1|Oscilador P2 · C12-1|oscilador|2|12|10|10|8|o$obo$b4o$4bo$4bobo$5b2o!\ncenso-oscillator-12-p2-10|Oscilador P2 · C12-10|oscilador|2|12|10|10|7|bo$obobo$b4o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-11|Oscilador P2 · C12-11|oscilador|2|12|10|10|7|bo$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-12|Oscilador P2 · C12-12|oscilador|2|12|10|10|7|bo$obobo$b6o$4bo$4bo!\ncenso-oscillator-12-p2-13|Oscilador P2 · C12-13|oscilador|2|12|10|10|7|2bo$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-14|Oscilador P2 · C12-14|oscilador|2|12|10|10|7|2bo$obobo$b6o$4bo$4bo!\ncenso-oscillator-12-p2-15|Oscilador P2 · C12-15|oscilador|2|12|10|10|10|2b2o$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p2-16|Oscilador P2 · C12-16|oscilador|2|12|10|10|7|2bo$obobo$b6o$4bo$5bo!\ncenso-oscillator-12-p2-17|Oscilador P2 · C12-17|oscilador|2|12|9|9|9|2b2o$obobo$b6o$4bo!\ncenso-oscillator-12-p2-18|Oscilador P2 · C12-18|oscilador|2|12|10|10|8|2bo$3o$obo$3bobo$3b3o$3bo!\ncenso-oscillator-12-p2-19|Oscilador P2 · C12-19|oscilador|2|12|10|10|8|2o$2bo$obo$b5o$4bo$4bo!\ncenso-oscillator-12-p2-2|Oscilador P2 · C12-2|oscilador|2|12|10|10|10|2o$obo$b5o$4bobo$4bo!\ncenso-oscillator-12-p2-20|Oscilador P2 · C12-20|oscilador|2|12|10|10|8|2bo$3o$2bo$3b2o$5bo$5b3o$5bo!\ncenso-oscillator-12-p2-21|Oscilador P2 · C12-21|oscilador|2|12|8|8|8|2bo$5o$2bobo$3b3o$6bo!\ncenso-oscillator-12-p2-22|Oscilador P2 · C12-22|oscilador|2|12|10|10|8|3bo$obobo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-23|Oscilador P2 · C12-23|oscilador|2|12|9|9|8|bob2o$3o2bo$3b3o$5bo$6bo!\ncenso-oscillator-12-p2-24|Oscilador P2 · C12-24|oscilador|2|12|9|9|9|2bo$3o$obo$b4o$4bo$5bo!\ncenso-oscillator-12-p2-25|Oscilador P2 · C12-25|oscilador|2|12|10|10|8|2b2o$obo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-26|Oscilador P2 · C12-26|oscilador|2|12|10|10|8|2bo$obobo$ob3o$b2obo$5bo!\ncenso-oscillator-12-p2-27|Oscilador P2 · C12-27|oscilador|2|12|9|9|9|2bo$3bo$ob2o$b3o$4bo$4bo$5b2o!\ncenso-oscillator-12-p2-28|Oscilador P2 · C12-28|oscilador|2|12|9|9|9|bo$2bo$6o$2bobo$3b2o!\ncenso-oscillator-12-p2-29|Oscilador P2 · C12-29|oscilador|2|12|10|10|8|b2o$3bo$6o$2bo$3b2o!\ncenso-oscillator-12-p2-3|Oscilador P2 · C12-3|oscilador|2|12|10|10|7|o$obo$b5o$4bo$4b2o$6bo!\ncenso-oscillator-12-p2-30|Oscilador P2 · C12-30|oscilador|2|12|10|10|7|4bo$2bobo$6o$2bo3bo$3bo!\ncenso-oscillator-12-p2-31|Oscilador P2 · C12-31|oscilador|2|12|8|8|8|bo$bo$4o$3b4o$5bo$5bo!\ncenso-oscillator-12-p2-32|Oscilador P2 · C12-32|oscilador|2|12|8|8|8|bo$bo$4obo$3b3o$5bo$6bo!\ncenso-oscillator-12-p2-4|Oscilador P2 · C12-4|oscilador|2|12|10|10|7|o3bo$obobo$b5o$4bo$4bo!\ncenso-oscillator-12-p2-5|Oscilador P2 · C12-5|oscilador|2|12|10|10|10|2o$obo$b5o$4bo$5b2o!\ncenso-oscillator-12-p2-6|Oscilador P2 · C12-6|oscilador|2|12|10|10|10|2o$obo$b4o$4bobo$5b2o!\ncenso-oscillator-12-p2-7|Oscilador P2 · C12-7|oscilador|2|12|11|11|8|o2bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p2-8|Oscilador P2 · C12-8|oscilador|2|12|10|10|8|obo$ob4o$b2obo$5b2o!\ncenso-oscillator-12-p2-9|Oscilador P2 · C12-9|oscilador|2|12|10|10|8|obo$ob4o$b2obobo$5bo!\ncenso-oscillator-12-p3-1|Oscilador P3 · C12-1|oscilador|3|12|12|12|12|b2o$2obo$o2bo$b2obo$3b2o!\ncenso-oscillator-12-p4-1|Oscilador P4 · C12-1|oscilador|4|12|30|30|5|o$bo4bo$2b5o$6bo$6b2o$8bo!\ncenso-oscillator-12-p4-10|Oscilador P4 · C12-10|oscilador|4|12|21|21|9|3b2o$o2bo$b4o$3bobo$4b2o!\ncenso-oscillator-12-p4-11|Oscilador P4 · C12-11|oscilador|4|12|23|23|6|3b2o$o2bo$b4o$3bobo$4bobo!\ncenso-oscillator-12-p4-12|Oscilador P4 · C12-12|oscilador|4|12|23|23|6|3b2o$o2bo$b6o$3bo$4bo!\ncenso-oscillator-12-p4-13|Oscilador P4 · C12-13|oscilador|4|12|22|22|7|2bobo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p4-14|Oscilador P4 · C12-14|oscilador|4|12|22|22|8|2b2o$3o$obo$b3o$4b2o!\ncenso-oscillator-12-p4-15|Oscilador P4 · C12-15|oscilador|4|12|23|23|6|o$bo$obo$b6o$4bo$5bo!\ncenso-oscillator-12-p4-2|Oscilador P4 · C12-2|oscilador|4|12|30|30|5|o$bo4bo$2b7o$6bo$6bo!\ncenso-oscillator-12-p4-3|Oscilador P4 · C12-3|oscilador|4|12|32|32|5|o4bo$bo4bo$2b5o$6bo$7bo$7bo!\ncenso-oscillator-12-p4-4|Oscilador P4 · C12-4|oscilador|4|12|35|35|4|o5bo$bo4bo$2b5o$6bo$7bo$8bo!\ncenso-oscillator-12-p4-5|Oscilador P4 · C12-5|oscilador|4|12|22|22|7|obo$ob5o$b2obo$5bo!\ncenso-oscillator-12-p4-6|Oscilador P4 · C12-6|oscilador|4|12|21|21|9|2o$obo2bo$b5o$4bo$4bo!\ncenso-oscillator-12-p4-7|Oscilador P4 · C12-7|oscilador|4|12|23|23|7|o2bo$obobo$b4o$4bo$5bo$5bo!\ncenso-oscillator-12-p4-8|Oscilador P4 · C12-8|oscilador|4|12|24|24|6|2o$o$b4o$4b4o$4bo!\ncenso-oscillator-12-p4-9|Oscilador P4 · C12-9|oscilador|4|12|23|23|7|o3bo$obobo$b4o$4bo$5b2o!\ncenso-oscillator-12-p5-1|Oscilador P5 · C12-1|oscilador|5|12|24|24|10|3o$bob2o$2b2obo$4b3o!\ncenso-oscillator-12-p5-2|Oscilador P5 · C12-2|oscilador|5|12|24|24|8|3bo$3bo$ob4o$b3o$2bo$3bo!\ncenso-oscillator-12-p5-3|Oscilador P5 · C12-3|oscilador|5|12|24|24|8|2bo$3bo$ob3o$b3obo$2bo$3bo!\ncenso-oscillator-12-p6-1|Oscilador P6 · C12-1|oscilador|6|12|32|32|9|ob2o$b2obo$4bo$4b2o$6bo$5b2o!\ncenso-oscillator-12-p6-2|Oscilador P6 · C12-2|oscilador|6|12|30|30|9|ob2o$b6o$5bo$4b2o!\ncenso-oscillator-12-p6-3|Oscilador P6 · C12-3|oscilador|6|12|32|32|10|ob2o$b2ob2o$6bo$5b2o$5bo$6bo!\ncenso-oscillator-12-p6-4|Oscilador P6 · C12-4|oscilador|6|12|30|30|8|ob2obo$b2ob2o$5bo$5b2o$5bo!\ncenso-oscillator-12-p6-5|Oscilador P6 · C12-5|oscilador|6|12|26|26|10|2b2o$3obo$2bobo$3b3o$6bo!\ncenso-oscillator-12-p6-6|Oscilador P6 · C12-6|oscilador|6|12|31|31|8|2bo$3o$obo2bo$3b3o$5bo$6bo!\ncenso-oscillator-12-p6-7|Oscilador P6 · C12-7|oscilador|6|12|31|31|8|4bo$4bo$ob4o$b2obobo$5bo!\ncenso-oscillator-12-p6-8|Oscilador P6 · C12-8|oscilador|6|12|31|31|8|3bo$4bo$ob5o$b2obo$5bo!\ncenso-oscillator-12-p6-9|Oscilador P6 · C12-9|oscilador|6|12|31|31|8|2bo$b2o$obo$b3o$4bo$4bo$5b2o!\ncenso-oscillator-12-p10-1|Oscilador P10 · C12-1|oscilador|10|12|44|44|8|2bo$3bo$ob4o$b3o$2bo$3bo!\ncenso-oscillator-12-p30-1|Oscilador P30 · C12-1|oscilador|30|12|167|167|8|bo$obob2o$b4obo$2bo$3bo!\np42rot|Oscilador rotativo P42|oscilador|42|12|300|300|0|2b2ob$b3ob$3bob$4ob$2ob!\np48|Nave P48|nave|48|12|334|334|0|obo4b$b2o4b$b3obob$2b2o2bo$3bo3b!\np42|Oscilador refletor P42|oscilador|42|17|256|256|12|b2o3b$bobo2b$4o2b$o3bob$b5o$3bo2b$3bo2b!\np14|Oscilador P14|oscilador|14|21|88|88|3|b3ob$2obob$o3b2ob$2ob2ob$2b2ob2ob$2bob2ob$4bob!\np11b|Oscilador principal P11 (B)|oscilador|33|24|222|222|20|2obob$o2b2ob$2b2obob$3ob2ob$bob2obob$2b2ob2ob$4b2ob!\np66|Oscilador P66 tentáculo|oscilador|66|25|573|573|19|2b2ob$3obob$obobob$b2ob2ob$bob2obobob$5b2ob3ob$7b2ob!\np29pure26|Oscilador P29 puro (26 células)|oscilador|29|26|272|272|18|2b3o$4obo$bo2b2o$2b4o$2b2o2bo$2bob4o$3b3o!\np15|Nave P15|nave|15|26|150|150|4|bobo5b$2b3o4b$3obo4b$2bobo4b$3b2o4b$9b$4b2o3b$4bobo2b$3b3obob$6b3o$6bobo!\np22|Oscilador principal P22|oscilador|22|27|201|201|14|bob$2bob$5ob$2bobob$2b5ob$3bobob2ob$6b4ob$6b2ob$b$10bob$11b2ob!\nreflect20_demo|Reflexão de glider em estrutura P20 (exemplo publicado)|interação|0|29|0|0|0|2bob$ob$bob$2bob$3b2ob$b$b$b$b$4b3ob$6b2ob$6bobob$7b2ob$7bobob$8b2ob$8bob$9bob$9bob$7b4ob$9bobob$10bob!\np7b|Oscilador principal P7 (B)|oscilador|28|30|261|261|24|ob$ob$b2ob$2b3ob$b2o2b2obob$bo4b3ob$2bo5bob$9bob$8b2ob$8bob$9bobob$8b4ob$11bob$12bob!\nreflect42_demo|Reflexão de glider em estrutura P42 (exemplo publicado)|interação|0|31|0|0|0|2bob$ob$bob$2bob$3b2ob$b$b$b$4bob$5b2ob$4b4ob$6b3ob$6bobob$7b4ob$7bo3bob$7b5ob$10bob$11bob!\np11a|Oscilador principal P11 (A)|oscilador|22|33|164|164|24|2bob$b2ob$2b2obob$3obobob$2bobo2b2ob$2b6ob3ob$2bo3b2o2bob$8b3ob$10bob$11bob!\np46|Oscilador principal P46|oscilador|46|33|364|364|19|3bob$3b3ob$b3obob$obob5ob$b5o2bob$2bobobo2bob$b6ob$4bob$4bob!\np17|Oscilador principal P17|oscilador|102|34|785|785|26|2bob$2bob$6ob$2bob2ob$3b2ob$b$3b2o2bob$2b2ob2ob$2bo2bobob$3b2ob2ob$5b2ob2ob$7b2ob$7bob!\np9|Oscilador P9|oscilador|9|35|73|73|32|2b2ob$3obob$bob2ob$b3obob$4b2ob$4bob$3b3ob$3bo2bob$2b3obob$2bobo2bob$3b2ob2ob$5b2ob$6bob!\nstalk|Crescedor de colmeia (stalk)|crescedor|0|36|0|0|0|ob2o7b$b2obo6b$2ob2o6b$2b2obo5b$2bob2o5b$3b2obo4b$3bob2o4b$3b3obo3b$6b2o3b$6bobo2b$6b3o2b$8b3o!\np18|Oscilador P18|oscilador|18|44|149|149|24|bobob$2b3ob$b2obob$2ob2ob3obob$ob2obobob4ob$b2ob5ob2ob$3b2obob3obob$3bobo4bob!\np29|Oscilador principal P29|oscilador|87|45|669|669|30|3bob$3b2ob$2b2ob2ob$3o4b3ob$bobo3bobob$2b4o2b3ob$4o2b3ob$2o2b4ob$b3obobob$2bo2bob$b$6bob!\np19|Oscilador principal P19|oscilador|95|46|879|879|30|bo3bob$2o2b3obob$ob2obob3ob$b2ob5obob$bob2o2bob2ob$3bobob3ob2ob$7b2ob3ob$8b3o2bob$10bob!\np26|Oscilador principal P26|oscilador|78|48|767|767|35|bob$bobob$5ob$bobob2ob$bo2b2obob$3b2o2bob$5b5ob$7bobob$5b6ob$2b2obobobobob$4bob2obob$8b3ob$8bo2bob$11bob!\np7a|Oscilador principal P7 (A)|oscilador|21|52|157|157|43|3bob$2b2ob$b2ob2obob$3bob3ob$ob2obo2b2ob$b2obo3bob$2ob4o2bob$2b2o3bobob$2bobob2o2bob$2b3ob2ob3ob$5b2ob2ob$7b2ob!\ngun20|Gun P20|gerador|0|52|0|0|0|8b2ob$8bob$b$5b6ob$5bob$2bo5bob$b5ob$2bob2o8bob$3b2o8b3o4bob$2b2o9b2ob2o2bob$3o12b2ob4ob$2bo14bo2bobob$b3o17bob$4bob!\ndup42_demo|Duplicador P42 (exemplo publicado)|interação|0|54|0|0|0|12bobob$4bo8b2obob$11b3ob2ob$8bo3bobobob$5b4o3b4obob$14bob3ob$17bob$2ob3ob$ob6ob$bobob2ob$3ob2obob$3b2ob$4bob!\ndup20_demo|Duplicador P20 (exemplo publicado)|interação|0|55|0|0|0|2bo7bob$5bo2b4ob$5bo3b2ob3ob$5bo5b2obob$bo2b2o7b2ob$obo12b2ob$3bo13b3ob$bobo14bob$2bobo13b3ob$3b2o13bob$3bobob$4b2ob$6bob$6bob$7bobob$6b4ob$9bob$10bob!\ngun42|Gun P42 (catálogo do jogo)|gerador|0|64|0|0|0|17b2o$2bo15b2obo$b2obo13bob2o$2ob3o13b2ob2o$2bobobo13bobo$2b2ob4o3b2o6bob2o$2bob2obo5b3o4b3obo$13bobo6bo$12b4o$12bo3bo$13b5o$15bo$15bo!\ngun43|Gun de pulso P43/86|gerador|0|80|0|0|0|11b2ob$2o11bobob$2bobo8b3ob$2b3o8bobob$2bobo9b4ob$3b3o8bo2bob$2b2o2bo7b5ob$4b3o8b2ob$4b2obo8bob$4bob2ob$2bo2bobob$b3o2b2ob$o5bob$b$b$b$b$b$b$b$b$18bo2bob$19b3ob$20bob3ob$20bobobobob$20b7ob$21bo2bob$25bob!\ngun200|Gun P200|gerador|0|100|0|0|0|5bob$6b3ob$7bob$7b3ob$3bo2b2ob$2b2ob2ob$obob2ob$b3ob2ob$4b2obo11bob$6b4o7b3ob$8bo10bob$9bo9b2ob$18b2obob$17b2ob$16b2ob2ob$5bo8b3ob2ob$6bo9b3obob$6bobo7bo2bob$7bobob$8bo5b2ob$7bo5b3ob$13b3ob$8bo5bobob$8b2o5b2ob$8bobo4bobob$15b3ob$18bob$18bob$19bobob$18b4ob$21bob$22bob!\ngun210|Gun P210 (relé de refletores)|gerador|0|111|0|0|0|49bo$50bo$48b5o$49bo3bo$50b4o$50bobobo$51bob3o$50b2obo$52bo10b2o$2bo50b2o6b3ob3o$b2o45b4o2bo2bo4bobobo$2b2o44bo9bo4b3obo$3ob2o50bo2bo3bo2b3o$bob4o53bobo2b2o$2bobobo53bob4o$2bob2o$56bo$54bobo$53b4o$54bobobo$55b6o$54b2o3bo$56b4o$56bobo$58bo!\ngun840|Gun P840|gerador|0|131|0|0|0|4bob$3bobob$4b4ob$5bob$5bob$6bob$4b3ob$5bobob$5b3o5b2ob$2o5b2o4bob$bo6bo14bob$b2o18b3ob$2bo20bob$23b2ob$22b2obob$2bo18b2ob$2bo17b2obob$2bo2bo14bob3ob$2bo18b2ob$3bo8b2o8bob$14bob$15bob$16bob$10b2o2bob$9b3ob$8b2obo11bo3b2ob$8bob3o11b4obob$9bobo11b3obobob$9b2ob2o3b3o6b2ob2ob$9bob2o6b3o6b2obob$11bo7bobo7bob$20b5ob$19b2o3bob$21b5ob$21bobob$24bob!";
+  var emissionWindows = { gun20: 20, gun42: 42, gun43: 86, gun200: 200, gun210: 210, gun840: 840 };
+  var atlasPatterns = rows.split("\n").map((row) => {
+    const [id, name, group, period, cells2, birthsCycle, deathsCycle, stableCore, rle] = row.split("|");
     return {
+      id,
+      name,
+      group,
+      period: Number(period),
+      cells: Number(cells2),
+      birthsCycle: Number(birthsCycle),
+      deathsCycle: Number(deathsCycle),
+      stableCore: Number(stableCore),
+      emissionWindow: emissionWindows[id],
+      analysisHorizon: id === "stalk" ? 2e3 : void 0,
+      rle,
+      info: group + " · " + cells2 + " células · " + (Number(period) ? "P" + period : "evolução não periódica"),
+      origin: id.startsWith("censo-") ? "censo ≤12 células" : "atlas/documentação de Callahan"
+    };
+  });
+
+  // src/patterns/catalog.js
+  var patterns = {
+    bays: [
+      {
+        id: "glider",
+        name: "Glider · P5",
+        group: "nave",
+        period: 5,
+        cells: 10,
+        birthsCycle: 62,
+        deathsCycle: 62,
+        stableCore: 0,
+        origin: "Carter Bays (2005)",
+        rle: "bo$o2bo$5bo$bo2bo$3bo$2bo3bo$5bo!",
+        info: "Carter Bays (2005). Período 5; movimento em malha hexagonal."
+      },
+      {
+        id: "osc2",
+        name: "Oscilador · P2",
+        rle: "2o!",
+        group: "oscilador",
+        period: 2,
+        cells: 2,
+        birthsCycle: 4,
+        deathsCycle: 4,
+        stableCore: 0,
+        origin: "B2/S35",
+        info: "Par de células que alterna de posição a cada geração."
+      }
+    ],
+    callahan: [
+      ...atlasPatterns,
+      {
+        id: "gun",
+        name: "Glider gun · P42",
+        rle: "17b2o$2bo15b2obo$b2obo13bob2o$2ob3o13b2ob2o$2bobobo13bobo$2b2ob4o3b2o6bob2o$2bob2obo5b3o4b3obo$13bobo6bo$12b4o$12bo3bo$13b5o$15bo$15bo!",
+        info: "Paul Callahan. 64 células; gera um glider a cada 42 gerações."
+      },
+      {
+        id: "osc42",
+        name: "Oscilador · P42",
+        rle: "b2o3b$bobo2b$4o2b$o3bob$b5o$3bo2b$3bo2b!",
+        info: "Oscilador estacionário P42 de Paul Callahan."
+      },
+      {
+        id: "osc66",
+        name: "Oscilador · P66",
+        rle: "2b2ob$3obob$obobob$b2ob2ob$bob2obobob$5b2ob3ob$7b2ob!",
+        info: "Oscilador P66 de Callahan, com tentáculo oscilante."
+      },
+      {
+        id: "osc9",
+        name: "Oscilador · P9",
+        rle: "2b2ob$3obob$bob2ob$b3obob$4b2ob$4bob$3b3ob$3bo2bob$2b3obob$2bobo2bob$3b2ob2ob$5b2ob$6bob!",
+        info: "Oscilador estacionário P9 documentado por Paul Callahan."
+      },
+      {
+        id: "osc14",
+        name: "Oscilador · P14",
+        rle: "b3ob$2obob$o3b2ob$2ob2ob$2b2ob2ob$2bob2ob$4bob!",
+        info: "Oscilador estacionário P14 documentado por Paul Callahan."
+      },
+      {
+        id: "osc18",
+        name: "Oscilador · P18",
+        rle: "bobob$2b3ob$b2obob$2ob2ob3obob$ob2obobob4ob$b2ob5ob2ob$3b2obob3obob$3bobo4bob!",
+        info: "Oscilador estacionário P18 documentado por Paul Callahan."
+      }
+    ],
+    custom: [
+      { id: "single", name: "Célula", rle: "o!", cells: 1 },
+      { id: "pair", name: "Par", rle: "2o!", cells: 2 },
+      { id: "triangle", name: "Triângulo", rle: "2o$bo!", cells: 3 },
+      { id: "ring", name: "Anel", rle: "2o$obo$b2o!", cells: 6 }
+    ].map((p) => ({
+      ...p,
+      group: "semente",
+      origin: "desenho geométrico",
+      info: "Semente experimental para observar nesta regra."
+    }))
+  };
+
+  // src/patterns/callahan-kit.js
+  var fieldKit = {
+    stalk: { role: "Crescimento", use: "A ponta avança e deixa uma trilha de células estáveis." },
+    glider: { role: "Ataque", use: "Nave P4 de seis células para sabotar colmeias e interceptar gliders." },
+    gun20: { role: "Cerco P20", use: "Emite um glider a cada 20 gerações." },
+    gun42: { role: "Cerco P42", use: "Emite um glider a cada 42 gerações." },
+    p42: { role: "Defesa", use: "Reflete ou perturba gliders conforme orientação e fase." },
+    gun43: { role: "Cerco P43", use: "Emissor de dois pulsos por período completo de 86 gerações." },
+    gun200: { role: "Cerco P200", use: "Arma de cadência baixa e estrutura maior." },
+    gun210: { role: "Cerco P210", use: "Emissor relé com refletores." },
+    gun840: { role: "Cerco P840", use: "Emissor de cadência muito baixa." },
+    p15: { role: "Nave P15", use: "Nave móvel para experimentar outra velocidade e geometria de colisão." },
+    p48: { role: "Nave P48", use: "Nave móvel de período longo." },
+    p42rot: { role: "Rotativo", use: "Oscilador rotativo para testar defesa e colisão." },
+    p7a: { role: "Defesa exp.", use: "Oscilador P7 para testar como obstáculo." },
+    p66: { role: "Defesa exp.", use: "Oscilador P66 com um tentáculo oscilante." },
+    p2: { role: "Flipper exp.", use: "Oscilador mínimo de três células." }
+  };
+
+  // src/match/gameplay.js
+  var explorationPlans = {
+    choices: [["field", "Expandir população"], ["income", "Priorizar renda"]],
+    defaults: ["field", "income", "field", "income", "field"]
+  };
+  var growthPlans = {
+    choices: [
+      ["farmer", "Expandir colmeias rentáveis e atacar"],
+      ["cycler", "Incursões com glider P4"],
+      ["core", "Guardar para uma colmeia de reserva"],
+      ["slow", "Poupar para cerco · Gun P42"],
+      ["diverse", "Poupar para cerco · Gun P20"]
+    ],
+    defaults: ["farmer", "cycler", "core", "slow", "diverse"]
+  };
+  function explorationGameplay(catalog2, opening) {
+    const seeds = catalog2?.length ? catalog2 : patterns.custom;
+    return {
+      patterns: seeds,
+      kit: Object.fromEntries(seeds.map((p) => [p.id, {}])),
+      opening: opening ?? seeds[0].id,
+      botPlans: explorationPlans,
+      createStrategy: createExplorationStrategy
+    };
+  }
+  var genericGameplay = explorationGameplay(patterns.custom, "triangle");
+  var baysGameplay = explorationGameplay(patterns.bays, "osc2");
+  var callahanGameplay = {
+    patterns: patterns.callahan,
+    atlas: atlasPatterns,
+    kit: fieldKit,
+    opening: "stalk",
+    botPlans: growthPlans,
+    plansFor: (economy) => isStabilityEconomy(economy) ? growthPlans : explorationPlans,
+    createStrategy: (world2, game2, commitStamp2) => isStabilityEconomy(game2.economy) ? createGrowthStrategy(world2, game2, commitStamp2) : createExplorationStrategy(world2, game2, commitStamp2)
+  };
+  function getBotPlans(gameplay, economy) {
+    return gameplay.plansFor?.(economy) ?? gameplay.botPlans;
+  }
+
+  // src/match/rule-profiles.js
+  var DEFAULT_RULE = "callahan";
+  var ruleProfiles = {
+    callahan: {
+      label: "Callahan · B2o/S2m34",
+      physics: CALLAHAN,
+      gameplay: callahanGameplay,
+      economy: STABILITY_ECONOMY
+    },
+    bays: {
+      label: "Bays · B2/S35",
+      physics: BAYS,
+      gameplay: baysGameplay,
+      economy: ACTIVITY_ECONOMY
+    },
+    custom: {
+      label: "B/S personalizada",
+      compile: compileTotalistic,
+      defaultNotation: "B2/S35",
+      gameplay: genericGameplay,
+      economy: STABILITY_ECONOMY
+    }
+  };
+  function resolveRuleProfile(id = DEFAULT_RULE, notation) {
+    if (!Object.hasOwn(ruleProfiles, id)) throw new RangeError("Regra desconhecida: " + id);
+    const profile = ruleProfiles[id];
+    const physics = profile.compile ? profile.compile(notation ?? profile.defaultNotation) : profile.physics;
+    if (!physics) throw new RangeError("Regra inválida: " + notation);
+    return {
+      gameplay: genericGameplay,
+      economy: STABILITY_ECONOMY,
+      ...profile,
+      id,
+      physics,
+      key: profile.compile ? id + "/" + physics.notation : id
+    };
+  }
+  function applyRuleProfile(world2, game2, profile, overrides) {
+    world2.rule = profile.id;
+    world2.physics = profile.physics;
+    game2.profile = profile;
+    game2.gameplay = profile.gameplay;
+    game2.economy = { ...STABILITY_ECONOMY, ...profile.economy, ...overrides };
+    game2.init = initialEnergy(game2.economy);
+    game2.bots = [...getBotPlans(game2.gameplay, game2.economy).defaults];
+  }
+
+  // src/match/state.js
+  function createMatchState(world2, { rule, notation, economy } = {}) {
+    const game2 = {
       colors: [
         "#000000",
         "#52e0b4",
@@ -2350,10 +2505,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ],
       symbols: ["", "🦖", "🦊", "🐙", "🦂", "👾", "🤖", "⚪"],
       names: ["", "Você", "Raposa", "Polvo", "Escorpião", "Alien", "Robô"],
-      bots: ["farmer", "cycler", "core", "slow", "diverse"],
       players: [],
-      economy: { ...DEFAULT_ECONOMY },
-      init: initialEnergy(DEFAULT_ECONOMY),
       tax: 0,
       interval: 10,
       average: 0,
@@ -2366,6 +2518,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       nextSpawn: [],
       rngState: 1831565813
     };
+    applyRuleProfile(world2, game2, resolveRuleProfile(rule, notation), economy);
+    return game2;
   }
 
   // src/browser/game.js
@@ -2373,10 +2527,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function attachMatchEffects(handlers) {
     Object.assign(effects, handlers);
   }
-  var game = createMatchState();
+  var game = createMatchState(world);
   var {
-    initRuleTables: initRuleTables2,
-    parseRule: parseRule2,
     addLive,
     stampAdditions,
     applyStamp,
@@ -2395,39 +2547,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var ectx = ev.getContext("2d");
   var gpuCanvas = $("hl-globe-gpu");
   var grid = $("hl-grid");
-
-  // src/bots/configuration-panel.js
-  var plans = [
-    ["farmer", "Expandir colmeias rentáveis e atacar"],
-    ["cycler", "Incursões com glider P4"],
-    ["core", "Guardar para uma colmeia de reserva"],
-    ["slow", "Poupar para cerco · Gun P42"],
-    ["diverse", "Poupar para cerco · Gun P20"]
-  ];
-  function bindBotSelectors() {
-    const bots = $("br-bots");
-    bots.replaceChildren();
-    for (let id = 2; id <= 6; id++) {
-      const label = document.createElement("label");
-      label.className = "br-botlabel";
-      label.textContent = game.symbols[id] + " " + game.names[id];
-      const select = document.createElement("select");
-      select.id = "br-bot-" + id;
-      for (const [value, name] of plans) {
-        const o = document.createElement("option");
-        o.value = value;
-        o.textContent = name;
-        select.append(o);
-      }
-      select.value = game.bots[id - 2];
-      select.onchange = () => {
-        game.bots[id - 2] = select.value;
-        if (game.players[id - 1]) game.players[id - 1].pattern = select.value;
-      };
-      label.append(select);
-      bots.append(label);
-    }
-  }
 
   // src/globe/navigator/surface.js
   var globeTarget = {
@@ -2600,8 +2719,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       [8, 6, 7],
       [9, 8, 1]
     ];
-    const n = 10 * f * f + 2, coords2 = new Float32Array(n * 3), adj = new Uint32Array(n * 6), deg = new Uint8Array(n);
-    const positions = f <= 96 ? new Float64Array(n * 3) : coords2;
+    const n = 10 * f * f + 2, coords = new Float32Array(n * 3), adj = new Uint32Array(n * 6), deg = new Uint8Array(n);
+    const positions = f <= 96 ? new Float64Array(n * 3) : coords;
     const edgeIds = new Int32Array(144 * (f + 1)).fill(-1), baseIds = new Int32Array(12).fill(-1);
     const polygons = f <= 96 ? new Float32Array(n * 18) : null, backSlot = f <= 96 ? new Uint8Array(n * 6) : null, pents = [];
     const edgeKey = (u, v, wv) => u < v ? (u * 12 + v) * (f + 1) + wv : (v * 12 + u) * (f + 1) + f - wv;
@@ -2634,9 +2753,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
             const wa = w / f, wb = i / f, wc = j / f;
             const x = wa * a[0] + wb * b[0] + wc * c[0], y = wa * a[1] + wb * b[1] + wc * c[1], z = wa * a[2] + wb * b[2] + wc * c[2];
             const len2 = Math.hypot(x, y, z), k = id * 3;
-            coords2[k] = positions[k] = x / len2;
-            coords2[k + 1] = positions[k + 1] = y / len2;
-            coords2[k + 2] = positions[k + 2] = z / len2;
+            coords[k] = positions[k] = x / len2;
+            coords[k + 1] = positions[k + 1] = y / len2;
+            coords[k + 2] = positions[k + 2] = z / len2;
           }
           row[j] = id;
         }
@@ -2743,7 +2862,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     let farthest = 0;
     for (let i = 0; i < n; i++) if (distance[i] > distance[farthest]) farthest = i;
     const edges = 3 * n - 6;
-    return { n, f, adj, deg, coords: coords2, polygons, backSlot, pents, distance, nearest, edges, farthest };
+    return { n, f, adj, deg, coords, polygons, backSlot, pents, distance, nearest, edges, farthest };
   }
   function buildSphere(f, onProgress) {
     const stages = sphereStages(f);
@@ -3723,7 +3842,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   // src/map/atlas/visible-region.js
   var atlasCenterScratch = new Float64Array(2);
   function largeAtlasCenter(id, a, margin = 0) {
-    const at2 = 3 * id, c = a.g.coords, x = c[at2], y = c[at2 + 1], z = c[at2 + 2], u = a.up, r = a.right, l = a.look;
+    const at = 3 * id, c = a.g.coords, x = c[at], y = c[at + 1], z = c[at + 2], u = a.up, r = a.right, l = a.look;
     const n = x * u[0] + y * u[1] + z * u[2];
     if (Math.abs(n) > Math.sin(Math.min(Math.PI / 2, a.h / (2 * a.s) + margin)) + 1e-7) return null;
     const lat = Math.asin(clamp(n, -1, 1)), lon = Math.atan2(x * r[0] + y * r[1] + z * r[2], x * l[0] + y * l[1] + z * l[2]);
@@ -4032,25 +4151,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return rings;
   }
 
-  // src/deck/field-kit.js
-  var fieldKit = {
-    stalk: { role: "Economia", use: "Expande a produção. Você pode plantar vários crescedores quando tiver reserva." },
-    glider: { role: "Ataque", use: "Nave P4 de baixo custo para sabotar colmeias e interceptar gliders." },
-    gun20: { role: "Cerco P20", use: "Produz gliders rapidamente; o custo dos projéteis deve ser financiado." },
-    gun42: { role: "Cerco P42", use: "Emite gliders mais lentamente, permitindo cerco econômico prolongado." },
-    p42: { role: "Defesa", use: "Reflete ou perturba gliders conforme orientação e fase." },
-    gun43: { role: "Cerco P43", use: "Emissor de dois pulsos por período completo de 86 gerações." },
-    gun200: { role: "Cerco P200", use: "Arma de cadência baixa e estrutura maior." },
-    gun210: { role: "Cerco P210", use: "Emissor relé com refletores." },
-    gun840: { role: "Cerco P840", use: "Emissor caro de cadência muito baixa." },
-    p15: { role: "Nave P15", use: "Nave móvel para experimentar outra velocidade e geometria de colisão." },
-    p48: { role: "Nave P48", use: "Nave móvel de período longo." },
-    p42rot: { role: "Rotativo", use: "Oscilador rotativo para teste de defesa e colisão; consome energia." },
-    p7a: { role: "Defesa exp.", use: "Oscilador P7; possível obstáculo, com custo operacional." },
-    p66: { role: "Defesa exp.", use: "Oscilador P66; geometria extensa, com custo operacional." },
-    p2: { role: "Flipper exp.", use: "Oscilador mínimo de três células. É deficitário nesta economia." }
-  };
-
   // src/deck/card-icon.js
   function drawDeckIcon(canvas, points) {
     const c = canvas.getContext("2d"), w = canvas.width, h = canvas.height;
@@ -4088,19 +4188,44 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/patterns/editor/saved-patterns.js
+  var scopes = /* @__PURE__ */ new Map();
   var savedPatterns = /* @__PURE__ */ new Map();
+  scopes.set(DEFAULT_RULE, savedPatterns);
+  function useSavedPatterns(key2) {
+    if (!scopes.has(key2)) scopes.set(key2, /* @__PURE__ */ new Map());
+    savedPatterns = scopes.get(key2);
+  }
+
+  // src/deck/cards.js
+  function deckPoints(id) {
+    const saved = savedPatterns.get(id);
+    if (saved) return saved;
+    const pattern = game.gameplay.patterns.find((p) => p.id === id);
+    return pattern ? decodeRLE(pattern.rle) : [];
+  }
 
   // src/deck/slots.js
-  var slotIds = Object.keys(fieldKit);
+  var slotIds = Object.keys(resolveRuleProfile().gameplay.kit);
   var SLOT_COUNT = slotIds.length;
   var selectedSlot = 0;
+  var scope = DEFAULT_RULE;
+  var loadouts = /* @__PURE__ */ new Map();
+  function useSlots(gameplay, key2) {
+    if (key2 === scope) return;
+    loadouts.set(scope, { ids: [...slotIds], selectedSlot });
+    scope = key2;
+    const saved = loadouts.get(key2);
+    slotIds.splice(0, slotIds.length, ...saved?.ids ?? Object.keys(gameplay.kit));
+    SLOT_COUNT = slotIds.length;
+    selectedSlot = saved?.selectedSlot ?? 0;
+  }
   function selectSlot(index) {
     if (!Number.isInteger(index) || index < 0 || index >= SLOT_COUNT) return false;
     selectedSlot = index;
     return true;
   }
-  function assignSlot(index, patternId, allPatterns) {
-    if (!Number.isInteger(index) || index < 0 || index >= SLOT_COUNT || !allPatterns.some((p) => p.id === patternId)) return false;
+  function assignSlot(index, patternId, catalog2) {
+    if (!Number.isInteger(index) || index < 0 || index >= SLOT_COUNT || !catalog2.some((p) => p.id === patternId)) return false;
     slotIds[index] = patternId;
     return true;
   }
@@ -4111,17 +4236,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function requestSlotPicker(slot) {
     slotPicker(slot);
-  }
-
-  // src/deck/cards.js
-  var deckIds = new Set(slotIds);
-  var deckNames = Object.fromEntries(patterns.callahan.map((p) => [p.id, p.name]));
-  deckNames.manual = "Livre";
-  function deckPoints(id) {
-    const saved = savedPatterns.get(id);
-    if (saved) return saved;
-    const pat = patterns.callahan.find((p) => p.id === id);
-    return pat ? decodeRLE(pat.rle) : [];
   }
 
   // src/deck/hand.js
@@ -4153,11 +4267,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         });
       }
       b.dataset.pattern = id;
-      const pts = deckPoints(id), name = deckNames[id] || id;
+      const pts = deckPoints(id), name = game.gameplay.patterns.find((p) => p.id === id)?.name || id;
       const price = energyCost(pts.length, game.economy);
       b.querySelector(".br-stampname").textContent = name;
       b.querySelector(".br-stampprice").textContent = price ? "◈" + price : "◈0";
-      b.title = [name, fieldKit[id]?.use, "Clique nos três pontos para trocar."].filter(Boolean).join(" · ");
+      b.title = [name, game.gameplay.kit[id]?.use, "Clique nos três pontos para trocar."].filter(Boolean).join(" · ");
       drawDeckIcon(b.querySelector("canvas"), pts);
       b.classList.toggle("selected", slot === selectedSlot && id === currentPatternId2);
       b.setAttribute("aria-pressed", String(slot === selectedSlot && id === currentPatternId2));
@@ -4219,28 +4333,28 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/patterns/editor/grid-coordinates.js
-  function readStampOffsets(cells3, size) {
+  function readStampOffsets(cells2, size) {
     const mid = Math.floor(size / 2);
     const origin = mid - Math.floor(mid / 2);
     const offsets = [];
     for (let row = 0; row < size; row++) {
       for (let col = 0; col < size; col++) {
-        if (cells3[row * size + col]) offsets.push([col - Math.floor(row / 2) - origin, row - mid]);
+        if (cells2[row * size + col]) offsets.push([col - Math.floor(row / 2) - origin, row - mid]);
       }
     }
     return offsets;
   }
   function makeStampGrid(size, offsets = []) {
-    const cells3 = new Uint8Array(size * size);
+    const cells2 = new Uint8Array(size * size);
     const mid = Math.floor(size / 2);
     const origin = mid - Math.floor(mid / 2);
     let clipped = 0;
     for (const [q, r] of offsets) {
       const row = mid + r, col = origin + q + Math.floor(row / 2);
-      if (row >= 0 && row < size && col >= 0 && col < size) cells3[row * size + col] = 1;
+      if (row >= 0 && row < size && col >= 0 && col < size) cells2[row * size + col] = 1;
       else clipped++;
     }
-    return { cells: cells3, clipped };
+    return { cells: cells2, clipped };
   }
 
   // src/patterns/editor/fit-pattern.js
@@ -4281,9 +4395,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function newStamp(n, preserve = true) {
     const previous2 = preserve && world.stamp ? stampOffsets() : [];
-    const { cells: cells3, clipped } = makeStampGrid(n, previous2);
+    const { cells: cells2, clipped } = makeStampGrid(n, previous2);
     world.stampN = n;
-    world.stamp = cells3;
+    world.stamp = cells2;
     world.stampCount = 0;
     if (clipped) toast(`Editor reduzido: ${clipped} células ficaram fora da nova grade.`);
     countStamp();
@@ -4303,8 +4417,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function stampTargets(anchor, offsets) {
     const chart = world.chart, side = world.side, graph = world.graph;
     const aq = anchor.q ?? 0, ar = anchor.r ?? 0;
-    const at2 = (q, r) => key(aq + q, ar + r);
-    const origin = anchor.id !== void 0 ? anchor : chart?.map.get(at2(0, 0));
+    const at = (q, r) => key(aq + q, ar + r);
+    const origin = anchor.id !== void 0 ? anchor : chart?.map.get(at(0, 0));
     if (!origin || graph.deg[origin.id] !== 6) return null;
     if (stampGeometry?.graph === graph && stampGeometry.chart === chart && stampGeometry.side === side && stampGeometry.offsets === offsets && stampGeometry.id === origin.id && stampGeometry.ori === origin.ori)
       return stampGeometry.ids;
@@ -4318,7 +4432,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ids: null
     };
     if (chart) {
-      const ids = offsets.map(([q, r]) => chart.map.get(at2(q, r))?.id);
+      const ids = offsets.map(([q, r]) => chart.map.get(at(q, r))?.id);
       if (ids.every((id) => id !== void 0)) return result.ids = ids;
     }
     let q0 = 0, q1 = 0, r0 = 0, r1 = 0, s0 = 0, s1 = 0;
@@ -4331,7 +4445,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       s1 = Math.max(s1, q + r);
     }
     const queue = [{ q: 0, r: 0, id: origin.id, ori: origin.ori }];
-    const local = /* @__PURE__ */ new Map([[at2(0, 0), queue[0]]]), projected = /* @__PURE__ */ new Map();
+    const local = /* @__PURE__ */ new Map([[at(0, 0), queue[0]]]), projected = /* @__PURE__ */ new Map();
     if (chart) for (const [k, c] of chart.map) projected.set(c.id, k);
     for (let head = 0; head < queue.length; head++) {
       const src = queue[head];
@@ -4340,7 +4454,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if (q < q0 || q > q1 || r < r0 || r > r1 || q + r < s0 || q + r > s1) continue;
         const nextPose = stepPose(graph, src.id, src.ori, d, side);
         if (!nextPose) return null;
-        const { id, ori } = nextPose, k = at2(q, r);
+        const { id, ori } = nextPose, k = at(q, r);
         const other = local.get(k) || chart?.map.get(k);
         if (other && (other.id !== id || other.ori !== ori)) return null;
         if (projected.has(id) && projected.get(id) !== k) return null;
@@ -4351,7 +4465,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         queue.push(next);
       }
     }
-    return result.ids = offsets.map(([q, r]) => local.get(at2(q, r)).id);
+    return result.ids = offsets.map(([q, r]) => local.get(at(q, r)).id);
   }
   function clearStampGeometry() {
     stampGeometry = null;
@@ -4615,14 +4729,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       frameLayout.z = z;
       return frameLayout;
     }
-    const cells3 = [];
+    const cells2 = [];
     for (const row of ranges) {
-      row.start = cells3.length;
-      for (let q = row.first; q <= row.last; q++) cells3.push({ q, r: row.r, key: key(q, row.r) });
+      row.start = cells2.length;
+      for (let q = row.first; q <= row.last; q++) cells2.push({ q, r: row.r, key: key(q, row.r) });
     }
-    const firstRow = ranges[0].r, adj = new Int32Array(cells3.length * 6);
-    for (let i = 0; i < cells3.length; i++) {
-      const { q, r } = cells3[i];
+    const firstRow = ranges[0].r, adj = new Int32Array(cells2.length * 6);
+    for (let i = 0; i < cells2.length; i++) {
+      const { q, r } = cells2[i];
       for (let d = 0; d < 6; d++) {
         const row = ranges[r + DIR[d][1] - firstRow], nq = q + DIR[d][0];
         adj[i * 6 + d] = row && nq >= row.first && nq <= row.last ? row.start + nq - row.first : -1;
@@ -4633,7 +4747,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       w,
       h,
       z,
-      cells: cells3,
+      cells: cells2,
       adj,
       ranges,
       origin: middle.start - middle.first,
@@ -4704,12 +4818,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
     }
     if (tail !== ids.length) return finish(null);
-    const map2 = /* @__PURE__ */ new Map();
+    const map = /* @__PURE__ */ new Map();
     for (let i = 0; i < ids.length; i++) {
       const { q, r } = l.cells[i];
-      map2.set(l.cells[i].key, { q, r, id: ids[i], ori: ors[i] });
+      map.set(l.cells[i].key, { q, r, id: ids[i], ori: ors[i] });
     }
-    return finish({ center, orient, map: map2, bad: /* @__PURE__ */ new Set(), limit: { w: l.w, h: l.h } });
+    return finish({ center, orient, map, bad: /* @__PURE__ */ new Set(), limit: { w: l.w, h: l.h } });
   }
   function viewportValid(chart) {
     return !!chart;
@@ -5320,10 +5434,113 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world.needsGrid = false;
   }
 
+  // src/patterns/cycle-economy.js
+  function cycleWindow(pattern) {
+    if (pattern.period > 0) return { length: pattern.period, kind: "period" };
+    if (pattern.emissionWindow) return { length: pattern.emissionWindow, kind: "emission" };
+    return { length: 20, kind: "window" };
+  }
+  var AnalysisLimit = class extends Error {
+  };
+  async function analyzePatternCycles(pattern, economy, { cycles, signal, physics } = {}) {
+    const { length, kind } = cycleWindow(pattern);
+    const defaultCycles = Math.max(24, Math.ceil((pattern.analysisHorizon ?? 160) / length));
+    const maxGenerations = cycles == null ? 8400 : 25200;
+    const observedCycles = Math.max(1, Math.min(Math.floor(cycles ?? defaultCycles), Math.floor(maxGenerations / length)));
+    economy = { ...economy };
+    const { stableAfter } = economy;
+    let ages = seedPatternAges(pattern);
+    const initialCost = energyCost(ages.size, economy);
+    const startingReserve = initialEnergy(economy);
+    const rows2 = [];
+    const unitIncome = new Float64Array(length + 1);
+    const unitUpkeep = new Float64Array(length + 1);
+    let operatingBalance = 0, workingCapital = 0;
+    let firstPositiveCycle = null, profitableFromCycle = null;
+    let paybackGeneration = initialCost === 0 ? 0 : null;
+    let firstErosionGeneration = startingReserve < initialCost ? 0 : null;
+    let work = 0;
+    let lastYield = performance.now();
+    signal?.throwIfAborted();
+    for (let cycle = 1; cycle <= observedCycles; cycle++) {
+      const from = (cycle - 1) * length + 1, to = cycle * length;
+      let births = 0, stableCellTurns = 0, income = 0, upkeep = 0;
+      for (let generation2 = from; generation2 <= to; generation2++) {
+        work += ages.size;
+        if (ages.size > 2e4 || work > 2e7)
+          throw new AnalysisLimit("Análise interrompida na geração " + (generation2 - 1) + " (" + ages.size.toLocaleString("pt-BR") + " células vivas). Limite de simulação do atlas.");
+        const turn = advancePattern(ages, stableAfter, physics);
+        ages = turn.next;
+        births += turn.births;
+        stableCellTurns += turn.mature;
+        const flow = generationEnergy(turn.births, turn.mature, economy);
+        income += flow.income;
+        upkeep += flow.upkeep;
+        const step2 = generation2 - from + 1;
+        const birthsOnly = generationEnergy(turn.births, 0, economy);
+        unitIncome[step2] = unitIncome[step2 - 1] + (turn.mature ? (flow.income - birthsOnly.income) / turn.mature : 0);
+        unitUpkeep[step2] = unitUpkeep[step2 - 1] + (turn.mature ? (flow.upkeep - birthsOnly.upkeep) / turn.mature : 0);
+        operatingBalance += flow.income - flow.upkeep;
+        workingCapital = Math.max(workingCapital, -operatingBalance);
+        if (paybackGeneration === null && operatingBalance >= initialCost) paybackGeneration = generation2;
+        if (firstErosionGeneration === null && startingReserve - initialCost + operatingBalance < -1e-9) {
+          firstErosionGeneration = generation2;
+        }
+        if (performance.now() - lastYield >= 10) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+          signal?.throwIfAborted();
+          lastYield = performance.now();
+        }
+      }
+      let owned = 0, fixedCore = 0, fixedIncome = 0, fixedUpkeep = 0;
+      for (const age of ages.values()) {
+        if (age > 0) owned++;
+        if (age <= length) continue;
+        fixedCore++;
+        const productiveTurns = Math.min(length, Math.max(0, age - Math.max(1, stableAfter) + 1));
+        fixedIncome += unitIncome[length] - unitIncome[length - productiveTurns];
+        fixedUpkeep += unitUpkeep[length] - unitUpkeep[length - productiveTurns];
+      }
+      const net = income - upkeep;
+      if (net > 0) {
+        firstPositiveCycle ?? (firstPositiveCycle = cycle);
+        profitableFromCycle ?? (profitableFromCycle = cycle);
+      } else profitableFromCycle = null;
+      rows2.push({
+        cycle,
+        from,
+        to,
+        births,
+        stableCellTurns,
+        income,
+        upkeep,
+        fixedCore,
+        fixedIncome,
+        fixedUpkeep,
+        net,
+        cumulative: operatingBalance - initialCost,
+        live: owned
+      });
+    }
+    return {
+      cycleLength: length,
+      kind,
+      generations: observedCycles * length,
+      initialCost,
+      workingCapital,
+      firstPositiveCycle,
+      profitableFromCycle,
+      paybackGeneration,
+      firstErosionGeneration,
+      rows: rows2
+    };
+  }
+
   // src/patterns/atlas-cycle-panel.js
   var format = new Intl.NumberFormat("pt-BR");
   var fmt = (n) => format.format(n);
   var signed = (n) => n > 0 ? "+" + fmt(n) : fmt(n);
+  var coreBalance = (row) => row.fixedIncome - row.fixedUpkeep;
   var pending;
   function plot(rows2, unit) {
     const svg = $("br-cycle-plot");
@@ -5366,7 +5583,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         fmt(r.births),
         fmt(r.income),
         fmt(r.upkeep),
-        fmt(r.fixedIncome) + " (" + fmt(r.fixedCore) + " cél.)",
+        fmt(coreBalance(r)) + " (" + fmt(r.fixedCore) + " cél.)",
         signed(r.net),
         signed(r.cumulative)
       ];
@@ -5380,20 +5597,20 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     $("br-cycle-rows").replaceChildren(body);
   }
-  function render(report, economy, pattern) {
+  function render(report, economy, pattern, physics) {
     const { rows: rows2, kind, cycleLength, generations, initialCost, workingCapital, firstErosionGeneration } = report;
     const first = rows2[0], last = rows2.at(-1);
     const unit = kind === "window" ? "Janela" : "Ciclo";
     const interval = unit.toLowerCase();
     const frame2 = kind === "emission" ? "Ciclo nominal do emissor" : kind === "window" ? "Janela de observação" : "Período do padrão";
     $("br-cycle-heading").textContent = (kind === "window" ? "Economia por janela" : "Economia por ciclo") + " · " + pattern.name;
-    $("br-cycle-scope").textContent = frame2 + " de " + fmt(cycleLength) + " gerações · " + fmt(rows2.length) + " " + unit.toLowerCase() + "s · " + fmt(generations) + " gerações simuladas. Estrutura isolada, sem rivais e sem outras fontes de renda do jogador. O cálculo usa malha plana e reserva suficiente para evitar erosão." + (kind === "emission" ? " A conta inclui as naves emitidas." : "");
+    $("br-cycle-scope").textContent = frame2 + " de " + fmt(cycleLength) + " gerações · " + fmt(rows2.length) + " " + unit.toLowerCase() + "s · " + fmt(generations) + " gerações simuladas. " + (physics.tables[6][0][0] ? "Toro hexagonal finito. Células neutras por nascimento espontâneo ficam fora do saldo." : "Estrutura isolada, sem rivais e sem outras fontes de renda do jogador. O cálculo usa malha plana e reserva suficiente para evitar erosão.") + (kind === "emission" ? " A conta inclui as naves emitidas." : "");
     $("br-cycle-stamp").textContent = fmt(initialCost);
     $("br-cycle-capital").textContent = fmt(workingCapital);
     $("br-cycle-positive").textContent = report.firstPositiveCycle === null ? "Nenhum no intervalo" : unit + " " + fmt(report.firstPositiveCycle);
     $("br-cycle-payback").textContent = report.paybackGeneration === null ? "Sem retorno no intervalo" : "Geração " + fmt(report.paybackGeneration);
-    const charge = rows2.every((row) => row.upkeep === first.upkeep) ? "Os nascimentos custaram " + fmt(first.upkeep) + " de energia por " + interval + "." : "Os nascimentos custaram " + fmt(first.upkeep) + " no primeiro intervalo e " + fmt(last.upkeep) + " no último.";
-    const core = rows2.every((row) => row.fixedIncome === first.fixedIncome) ? " O núcleo produziu " + fmt(first.fixedIncome) + " por " + interval + "." : " A produção do núcleo passou de " + fmt(first.fixedIncome) + " para " + fmt(last.fixedIncome) + ".";
+    const charge = rows2.every((row) => row.upkeep === first.upkeep) ? "O custo operacional foi de " + fmt(first.upkeep) + " de energia por " + interval + "." : "O custo operacional foi de " + fmt(first.upkeep) + " no primeiro intervalo e " + fmt(last.upkeep) + " no último.";
+    const core = rows2.every((row) => coreBalance(row) === coreBalance(first)) ? " O saldo do núcleo foi de " + fmt(coreBalance(first)) + " por " + interval + "." : " O saldo do núcleo passou de " + fmt(coreBalance(first)) + " para " + fmt(coreBalance(last)) + ".";
     const positive = report.profitableFromCycle;
     const streak = positive === null ? "" : positive === 1 ? " Todos os intervalos deram saldo positivo." : positive === last.cycle ? " O último intervalo deu saldo positivo." : " O saldo ficou positivo do " + positive + "º ao " + last.cycle + "º intervalo.";
     $("br-cycle-trend").textContent = charge + core + streak;
@@ -5409,7 +5626,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function cancelCycleAnalysis() {
     pending?.abort();
   }
-  async function showCycleAnalysis(pattern, economy) {
+  async function showCycleAnalysis(pattern, economy, physics) {
     cancelCycleAnalysis();
     const controller = new AbortController();
     pending = controller;
@@ -5419,15 +5636,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     $("br-cycle-report").hidden = true;
     const settings = { ...economy };
     try {
-      const report = await analyzePatternCycles(pattern, settings, { signal: controller.signal });
+      const report = await analyzePatternCycles(pattern, settings, { signal: controller.signal, physics });
       if (!controller.signal.aborted) {
-        render(report, settings, pattern);
+        render(report, settings, pattern, physics);
         if (document.activeElement === $("br-cycle-heading")) $("br-cycle-heading").scrollIntoView({ block: "start" });
       }
     } catch (error) {
       if (!controller.signal.aborted) {
-        $("br-cycle-scope").textContent = "Não foi possível calcular a economia deste padrão.";
-        console.error(error);
+        $("br-cycle-scope").textContent = error instanceof AnalysisLimit ? error.message : "Não foi possível calcular a economia deste padrão.";
+        if (!(error instanceof AnalysisLimit)) console.error(error);
       }
     } finally {
       if (pending === controller) {
@@ -5441,7 +5658,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var currentPatternId = slotIds[0];
   function loadPattern(id) {
     currentPatternId = id;
-    const pat = patterns[world.rule].find((p) => p.id === id);
+    const pat = game.gameplay.patterns.find((p) => p.id === id);
     const previous2 = savedPatterns.get(id);
     if (previous2?.length) stampFromPoints(previous2);
     else if (pat) stampFromPoints(decodeRLE(pat.rle));
@@ -5471,44 +5688,29 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/patterns/atlas-browser.js
-  var catalog = patterns.callahan.filter((p) => p.group);
-  var map = new Map(catalog.map((p) => [p.id, p]));
+  var catalog = [];
   var targetSlot = 0;
   var current = null;
-  var cells2 = /* @__PURE__ */ new Set();
-  var previous = /* @__PURE__ */ new Set();
+  var cells = /* @__PURE__ */ new Map();
+  var previous = /* @__PURE__ */ new Map();
   var generation = 0;
   var timer = null;
   var cycleTimer = null;
-  var at = (q, r) => q + "," + r;
-  var coords = (s) => s.split(",").map(Number);
   var fmt2 = (v) => Number(v || 0).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
   var el = (id) => $(id);
   function step(paint = true) {
-    if (cells2.size > 2e4) {
+    if (cells.size > 2e4) {
       stop();
       return;
     }
-    previous = cells2;
-    const candidate = new Set(cells2);
-    for (const pos of cells2) {
-      const [q, r] = coords(pos);
-      for (const [dq, dr] of DIR) candidate.add(at(q + dq, r + dr));
-    }
-    const next = /* @__PURE__ */ new Set();
-    for (const pos of candidate) {
-      const [q, r] = coords(pos);
-      let bits = 0;
-      for (let k = 0; k < 6; k++) if (cells2.has(at(q + DIR[k][0], r + DIR[k][1]))) bits |= 1 << k;
-      if ((cells2.has(pos) ? world.callSurv6 : world.callBirth6)[bits]) next.add(pos);
-    }
-    cells2 = next;
+    previous = cells;
+    cells = advancePattern(cells, 1, world.physics).next;
     generation++;
     if (paint) draw();
   }
   function reset() {
-    cells2 = new Set(decodeRLE(current?.rle || "!").map(([q, r]) => at(q, r)));
-    previous = new Set(cells2);
+    cells = seedPatternAges(current ?? { rle: "!" });
+    previous = cells;
     generation = 0;
     draw();
   }
@@ -5521,8 +5723,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const end = generation + cycleWindow(current).length;
     const run = () => {
       const until = performance.now() + 8;
-      while (generation < end && cells2.size <= 2e4 && performance.now() < until) step(false);
-      if (generation === end || cells2.size > 2e4) {
+      while (generation < end && cells.size <= 2e4 && performance.now() < until) step(false);
+      if (generation === end || cells.size > 2e4) {
         stop();
         draw();
         return;
@@ -5549,7 +5751,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     el("br-atlas-play").textContent = "⏸ Pausar";
     timer = setInterval(() => {
       step();
-      if (cells2.size > 2e4 || !cells2.size || generation > 1800) stop();
+      if (cells.size > 2e4 || !cells.size && !world.physics.tables[6][0][0] || generation > 1800) stop();
     }, 170);
   }
   function choose(p) {
@@ -5559,7 +5761,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     renderList();
     el("br-atlas-name").textContent = p.name;
     el("br-atlas-label").textContent = p.period ? "P" + p.period : p.group;
-    el("br-atlas-description").textContent = p.group + " · " + p.cells + " células iniciais · " + p.origin + ". A prévia usa a mesma regra Callahan da partida e não modifica seu mundo.";
+    el("br-atlas-description").textContent = [
+      p.group,
+      p.cells + " células iniciais",
+      p.origin,
+      world.physics.tables[6][0][0] ? "Toro finito · cinza = neutras" : ""
+    ].filter(Boolean).join(" · ");
     renderProperties(p);
   }
   function renderProperties(p) {
@@ -5568,7 +5775,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ["Células iniciais", fmt2(p.cells)],
       ["Custo atual", fmt2(p.cells * game.economy.stampCost) + " energia"],
       [kind === "emission" ? "Período nominal do emissor" : kind === "window" ? "Janela de observação" : "Período", length + " ger."],
-      ...p.period ? [
+      ...p.period && Number.isFinite(p.birthsCycle) ? [
         ["Nascimentos / ciclo", fmt2(p.birthsCycle)],
         ["Mortes / ciclo", fmt2(p.deathsCycle)],
         ["Núcleo sempre vivo", fmt2(p.stableCore)],
@@ -5585,7 +5792,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       box.append(a, b);
       el("br-atlas-metrics").append(box);
     }
-    showCycleAnalysis(p, game.economy);
+    showCycleAnalysis(p, game.economy, world.physics);
   }
   function renderList() {
     const query = el("br-atlas-query").value.trim().toLowerCase(), group = el("br-atlas-class").value, sort = el("br-atlas-order").value;
@@ -5620,7 +5827,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.fillStyle = "#0b1929";
     c.fillRect(0, 0, w, h);
-    const visible = /* @__PURE__ */ new Set([...cells2, ...previous]);
+    el("br-atlas-gen").textContent = "Geração " + generation;
+    const visible = /* @__PURE__ */ new Set([...cells.keys(), ...previous.keys()]);
     if (!visible.size) {
       c.fillStyle = "#accbd4";
       c.fillText("Sem células vivas", 20, 24);
@@ -5628,7 +5836,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     let left = Infinity, right = -Infinity, top = Infinity, bottom = -Infinity;
     for (const pos of visible) {
-      const [q, r] = coords(pos), x = Math.sqrt(3) * (q + r / 2), y = 1.5 * r;
+      const [q, r] = patternOffset(pos), x = Math.sqrt(3) * (q + r / 2), y = 1.5 * r;
       left = Math.min(left, x);
       right = Math.max(right, x);
       top = Math.min(top, y);
@@ -5636,8 +5844,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     const size = Math.min(24, (w - 42) / (right - left + 3), (h - 42) / (bottom - top + 3));
     const cx = w / 2 - (left + right) * size / 2, cy = h / 2 - (top + bottom) * size / 2;
-    const hex = (x, y, color, stroke) => {
-      const a = coords(x), px = cx + Math.sqrt(3) * (a[0] + a[1] / 2) * size, py = cy + 1.5 * a[1] * size;
+    const hex = (position, color) => {
+      const a = patternOffset(position), px = cx + Math.sqrt(3) * (a[0] + a[1] / 2) * size, py = cy + 1.5 * a[1] * size;
       if (px < 0 || px > w || py < 0 || py > h) return;
       c.beginPath();
       for (let k = 0; k < 6; k++) {
@@ -5646,27 +5854,43 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         else c.moveTo(xp, yp);
       }
       c.closePath();
-      if (color) {
-        c.fillStyle = color;
-        c.fill();
-      }
+      c.fillStyle = color;
+      c.fill();
       c.lineWidth = 1;
-      c.strokeStyle = stroke || "#2b5765";
+      c.strokeStyle = "#2b5765";
       c.stroke();
     };
-    for (const pos of previous) if (!cells2.has(pos)) hex(pos, null, "#e57869", void 0);
-    for (const pos of cells2) hex(pos, null, previous.has(pos) ? "#9bdc83" : "#63e2c7");
-    const born = [...cells2].filter((p) => !previous.has(p)).length;
-    const deaths = [...previous].filter((p) => !cells2.has(p)).length;
+    for (const pos of previous.keys()) if (!cells.has(pos)) hex(pos, "#e57869");
+    for (const pos of cells.keys()) hex(pos, cells.get(pos) < 0 ? "#758597" : previous.has(pos) ? "#9bdc83" : "#63e2c7");
+    const born = [...cells.keys()].filter((p) => !previous.has(p)).length;
+    const deaths = [...previous.keys()].filter((p) => !cells.has(p)).length;
     c.font = "12px system-ui";
     c.fillStyle = "#9db9ca";
-    c.fillText("Vivas " + cells2.size + "   +" + born + " nascimentos   −" + deaths + " mortes", 12, 18);
-    el("br-atlas-gen").textContent = "Geração " + generation;
+    c.fillText("Vivas " + cells.size + "   +" + born + " nascimentos   −" + deaths + " mortes", 12, 18);
+  }
+  function syncAtlasCatalog(gameplay) {
+    const dialog = el("br-atlas-dialog");
+    if (dialog.open) dialog.close();
+    stop();
+    cancelCycleAnalysis();
+    current = null;
+    catalog = (gameplay.atlas ?? gameplay.patterns).map((p) => ({
+      ...p,
+      group: p.group || "semente",
+      cells: p.cells ?? decodeRLE(p.rle).length
+    }));
+    el("br-atlas-heading").textContent = "Atlas · " + game.profile.label + " · " + catalog.length + " estruturas";
+    el("br-atlas-query").value = "";
+    const groups = el("br-atlas-class");
+    groups.replaceChildren(new Option("Todos", ""));
+    for (const group of new Set(catalog.map((p) => p.group))) groups.add(new Option(group, group));
+    el("br-open-atlas").disabled = !catalog.length;
   }
   function openAtlasBrowser(slot = 0) {
+    if (!catalog.length) return;
     targetSlot = slot;
     el("br-atlas-slot-label").textContent = "Slot " + (slot + 1) + " · trocar padrão";
-    if (!current || current.id !== slotIds[slot]) choose(map.get(slotIds[slot]) || catalog[0]);
+    if (!current || current.id !== slotIds[slot]) choose(catalog.find((p) => p.id === slotIds[slot]) || catalog[0]);
     else renderProperties(current);
     renderList();
     const dialog = el("br-atlas-dialog");
@@ -5815,8 +6039,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function updateEnergyPanel() {
     const human = game.players[0];
     if (!human) return;
+    const { generationQuote, policy } = game.economy;
+    const activity = policy === "activity";
+    $("eco-mature-label").textContent = generationQuote ? "Tarifa por célula madura" : activity ? "Custo por célula madura" : "Renda por célula madura";
+    $("eco-birth-label").textContent = generationQuote ? "Tarifa por nascimento" : activity ? "Renda por nascimento" : "Custo por nascimento";
     for (const [key2, id] of Object.entries(controls)) {
       const slider = $(id);
+      if (game.economy[key2] > Number(slider.max)) slider.max = String(game.economy[key2]);
       if (slider.value !== String(game.economy[key2])) slider.value = String(game.economy[key2]);
       $(id + "-val").textContent = compact(game.economy[key2]);
     }
@@ -6644,8 +6873,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world.actual = 0;
     world.statCount = 0;
     game.rngState = 1831565813;
-    world.rule = "callahan";
-    $("hl-rulechoice").value = "callahan";
     world.matchStarted = false;
     game.winner = 0;
     game.ended = false;
@@ -6678,41 +6905,128 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     toast("Seis jogadores · " + game.init + " de energia inicial cada.");
   }
 
-  // src/match/controls/rule.js
-  function chooseRule(rule) {
-    world.rule = rule;
-    if (rule === "bays") parseRule2("B2/S35");
-    if (rule === "custom") parseRule2($("hl-rule").value);
-    $("hl-ruleconfig").classList.toggle("show", rule === "custom");
-    $("hl-rulehelp").textContent = rule === "bays" ? "B2/S35: 2 vizinhos para nascer; 3 ou 5 para sobreviver." : rule === "callahan" ? "B2o/S2m34: considera a posição dos vizinhos. Generalizada nos pentágonos por ciclo de 5 vizinhos." : "B/S por contagem de 0 a 6 vizinhos.";
+  // src/bots/configuration-panel.js
+  function bindBotSelectors() {
+    const { choices } = getBotPlans(game.gameplay, game.economy);
+    const bots = $("br-bots");
+    bots.replaceChildren();
+    for (let id = 2; id <= 6; id++) {
+      const label = document.createElement("label");
+      label.className = "br-botlabel";
+      label.textContent = game.symbols[id] + " " + game.names[id];
+      const select = document.createElement("select");
+      select.id = "br-bot-" + id;
+      for (const [value, name] of choices) {
+        const o = document.createElement("option");
+        o.value = value;
+        o.textContent = name;
+        select.append(o);
+      }
+      select.value = game.bots[id - 2];
+      select.onchange = () => {
+        game.bots[id - 2] = select.value;
+        if (game.players[id - 1]) game.players[id - 1].pattern = select.value;
+      };
+      label.append(select);
+      bots.append(label);
+    }
+  }
+
+  // src/patterns/editor/tabs.js
+  function bindPatternTabs() {
+    const tab = $("br-tabs");
+    tab.replaceChildren();
+    for (const p of game.gameplay.patterns) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = p.name;
+      button.dataset.pattern = p.id;
+      button.onclick = () => {
+        loadPattern(p.id);
+        $("hl-pattern").value = p.id;
+        refreshTabs();
+      };
+      tab.append(button);
+    }
+    const free = document.createElement("button");
+    free.type = "button";
+    free.textContent = "Livre";
+    free.onclick = () => loadPattern("manual");
+    tab.append(free);
+  }
+
+  // src/patterns/editor/gameplay-controls.js
+  function syncGameplayControls(gameplay, scopeKey) {
+    useSlots(gameplay, scopeKey);
+    useSavedPatterns(scopeKey);
+    syncAtlasCatalog(gameplay);
     const select = $("hl-pattern");
     select.replaceChildren();
-    for (const p of patterns[rule]) {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = p.name;
-      select.add(opt);
-    }
-    const custom = document.createElement("option");
-    custom.value = "manual";
-    custom.textContent = "Desenho livre";
-    select.add(custom);
-    select.value = patterns[rule][0]?.id || "manual";
-    loadPattern(select.value);
-    clearCells();
+    for (const p of gameplay.patterns) select.add(new Option(p.name, p.id));
+    select.add(new Option("Desenho livre", "manual"));
+    bindPatternTabs();
+    bindBotSelectors();
+    loadPattern(slotIds[selectedSlot] ?? "manual");
   }
-  function bindRuleChoice() {
-    $("hl-rulechoice").onchange = () => {
-      chooseRule("callahan");
+
+  // src/match/controls/rule.js
+  var savedNotations = /* @__PURE__ */ new Map();
+  function syncRuleControls() {
+    const profile = game.profile;
+    $("hl-rulechoice").value = profile.id;
+    $("hl-ruleconfig").classList.toggle("show", !!profile.compile);
+    $("hl-rule-error").textContent = "";
+    $("hl-rule").removeAttribute("aria-invalid");
+    if (profile.compile) {
+      $("hl-rule").value = profile.physics.notation;
+      savedNotations.set(profile.id, profile.physics.notation);
+    }
+    const selector = $("br-economy-policy");
+    selector.querySelector('[value="profile"]')?.remove();
+    if (profile.economy.generationQuote) selector.add(new Option("Do autômato", "profile"));
+    selector.value = game.economy.generationQuote ? "profile" : game.economy.policy;
+    syncGameplayControls(game.gameplay, profile.key);
+  }
+  function chooseRule(id, notation) {
+    const input = $("hl-rule");
+    let profile;
+    try {
+      profile = resolveRuleProfile(id, notation ?? savedNotations.get(id));
+    } catch (error) {
+      if (!(error instanceof RangeError)) throw error;
+      $("hl-rulechoice").value = game.profile.id;
+      input.setAttribute("aria-invalid", "true");
+      $("hl-rule-error").textContent = "Use B…/S… com contagens de 0 a 6.";
+      return false;
+    }
+    if (profile.key !== game.profile.key) {
+      applyRuleProfile(world, game, profile);
+      syncRuleControls();
+      resetGame();
+    } else {
+      if (profile.compile) input.value = profile.physics.notation;
+      input.removeAttribute("aria-invalid");
+      $("hl-rule-error").textContent = "";
+    }
+    return true;
+  }
+  function bindRuleControls() {
+    const rule = $("hl-rulechoice");
+    for (const [id, profile] of Object.entries(ruleProfiles)) rule.add(new Option(profile.label, id));
+    rule.onchange = () => chooseRule(rule.value);
+    $("hl-rule").onchange = (event) => chooseRule(rule.value, event.target.value);
+    $("br-economy-policy").onchange = (event) => {
+      const policy = event.target.value;
+      const profilePolicy = game.profile.economy;
+      applyRuleProfile(world, game, game.profile, {
+        ...game.economy,
+        policy: policy === "profile" ? profilePolicy.policy ?? "stability" : policy,
+        generationQuote: policy === "profile" ? profilePolicy.generationQuote : void 0
+      });
+      syncRuleControls();
       resetGame();
     };
-  }
-  function bindRuleInput() {
-    $("hl-rule").onchange = (e) => {
-      const ok = parseRule2(e.target.value);
-      e.target.style.borderColor = ok ? "#3b4d63" : "#ed7676";
-      if (ok && world.rule === "custom") clearCells();
-    };
+    syncRuleControls();
   }
 
   // src/match/controls/opening.js
@@ -6720,7 +7034,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const player = game.players[0];
     if (player?.stamps) return true;
     if (player && plantFounder(world, game, player, commitStamp)) return true;
-    toast("Para começar, financie o crescedor de 36 células ou carimbe sua abertura no mapa.");
+    toast("Carimbe sua abertura no mapa para começar.");
     return false;
   }
 
@@ -6766,7 +7080,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/patterns/editor/presets.js
   function preset(type) {
-    markEdited();
     const n = world.stampN, mid = Math.floor(n / 2), a = world.stamp;
     a.fill(0);
     if (type === "ring")
@@ -6777,6 +7090,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (type === "line") for (let c = 1; c < n - 1; c++) a[mid * n + c] = 1;
     if (type === "noise") for (let i = 0; i < a.length; i++) a[i] = Math.random() < 0.27 ? 1 : 0;
     countStamp();
+    markEdited();
     world.needsEditor = true;
     markRender();
   }
@@ -6873,38 +7187,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       world.editorDrag = null;
       world.hover = null;
     });
-  }
-
-  // src/patterns/editor/tabs.js
-  function bindPatternTabs() {
-    const tab = $("br-tabs");
-    tab.replaceChildren();
-    const names = {
-      osc42: "P42",
-      osc66: "P66",
-      osc9: "P9",
-      osc14: "P14",
-      osc18: "P18",
-      gun: "Glider gun",
-      glider: "Glider"
-    };
-    for (const p of patterns.callahan) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.textContent = names[p.id] || p.name;
-      button.dataset.pattern = p.id;
-      button.onclick = () => {
-        loadPattern(p.id);
-        $("hl-pattern").value = p.id;
-        refreshTabs();
-      };
-      tab.append(button);
-    }
-    const free = document.createElement("button");
-    free.type = "button";
-    free.textContent = "Livre";
-    free.onclick = () => loadPattern("manual");
-    tab.append(free);
   }
 
   // src/world/load-planet.js
@@ -7128,35 +7410,26 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/start.js
   attachMatchEffects(browserMatchEffects);
-  initRuleTables2();
-  parseRule2("B2/S35");
   newStamp(11, false);
   bindMapGestures();
   bindEditorGestures();
   bindTurnControls();
   bindMapControls();
   bindWorldSize();
-  bindRuleChoice();
   bindStampControls();
-  bindRuleInput();
   observeCanvasSizes();
   setupRealLayout();
   newWorld(Number($("hl-frequency").value));
-  chooseRule("callahan");
   bindWireBenchmark();
   bindLayoutControls();
-  bindPatternTabs();
   bindAtlasBrowser();
   buildDeckConfig();
-  bindBotSelectors();
   $("br-reset").onclick = resetGame;
   bindTuning();
   bindEnergyPanel();
   bindPlayerFollow();
-  $("hl-pattern").addEventListener("change", refreshTabs);
-  loadPattern(slotIds[0]);
+  bindRuleControls();
   resetGame();
-  refreshTabs();
   requestAnimationFrame(frame);
   exposeSphereLab();
 })();

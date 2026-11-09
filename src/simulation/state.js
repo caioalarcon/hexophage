@@ -22,13 +22,8 @@ export function createSimulationState() {
     epoch: 0,
     gen: 0,
     evaluated: 0,
-    rule: 'bays',
-    birth: new Uint8Array(7),
-    survival: new Uint8Array(7),
-    callBirth6: new Uint8Array(64),
-    callSurv6: new Uint8Array(64),
-    callBirth5: new Uint8Array(32),
-    callSurv5: new Uint8Array(32),
+    rule: null,
+    physics: null,
     statCount: 0,
   };
 }

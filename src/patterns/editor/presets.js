@@ -5,7 +5,6 @@ import { countStamp } from './stamp-grid.js';
 import { DIR } from '../../world/geometry.js';
 
 function preset(type) {
-  markEdited();
   const n = world.stampN,
     mid = Math.floor(n / 2),
     a = world.stamp;
@@ -19,6 +18,7 @@ function preset(type) {
   if (type === 'line') for (let c = 1; c < n - 1; c++) a[mid * n + c] = 1;
   if (type === 'noise') for (let i = 0; i < a.length; i++) a[i] = Math.random() < 0.27 ? 1 : 0;
   countStamp();
+  markEdited();
   world.needsEditor = true;
   markRender();
 }
