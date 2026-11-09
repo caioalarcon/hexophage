@@ -35,7 +35,7 @@ export function createBoard(canvas,atlas,graph){
       path.closePath();patch.push({i,path});projected.push([i,x,y]);
     }
   }
-  function draw(match,center,zoom,ghost=[],valid=true,trail,byRule=false){
+  function draw(match,center,zoom,ghost=[],valid=true,trail,byRule=false,contestSite){
     const {ctx,width:w,height:h}=dimensions(canvas);
     if(!w||!h)return;
     if(focus!==center||scale!==zoom||width!==w||height!==h)layout(center,zoom,w,h);
@@ -46,6 +46,7 @@ export function createBoard(canvas,atlas,graph){
       ctx.fillStyle=c?fill(c):(graph.deg[i]===5?'#294652':'#142b35');
       ctx.fill(path);
       ctx.strokeStyle=c && (c.wave || byRule)?colors[c.owner]:outline[c?.resolver]??'#26414a';ctx.lineWidth=c && (c.wave || byRule)?1.4:.65;ctx.stroke(path);
+      if(i===contestSite){ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.stroke(path);}
       if(marks.has(i)){ctx.fillStyle=valid?'#8af9e366':'#ff726a66';ctx.fill(path);ctx.strokeStyle=valid?'#b5ffe9':'#ff857d';ctx.lineWidth=1.7;ctx.stroke(path);}
     }
     const {ctx:g,width:aw,height:ah}=dimensions(atlas);g.clearRect(0,0,aw,ah);

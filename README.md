@@ -58,7 +58,7 @@ The main game uses one automaton per match. The sparse planar atlas measures iso
 
 ## Mixed-physics matches
 
-**Partida e bots → Mundo misto** opens a playable match with one shared treasury per player. Each stamp carries its own rule, orientation and conflict policy. Pick a pattern from the 409-card atlas, change its inherited rule independently and save the combination in your hand. The orbital patrol and planetary shock scenarios reproduce paid orders from the experiments. [Play the mixed world](experiments/typed-world/index.html) · [Experiments, precedence and tariffs](experiments/typed-world/README.md).
+**Partida e bots → Mundo misto** opens a playable match with one shared treasury per player. Each stamp carries its own rule, orientation and conflict policy. Pick a pattern from the 409-card atlas, change its inherited rule independently and save the combination in your hand. The nine-rule frontier puts all nine automata in every portfolio. Inspect a contested site to see the inherited ballots and its funded occupant, or edit the complete rule-to-rule precedence matrix. [Nine-rule arbitration experiments](experiments/typed-world/general/README.md). [Play the mixed world](experiments/typed-world/index.html) · [Experiments, precedence and tariffs](experiments/typed-world/README.md).
 
 ## An isolated match
 

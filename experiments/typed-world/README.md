@@ -4,6 +4,10 @@
 
 O carimbo identifica o desenho, a orientação, o autômato e o resolutor. Os descendentes herdam o dono, o autômato e o resolutor. Uma fazenda e uma nave de um único jogador podem seguir físicas diferentes e pagar tudo da mesma carteira. O seletor oferece os 409 desenhos do atlas e as nove físicas. Ao selecionar um desenho, a interface sugere sua física de origem. Você pode trocar o autômato antes de plantar e guardar a combinação no navegador.
 
+## Nove físicas simultâneas
+
+Na fronteira, cada jogador planta carimbos dos nove autômatos. O site permite trocar o árbitro, editar a matriz 9 × 9 ou dar a cada linhagem um voto herdado. A inspeção mostra as candidaturas, a eleição e o ocupante financiado. [Abrir uma disputa real com três vitórias por 2 a 1](index.html?scene=all&arb=ballot&seed=33&g=14&site=1781) · [Precedência, ciclos e os dez árbitros](general/README.md) · [Liga com 7.776 partidas](general/LEAGUE.md)
+
 ## Experimentar
 
 | Cenário | O que observar |
@@ -18,7 +22,7 @@ O carimbo identifica o desenho, a orientação, o autômato e o resolutor. Os de
 
 Os preços e a condição de vitória se aplicam em **Iniciar cenário**. Controles de dois e três jogadores usam a mesma regra de cobrança. Em **Cor**, escolha jogador ou autômato. No confronto glider × crescedor, as duas regras têm cores próprias e o contorno identifica o dono. O violeta identifica a onda e o contorno conserva a cor do patrocinador. O mapa do planeta registra todos os locais por onde a onda já passou.
 
-## Precedência na mesma geração
+## Precedência na configuração original
 
 1. Cada sítio lê os vizinhos do instante anterior. Uma residente testa sobrevivência com sua própria tabela, orientada pelos cinco ou seis vizinhos reais do sítio. Para nascimento, cada tipo com pelo menos um pai local pode apresentar uma proposta sob sua própria física. Em contato e guarda, a máscara inclui os vizinhos materiais. A travessia lê apenas a sua linhagem e se mantém invisível aos tipos materiais até uma disputa de espaço.
 2. Uma residente material que sobrevive mantém seu lugar contra nascimentos materiais. Uma fase pode sobrescrever uma inimiga. A guarda que sobrevive e tem pelo menos dois apoios de sua linhagem resiste à travessia. Na onda, penetrar essa guarda custa o multiplicador configurado. A travessia preserva aliados. A onda pode atingir ambos os lados.

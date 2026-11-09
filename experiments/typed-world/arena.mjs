@@ -1,3 +1,5 @@
+import {prepareEcologyWitness} from './general/ecology-replay.mjs';
+import {prepareAllRules,prepareNineFarms} from './general/scene.mjs';
 import {buildSphere} from '../../src/world/sphere.js';
 import {createTypedWorld} from './engine.mjs';
 import {blastScene} from './blast-scene.mjs';
@@ -5,19 +7,23 @@ import {orbitScene,openOrbit} from './duels-orbit-scene.mjs';
 import {footprint} from './catalog.mjs';
 import {poses} from './duels-fixtures.mjs';
 
-export const sceneNames={blast:'Antimatéria × fazenda',engulf:'O último a ser engolido',recovery:'Financiar e reconstruir',orbit:'Patrulha orbital',cross:'Glider × crescedor inimigo',ally:'Glider × crescedor aliado',portfolio:'Uma carteira, duas físicas',arena:'Duelo de carteiras',blank:'Mundo vazio'};
+export const sceneNames={all:'Nove autômatos · fronteiras',physical:'Ciclo de três físicas aliadas',coexist:'Nove autômatos · coexistência',blast:'Antimatéria × fazenda',engulf:'O último a ser engolido',recovery:'Financiar e reconstruir',orbit:'Patrulha orbital',cross:'Glider × crescedor inimigo',ally:'Glider × crescedor aliado',portfolio:'Uma carteira, duas físicas',arena:'Duelo de carteiras',blank:'Mundo vazio'};
 
 export const isCrossing=scene=>scene==='cross'||scene==='ally';
 
 export function defaultsFor(scene){
-  return {F:isCrossing(scene)?48:scene==='engulf'?16:scene==='orbit'?24:32,bank:({engulf:1e6,orbit:240,portfolio:160,cross:16384,ally:16384})[scene]??3200,
-    finish:['blast','engulf','recovery','orbit','portfolio','cross','ally','blank'].includes(scene)?'observe':'field',
+  return {F:isCrossing(scene)?48:['engulf','all'].includes(scene)?16:scene==='orbit'?24:32,bank:({all:16000,coexist:1600,physical:16000,engulf:1e6,orbit:240,portfolio:160,cross:16384,ally:16384})[scene]??3200,
+    finish:['blast','engulf','recovery','orbit','portfolio','cross','ally','blank','all','coexist','physical'].includes(scene)?'observe':'field',
     drive:scene==='arena'?'both':'manual',protectedMature:scene==='recovery'?12:0,phasePriority:['orbit','cross','ally'].includes(scene)?1:0};
 }
-export function prepareArena({scene='blast',F=defaultsFor(scene).F,bank=defaultsFor(scene).bank,seed=scene==='orbit'?23:isCrossing(scene)?18457:1,economy={},farm=true,swapFarms=false}={}) {
-  const graph=buildSphere(F), plan=blastScene(graph);
+export function prepareArena({scene='blast',F=defaultsFor(scene).F,bank=defaultsFor(scene).bank,seed=scene==='physical'?632:scene==='orbit'?23:isCrossing(scene)?18457:1,economy={},farm=true,swapFarms=false,...engineOptions}={}) {
+  const graph=buildSphere(F);
+  if(scene==='physical')return {scene,...prepareEcologyWitness(graph,{seed,bank,economy,...engineOptions})};
+  if(scene==='coexist')return {scene,...prepareNineFarms(graph,{seed,bank,economy,...engineOptions})};
+  if(scene==='all')return {scene,...prepareAllRules(graph,{seed,bank,economy,...engineOptions})};
+  const plan=blastScene(graph);
   const wallets=scene==='engulf'?[bank,10000,10000]:['blast','recovery'].includes(scene)?[bank,10000]:scene==='orbit'?[bank,24000]:[bank,bank];
-  const match=createTypedWorld(graph,{seed,wallets,economy:{phasePriority:defaultsFor(scene).phasePriority,protectedMature:defaultsFor(scene).protectedMature,...economy}});
+  const match=createTypedWorld(graph,{...engineOptions,seed,wallets,economy:{phasePriority:defaultsFor(scene).phasePriority,protectedMature:defaultsFor(scene).protectedMature,...economy}});
   if(scene==='orbit'){
     const lane=orbitScene(graph), restock=openOrbit(match,lane,farm);
     return {match,graph,anchor:lane.launchSite,remote:lane.sponsorSite,period:lane.period,restock};

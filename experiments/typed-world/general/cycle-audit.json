@@ -1,0 +1,387 @@
+{
+  "horizon": 64,
+  "summaries": [
+    {
+      "mode": "majority",
+      "split": "discovery",
+      "worlds": 64,
+      "contests": 107677,
+      "threeTypes": 2500,
+      "topCycles": 81,
+      "strictTopTriangles": 1,
+      "strictWorlds": 1
+    },
+    {
+      "mode": "majority",
+      "split": "confirmation",
+      "worlds": 64,
+      "contests": 104485,
+      "threeTypes": 2340,
+      "topCycles": 68,
+      "strictTopTriangles": 0,
+      "strictWorlds": 0
+    },
+    {
+      "mode": "ballot",
+      "split": "discovery",
+      "worlds": 64,
+      "contests": 106613,
+      "threeTypes": 2423,
+      "topCycles": 13,
+      "strictTopTriangles": 1,
+      "strictWorlds": 1
+    },
+    {
+      "mode": "ballot",
+      "split": "confirmation",
+      "worlds": 64,
+      "contests": 104305,
+      "threeTypes": 2386,
+      "topCycles": 6,
+      "strictTopTriangles": 0,
+      "strictWorlds": 0
+    },
+    {
+      "mode": "ecology",
+      "split": "discovery",
+      "worlds": 64,
+      "contests": 112375,
+      "threeTypes": 2794,
+      "topCycles": 21,
+      "strictTopTriangles": 0,
+      "strictWorlds": 0
+    },
+    {
+      "mode": "ecology",
+      "split": "confirmation",
+      "worlds": 64,
+      "contests": 110649,
+      "threeTypes": 2864,
+      "topCycles": 19,
+      "strictTopTriangles": 0,
+      "strictWorlds": 0
+    }
+  ],
+  "examples": {
+    "majority/discovery": {
+      "mode": "majority",
+      "split": "discovery",
+      "seed": 36,
+      "gen": 11,
+      "site": 1048,
+      "distinctOwners": 2,
+      "witness": [
+        2,
+        0,
+        1
+      ],
+      "claims": [
+        {
+          "owner": 3,
+          "rule": "bays245",
+          "resolver": "guard",
+          "ballot": "age",
+          "wave": false,
+          "support": 2,
+          "age": 1,
+          "robustness": 5,
+          "parent": 1049,
+          "geometry": 4068447651,
+          "kind": "birth"
+        },
+        {
+          "owner": 1,
+          "rule": "hex-b2s245",
+          "resolver": "guard",
+          "ballot": "age",
+          "wave": false,
+          "support": 0,
+          "age": 3,
+          "robustness": 5,
+          "parent": 1048,
+          "geometry": 3950673723,
+          "kind": "survival"
+        },
+        {
+          "owner": 1,
+          "rule": "ashley",
+          "resolver": "guard",
+          "ballot": "age",
+          "wave": false,
+          "support": 3,
+          "age": 2,
+          "robustness": 1,
+          "parent": 1038,
+          "geometry": 3925361591,
+          "kind": "birth"
+        }
+      ],
+      "winner": {
+        "owner": 3,
+        "rule": "bays245",
+        "resolver": "guard",
+        "ballot": "age",
+        "wave": false,
+        "support": 2,
+        "age": 1,
+        "robustness": 5,
+        "parent": 1049,
+        "geometry": 4068447651,
+        "kind": "birth"
+      },
+      "rounds": [
+        {
+          "eligible": [
+            0,
+            1,
+            2
+          ],
+          "top": [
+            0,
+            1,
+            2
+          ],
+          "preferred": 0,
+          "accepted": true,
+          "edges": [
+            {
+              "winner": 0,
+              "loser": 1,
+              "for": 2,
+              "against": 1,
+              "abstain": 0,
+              "reason": "majority",
+              "votes": [
+                {
+                  "criterion": "support",
+                  "voter": null,
+                  "choice": 0
+                },
+                {
+                  "criterion": "age",
+                  "voter": null,
+                  "choice": 1
+                },
+                {
+                  "criterion": "geometry",
+                  "voter": null,
+                  "choice": 0
+                }
+              ]
+            },
+            {
+              "winner": 2,
+              "loser": 0,
+              "for": 2,
+              "against": 1,
+              "abstain": 0,
+              "reason": "majority",
+              "votes": [
+                {
+                  "criterion": "support",
+                  "voter": null,
+                  "choice": 2
+                },
+                {
+                  "criterion": "age",
+                  "voter": null,
+                  "choice": 2
+                },
+                {
+                  "criterion": "geometry",
+                  "voter": null,
+                  "choice": 0
+                }
+              ]
+            },
+            {
+              "winner": 1,
+              "loser": 2,
+              "for": 2,
+              "against": 1,
+              "abstain": 0,
+              "reason": "majority",
+              "votes": [
+                {
+                  "criterion": "support",
+                  "voter": null,
+                  "choice": 2
+                },
+                {
+                  "criterion": "age",
+                  "voter": null,
+                  "choice": 1
+                },
+                {
+                  "criterion": "geometry",
+                  "voter": null,
+                  "choice": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "ballot/discovery": {
+      "mode": "ballot",
+      "split": "discovery",
+      "seed": 33,
+      "gen": 14,
+      "site": 1781,
+      "distinctOwners": 3,
+      "witness": [
+        2,
+        0,
+        1
+      ],
+      "claims": [
+        {
+          "owner": 2,
+          "rule": "hex-b2s245",
+          "resolver": "phase",
+          "ballot": "geometry",
+          "wave": false,
+          "support": 2,
+          "age": 1,
+          "robustness": 0,
+          "parent": 2351,
+          "geometry": 2091764336,
+          "kind": "birth"
+        },
+        {
+          "owner": 3,
+          "rule": "highhex",
+          "resolver": "guard",
+          "ballot": "age",
+          "wave": false,
+          "support": 1,
+          "age": 3,
+          "robustness": 4,
+          "parent": 1781,
+          "geometry": 1953981610,
+          "kind": "survival"
+        },
+        {
+          "owner": 1,
+          "rule": "bays245",
+          "resolver": "guard",
+          "ballot": "support",
+          "wave": false,
+          "support": 3,
+          "age": 2,
+          "robustness": 2,
+          "parent": 1779,
+          "geometry": 1908899838,
+          "kind": "birth"
+        }
+      ],
+      "winner": {
+        "owner": 2,
+        "rule": "hex-b2s245",
+        "resolver": "phase",
+        "ballot": "geometry",
+        "wave": false,
+        "support": 2,
+        "age": 1,
+        "robustness": 0,
+        "parent": 2351,
+        "geometry": 2091764336,
+        "kind": "birth"
+      },
+      "rounds": [
+        {
+          "eligible": [
+            0,
+            1,
+            2
+          ],
+          "top": [
+            0,
+            1,
+            2
+          ],
+          "preferred": 0,
+          "accepted": true,
+          "edges": [
+            {
+              "winner": 0,
+              "loser": 1,
+              "for": 2,
+              "against": 1,
+              "abstain": 0,
+              "reason": "ballot",
+              "votes": [
+                {
+                  "criterion": "geometry",
+                  "voter": 0,
+                  "choice": 0
+                },
+                {
+                  "criterion": "age",
+                  "voter": 1,
+                  "choice": 1
+                },
+                {
+                  "criterion": "support",
+                  "voter": 2,
+                  "choice": 0
+                }
+              ]
+            },
+            {
+              "winner": 2,
+              "loser": 0,
+              "for": 2,
+              "against": 1,
+              "abstain": 0,
+              "reason": "ballot",
+              "votes": [
+                {
+                  "criterion": "geometry",
+                  "voter": 0,
+                  "choice": 0
+                },
+                {
+                  "criterion": "age",
+                  "voter": 1,
+                  "choice": 2
+                },
+                {
+                  "criterion": "support",
+                  "voter": 2,
+                  "choice": 2
+                }
+              ]
+            },
+            {
+              "winner": 1,
+              "loser": 2,
+              "for": 2,
+              "against": 1,
+              "abstain": 0,
+              "reason": "ballot",
+              "votes": [
+                {
+                  "criterion": "geometry",
+                  "voter": 0,
+                  "choice": 1
+                },
+                {
+                  "criterion": "age",
+                  "voter": 1,
+                  "choice": 1
+                },
+                {
+                  "criterion": "support",
+                  "voter": 2,
+                  "choice": 2
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
