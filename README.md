@@ -60,7 +60,7 @@ The single-rule modes use one automaton per match. The sparse planar atlas measu
 
 The default preview opens the six-player mixed game on an F128 sphere (163,842 sites), built in a background worker, at [the main entry](index.html). One human and five bots share a sphere. Every stamp supplies its own automaton, and the owner shares a single treasury across all of its lineages. The **Autômato da partida** selector also offers the original single-rule games.
 
-In landscape, controls, wallets and the globe are on the left. The right rail offers 54 economically ranked stamps in three columns. In portrait the controls move above the map and the hand below it. Choose interaction and ballot beside rotate/mirror for the next placement. The atlas supports all 409 native cards, isolated evolution, editing and persistent custom shapes. Settings let you replay a seed and compare mature-cell, birth, death or activity income.
+In landscape, controls, wallets and the globe are on the left. The right rail offers 54 economically ranked stamps in three columns, with thin per-card energy indicators. In portrait the controls move above the map and the hand below it. Rotate/mirror and the stamp preview sit beside the interaction and ballot selectors. Player names navigate to the nearest colony, while a separate chevron expands the player's statistics. The atlas supports all 409 native cards, isolated evolution, editing and persistent custom shapes. Settings let you replay a seed and compare mature-cell, birth, death or activity income.
 
 [Playing the mixed game](experiments/typed-world/game/README.md) · [Existence, ownership and paid passage](experiments/typed-world/game/EXISTENCE.md) · [Nine-rule arbitration laboratory](experiments/typed-world/index.html)
 
