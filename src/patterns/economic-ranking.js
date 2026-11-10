@@ -1,12 +1,17 @@
 import { generationEnergy, initialEnergy } from '../match/constructive-economy.js';
 import { physicalYields } from './physical-yields.js';
 
-// This is a price-sensitive prior, NOT a replacement for the agents' local
-// simulations. Only an unchanged maturity threshold makes the census valid.
+// Price the measured age distribution at the selected maturity threshold.
 export function estimateEconomicReturn(ruleId, pattern, economy) {
   const sample = physicalYields[ruleId]?.[pattern.id];
-  if (!sample || economy.stableAfter !== 256 || economy.generationQuote) return null;
-  const [initialCells, births, mature] = sample;
+  if (!sample || economy.generationQuote || economy.stableAfter > 1024) return null;
+  const [initialCells, births, bands] = sample;
+  let matureTurns = 0;
+  for (let i = 0; i < bands.length; i += 3) {
+    const from = Math.max(bands[i], economy.stableAfter);
+    matureTurns += Math.max(0, bands[i + 1] - from + 1) * bands[i + 2];
+  }
+  const mature = matureTurns / 128;
   const cost = (pattern.cells ?? pattern.offsets?.length ?? initialCells) * economy.stampCost;
   const { income, upkeep } = generationEnergy(births, mature, economy);
   const flow = income - upkeep;

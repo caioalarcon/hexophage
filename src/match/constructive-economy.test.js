@@ -9,7 +9,7 @@ import {plantFounder} from './founding.js';
 import {availableCells, DEFAULT_ECONOMY, generationEnergy, initialEnergy, parameterValue} from './constructive-economy.js';
 
 const idle=new Map([2,3,4,5,6].map(id=>[id,()=>{}]));
-const fresh=()=>createHeadlessMatch(buildSphere(24),{strategies:idle});
+const fresh=()=>createHeadlessMatch(buildSphere(24),{strategies:idle,economy:DEFAULT_ECONOMY});
 function plantFlipper(m){
   const p=m.game.players[0], pattern=patterns.callahan.find(p=>p.id==='p2');
   const ids=m.patchForStamp(p.seed,eastAt(m.world.graph,p.seed),decodeRLE(pattern.rle),true);

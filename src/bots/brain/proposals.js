@@ -206,7 +206,7 @@ export function relocate(world, trial) {
     for (let direction = 0; direction < graph.deg[target]; direction++) {
       if (signature(world, player.id, { kind: 'rival', target, direction }) !== context) continue;
       const pose = placement(world, { target, direction }, action.stamp, action.turn, distance);
-      if (pose && recognizes(world, pose, saved)) return pose;
+      if (pose && recognizes(world, pose, saved)) return { ...pose, target, direction };
       if (++checks >= 4) return null;
     }
   }

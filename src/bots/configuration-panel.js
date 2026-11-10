@@ -4,14 +4,27 @@ import { getBotPlans } from '../match/gameplay.js';
 export function updateBrainProgress() {
   const status = $('br-brain-progress');
   status.hidden = game.botMode !== 'learn';
+  const review = $('br-forecast'), receipt = game.lastForecast;
+  review.hidden = status.hidden || !receipt;
   if (status.hidden || !status.closest('details').open) return;
   const trials = game.brainMetrics?.completed ?? 0;
   const actions = game.brainMetrics?.actions ?? 0;
   const learned = game.brainMemory?.stats().priorSamples ?? 0;
-  status.textContent = trials + ' testes · ' + actions + ' jogadas · ' + learned + ' experiências herdadas';
+  status.textContent = trials + ' testes · ' + actions + ' jogadas · ' +
+    (game.brainMetrics?.forecasts ?? 0) + ' previsões conferidas · ' + learned + ' experiências herdadas';
+  if (receipt && review.open) {
+    const n = value => value.toLocaleString('pt-BR', {maximumFractionDigits:2, signDisplay:'exceptZero'});
+    const opponent = receipt.rival ? ' contra ' + game.names[receipt.rival] : '';
+    const pattern = game.gameplay.patterns.find(p => p.id === receipt.stamp)?.name ?? receipt.stamp;
+    $('br-forecast-result').textContent = game.names[receipt.owner] + opponent + ' · ' + pattern +
+      ' · G' + receipt.launched + '–' + receipt.gen + '. Vantagem prevista ' + n(receipt.relativeCalibrated) +
+      ', observada ' + n(receipt.relativeObserved) + '. Fluxo próprio observado ' + n(receipt.own.observedFlow) +
+      (receipt.target ? ', do alvo ' + n(receipt.target.observedFlow) : '') + '.';
+  }
 }
 
 export function bindBotSelectors() {
+  $('br-forecast').ontoggle = updateBrainProgress;
   const bots=$('br-bots');bots.replaceChildren();
   updateBrainProgress();
   bots.hidden = game.botMode === 'learn';

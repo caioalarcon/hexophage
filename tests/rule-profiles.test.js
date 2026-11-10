@@ -28,7 +28,7 @@ test('one new registry entry runs with independent defaults, opening and bots', 
   assert(match.game.players[0].lastUpkeep > 0);
   assert(match.game.players.slice(1).every(p => p.stamps > 0));
   assert.equal(bays.world.gen, 0);
-  assert.equal(bays.game.economy.initialCells, 82);
+  assert.equal(bays.game.economy.initialCells, ruleProfiles.bays.economy.initialCells);
 });
 
 test('custom B/S identities are canonical and invalid profiles fail before play', () => {

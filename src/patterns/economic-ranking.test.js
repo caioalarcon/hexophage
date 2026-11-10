@@ -22,8 +22,18 @@ test('re-pricing responds to tariffs and does not invent data for unmeasured mat
   const normal = estimateEconomicReturn('hex-b2s245', pattern, STABILITY_ECONOMY);
   const doubled = estimateEconomicReturn('hex-b2s245', pattern, {...STABILITY_ECONOMY, stableEnergy:0.04});
   assert(Math.abs(doubled.flow - 2 * normal.flow) < 1e-9);
-  assert.equal(estimateEconomicReturn('hex-b2s245', pattern, {...STABILITY_ECONOMY, stableAfter:128}), null);
+  assert.equal(estimateEconomicReturn('hex-b2s245', pattern, {...STABILITY_ECONOMY, stableAfter:8}).flow, normal.flow);
+  assert.equal(estimateEconomicReturn('hex-b2s245', pattern, {...STABILITY_ECONOMY, stableAfter:2048}), null);
   assert.equal(estimateEconomicReturn('custom', pattern, STABILITY_ECONOMY), null);
+});
+
+test('a moving ship earns only for its observed short-lived cohorts', () => {
+  const pattern = card('bays', 'glider');
+  // Across 128 observed generations this ship has 208 cell-turns at age 2 and none at age 3.
+  const terms = {...STABILITY_ECONOMY, productionScale:0, stableEnergy:1, birthCost:0};
+  const at = stableAfter => estimateEconomicReturn('bays', pattern, {...terms,stableAfter}).flow;
+  assert.equal(at(2), 208 / 128);
+  assert.equal(at(3), 0);
 });
 
 test('ranking never depends on input enumeration order', () => {

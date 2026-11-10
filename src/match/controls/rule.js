@@ -1,3 +1,4 @@
+import { ACTIVITY_ECONOMY, STABILITY_ECONOMY } from '../constructive-economy.js';
 import { bindBotSelectors } from '../../bots/configuration-panel.js';
 import { game, invalidateBrain } from '../../browser/game.js';
 import { conflictPolicies } from '../../simulation/conflict.js';
@@ -9,7 +10,7 @@ import { applyRuleProfile, resolveRuleProfile, ruleProfiles, setConflictPolicy, 
 import { resetGame } from './new-match.js';
 
 const savedNotations = new Map();
-let comparisonPolicy;
+
 
 function syncGrowthControls() {
   const select = $('br-growth'), spontaneous = world.physics.birthsFromVacuum;
@@ -36,6 +37,9 @@ function syncRuleControls() {
   selector.querySelector('[value="profile"]')?.remove();
   if (profile.economy.generationQuote) selector.add(new Option('Do autômato', 'profile'));
   selector.value = game.economy.generationQuote ? 'profile' : game.economy.policy;
+  $('br-empty-field').value = game.economy.emptyFieldUpkeep ? 'charge' : 'free';
+  $('br-funding-row').hidden = game.economy.policy !== 'stability' || !!game.economy.generationQuote;
+  $('br-birth-funding').value = game.economy.fundBirths ? 'funded' : 'erosion';
   syncGameplayControls(game.gameplay, profile.key);
 }
 
@@ -52,7 +56,7 @@ export function chooseRule(id, notation) {
     return false;
   }
   if (profile.key !== game.profile.key) {
-    applyRuleProfile(world, game, profile, comparisonPolicy ? {policy: comparisonPolicy} : undefined);
+    applyRuleProfile(world, game, profile);
     syncRuleControls();
     resetGame();
   } else {
@@ -69,7 +73,7 @@ export function bindRuleControls() {
   const params = new URLSearchParams(location.search);
   const requestedBots = params.get('bots');
   if (requestedBots === 'learn' || requestedBots === 'profile') game.botMode = requestedBots;
-  if (['stability', 'activity'].includes(params.get('economy'))) comparisonPolicy = params.get('economy');
+  const initialPolicy = params.get('economy');
   mode.value = game.botMode;
   const rate = $('br-brain-rate');
   rate.value = String(game.brainRate);
@@ -85,12 +89,12 @@ export function bindRuleControls() {
   $('hl-rule').onchange = event => chooseRule(rule.value, event.target.value);
   $('br-economy-policy').onchange = event => {
     const policy = event.target.value;
-    if (comparisonPolicy) comparisonPolicy = policy === 'profile' ? undefined : policy;
     const profilePolicy = game.profile.economy;
     applyRuleProfile(world, game, game.profile, {
       ...game.economy,
       policy: policy === 'profile' ? profilePolicy.policy ?? 'stability' : policy,
       generationQuote: policy === 'profile' ? profilePolicy.generationQuote : undefined,
+      fundBirths: policy === 'profile' ? profilePolicy.fundBirths : policy === 'stability',
     });
     syncRuleControls();
     resetGame();
@@ -125,9 +129,25 @@ export function bindRuleControls() {
   const requestedConflict = params.get('conflict');
   if (Object.hasOwn(conflictPolicies, requestedConflict))
     setConflictPolicy(world, game, requestedConflict);
+  $('br-use-suggested').onclick = () => {
+    applyRuleProfile(world, game, game.profile);
+    syncRuleControls();
+    resetGame();
+  };
+  $('br-empty-field').onchange = event => {
+    game.economy.emptyFieldUpkeep = event.target.value === 'charge';
+    for (const p of game.players) p.emptyGenerations = 0;
+    invalidateBrain();
+  };
+  $('br-birth-funding').onchange = event => {
+    game.economy.fundBirths = event.target.value === 'funded';
+    invalidateBrain();
+  };
   const requested = params.get('rule');
   const initial = requested && Object.hasOwn(ruleProfiles, requested) ? resolveRuleProfile(requested) : game.profile;
-  if (comparisonPolicy || initial.id !== game.profile.id)
-    applyRuleProfile(world, game, initial, comparisonPolicy ? {policy: comparisonPolicy} : undefined);
+  if (params.get('preset') === 'original')
+    applyRuleProfile(world, game, initial, (initialPolicy ?? (initial.id==='bays'?'activity':'stability')) === 'activity' ? ACTIVITY_ECONOMY : STABILITY_ECONOMY);
+  else if (['stability','activity'].includes(initialPolicy)) applyRuleProfile(world, game, initial, {policy:initialPolicy, fundBirths:initialPolicy==='stability'});
+  else if (initial.id !== game.profile.id) applyRuleProfile(world, game, initial);
   syncRuleControls();
 }

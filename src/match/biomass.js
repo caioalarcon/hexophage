@@ -1,4 +1,4 @@
-import { DEFAULT_ECONOMY, availableCells, generationEnergy } from './constructive-economy.js';
+import { DEFAULT_ECONOMY, availableCells, chargeEmptyField, generationEnergy, isStabilityEconomy } from './constructive-economy.js';
 import { recordCombatDeath } from './combat/direct-death.js';
 import { settleCombatTribute } from './combat/tribute.js';
 
@@ -7,6 +7,27 @@ function randomIndex(game, length) {
   x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
   game.rngState = x >>> 0;
   return Math.floor((game.rngState / 4294967296) * length);
+}
+
+// Only incumbents can finance a birth before settlement. Rejected proposals
+// never enter the paid birth/death counts or generate combat tribute.
+function refuseUnfundedBirths(world, game, player, economy, births, mature, removeLive, ages) {
+  if (!economy.fundBirths || !births || economy.birthCost <= 0 || !isStabilityEconomy(economy)) return 0;
+  const earning = economy.stableAfter <= 1 ? mature - births : mature;
+  const {income} = generationEnergy(0, earning, economy);
+  const funded = Math.floor((player.reserve + income + 1e-9) / economy.birthCost);
+  const refused = births - funded;
+  if (refused <= 0) return 0;
+  const pending = world.ownerCells[player.id].filter(id => !world.next[id]).sort((a,b) => a-b);
+  for (let i=0; i<refused; i++) {
+    const index = randomIndex(game, pending.length);
+    const id = pending[index];
+    pending[index] = pending.at(-1);
+    pending.pop();
+    removeLive(id);
+    ages[id] = 0;
+  }
+  return refused;
 }
 
 export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
@@ -53,12 +74,18 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
   for (const p of game.players) {
     p.lastBirths = newborn[p.id];
     p.lastDeaths = naturalDeaths[p.id];
-    p.totalBirths = (p.totalBirths || 0) + p.lastBirths;
+    p.lastUnfundedBirths = 0;
     p.totalDeaths = (p.totalDeaths || 0) + p.lastDeaths;
+    p.totalBirths = (p.totalBirths || 0) + p.lastBirths;
     if (p.out) continue;
     let stable = 0;
     for (const id of world.ownerCells[p.id])
       if (ages[id] >= e.stableAfter) stable++;
+    p.lastUnfundedBirths = refuseUnfundedBirths(world, game, p, e, p.lastBirths, stable, removeLive, ages);
+    p.unfundedBirths = (p.unfundedBirths || 0) + p.lastUnfundedBirths;
+    p.lastBirths -= p.lastUnfundedBirths;
+    p.totalBirths -= p.lastUnfundedBirths;
+    if (e.stableAfter <= 1) stable -= p.lastUnfundedBirths;
     const { income, upkeep } = generationEnergy(p.lastBirths, stable, e);
     const balance = p.reserve + income - upkeep;
     p.received += income;
@@ -89,6 +116,11 @@ export function gameEconomyTick(world, game, removeLive, finishIfDecided) {
   if (claims?.length) settleCombatTribute(game.players, claims, e.combatFee);
   for (const p of game.players) {
     if (p.out) continue;
+    if (e.emptyFieldUpkeep) {
+      const fee = chargeEmptyField(p, world.ownerCells[p.id].length, e);
+      p.lastUpkeep += fee;
+      p.emptyFieldPaid = (p.emptyFieldPaid ?? 0) + fee;
+    }
     p.flowAverage = p.flowAverage == null ? p.lastFlow : p.flowAverage * 0.8 + p.lastFlow * 0.2;
     if (!world.ownerCells[p.id].length && availableCells(p.reserve, e) < 1) p.out = true;
   }

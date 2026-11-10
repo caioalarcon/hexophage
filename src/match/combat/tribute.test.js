@@ -22,7 +22,7 @@ function siege(economy = {}) {
   const graph = buildSphere(64);
   const m = createHeadlessMatch(graph, {
     strategies: new Map([2, 3, 4, 5, 6].map(id => [id, () => {}])),
-    init: 2, economy: { stableEnergy: 0, birthCost: 0, stampCost: 0, combatFee: .25, ...economy },
+    init: 2, economy: { policy:'stability', fundBirths:false, stableEnergy: 0, birthCost: 0, stampCost: 0, combatFee: .25, ...economy },
   });
   function plant(owner, id, turns, dq, dr) {
     let points = decodeRLE(atlasPatterns.find(p => p.id === id).rle);

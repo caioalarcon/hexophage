@@ -6,7 +6,8 @@ const assert = require('node:assert/strict');
   const { plantFounder } = await import('../src/match/founding.js');
   const { buildSphere } = await import('../src/world/sphere.js');
   const graph = buildSphere(64);
-  const standard = createHeadlessMatch(graph);
+  const { STABILITY_ECONOMY } = await import('../src/match/constructive-economy.js');
+  const standard = createHeadlessMatch(graph, {economy:STABILITY_ECONOMY});
   assert(plantFounder(standard.world, standard.game, standard.game.players[0], standard.commitStamp));
   standard.nextTick();
   const price = standard.game.economy.stampCost;
@@ -25,7 +26,7 @@ const assert = require('node:assert/strict');
   // Finance the seeds sooner than the normal savings horizon, keeping actual
   // map placement, operating costs, erosion and policy decisions intact.
   function fundedOrders(economy) {
-    const funded = createHeadlessMatch(graph, {init: 150 * price, economy});
+    const funded = createHeadlessMatch(graph, {init: 150 * price, economy:{...STABILITY_ECONOMY, ...economy}});
     assert(plantFounder(funded.world, funded.game, funded.game.players[0], funded.commitStamp));
     const bots = funded.game.players.slice(1), orders = bots.map(() => []);
     for (let t = 1; t <= 1200; t++) {

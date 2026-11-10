@@ -60,7 +60,7 @@ test('containment applies after physical birth arbitration and before credit, on
       assert.deepEqual([turn.births,turn.mature,turn.next.size],[0,0,0]);
     }
   }
-  const vacuum=createHeadlessMatch(sphere,{rule:'custom',notation:'B0/S',growthThreshold:1});
+  const vacuum=createHeadlessMatch(sphere,{rule:'custom',notation:'B0/S',growth:'contained',growthThreshold:1});
   assert.equal(vacuum.world.physics.growthThreshold,undefined);
   assert.equal(vacuum.game.growth,'contained');
   advanceGeneration(vacuum.world);
@@ -76,7 +76,7 @@ test('independent reactions can collectively exceed the birth threshold', () => 
 });
 
 test('a quench pays no combat tribute for deaths that would have survived with rival neighbours', () => {
-  const m=createHeadlessMatch(sphere,{rule:'custom',notation:'B1/S0123456',growthThreshold:2,strategies:idle,
+  const m=createHeadlessMatch(sphere,{rule:'custom',notation:'B1/S0123456',growth:'contained',growthThreshold:2,strategies:idle,
     economy:{combatFee:10,stableEnergy:0,birthCost:0}});
   const site=sphere.farthest;
   m.addLive(site,1); m.addLive(sphere.adj[site*6],2);

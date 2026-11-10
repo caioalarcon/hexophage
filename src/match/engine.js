@@ -13,8 +13,8 @@ import { finishIfDecided } from './outcome.js';
 // Effects are synchronous observers. The engine can run without a canvas, clock or DOM.
 export function createMatchEngine(world, game, effects = {}, strategies = new Map(), brain = {}) {
   const population = createPopulation(world, effects);
-  const stamps = createStampCommands(world, game, population.addLive, effects);
   let strategy, archive;
+  const stamps = createStampCommands(world, game, population.addLive, effects, ids=>strategy?.recordStamp?.(ids));
   const finish = (alive) => finishIfDecided(game, alive, effects);
 
   function playBots() {
@@ -22,7 +22,7 @@ export function createMatchEngine(world, game, effects = {}, strategies = new Ma
       if (game.botMode === 'learn') {
         archive ??= brain.archive ?? createBrainArchive();
         game.brainMemory ??= archive.open(brainNamespace(world, game));
-        strategy = createThinkingStrategy(world, game, stamps.commitStamp, brain);
+        strategy = (brain.createStrategy ?? createThinkingStrategy)(world, game, stamps.commitStamp, brain);
         game.brainMetrics = strategy.metrics;
       } else {
         strategy = game.gameplay.createStrategy(world, game, stamps.commitStamp);
@@ -54,9 +54,9 @@ export function createMatchEngine(world, game, effects = {}, strategies = new Ma
         game,
         before,
         after,
-        births,
+        births - human.lastUnfundedBirths,
         before + births - naturalField,
-        naturalField - after,
+        naturalField - human.lastUnfundedBirths - after,
         reserveBefore,
       );
     }
@@ -72,6 +72,7 @@ export function createMatchEngine(world, game, effects = {}, strategies = new Ma
     nextTick,
     patchForStamp: (...args) => patchForStamp(world, ...args),
     invalidateBrain() {
+      game.lastForecast = null;
       if (!game.brainMemory || game.ended) return;
       game.brainMemory.select(brainNamespace(world, game));
       strategy?.invalidate();
@@ -80,6 +81,7 @@ export function createMatchEngine(world, game, effects = {}, strategies = new Ma
       game.brainMemory?.finish();
       game.brainMemory = null;
       game.brainMetrics = null;
+      game.lastForecast = null;
       strategy = undefined;
       resetPlayers(world, game);
     },

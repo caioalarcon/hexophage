@@ -1,7 +1,7 @@
 // Count natural births in one interacting reaction, irrespective of owner.
 // Two prospective live cells belong to the same reaction if they touch or
 // share a neighbour; a chain of these links belongs to one component.
-export const DEFAULT_GROWTH = 'contained';
+export const DEFAULT_GROWTH = 'classic';
 export const DEFAULT_GROWTH_THRESHOLD = 384;
 export const growthPolicies = Object.freeze({
   contained: 'Conter surtos',

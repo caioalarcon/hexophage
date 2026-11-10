@@ -13,6 +13,17 @@
     <select id="br-economy-policy" title="Trocar reinicia a partida com as tarifas atuais">
       <option value="stability">Células maduras geram</option><option value="activity">Nascimentos geram</option>
     </select>
+    <button type="button" id="br-use-suggested" title="Iniciar uma nova partida com as tarifas sugeridas para este autômato">Nova com sugestão</button>
+  </div>
+  <div class="br-worldpick" id="br-funding-row">
+    <label for="br-birth-funding">Nascimentos sem saldo</label>
+    <select id="br-birth-funding"><option value="funded">Só nascem os financiados</option><option value="erosion">Aplicar erosão</option></select>
+  </div>
+  <div class="br-worldpick">
+    <label for="br-empty-field">Reserva sem campo</label>
+    <select id="br-empty-field" title="A cobrança começa após 512 gerações sem células. Voltar ao campo reinicia a carência.">
+      <option value="free">Guardar sem custo</option><option value="charge">Após G+512, cobrar 1 célula / 64 ger.</option>
+    </select>
   </div>
   <div class="br-worldpick">
     <label for="br-conflict">Nascimento em disputa</label>
@@ -32,5 +43,10 @@
   <label id="br-brain-rate-label" for="br-brain-rate" hidden>Ritmo de pesquisa
     <select id="br-brain-rate" title="Esforço dos cinco aprendizes por geração"><option value="1">1×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select>
   </label>
-  <span id="br-brain-progress" class="hl-smallline" hidden></span><div id="br-bots" class="br-bots"></div>
+  <span id="br-brain-progress" class="hl-smallline" hidden></span>
+  <details id="br-forecast" hidden><summary>Última previsão conferida</summary>
+    <p id="br-forecast-result" class="hl-smallline"></p>
+    <small>Diferença de fluxo no setor por geração, descontando o que o bot estimou que aconteceria se esperasse.</small>
+  </details>
+  <div id="br-bots" class="br-bots"></div>
   </div></details>
