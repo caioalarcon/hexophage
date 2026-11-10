@@ -8,7 +8,7 @@ const {chromium}=require('playwright');
   try{
     const page=await browser.newPage({viewport:{width:1160,height:850}}),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?rule=mixed');
+    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?rule=mixed&f=32');
     const open=()=>page.locator('#mx-atlas').click();
     const ui=id=>page.locator('#mx-atlas-host [data-ui="'+id+'"]');
     const hand=page.locator('#mx-hand [data-key]');

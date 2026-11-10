@@ -9,7 +9,7 @@ const {chromium}=require('playwright');
   try{
     const page=await browser.newPage({viewport:{width:1280,height:800}}),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href);
+    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?f=32');
     await page.waitForFunction(()=>window.__hexophageMixed?.session);
     const hand=page.locator('#mx-hand'),cards=hand.locator('button');
     assert.equal(await page.locator('#hl-rulechoice').inputValue(),'mixed');
@@ -30,7 +30,7 @@ const {chromium}=require('playwright');
     await page.click('#hl-stampccw');assert.equal(await page.evaluate(()=>JSON.stringify(__hexophageMixed.selection.shape)),before);
     await page.click('#hl-stampflip');await page.click('#hl-stampflip');
     assert.equal(await page.evaluate(()=>JSON.stringify(__hexophageMixed.selection.shape)),before);
-    await page.click('#mx-resolver [data-mode=phase]');await page.selectOption('#mx-ballot','robustness');
+    await page.selectOption('#mx-resolver','phase');await page.selectOption('#mx-ballot','robustness');
     const starting=await page.evaluate(()=>__hexophageMixed.session.match.players[1].reserve);
     async function plantAt(x,y){
       await page.mouse.click(board.x+board.width*x,board.y+board.height*y);
@@ -41,7 +41,7 @@ const {chromium}=require('playwright');
     assert.equal(starting-balance,await page.evaluate(()=>__hexophageMixed.selection.shape.length*__hexophageMixed.session.match.stampPrice('phase')));
     const first=await page.evaluate(()=>[...__hexophageMixed.session.match.cells].filter(([,c])=>c.owner===1&&c.rule==='ashley'&&c.resolver==='phase').map(([i,c])=>[i,c.ballot]));
     assert(first.length>0 && first.every(([,ballot])=>ballot==='robustness'));
-    await page.click('#mx-resolver [data-mode=guard]');
+    await page.selectOption('#mx-resolver','guard');
     let second=balance;
     for(const x of [.68,.25,.52,.76]){second=await plantAt(x,.7);if(second<balance)break;}
     assert(second<balance);
@@ -75,7 +75,7 @@ const {chromium}=require('playwright');
     await page.evaluate(()=>{const s=document.querySelector('#hl-rulechoice');s.value='mixed';s.dispatchEvent(new Event('change'));});
     await page.waitForFunction(()=>window.__hexophageMixed?.session);
     assert.equal(await page.locator('#hl-rulechoice').inputValue(),'mixed');
-    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?rule=mixed&economy=activity&seed=991');
+    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?rule=mixed&economy=activity&seed=991&f=32');
     await page.waitForFunction(()=>window.__hexophageMixed?.session);
     assert.equal(await page.evaluate(()=>__hexophageMixed.session.opening[1]),null);
     assert.equal(await page.evaluate(()=>__hexophageMixed.session.match.players[1].reserve),640);

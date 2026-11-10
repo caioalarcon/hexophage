@@ -12,10 +12,24 @@
   <header><h2>Carimbos <small id="mx-count"></small></h2><button id="mx-atlas" type="button">Atlas ↗</button></header>
   <div class="mx-tools" aria-label="Modificadores do carimbo">
    <div class="mx-current"><strong id="mx-selected"></strong><span id="mx-price"></span></div>
-   <canvas id="mx-preview" width="176" height="112" role="img" aria-label="Prévia do carimbo na orientação atual"></canvas>
-   <div class="mx-modline"><div id="mx-transform"></div><div id="mx-resolver" role="group" aria-label="Interação do próximo carimbo"><button type="button" data-mode="contact" title="Interage com a vizinhança material">Contato</button><button type="button" data-mode="guard" title="Guarda apoiada resiste à travessia">Guarda</button><button type="button" data-mode="phase" title="Ignora as outras linhagens e paga pelas células adversárias substituídas">Travessia</button><button type="button" data-mode="antimatter" title="Acende uma onda B2/S245 financiada pela sua carteira">Antimatéria</button></div></div>
-   <div class="mx-vote"><label for="mx-ballot">Voto da linhagem</label><button id="mx-ballot-help" type="button" aria-label="Entender o voto da linhagem" aria-describedby="mx-ballot-tip" aria-expanded="false">?</button><select id="mx-ballot" aria-describedby="mx-ballot-tip"><option value="support">Apoio</option><option value="age">Idade</option><option value="robustness">Robustez</option><option value="geometry">Posição</option></select>
+   <div class="mx-tools-row">
+    <div class="mx-orientation" aria-label="Orientação do carimbo">
+     <canvas id="mx-preview" width="176" height="112" role="img" aria-label="Prévia do carimbo na orientação atual"></canvas>
+     <div id="mx-transform"></div>
+    </div>
+    <div class="mx-policies">
+     <label class="mx-interaction" for="mx-resolver">Interação
+      <select id="mx-resolver" aria-label="Interação do próximo carimbo">
+       <option value="contact" title="Interage com a vizinhança material">Contato</option>
+       <option value="guard" title="Guarda apoiada resiste à travessia">Guarda</option>
+       <option value="phase" title="Ignora as outras linhagens e paga pelas células adversárias substituídas">Travessia</option>
+       <option value="antimatter" title="Acende uma onda B2/S245 financiada pela sua carteira">Antimatéria</option>
+      </select>
+     </label>
+     <div class="mx-vote"><label for="mx-ballot">Voto da linhagem</label><button id="mx-ballot-help" type="button" aria-label="Entender o voto da linhagem" aria-describedby="mx-ballot-tip" aria-expanded="false">?</button><select id="mx-ballot" aria-describedby="mx-ballot-tip"><option value="support">Apoio</option><option value="age">Idade</option><option value="robustness">Robustez</option><option value="geometry">Posição</option></select>
     <div id="mx-ballot-tip" role="tooltip" hidden><strong>Voto da linhagem</strong><p>Na arbitragem Voto do carimbo, cada linhagem que disputa uma célula compara as candidatas pelo seu critério. A decisão combina esses votos.</p><dl><dt>Apoio</dt><dd>Prefere mais vizinhas da mesma linhagem.</dd><dt>Idade</dt><dd>Prefere a maior idade entre as células de apoio. Para uma sobrevivente, usa a idade dela.</dd><dt>Robustez</dt><dd>Prefere a regra que mantém a célula viva sob mais mudanças de uma vizinha.</dd><dt>Posição</dt><dd>Compara as posições de origem por uma ordem reproduzível, calculada com a semente e a geração.</dd></dl><p>O próximo carimbo e suas descendentes herdam a opção escolhida.</p></div>
+     </div>
+    </div>
    </div>
   </div>
   <div id="mx-hand" role="group" aria-label="Baralho por relevância econômica"></div>

@@ -71,9 +71,8 @@ export function startMixedGame(){
   const initial={...defaultGameOptions,botInterval:12,botBudget:4};
   if(Object.hasOwn(gameEconomies,query.get('economy')))initial.policy=query.get('economy');
   if(requestedSeed!==null && /^\d{1,10}$/.test(requestedSeed) && Number(requestedSeed)<=0xffffffff)initial.seed=Number(requestedSeed);
-  bindMixedViewport();reset(initial);
-  atlas=createGameAtlas({host:$('mx-atlas-host'),getWallet:()=>session.match.players[1],getEconomy:()=>session.match.economy,onSelect:hand.choose,onDeck:hand.fill});
-  $('mx-atlas').onclick=()=>atlas.open(hand.selected);
+  if(['16','24','32','48','64','96','128','160','320'].includes(query.get('f')))initial.F=Number(query.get('f'));
+  bindMixedViewport();
   $('br-build-cancel').onclick=cancelBuild;
   $('br-building').addEventListener('cancel',e=>{e.preventDefault();cancelBuild();});
   bindSettings(()=>options,()=>session.match,next=>{
@@ -132,5 +131,12 @@ export function startMixedGame(){
   // Same inspectability as the classic game, with typed cells and real purchase receipts.
   window.__hexophageMixed={get session(){return session;},get controllers(){return controllers;},get orders(){return lastOrders.slice();},
     get selection(){return {key:hand.selected?.key,...hand.current};},world};
-  requestAnimationFrame(frame);
+  function boot(graph,buffers){
+    reset(initial,graph,buffers);
+    atlas=createGameAtlas({host:$('mx-atlas-host'),getWallet:()=>session.match.players[1],getEconomy:()=>session.match.economy,onSelect:hand.choose,onDeck:hand.fill});
+    $('mx-atlas').onclick=()=>atlas.open(hand.selected);
+    requestAnimationFrame(frame);
+  }
+  if(initial.F>=64)requestSphere(initial.F,(graph,buffers)=>boot(graph,buffers));
+  else boot();
 }

@@ -31,7 +31,7 @@ function requestSphere(f=Number($('hl-frequency').value),install) {
   const wasPlaying = world.playing,
     globeExpanded = navigatorView.expanded;
   if (buildJob) return;
-  if (f === world.graph.f) {
+  if (world.graph && f === world.graph.f) {
     resetGame();
     return;
   }

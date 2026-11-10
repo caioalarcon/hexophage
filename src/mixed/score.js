@@ -53,13 +53,15 @@ export function createScoreboard(getSession){
     }
   }
   function addRow(id){
-    const box=document.createElement('li'),button=document.createElement('button'),name=document.createElement('span'),summary=document.createElement('small');
+    const box=document.createElement('li'),head=document.createElement('div'),button=document.createElement('button'),toggle=document.createElement('button'),name=document.createElement('span'),summary=document.createElement('small');
     const details=document.createElement('div'),status=document.createElement('p'),values=new Map();
-    box.dataset.player=String(id);button.type='button';button.style.setProperty('--player',game.colors[id]);
-    button.title='Ver estatísticas e centralizar nas células de '+game.names[id];
+    box.dataset.player=String(id);head.className='mx-player-head';head.style.setProperty('--player',game.colors[id]);
+    button.type='button';button.className='mx-player-jump';button.title='Centralizar nas células de '+game.names[id];
     name.textContent=game.symbols[id]+' '+game.names[id];button.append(name,summary);
     details.id='mx-stats-'+id;details.className='mx-player-stats';details.hidden=true;
-    button.setAttribute('aria-controls',details.id);button.setAttribute('aria-expanded','false');
+    toggle.type='button';toggle.className='mx-player-toggle';toggle.textContent='▸';
+    toggle.title='Abrir ou fechar estatísticas de '+game.names[id];
+    toggle.setAttribute('aria-controls',details.id);toggle.setAttribute('aria-expanded','false');
     details.append(status);
     for(const [title,items] of fields){
       const section=document.createElement('section'),heading=document.createElement('h3'),list=document.createElement('dl');
@@ -72,17 +74,14 @@ export function createScoreboard(getSession){
       section.append(heading,list);details.append(section);
     }
     button.onclick=()=>{
-      expanded=expanded===id?null:id;
-      if(expanded!==null){
-        const session=getSession();
-        const look=world.chart?pointOnSphere(session.graph,world.center):atlasCamera.look;
-        const site=nearestColony(session.graph,session.match.cells,id,look);
-        if(site!==null){centerOnPlayer(site);world.needsDraw=world.needsGrid=true;}
-      }
-      update();
+      const session=getSession();
+      const look=world.chart?pointOnSphere(session.graph,world.center):atlasCamera.look;
+      const site=nearestColony(session.graph,session.match.cells,id,look);
+      if(site!==null){centerOnPlayer(site);world.needsDraw=world.needsGrid=true;}
     };
-    box.append(button,details);
-    const row={box,button,summary,details,status,values};rows.set(id,row);return row;
+    toggle.onclick=()=>{expanded=expanded===id?null:id;update();};
+    head.append(button,toggle);box.append(head,details);
+    const row={box,button,toggle,summary,details,status,values};rows.set(id,row);return row;
   }
   function update(){
     const session=getSession(),m=session.match;
@@ -91,7 +90,9 @@ export function createScoreboard(getSession){
     for(const [index,id] of ids.entries()){
       const row=rows.get(id)??addRow(id),p=m.players[id],open=expanded===id;
       row.summary.textContent=session.alive[id]?p.conventional.toLocaleString('pt-BR')+' · ◈ '+number.format(p.reserve):'Eliminado';
-      row.button.setAttribute('aria-expanded',String(open));row.details.hidden=!open;
+      row.toggle.setAttribute('aria-expanded',String(open));row.toggle.textContent=open?'▾':'▸';
+      row.toggle.setAttribute('aria-label',(open?'Fechar':'Abrir')+' estatísticas de '+game.names[id]);
+      row.details.hidden=!open;
       if(open){
         row.status.textContent=!session.alive[id]?'Eliminado na geração '+number.format(session.eliminatedAt[id]):
           p.stamps===0?'Aguardando o primeiro carimbo.':'Em jogo · geração '+number.format(m.gen);

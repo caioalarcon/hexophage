@@ -8,9 +8,10 @@ const {chromium}=require('playwright');
   try{
     const page=await browser.newPage({viewport:{width:1280,height:800}}),errors=[];
     page.on('pageerror',error=>errors.push(error.message));
-    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href);
+    await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?f=32');
     await page.waitForFunction(()=>window.__hexophageMixed?.session);
-    const playerButton=id=>page.locator(`#mx-score [data-player="${id}"] > button`);
+    const playerButton=id=>page.locator(`#mx-score [data-player="${id}"] .mx-player-jump`);
+    const statToggle=id=>page.locator(`#mx-score [data-player="${id}"] .mx-player-toggle`);
     const stat=(id,key)=>page.locator(`#mx-stats-${id} [data-stat="${key}"]`);
     const format=value=>new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(value);
     const signed=value=>(value>0?'+':'')+format(value);
@@ -18,7 +19,7 @@ const {chromium}=require('playwright');
       await page.click('#mx-config');
       await page.locator('#mx-setup button[type=submit]').click();
       assert.equal(await page.evaluate(()=>__hexophageMixed.session.match.gen),0);
-      assert.equal(await page.locator('#mx-score > li > button[aria-expanded=true]').count(),0);
+      assert.equal(await page.locator('#mx-score .mx-player-toggle[aria-expanded=true]').count(),0);
     }
 
     const opening=await page.evaluate(()=>{
@@ -33,7 +34,9 @@ const {chromium}=require('playwright');
     assert.equal(opening.alive,true);
     assert.equal(opening.playing,false);
     await playerButton(1).click();
-    assert.equal(await playerButton(1).getAttribute('aria-expanded'),'true');
+    assert.equal(await statToggle(1).getAttribute('aria-expanded'),'false');
+    await statToggle(1).click();
+    assert.equal(await statToggle(1).getAttribute('aria-expanded'),'true');
     assert.equal(await stat(1,'reserve').textContent(),'640');
     assert.equal(await stat(1,'stamps').textContent(),'0');
     assert.match(await page.locator('#mx-stats-1 > p').textContent(),/Aguardando/);
@@ -77,18 +80,18 @@ const {chromium}=require('playwright');
     assert.equal(await stat(1,'lastFlow').textContent(),signed(generationIncome-generationCost));
     assert.equal(await stat(1,'flow').textContent(),await page.locator('#mx-flow').textContent());
 
-    await playerButton(2).click();
-    assert.equal(await playerButton(1).getAttribute('aria-expanded'),'false');
+    await statToggle(2).click();
+    assert.equal(await statToggle(1).getAttribute('aria-expanded'),'false');
     assert.equal(await page.locator('#mx-stats-1').isVisible(),false);
-    assert.equal(await playerButton(2).getAttribute('aria-expanded'),'true');
-    assert.equal(await page.locator('#mx-score > li > button[aria-expanded=true]').count(),1);
+    assert.equal(await statToggle(2).getAttribute('aria-expanded'),'true');
+    assert.equal(await page.locator('#mx-score .mx-player-toggle[aria-expanded=true]').count(),1);
     assert(await stat(2,'income').isVisible());
-    assert(await page.locator('#mx-stats-2').evaluate(panel=>panel.parentElement.dataset.player==='2' && panel.previousElementSibling.matches('button')));
-    await playerButton(2).click();
+    assert(await page.locator('#mx-stats-2').evaluate(panel=>panel.parentElement.dataset.player==='2' && panel.previousElementSibling.matches('.mx-player-head')));
+    await statToggle(2).click();
     assert.equal(await page.locator('#mx-stats-2').isVisible(),false);
-    await playerButton(1).click();
+    await statToggle(1).click();
     await reset();
-    await playerButton(1).click();
+    await statToggle(1).click();
     for(const key of ['income','births','deaths','stamps','stampedCells','lastIncome','lastCost','lastFlow','flow']){
       assert.equal(await stat(1,key).textContent(),'0',`reset ${key}`);
     }
@@ -140,7 +143,7 @@ const {chromium}=require('playwright');
     await page.click('#hl-step');
     assert.equal(await page.evaluate(()=>__hexophageMixed.session.eliminatedAt[1]),1);
     assert.equal(await page.evaluate(()=>__hexophageMixed.session.alive[1]),false);
-    await playerButton(1).click();
+    await statToggle(1).click();
     assert.match(await page.locator('#mx-stats-1 > p').textContent(),/Eliminado na geração 1/);
     assert.equal(await stat(1,'stamps').textContent(),'1');
     assert.equal(await stat(1,'conventional').textContent(),'0');

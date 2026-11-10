@@ -29,7 +29,7 @@ export function createHand(getMatch,{onInspect=()=>{}}={}){
     drawDeckIcon(preview,m.shape);
     preview.setAttribute('aria-label','Prévia de '+c.name+' na orientação atual');
     $('mx-ballot').value=m.ballot;
-    for(const btn of $('mx-resolver').children)btn.setAttribute('aria-pressed',String(btn.dataset.mode===m.resolver));
+    $('mx-resolver').value=m.resolver;
     for(const [key,node] of buttons)node.setAttribute('aria-pressed',String(key===slotKey(c)));
     update();
   }
@@ -82,8 +82,8 @@ export function createHand(getMatch,{onInspect=()=>{}}={}){
       if(!selected)return;const m=modifier(selected);m.shape=transformOffsets(m.shape,type);choose(selected);
     };
   }
-  for(const btn of $('mx-resolver').children)btn.onclick=()=>{
-    if(!selected)return;modifier(selected).resolver=btn.dataset.mode;choose(selected);
+  $('mx-resolver').onchange=()=>{
+    if(!selected)return;modifier(selected).resolver=$('mx-resolver').value;choose(selected);
   };
   $('mx-ballot').onchange=()=>{if(selected)modifier(selected).ballot=$('mx-ballot').value;};
   new ResizeObserver(([entry])=>{

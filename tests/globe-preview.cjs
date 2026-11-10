@@ -14,7 +14,7 @@ const { chromium } = require('playwright');
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     const url = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
-    await page.goto(url);
+    await page.goto(url+'?f=32');
     await page.waitForFunction(() => window.__hexophageMixed?.session);
     await page.locator('#mx-hand button').filter({ hasText: 'Fly' }).first().click();
     await page.evaluate(() => {

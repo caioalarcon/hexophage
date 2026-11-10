@@ -14,7 +14,7 @@ export const gameEconomies={
   activity:{...common,birthEnergy:.65,deathEnergy:.65},
 };
 
-export const defaultGameOptions=Object.freeze({F:32,seed:1,players:6,bank:640,policy:'stability',
+export const defaultGameOptions=Object.freeze({F:128,seed:1,players:6,bank:640,policy:'stability',
   arbitration:'ballot',eligibility:'contest',existence:'majority',passage:'literal',friendlyFire:false});
 
 export function createGameMatch(options={}) {
