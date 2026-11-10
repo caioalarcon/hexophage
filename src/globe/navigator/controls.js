@@ -15,6 +15,9 @@ function mountGlobeNavigator() {
   );
   target.append(fallbackMini, gpuCanvas);
   g.append(target);
+  new ResizeObserver(() => {
+    navigatorView.dirty = true;
+  }).observe(target);
   $('br-mini-toggle').onclick = () => {
     const p = $('br-mini-panel'),
       collapsed = p.classList.toggle('collapsed');

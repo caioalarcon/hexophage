@@ -23,23 +23,39 @@
 #hexlab.mixed #mx-score{padding:0;list-style:none;margin:7px 0;display:grid;gap:4px}
 #hexlab.mixed #mx-score button{display:flex;align-items:center;justify-content:space-between;gap:4px;width:100%;padding:5px 7px;background:#1c2c40;border:0;border-left:3px solid var(--player);font-size:11px}
 #hexlab.mixed #mx-score small{color:var(--mx-soft);font-size:10px}
+#hexlab.mixed #mx-score button[aria-expanded=true]{background:#294158;border-radius:5px 5px 0 0}
+#hexlab.mixed .mx-player-stats{padding:7px;background:#101c2c;border:1px solid var(--mx-line);border-top:0;border-radius:0 0 5px 5px}
+#hexlab.mixed .mx-player-stats[hidden]{display:none}
+#hexlab.mixed .mx-player-stats p{margin:0 0 7px;color:var(--mx-soft);font-size:10px;line-height:1.4}
+#hexlab.mixed .mx-player-stats h3{font-size:10px;color:var(--mx-mint);margin:9px 0 4px}
+#hexlab.mixed .mx-player-stats dl{margin:0;display:grid;gap:4px;font-size:10px}
+#hexlab.mixed .mx-player-stats dl>div{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+#hexlab.mixed .mx-player-stats dt{color:var(--mx-soft);min-width:0}
+#hexlab.mixed .mx-player-stats dd{margin:0;white-space:nowrap;font-variant-numeric:tabular-nums}
 #hexlab.mixed .mx-arsenal{grid-column:3;grid-row:1;min-width:0;min-height:0;display:flex;flex-direction:column;background:#132032;border-left:1px solid var(--mx-line);padding:7px;gap:5px}
 #hexlab.mixed .mx-arsenal header,#hexlab.mixed #mx-settings header{display:flex;justify-content:space-between;align-items:center;gap:6px}
 #hexlab.mixed .mx-arsenal h2,#hexlab.mixed #mx-settings h2{font-size:15px;margin:0}
 #hexlab.mixed #mx-count{font-size:11px;font-weight:400;color:var(--mx-soft)}
 #hexlab.mixed .mx-arsenal header button{font-size:11px;padding:4px 8px;color:var(--mx-mint)}
-#hexlab.mixed .mx-tools{display:grid;gap:4px;border-block:1px solid var(--mx-line);padding:5px 0}
-#hexlab.mixed .mx-current,#hexlab.mixed .mx-modline,#hexlab.mixed .mx-vote{display:flex;align-items:center;justify-content:space-between;gap:5px}
+#hexlab.mixed .mx-tools{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:4px 7px;border-block:1px solid var(--mx-line);padding:5px 0}
+#hexlab.mixed .mx-current,#hexlab.mixed .mx-vote{grid-column:1/-1}
+#hexlab.mixed #mx-preview{grid-column:2;grid-row:2;width:88px;height:68px;align-self:center;background:#0d1b29;border:1px solid var(--mx-line);border-radius:5px}
+#hexlab.mixed .mx-modline{grid-column:1;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:4px}
+#hexlab.mixed .mx-current,#hexlab.mixed .mx-vote{display:flex;align-items:center;justify-content:space-between;gap:5px}
 #hexlab.mixed .mx-current{font-size:11px}#hexlab.mixed #mx-selected{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#hexlab.mixed #mx-price{white-space:nowrap;color:var(--mx-mint)}
 #hexlab.mixed #mx-transform{display:flex;gap:3px;flex:none}#hexlab.mixed #mx-transform button{padding:2px 7px;font-size:16px;line-height:18px}
 #hexlab.mixed .mx-modline select,#hexlab.mixed .mx-vote select{font-size:11px;padding:3px;max-width:52%}#hexlab.mixed .mx-vote label{margin:0}
-#hexlab.mixed #mx-hand{flex:1 1 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:clamp(29px,calc((100dvh - 180px)/18),53px);gap:3px;align-content:start;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
-#hexlab.mixed .mx-card{min-width:0;max-width:100%;display:grid;grid-template-columns:clamp(16px,2vw,30px) minmax(0,1fr);grid-template-rows:1fr 1fr;align-items:center;text-align:left;gap:0 3px;white-space:normal;background:#1b2b3e;border:1px solid #33465d;border-radius:4px;padding:2px 3px;line-height:1.1}
+#hexlab.mixed #mx-hand{flex:1 1 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:clamp(32px,calc((100dvh - 190px)/18),53px);gap:3px;align-content:start;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+#hexlab.mixed .mx-card{min-width:0;max-width:100%;display:grid;grid-template-columns:clamp(16px,2vw,30px) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto 5px;align-items:center;text-align:left;gap:0 3px;white-space:normal;background:#1b2b3e;border:1px solid #33465d;border-radius:4px;padding:2px 3px;line-height:1.1}
 #hexlab.mixed .mx-card canvas{grid-row:1/3;width:100%;height:90%;max-height:31px;color:#b6d0d7;pointer-events:none}
 #hexlab.mixed .mx-card b,#hexlab.mixed .mx-card small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;align-self:end}
-#hexlab.mixed .mx-card small{align-self:start;color:var(--mx-soft);font-size:9px;font-weight:400;margin-top:2px}
+#hexlab.mixed .mx-card small{align-self:start;color:var(--mx-soft);font-size:9px;font-weight:400;margin:1px 0 2px}
+#hexlab.mixed .mx-card-energy{grid-column:1/-1;display:block;height:5px;overflow:hidden;border-radius:2px;background:#0a1421}
+#hexlab.mixed .mx-card-energy::after{content:"";display:block;width:100%;height:100%;background:#e9b66c;transform:scaleX(var(--charge,0));transform-origin:left}
+#hexlab.mixed .mx-card[data-afford=true] .mx-card-energy::after{background:var(--mx-mint)}
+#hexlab.mixed .mx-card[data-afford=false] canvas,#hexlab.mixed .mx-card[data-afford=false] b{opacity:.45}
+#hexlab.mixed .mx-card[data-afford=true]{border-color:#456d68}
 #hexlab.mixed .mx-card[aria-pressed=true]{background:#19453f;border-color:var(--mx-mint)}
-#hexlab.mixed .mx-card[data-afford=false] small{color:#ffbe9e}
 #hexlab.mixed #mx-settings{background:#152437;color:var(--mx-ink);border:1px solid #4c627d;border-radius:10px;width:min(500px,94vw);max-height:89dvh;padding:16px;overflow:auto}
 #hexlab.mixed #mx-settings::backdrop{background:#07111bc2}#hexlab.mixed #mx-setup fieldset{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;border:1px solid var(--mx-line);margin:13px 0 0;padding:8px}
 #hexlab.mixed #mx-setup legend{color:var(--mx-mint);font-size:12px}#hexlab.mixed #mx-setup label{font-size:11px;color:var(--mx-soft);display:grid;gap:3px}
@@ -60,30 +76,25 @@
  #hexlab.mixed #br-mini-panel,#hexlab.mixed .br-rail-spacer{display:none}
  #hexlab.mixed .hl-left{grid-row:2;grid-column:1}
  #hexlab.mixed .mx-arsenal{grid-row:3;grid-column:1;padding:3px 6px;gap:3px;border:0;border-top:1px solid var(--mx-line)}
- #hexlab.mixed .mx-tools{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:3px 6px;padding:3px 0}
- #hexlab.mixed .mx-vote{grid-column:1/-1;justify-content:flex-start}#hexlab.mixed .mx-vote select{padding:0 3px}
  #hexlab.mixed #mx-hand{grid-auto-rows:34px}#hexlab.mixed .mx-card b{font-size:11px}
  #hexlab.mixed .br-mapbar{bottom:5px;right:5px}#hexlab.mixed .br-message{bottom:33px}
 }
 @media(orientation:landscape) and (max-height:520px){#hexlab.mixed .br-rail{padding:4px}#hexlab.mixed .mx-console{gap:6px}#hexlab.mixed .br-mini-panel{min-height:70px}#hexlab.mixed .mx-arsenal{padding:3px}}
 
-#hexlab.mixed .mx-modline{flex-wrap:wrap;justify-content:flex-start;gap:3px 5px}
-#hexlab.mixed #mx-resolver{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;flex:1 0 100%}
+#hexlab.mixed #mx-resolver{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;width:100%}
 #hexlab.mixed #mx-resolver button{min-width:0;padding:4px 1px;border-radius:4px;font-size:10px;font-weight:550}
 #hexlab.mixed #mx-resolver button[aria-pressed=true]{color:#c1fff1;border-color:#58bda7;background:#23443f}
-@media(orientation:portrait){
- #hexlab.mixed .mx-tools{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px}
- #hexlab.mixed .mx-current{flex:1;min-width:80px}
- #hexlab.mixed .mx-modline{display:contents}
- #hexlab.mixed #mx-resolver{order:1;flex:1}
- #hexlab.mixed .mx-vote{order:2;flex:0 0 auto}
- #hexlab.mixed .mx-vote label{display:none}#hexlab.mixed .mx-vote select{max-width:90px}
-}
-
-#hexlab.mixed .mx-card small{display:flex;gap:2px;align-items:baseline;justify-content:space-between}
-#hexlab.mixed .mx-card-rule{min-width:0;overflow:hidden;text-overflow:ellipsis}
-#hexlab.mixed .mx-card-cost{flex:none;color:#b6dcd5}
+#hexlab.mixed .mx-card-cost{color:#b6dcd5}
 #hexlab.mixed .mx-card[data-afford=false] .mx-card-cost{color:#ffb699}
+#hexlab.mixed .mx-vote{position:relative;gap:4px}
+#hexlab.mixed .mx-vote label{flex:1;cursor:help}
+#hexlab.mixed #mx-ballot-help{padding:0;width:17px;height:17px;flex:none;border-radius:50%;font-size:10px;line-height:15px;cursor:help}
+#hexlab.mixed #mx-ballot-tip{position:fixed;box-sizing:border-box;z-index:30;width:min(290px,calc(100vw - 16px));overflow:auto;padding:11px;background:#132437;color:var(--mx-ink);border:1px solid #6c8b9d;border-radius:6px;box-shadow:0 6px 24px #0009;font-size:12px;line-height:1.4;text-align:left}
+#hexlab.mixed #mx-ballot-tip[hidden]{display:none}
+#hexlab.mixed #mx-ballot-tip p{margin:6px 0}
+#hexlab.mixed #mx-ballot-tip dl{display:grid;grid-template-columns:auto 1fr;gap:5px 9px;margin:8px 0}
+#hexlab.mixed #mx-ballot-tip dt{color:var(--mx-mint);font-weight:650}
+#hexlab.mixed #mx-ballot-tip dd{margin:0}
 #hexlab.mixed .mx-rail-links{display:flex;gap:5px}
 #hexlab.mixed .mx-rail-links button,#hexlab.mixed #mx-locate{font-size:10px;padding:3px 6px;min-width:0}
 #hexlab.mixed #mx-globe{display:none}
@@ -92,12 +103,16 @@
 #hexlab.mixed #mx-event{margin:5px 0;line-height:1.4}
 @media(orientation:portrait){
  #hexlab.mixed .hl-left{display:flex!important}
- #hexlab.mixed .mx-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px}
- #hexlab.mixed .mx-current{grid-area:1/1;min-width:0}
- #hexlab.mixed #mx-transform{grid-area:1/2;justify-self:end}
- #hexlab.mixed #mx-resolver{grid-area:2/1;grid-column:1/-1;order:0;margin-right:83px}
- #hexlab.mixed .mx-vote{grid-area:2/2;grid-column:1/-1;justify-self:end;max-width:81px;order:0}
- #hexlab.mixed .mx-vote select{width:79px;height:23px;font-size:10px}
+ #hexlab.mixed .mx-tools{grid-template-columns:minmax(0,1fr) 62px;gap:3px 6px;padding:3px 0}
+ #hexlab.mixed .mx-current{grid-column:1;grid-row:1;min-width:0}
+ #hexlab.mixed #mx-preview{grid-column:2;grid-row:1/4;width:62px;height:56px}
+ #hexlab.mixed .mx-modline{grid-column:1;grid-row:2;display:flex;gap:4px}
+ #hexlab.mixed #mx-transform{gap:2px}#hexlab.mixed #mx-transform button{padding:2px 5px;font-size:14px}
+ #hexlab.mixed #mx-resolver{grid-template-columns:repeat(4,minmax(0,1fr));min-width:0}
+ #hexlab.mixed #mx-resolver button{font-size:9px;padding:3px 1px}
+ #hexlab.mixed .mx-vote{grid-column:1;grid-row:3;justify-content:flex-start;min-width:0}
+ #hexlab.mixed .mx-vote label{flex:none;font-size:9px}
+ #hexlab.mixed .mx-vote select{width:90px;max-width:none;height:21px;padding:0 3px;font-size:10px}
  #hexlab.mixed .mx-rail-links{grid-column:1;grid-row:4}
  #hexlab.mixed #mx-conflicts{grid-column:2;grid-row:4;align-self:center;font-size:10px}
  #hexlab.mixed #mx-globe{display:inline-block}

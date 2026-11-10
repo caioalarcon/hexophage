@@ -19,11 +19,14 @@ function load(){
     const custom=Array.isArray(obj.custom)?obj.custom.filter(c=>c.custom && typeof c.name==='string'&&typeof c.key==='string' &&
       Object.hasOwn(rules,c.rule)&&Object.hasOwn(resolverNames,c.resolver)&&Object.hasOwn(votes,c.ballot)&&
       Array.isArray(c.offsets)&&c.offsets.length&&c.offsets.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isSafeInteger))):[];
-    return {custom,pins:Array.isArray(obj.pins)?obj.pins.filter(k=>typeof k==='string'):[]};
-  }catch{return {custom:[],pins:[]};}
+    const replacements=obj.replacements&&typeof obj.replacements==='object'&&!Array.isArray(obj.replacements)
+      ?Object.fromEntries(Object.entries(obj.replacements).filter(([,key])=>typeof key==='string')):{};
+    return {custom,pins:Array.isArray(obj.pins)?obj.pins.filter(k=>typeof k==='string'):[],replacements};
+  }catch{return {custom:[],pins:[],replacements:{}};}
 }
 const template=`
 <header class="hxa-head"><div><small>HEXOPHAGE</small><h2>Atlas de carimbos</h2></div><button type="button" data-ui="exit" aria-label="Fechar atlas">×</button></header>
+<p class="hxa-target" data-ui="target" hidden></p>
 <div class="hxa-columns"><section class="hxa-library" aria-label="Catálogo">
 <input data-ui="search" type="search" placeholder="Buscar padrão, ID ou regra" aria-label="Buscar no atlas">
 <div class="hxa-filters"><select data-ui="family" aria-label="Filtrar por autômato"><option value="">Todos os autômatos</option></select>
@@ -32,6 +35,7 @@ const template=`
 <div class="hxa-results" data-ui="results" aria-label="Padrões ordenados por retorno"></div></section>
 <section class="hxa-detail" aria-label="Inspeção do carimbo">
 <div class="hxa-title"><div><small data-ui="meta"></small><h3 data-ui="title"></h3></div><button data-ui="edit">Editar cópia</button></div>
+<p class="hxa-interaction" data-ui="interaction"></p>
 <div class="hxa-frame"><canvas data-ui="canvas" aria-label="Grade hexagonal do editor"></canvas><div class="hxa-tools">
 <button data-ui="minus" aria-label="Diminuir zoom">−</button><button data-ui="plus" aria-label="Aumentar zoom">+</button><button data-ui="fit" title="Enquadrar padrão">Enquadrar</button></div></div>
 <div class="hxa-transport"><button data-ui="play">Evoluir</button><button data-ui="one">+1</button><button data-ui="many">+16</button><button data-ui="back">Reiniciar</button><strong data-ui="tick">G0</strong></div>
@@ -44,26 +48,40 @@ const template=`
 export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect=()=>{},onDeck=()=>{}}){
   const dialog=document.createElement('dialog');dialog.className='hxa';dialog.setAttribute('aria-label','Atlas de carimbos');dialog.innerHTML=template;host.append(dialog);
   const ui=Object.fromEntries([...dialog.querySelectorAll('[data-ui]')].map(e=>[e.dataset.ui,e]));
-  const saved=load();let library=[],rows=[],deck=[],active,draft=null,source,frame,g,net,added,lost,mature,timer,limit=48;
+  const saved=load();let library=[],rows=[],deck=[],active,draft=null,source,frame,g,net,added,lost,mature,timer,limit=48,replaceSlot=null;
   const wallet=()=>{const v=getWallet();return typeof v==='number'?{reserve:v,mature:0}:{reserve:v?.reserve??Infinity,mature:v?.mature??0};};
   function store(){try{localStorage.setItem(storage,JSON.stringify(saved));return true;}catch{return false;}}
-  function refresh(){
+  function refreshCatalog(){
     library=[...atlasCards,...saved.custom];
     rows=rankCards(library,getEconomy(),wallet());
+  }
+  function refresh(){
+    refreshCatalog();
     const auto=automaticDeck(rows.filter(r=>!r.card.custom)),map=new Map(library.map(c=>[c.key,c]));
     const selected=saved.pins.map(k=>map.get(k)).filter(Boolean),pinned=new Set(selected.map(c=>c.key));
-    deck=[...selected,...auto.filter(c=>!pinned.has(c.key))];onDeck(deck);
+    deck=[...selected,...auto.filter(c=>!pinned.has(c.key))].map(c=>({...(map.get(saved.replacements[c.key])??c),slotKey:c.key}));onDeck(deck);
     if(dialog.open){renderResults();metrics();}
   }
   function select(card){
     if(!card)return;
-    saved.pins=[card.key,...saved.pins.filter(k=>k!==card.key)];store();refresh();onSelect(card);
+    if(replaceSlot!==null){
+      const replacement={...card,slotKey:replaceSlot};
+      if(card.key===replaceSlot)delete saved.replacements[replaceSlot];else saved.replacements[replaceSlot]=card.key;
+      store();refreshCatalog();
+      deck=deck.map(c=>c.slotKey===replaceSlot?replacement:c);onDeck(deck);onSelect(replacement);
+      return;
+    }
+    delete saved.replacements[card.key];
+    saved.pins=[card.key,...saved.pins.filter(k=>k!==card.key)];store();refresh();onSelect(deck.find(c=>c.slotKey===card.key)??card);
   }
   function stop(){clearInterval(timer);timer=null;ui.play.textContent='Evoluir';}
-  function close(){stop();dialog.close();}
-  function open(card){
+  function close(){stop();replaceSlot=null;dialog.close();}
+  function open(card,{replace=false}={}){
+    replaceSlot=replace?(card?.slotKey??card?.key??null):null;
+    ui.target.hidden=replaceSlot===null;
+    ui.target.textContent=replaceSlot===null?'':'Escolha ou edite o carimbo que vai substituir '+card.name+' neste espaço da barra.';
     if(!dialog.open)dialog.showModal();
-    refresh();const current=card??active??deck[0]??atlasCards[0];inspect(current);ui.search.focus();
+    refreshCatalog();const current=card??active??deck[0]??atlasCards[0];inspect(current);ui.search.focus();
   }
   selectOptions(ui.family,Object.entries(labels));selectOptions(ui.physics,Object.entries(labels));
   selectOptions(ui.group,[...new Set(atlasCards.map(c=>c.group))].sort().map(s=>[s,s]));
@@ -89,10 +107,11 @@ export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect
   function metrics(){
     if(!source)return;
     ui.tick.textContent='G'+g;ui.title.textContent=draft?(draft.name||'Novo carimbo'):active.name;
-    ui.meta.textContent=short[source.rule]+' · '+source.group;ui.edit.hidden=!!draft;
+    ui.meta.textContent=labels[source.rule]+' · '+source.group;ui.edit.hidden=!!draft;
+    ui.interaction.textContent=resolverNames[source.resolver]+' · voto '+votes[source.ballot];
     ui.edit.textContent=active?.custom?'Editar':'Editar cópia';
-    ui.unpin.hidden=!!draft||!saved.pins.includes(active?.key);ui.delete.hidden=!!draft||!active?.custom;
-    ui.draft.hidden=!draft;ui.use.textContent=draft?'Salvar e usar':'Usar na barra';
+    ui.unpin.hidden=replaceSlot!==null||!!draft||!saved.pins.includes(active?.key);ui.delete.hidden=!!draft||!active?.custom;
+    ui.draft.hidden=!draft;ui.use.textContent=replaceSlot!==null?(draft?'Salvar e substituir':'Substituir neste espaço'):(draft?'Salvar e usar':'Usar na barra');
     ui.price.textContent='◈ '+fmt.format(stampCost(source,getEconomy()));
     const estimate=draft?null:rows.find(x=>x.card.key===source.key);
     ui.flow.textContent=estimate?.flow!=null?sign(estimate.flow)+'/G':g?sign((net+stampCost(source,getEconomy()))/g)+'/G':'—';
@@ -113,7 +132,13 @@ export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect
   }
   function edit(fresh=false){
     if(fresh){draft={key:'',name:'',rule:ui.family.value||active.rule,group:'personalizado',resolver:'contact',sense:'native',ballot:'support',custom:true,offsets:[]};}
-    else draft={...active,key:active.custom?active.key:'',name:active.custom?active.name:active.name+' · cópia',nativeKey:active.nativeKey??(!active.custom?active.key:undefined),custom:true,offsets:active.offsets.map(p=>[...p])};
+    else{
+      const shared=replaceSlot!==null && active.custom && (
+        deck.some(c=>c.slotKey!==replaceSlot && c.key===active.key) ||
+        Object.entries(saved.replacements).some(([slot,key])=>slot!==replaceSlot && key===active.key) ||
+        saved.pins.includes(active.key) && replaceSlot!==active.key);
+      draft={...active,key:active.custom&&!shared?active.key:'',name:active.custom?active.name:active.name+' · cópia',nativeKey:active.nativeKey??(!active.custom?active.key:undefined),custom:true,offsets:active.offsets.map(p=>[...p])};
+    }
     ui.name.value=draft.name;ui.physics.value=draft.rule;
     reset();renderResults();ui.name.focus();
   }
@@ -142,8 +167,10 @@ export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect
   ui.name.oninput=()=>{draft.name=ui.name.value;metrics();};
   ui.physics.onchange=()=>{draft.rule=ui.physics.value;delete draft.nativeKey;delete draft.sample;reset();};
   ui.unpin.onclick=()=>{saved.pins=saved.pins.filter(k=>k!==active.key);store();refresh();};
-  ui.delete.onclick=()=>{const key=active.key;saved.custom=saved.custom.filter(c=>c.key!==key);saved.pins=saved.pins.filter(k=>k!==key);store();refresh();inspect(deck[0]);onSelect(deck[0]);};
-  ui.exit.onclick=close;dialog.addEventListener('close',stop);
+  ui.delete.onclick=()=>{const key=active.key;saved.custom=saved.custom.filter(c=>c.key!==key);saved.pins=saved.pins.filter(k=>k!==key);
+    for(const slot of Object.keys(saved.replacements))if(saved.replacements[slot]===key)delete saved.replacements[slot];
+    store();refresh();inspect(deck[0]);onSelect(deck[0]);};
+  ui.exit.onclick=close;dialog.addEventListener('close',()=>{stop();replaceSlot=null;});
   ui.one.onclick=()=>{stop();step(1);};ui.many.onclick=()=>{stop();step(16);};ui.back.onclick=()=>reset();
   ui.play.onclick=()=>{if(timer)stop();else{step(1);if(frame.size&&frame.size<=12000){timer=setInterval(()=>step(1),120);ui.play.textContent='Pausar';}}};
   ui.fit.onclick=()=>view.fit();ui.plus.onclick=()=>view.zoom(1.35);ui.minus.onclick=()=>view.zoom(1/1.35);

@@ -18,7 +18,7 @@ function mix(x) {
 }
 function account(reserve) {
   return {reserve, income:0, matureIncome:0,birthIncome:0,deathIncome:0,deaths:0,conventional:0,
-    births:0, stampSpent:0, birthSpent:0, eraseSpent:0,
+    births:0, stamps:0, stampedCells:0, stampSpent:0, birthSpent:0, eraseSpent:0,
     erased:0, lost:0, friendlyErased:0, ownLost:0, friendlyEraseSpent:0, field:0, mature:0, refused:0, eroded:0, detonations:0, waveBirths:0, waveErased:0,
     requested:0, requestedCost:0, unfundedCost:0, salvageIncome:0, lastFieldAt:0, out:false};
 }
@@ -83,6 +83,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       if(!canStamp(owner,rule,resolver,ids,ballot,sense))return false;
       const p=players[owner];
       p.field+=ids.length;p.conventional+=ids.length;
+      p.stamps++;p.stampedCells+=ids.length;
       if(economy.stableAfter<=1)p.mature+=ids.length;
       p.stampSpent+=ids.length*stampPrice(resolver);
       p.reserve=Math.max(0,p.reserve-ids.length*stampPrice(resolver));

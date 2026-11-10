@@ -641,11 +641,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab #hl-globe-gpu{pointer-events:none!important;position:absolute!important;inset:0;width:100%;height:100%;z-index:2}
 #hexlab #br-mini-fallback{pointer-events:none;z-index:1}
 #hexlab .br-globe-overlay[hidden]{display:none!important}
-#hexlab .br-globe-overlay{position:absolute;inset:0;display:flex;flex-direction:column;z-index:40;background:#07121bf7;backdrop-filter:blur(5px);padding:12px;align-items:center;gap:10px}
-#hexlab .br-globe-top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:900px;font-size:12px}
+#hexlab .br-globe-overlay{position:absolute;inset:0;z-index:40;background:#07121bf7;backdrop-filter:blur(5px)}
+#hexlab .br-globe-top{position:absolute;top:12px;left:12px;right:12px;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}
 #hexlab .br-globe-top>span{color:#a7c3d4;font-size:11px}
 #hexlab .br-globe-top button{padding:7px 10px;border-radius:7px;background:#263e53;border:1px solid #48647c}
-#hexlab .br-full-slot{flex:1;min-height:0;min-width:0;width:min(100%,900px);position:relative;touch-action:none;cursor:grab;background:transparent}
+#hexlab .br-full-slot{position:absolute;inset:0;min-height:0;min-width:0;touch-action:none;cursor:grab;background:transparent}
 #hexlab .br-full-slot:active{cursor:grabbing}
 #hexlab .br-full-slot .br-globe-slot{width:100%;height:100%;max-height:none;border-radius:0;aspect-ratio:auto;background:transparent}
 #hexlab .hl-right{z-index:46!important}
@@ -764,23 +764,39 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab.mixed #mx-score{padding:0;list-style:none;margin:7px 0;display:grid;gap:4px}
 #hexlab.mixed #mx-score button{display:flex;align-items:center;justify-content:space-between;gap:4px;width:100%;padding:5px 7px;background:#1c2c40;border:0;border-left:3px solid var(--player);font-size:11px}
 #hexlab.mixed #mx-score small{color:var(--mx-soft);font-size:10px}
+#hexlab.mixed #mx-score button[aria-expanded=true]{background:#294158;border-radius:5px 5px 0 0}
+#hexlab.mixed .mx-player-stats{padding:7px;background:#101c2c;border:1px solid var(--mx-line);border-top:0;border-radius:0 0 5px 5px}
+#hexlab.mixed .mx-player-stats[hidden]{display:none}
+#hexlab.mixed .mx-player-stats p{margin:0 0 7px;color:var(--mx-soft);font-size:10px;line-height:1.4}
+#hexlab.mixed .mx-player-stats h3{font-size:10px;color:var(--mx-mint);margin:9px 0 4px}
+#hexlab.mixed .mx-player-stats dl{margin:0;display:grid;gap:4px;font-size:10px}
+#hexlab.mixed .mx-player-stats dl>div{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+#hexlab.mixed .mx-player-stats dt{color:var(--mx-soft);min-width:0}
+#hexlab.mixed .mx-player-stats dd{margin:0;white-space:nowrap;font-variant-numeric:tabular-nums}
 #hexlab.mixed .mx-arsenal{grid-column:3;grid-row:1;min-width:0;min-height:0;display:flex;flex-direction:column;background:#132032;border-left:1px solid var(--mx-line);padding:7px;gap:5px}
 #hexlab.mixed .mx-arsenal header,#hexlab.mixed #mx-settings header{display:flex;justify-content:space-between;align-items:center;gap:6px}
 #hexlab.mixed .mx-arsenal h2,#hexlab.mixed #mx-settings h2{font-size:15px;margin:0}
 #hexlab.mixed #mx-count{font-size:11px;font-weight:400;color:var(--mx-soft)}
 #hexlab.mixed .mx-arsenal header button{font-size:11px;padding:4px 8px;color:var(--mx-mint)}
-#hexlab.mixed .mx-tools{display:grid;gap:4px;border-block:1px solid var(--mx-line);padding:5px 0}
-#hexlab.mixed .mx-current,#hexlab.mixed .mx-modline,#hexlab.mixed .mx-vote{display:flex;align-items:center;justify-content:space-between;gap:5px}
+#hexlab.mixed .mx-tools{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:4px 7px;border-block:1px solid var(--mx-line);padding:5px 0}
+#hexlab.mixed .mx-current,#hexlab.mixed .mx-vote{grid-column:1/-1}
+#hexlab.mixed #mx-preview{grid-column:2;grid-row:2;width:88px;height:68px;align-self:center;background:#0d1b29;border:1px solid var(--mx-line);border-radius:5px}
+#hexlab.mixed .mx-modline{grid-column:1;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:4px}
+#hexlab.mixed .mx-current,#hexlab.mixed .mx-vote{display:flex;align-items:center;justify-content:space-between;gap:5px}
 #hexlab.mixed .mx-current{font-size:11px}#hexlab.mixed #mx-selected{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#hexlab.mixed #mx-price{white-space:nowrap;color:var(--mx-mint)}
 #hexlab.mixed #mx-transform{display:flex;gap:3px;flex:none}#hexlab.mixed #mx-transform button{padding:2px 7px;font-size:16px;line-height:18px}
 #hexlab.mixed .mx-modline select,#hexlab.mixed .mx-vote select{font-size:11px;padding:3px;max-width:52%}#hexlab.mixed .mx-vote label{margin:0}
-#hexlab.mixed #mx-hand{flex:1 1 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:clamp(29px,calc((100dvh - 180px)/18),53px);gap:3px;align-content:start;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
-#hexlab.mixed .mx-card{min-width:0;max-width:100%;display:grid;grid-template-columns:clamp(16px,2vw,30px) minmax(0,1fr);grid-template-rows:1fr 1fr;align-items:center;text-align:left;gap:0 3px;white-space:normal;background:#1b2b3e;border:1px solid #33465d;border-radius:4px;padding:2px 3px;line-height:1.1}
+#hexlab.mixed #mx-hand{flex:1 1 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:clamp(32px,calc((100dvh - 190px)/18),53px);gap:3px;align-content:start;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+#hexlab.mixed .mx-card{min-width:0;max-width:100%;display:grid;grid-template-columns:clamp(16px,2vw,30px) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto 5px;align-items:center;text-align:left;gap:0 3px;white-space:normal;background:#1b2b3e;border:1px solid #33465d;border-radius:4px;padding:2px 3px;line-height:1.1}
 #hexlab.mixed .mx-card canvas{grid-row:1/3;width:100%;height:90%;max-height:31px;color:#b6d0d7;pointer-events:none}
 #hexlab.mixed .mx-card b,#hexlab.mixed .mx-card small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;align-self:end}
-#hexlab.mixed .mx-card small{align-self:start;color:var(--mx-soft);font-size:9px;font-weight:400;margin-top:2px}
+#hexlab.mixed .mx-card small{align-self:start;color:var(--mx-soft);font-size:9px;font-weight:400;margin:1px 0 2px}
+#hexlab.mixed .mx-card-energy{grid-column:1/-1;display:block;height:5px;overflow:hidden;border-radius:2px;background:#0a1421}
+#hexlab.mixed .mx-card-energy::after{content:"";display:block;width:100%;height:100%;background:#e9b66c;transform:scaleX(var(--charge,0));transform-origin:left}
+#hexlab.mixed .mx-card[data-afford=true] .mx-card-energy::after{background:var(--mx-mint)}
+#hexlab.mixed .mx-card[data-afford=false] canvas,#hexlab.mixed .mx-card[data-afford=false] b{opacity:.45}
+#hexlab.mixed .mx-card[data-afford=true]{border-color:#456d68}
 #hexlab.mixed .mx-card[aria-pressed=true]{background:#19453f;border-color:var(--mx-mint)}
-#hexlab.mixed .mx-card[data-afford=false] small{color:#ffbe9e}
 #hexlab.mixed #mx-settings{background:#152437;color:var(--mx-ink);border:1px solid #4c627d;border-radius:10px;width:min(500px,94vw);max-height:89dvh;padding:16px;overflow:auto}
 #hexlab.mixed #mx-settings::backdrop{background:#07111bc2}#hexlab.mixed #mx-setup fieldset{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;border:1px solid var(--mx-line);margin:13px 0 0;padding:8px}
 #hexlab.mixed #mx-setup legend{color:var(--mx-mint);font-size:12px}#hexlab.mixed #mx-setup label{font-size:11px;color:var(--mx-soft);display:grid;gap:3px}
@@ -801,30 +817,25 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab.mixed #br-mini-panel,#hexlab.mixed .br-rail-spacer{display:none}
  #hexlab.mixed .hl-left{grid-row:2;grid-column:1}
  #hexlab.mixed .mx-arsenal{grid-row:3;grid-column:1;padding:3px 6px;gap:3px;border:0;border-top:1px solid var(--mx-line)}
- #hexlab.mixed .mx-tools{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:3px 6px;padding:3px 0}
- #hexlab.mixed .mx-vote{grid-column:1/-1;justify-content:flex-start}#hexlab.mixed .mx-vote select{padding:0 3px}
  #hexlab.mixed #mx-hand{grid-auto-rows:34px}#hexlab.mixed .mx-card b{font-size:11px}
  #hexlab.mixed .br-mapbar{bottom:5px;right:5px}#hexlab.mixed .br-message{bottom:33px}
 }
 @media(orientation:landscape) and (max-height:520px){#hexlab.mixed .br-rail{padding:4px}#hexlab.mixed .mx-console{gap:6px}#hexlab.mixed .br-mini-panel{min-height:70px}#hexlab.mixed .mx-arsenal{padding:3px}}
 
-#hexlab.mixed .mx-modline{flex-wrap:wrap;justify-content:flex-start;gap:3px 5px}
-#hexlab.mixed #mx-resolver{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;flex:1 0 100%}
+#hexlab.mixed #mx-resolver{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;width:100%}
 #hexlab.mixed #mx-resolver button{min-width:0;padding:4px 1px;border-radius:4px;font-size:10px;font-weight:550}
 #hexlab.mixed #mx-resolver button[aria-pressed=true]{color:#c1fff1;border-color:#58bda7;background:#23443f}
-@media(orientation:portrait){
- #hexlab.mixed .mx-tools{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px}
- #hexlab.mixed .mx-current{flex:1;min-width:80px}
- #hexlab.mixed .mx-modline{display:contents}
- #hexlab.mixed #mx-resolver{order:1;flex:1}
- #hexlab.mixed .mx-vote{order:2;flex:0 0 auto}
- #hexlab.mixed .mx-vote label{display:none}#hexlab.mixed .mx-vote select{max-width:90px}
-}
-
-#hexlab.mixed .mx-card small{display:flex;gap:2px;align-items:baseline;justify-content:space-between}
-#hexlab.mixed .mx-card-rule{min-width:0;overflow:hidden;text-overflow:ellipsis}
-#hexlab.mixed .mx-card-cost{flex:none;color:#b6dcd5}
+#hexlab.mixed .mx-card-cost{color:#b6dcd5}
 #hexlab.mixed .mx-card[data-afford=false] .mx-card-cost{color:#ffb699}
+#hexlab.mixed .mx-vote{position:relative;gap:4px}
+#hexlab.mixed .mx-vote label{flex:1;cursor:help}
+#hexlab.mixed #mx-ballot-help{padding:0;width:17px;height:17px;flex:none;border-radius:50%;font-size:10px;line-height:15px;cursor:help}
+#hexlab.mixed #mx-ballot-tip{position:fixed;box-sizing:border-box;z-index:30;width:min(290px,calc(100vw - 16px));overflow:auto;padding:11px;background:#132437;color:var(--mx-ink);border:1px solid #6c8b9d;border-radius:6px;box-shadow:0 6px 24px #0009;font-size:12px;line-height:1.4;text-align:left}
+#hexlab.mixed #mx-ballot-tip[hidden]{display:none}
+#hexlab.mixed #mx-ballot-tip p{margin:6px 0}
+#hexlab.mixed #mx-ballot-tip dl{display:grid;grid-template-columns:auto 1fr;gap:5px 9px;margin:8px 0}
+#hexlab.mixed #mx-ballot-tip dt{color:var(--mx-mint);font-weight:650}
+#hexlab.mixed #mx-ballot-tip dd{margin:0}
 #hexlab.mixed .mx-rail-links{display:flex;gap:5px}
 #hexlab.mixed .mx-rail-links button,#hexlab.mixed #mx-locate{font-size:10px;padding:3px 6px;min-width:0}
 #hexlab.mixed #mx-globe{display:none}
@@ -833,12 +844,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab.mixed #mx-event{margin:5px 0;line-height:1.4}
 @media(orientation:portrait){
  #hexlab.mixed .hl-left{display:flex!important}
- #hexlab.mixed .mx-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px}
- #hexlab.mixed .mx-current{grid-area:1/1;min-width:0}
- #hexlab.mixed #mx-transform{grid-area:1/2;justify-self:end}
- #hexlab.mixed #mx-resolver{grid-area:2/1;grid-column:1/-1;order:0;margin-right:83px}
- #hexlab.mixed .mx-vote{grid-area:2/2;grid-column:1/-1;justify-self:end;max-width:81px;order:0}
- #hexlab.mixed .mx-vote select{width:79px;height:23px;font-size:10px}
+ #hexlab.mixed .mx-tools{grid-template-columns:minmax(0,1fr) 62px;gap:3px 6px;padding:3px 0}
+ #hexlab.mixed .mx-current{grid-column:1;grid-row:1;min-width:0}
+ #hexlab.mixed #mx-preview{grid-column:2;grid-row:1/4;width:62px;height:56px}
+ #hexlab.mixed .mx-modline{grid-column:1;grid-row:2;display:flex;gap:4px}
+ #hexlab.mixed #mx-transform{gap:2px}#hexlab.mixed #mx-transform button{padding:2px 5px;font-size:14px}
+ #hexlab.mixed #mx-resolver{grid-template-columns:repeat(4,minmax(0,1fr));min-width:0}
+ #hexlab.mixed #mx-resolver button{font-size:9px;padding:3px 1px}
+ #hexlab.mixed .mx-vote{grid-column:1;grid-row:3;justify-content:flex-start;min-width:0}
+ #hexlab.mixed .mx-vote label{flex:none;font-size:9px}
+ #hexlab.mixed .mx-vote select{width:90px;max-width:none;height:21px;padding:0 3px;font-size:10px}
  #hexlab.mixed .mx-rail-links{grid-column:1;grid-row:4}
  #hexlab.mixed #mx-conflicts{grid-column:2;grid-row:4;align-self:center;font-size:10px}
  #hexlab.mixed #mx-globe{display:inline-block}
@@ -859,6 +874,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 .hxa input:focus-visible,.hxa select:focus-visible,.hxa button:focus-visible{outline:2px solid #6de2bd;outline-offset:2px}
 .hxa h2,.hxa h3,.hxa header,.hxa section,.hxa footer{margin:0}.hxa small{color:#a4babb}
 .hxa .hxa-head{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid #344952}
+.hxa-target{margin:0;padding:9px 18px;color:#b8e4d2;background:#1c3833;font-size:12px}
+.hxa-interaction{margin:5px 0;color:#aec9c7;font-size:11px}
 .hxa-head small,.hxa-title small{font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:#74d8ba}.hxa h2{font-size:23px;letter-spacing:-.035em}.hxa-head button{height:32px;width:34px;padding:0;font-size:21px}
 .hxa-columns{display:grid;grid-template-columns:minmax(235px,.8fr) minmax(300px,1.22fr)}
 .hxa-library,.hxa-detail{min-width:0;padding:16px 18px}.hxa-library{border-right:1px solid #334b53;display:flex;flex-direction:column;gap:9px}
@@ -1156,8 +1173,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <header><h2>Carimbos <small id="mx-count"></small></h2><button id="mx-atlas" type="button">Atlas ↗</button></header>
   <div class="mx-tools" aria-label="Modificadores do carimbo">
    <div class="mx-current"><strong id="mx-selected"></strong><span id="mx-price"></span></div>
+   <canvas id="mx-preview" width="176" height="112" role="img" aria-label="Prévia do carimbo na orientação atual"></canvas>
    <div class="mx-modline"><div id="mx-transform"></div><div id="mx-resolver" role="group" aria-label="Interação do próximo carimbo"><button type="button" data-mode="contact" title="Interage com a vizinhança material">Contato</button><button type="button" data-mode="guard" title="Guarda apoiada resiste à travessia">Guarda</button><button type="button" data-mode="phase" title="Ignora as outras linhagens e paga pelas células adversárias substituídas">Travessia</button><button type="button" data-mode="antimatter" title="Acende uma onda B2/S245 financiada pela sua carteira">Antimatéria</button></div></div>
-   <div class="mx-vote"><label for="mx-ballot">Voto da linhagem</label><select id="mx-ballot"><option value="support">Apoio</option><option value="age">Idade</option><option value="robustness">Robustez</option><option value="geometry">Posição</option></select></div>
+   <div class="mx-vote"><label for="mx-ballot">Voto da linhagem</label><button id="mx-ballot-help" type="button" aria-label="Entender o voto da linhagem" aria-describedby="mx-ballot-tip" aria-expanded="false">?</button><select id="mx-ballot" aria-describedby="mx-ballot-tip"><option value="support">Apoio</option><option value="age">Idade</option><option value="robustness">Robustez</option><option value="geometry">Posição</option></select>
+    <div id="mx-ballot-tip" role="tooltip" hidden><strong>Voto da linhagem</strong><p>Na arbitragem Voto do carimbo, cada linhagem que disputa uma célula compara as candidatas pelo seu critério. A decisão combina esses votos.</p><dl><dt>Apoio</dt><dd>Prefere mais vizinhas da mesma linhagem.</dd><dt>Idade</dt><dd>Prefere a maior idade entre as células de apoio. Para uma sobrevivente, usa a idade dela.</dd><dt>Robustez</dt><dd>Prefere a regra que mantém a célula viva sob mais mudanças de uma vizinha.</dd><dt>Posição</dt><dd>Compara as posições de origem por uma ordem reproduzível, calculada com a semente e a geração.</dd></dl><p>O próximo carimbo e suas descendentes herdam a opção escolhida.</p></div>
+   </div>
   </div>
   <div id="mx-hand" role="group" aria-label="Baralho por relevância econômica"></div>
  </aside>
@@ -4509,14 +4529,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const { next, births, mature } = advancePattern(ages, maturity, physics);
         ages = next;
         const { income, upkeep } = generationEnergy(births, mature, economy);
-        const net = income - upkeep;
-        balance += net;
+        const net2 = income - upkeep;
+        balance += net2;
         capital = Math.max(capital, -balance);
         if (gen === pattern.period && cyclesSkipped) {
           capital += cyclesSkipped * Math.max(0, -balance);
           balance += cyclesSkipped * balance;
         }
-        if (gen > turns - pattern.period) recent += net;
+        if (gen > turns - pattern.period) recent += net2;
       }
       const result = { id, budget: price + capital, yield: recent / pattern.period };
       cache2.set(id, result);
@@ -4675,13 +4695,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       let affordable = candidates.filter((seed) => energyCost(seed.offsets.length, game2.economy) <= player.reserve);
       if (!world2.physics.birthsFromVacuum) {
         const scored = affordable.map((seed) => {
-          let net = 0, living = 0;
+          let net2 = 0, living = 0;
           for (const turn of observe(seed)) {
             const { income, upkeep } = generationEnergy(turn.births, turn.mature, game2.economy);
-            net += income - upkeep;
+            net2 += income - upkeep;
             living = turn.living;
           }
-          return { seed, net: net / seed.offsets.length, living: living / seed.offsets.length };
+          return { seed, net: net2 / seed.offsets.length, living: living / seed.offsets.length };
         });
         const metric = player.pattern === "income" ? "net" : "living";
         const tie = metric === "net" ? "living" : "net";
@@ -6286,10 +6306,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     alternatePlacement = adapter;
   }
   function placementAt(anchor) {
-    if (alternatePlacement) return alternatePlacement.preview(anchor);
+    if (alternatePlacement) {
+      const preview = alternatePlacement.preview(anchor);
+      return preview?.ready ? preview.ids : null;
+    }
     if (!anchor || !stampReady()) return null;
     const ids = stampTargets(anchor, stampOffsets());
     return ids ? stampAdditions(1, ids) : null;
+  }
+  function placementPreview(anchor) {
+    if (alternatePlacement) return alternatePlacement.preview(anchor);
+    const ids = placementAt(anchor);
+    return ids ? { ids, ready: true } : null;
   }
   function stampAt(anchor) {
     if (alternatePlacement) return alternatePlacement.place(anchor);
@@ -6494,8 +6522,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         fixedIncome += unitIncome[length] - unitIncome[length - productiveTurns];
         fixedUpkeep += unitUpkeep[length] - unitUpkeep[length - productiveTurns];
       }
-      const net = income - upkeep;
-      if (net > 0) {
+      const net2 = income - upkeep;
+      if (net2 > 0) {
         firstPositiveCycle ?? (firstPositiveCycle = cycle);
         profitableFromCycle ?? (profitableFromCycle = cycle);
       } else profitableFromCycle = null;
@@ -6510,7 +6538,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         fixedCore,
         fixedIncome,
         fixedUpkeep,
-        net,
+        net: net2,
         cumulative: operatingBalance - initialCost,
         live: owned
       });
@@ -7078,7 +7106,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const e = game.economy;
     let stable = 0;
     for (const id of world.ownerCells[1]) if ((world.cellAges?.[id] || 0) >= e.stableAfter) stable++;
-    const fields = {
+    const fields2 = {
       "eco-reserve": compact(human.reserve),
       "eco-can-stamp": e.stampCost === 0 ? "∞" : compact(availableCells(human.reserve, e)),
       "eco-generation": compact(world.gen),
@@ -7101,7 +7129,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       "eco-rate": signed2((human.flowAverage || 0) * (world.actual || world.speed)) + "/s",
       "eco-eroded-last": compact(human.lastEroded)
     };
-    for (const [id, value] of Object.entries(fields)) $(id).textContent = value;
+    for (const [id, value] of Object.entries(fields2)) $(id).textContent = value;
     for (const id of ["eco-flow", "eco-rate"]) {
       $(id).classList.toggle("negative", (human.flowAverage || 0) < 0 || id === "eco-flow" && human.lastFlow < 0);
       $(id).classList.toggle("positive", (id === "eco-flow" ? human.lastFlow : human.flowAverage) > 0);
@@ -7175,10 +7203,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         rankingSignedInteger(rate),
         rate > 0 ? "positive" : rate < 0 ? "negative" : "neutral"
       );
-      const net = p.received - p.paid;
+      const net2 = p.received - p.paid;
       cell(
-        rankingSignedInteger(net),
-        net > 0 ? "positive" : net < 0 ? "negative" : "neutral"
+        rankingSignedInteger(net2),
+        net2 > 0 ? "positive" : net2 < 0 ? "negative" : "neutral"
       );
       cell(rankingInteger(p.eroded), p.eroded ? "negative" : "neutral");
       cell(rankingInteger(p.stamps));
@@ -8198,6 +8226,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       deaths: 0,
       conventional: 0,
       births: 0,
+      stamps: 0,
+      stampedCells: 0,
       stampSpent: 0,
       birthSpent: 0,
       eraseSpent: 0,
@@ -8303,6 +8333,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const p = players[owner];
         p.field += ids.length;
         p.conventional += ids.length;
+        p.stamps++;
+        p.stampedCells += ids.length;
         if (economy.stableAfter <= 1) p.mature += ids.length;
         p.stampSpent += ids.length * stampPrice(resolver);
         p.reserve = Math.max(0, p.reserve - ids.length * stampPrice(resolver));
@@ -8697,10 +8729,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       passage,
       friendlyFire,
       economy = {},
+      unseededOwners = [],
       graph = buildSphere(F)
     } = { ...defaultGameOptions, ...options };
     if (!Object.hasOwn(gameEconomies, policy)) throw RangeError("Economia desconhecida.");
     if (!Number.isInteger(players) || players < 2 || players > graph.n) throw RangeError("A partida precisa de pelo menos dois jogadores e espaço na esfera.");
+    if (!Array.isArray(unseededOwners) || unseededOwners.some((owner) => !Number.isInteger(owner) || owner < 1 || owner > players))
+      throw RangeError("A abertura vazia precisa indicar jogadores da partida.");
     const match = createTypedWorld(graph, {
       seed,
       wallets: Array(players).fill(bank),
@@ -8716,11 +8751,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const [rule] = farm.split("/");
     for (let owner = 1; owner <= players; owner++) {
       const site = sites[((seed >>> 0) + owner - 1) % players], rotation = ((seed >>> 0) + owner) % 6;
+      starts.push(site);
+      alive.push(true);
+      if (unseededOwners.includes(owner)) {
+        opening.push(null);
+        continue;
+      }
       const ids = footprint(graph, farm, site, rotation);
       if (!ids || !match.stamp(owner, rule, "contact", ids))
         throw RangeError("A reserva e o espaço devem comportar a colônia inicial de cada jogador.");
-      starts.push(site);
-      alive.push(true);
       opening.push({ owner, key: farm, site, ids, rotation, rule, resolver: "contact", ballot: "support", sense: "native" });
     }
     const eliminatedAt = alive.map(() => null);
@@ -8731,12 +8770,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       let survivors = 0, survivor = 0;
       for (let owner = 1; owner <= players; owner++) {
         if (!alive[owner]) continue;
-        if (match.players[owner].conventional > 0) {
+        const player = match.players[owner];
+        if (player.stamps === 0) player.out = false;
+        if (player.conventional > 0 || player.stamps === 0) {
           survivors++;
           survivor = owner;
         } else {
           alive[owner] = false;
-          match.players[owner].out = true;
+          player.out = true;
           eliminatedAt[owner] = match.gen;
         }
       }
@@ -9118,10 +9159,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const j = bot.job;
       if (!j) return;
       const { owner, other, play: play2, hold, item, raid } = j, stat = stats[owner];
-      const net = (id) => operating(play2.players[id]) - operating(hold.players[id]);
+      const net2 = (id) => operating(play2.players[id]) - operating(hold.players[id]);
       if (j.t === j.turns - 4) {
-        j.ownBase = net(owner);
-        j.enemyBase = net(other);
+        j.ownBase = net2(owner);
+        j.enemyBase = net2(other);
       }
       hold.step();
       play2.step();
@@ -9130,7 +9171,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (j.t < j.turns) return;
       bot.job = null;
       const gain = (id) => play2.players[id].reserve - hold.players[id].reserve;
-      const flow2 = (id) => (net(id) - (id === owner ? j.ownBase : j.enemyBase)) / 4;
+      const flow2 = (id) => (net2(id) - (id === owner ? j.ownBase : j.enemyBase)) / 4;
       const own = play2.players[owner], lost = hold.players[other].conventional - play2.players[other].conventional;
       const harm = -gain(other) - lookahead * flow2(other) + lost * match.economy.stampCost;
       const investmentHorizon = adaptive && stat.orders && match.economy.stableEnergy > 0 && !raid ? Math.max(lookahead, Math.min(4 * lookahead, own.reserve / Math.max(1, match.economy.stampCost))) : lookahead;
@@ -9393,13 +9434,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     try {
       const obj = JSON.parse(localStorage.getItem(storage) || "{}");
       const custom = Array.isArray(obj.custom) ? obj.custom.filter((c) => c.custom && typeof c.name === "string" && typeof c.key === "string" && Object.hasOwn(rules, c.rule) && Object.hasOwn(resolverNames, c.resolver) && Object.hasOwn(votes, c.ballot) && Array.isArray(c.offsets) && c.offsets.length && c.offsets.every((p) => Array.isArray(p) && p.length === 2 && p.every(Number.isSafeInteger))) : [];
-      return { custom, pins: Array.isArray(obj.pins) ? obj.pins.filter((k) => typeof k === "string") : [] };
+      const replacements = obj.replacements && typeof obj.replacements === "object" && !Array.isArray(obj.replacements) ? Object.fromEntries(Object.entries(obj.replacements).filter(([, key2]) => typeof key2 === "string")) : {};
+      return { custom, pins: Array.isArray(obj.pins) ? obj.pins.filter((k) => typeof k === "string") : [], replacements };
     } catch {
-      return { custom: [], pins: [] };
+      return { custom: [], pins: [], replacements: {} };
     }
   }
   var template = `
 <header class="hxa-head"><div><small>HEXOPHAGE</small><h2>Atlas de carimbos</h2></div><button type="button" data-ui="exit" aria-label="Fechar atlas">×</button></header>
+<p class="hxa-target" data-ui="target" hidden></p>
 <div class="hxa-columns"><section class="hxa-library" aria-label="Catálogo">
 <input data-ui="search" type="search" placeholder="Buscar padrão, ID ou regra" aria-label="Buscar no atlas">
 <div class="hxa-filters"><select data-ui="family" aria-label="Filtrar por autômato"><option value="">Todos os autômatos</option></select>
@@ -9408,6 +9451,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <div class="hxa-results" data-ui="results" aria-label="Padrões ordenados por retorno"></div></section>
 <section class="hxa-detail" aria-label="Inspeção do carimbo">
 <div class="hxa-title"><div><small data-ui="meta"></small><h3 data-ui="title"></h3></div><button data-ui="edit">Editar cópia</button></div>
+<p class="hxa-interaction" data-ui="interaction"></p>
 <div class="hxa-frame"><canvas data-ui="canvas" aria-label="Grade hexagonal do editor"></canvas><div class="hxa-tools">
 <button data-ui="minus" aria-label="Diminuir zoom">−</button><button data-ui="plus" aria-label="Aumentar zoom">+</button><button data-ui="fit" title="Enquadrar padrão">Enquadrar</button></div></div>
 <div class="hxa-transport"><button data-ui="play">Evoluir</button><button data-ui="one">+1</button><button data-ui="many">+16</button><button data-ui="back">Reiniciar</button><strong data-ui="tick">G0</strong></div>
@@ -9427,7 +9471,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     host.append(dialog);
     const ui = Object.fromEntries([...dialog.querySelectorAll("[data-ui]")].map((e) => [e.dataset.ui, e]));
     const saved = load();
-    let library = [], rows2 = [], deck = [], active, draft = null, source, frame2, g, net, added, lost, mature, timer2, limit = 48;
+    let library = [], rows2 = [], deck = [], active, draft = null, source, frame2, g, net2, added, lost, mature, timer2, limit = 48, replaceSlot = null;
     const wallet = () => {
       const v = getWallet();
       return typeof v === "number" ? { reserve: v, mature: 0 } : { reserve: v?.reserve ?? Infinity, mature: v?.mature ?? 0 };
@@ -9440,12 +9484,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return false;
       }
     }
-    function refresh() {
+    function refreshCatalog() {
       library = [...atlasCards, ...saved.custom];
       rows2 = rankCards(library, getEconomy(), wallet());
+    }
+    function refresh() {
+      refreshCatalog();
       const auto = automaticDeck(rows2.filter((r) => !r.card.custom)), map = new Map(library.map((c) => [c.key, c]));
       const selected = saved.pins.map((k) => map.get(k)).filter(Boolean), pinned = new Set(selected.map((c) => c.key));
-      deck = [...selected, ...auto.filter((c) => !pinned.has(c.key))];
+      deck = [...selected, ...auto.filter((c) => !pinned.has(c.key))].map((c) => ({ ...map.get(saved.replacements[c.key]) ?? c, slotKey: c.key }));
       onDeck(deck);
       if (dialog.open) {
         renderResults();
@@ -9454,10 +9501,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     function select(card2) {
       if (!card2) return;
+      if (replaceSlot !== null) {
+        const replacement = { ...card2, slotKey: replaceSlot };
+        if (card2.key === replaceSlot) delete saved.replacements[replaceSlot];
+        else saved.replacements[replaceSlot] = card2.key;
+        store();
+        refreshCatalog();
+        deck = deck.map((c) => c.slotKey === replaceSlot ? replacement : c);
+        onDeck(deck);
+        onSelect(replacement);
+        return;
+      }
+      delete saved.replacements[card2.key];
       saved.pins = [card2.key, ...saved.pins.filter((k) => k !== card2.key)];
       store();
       refresh();
-      onSelect(card2);
+      onSelect(deck.find((c) => c.slotKey === card2.key) ?? card2);
     }
     function stop2() {
       clearInterval(timer2);
@@ -9466,11 +9525,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     function close() {
       stop2();
+      replaceSlot = null;
       dialog.close();
     }
-    function open(card2) {
+    function open(card2, { replace = false } = {}) {
+      replaceSlot = replace ? card2?.slotKey ?? card2?.key ?? null : null;
+      ui.target.hidden = replaceSlot === null;
+      ui.target.textContent = replaceSlot === null ? "" : "Escolha ou edite o carimbo que vai substituir " + card2.name + " neste espaço da barra.";
       if (!dialog.open) dialog.showModal();
-      refresh();
+      refreshCatalog();
       const current2 = card2 ?? active ?? deck[0] ?? atlasCards[0];
       inspect(current2);
       ui.search.focus();
@@ -9514,7 +9577,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       added = lost = mature = 0;
       source = draft ?? active;
       frame2 = seedFrame(source);
-      net = -stampCost(source, getEconomy());
+      net2 = -stampCost(source, getEconomy());
       ui.note.textContent = "";
       view.set(frame2, !!draft, recenter);
       metrics();
@@ -9523,18 +9586,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (!source) return;
       ui.tick.textContent = "G" + g;
       ui.title.textContent = draft ? draft.name || "Novo carimbo" : active.name;
-      ui.meta.textContent = short[source.rule] + " · " + source.group;
+      ui.meta.textContent = labels[source.rule] + " · " + source.group;
       ui.edit.hidden = !!draft;
+      ui.interaction.textContent = resolverNames[source.resolver] + " · voto " + votes[source.ballot];
       ui.edit.textContent = active?.custom ? "Editar" : "Editar cópia";
-      ui.unpin.hidden = !!draft || !saved.pins.includes(active?.key);
+      ui.unpin.hidden = replaceSlot !== null || !!draft || !saved.pins.includes(active?.key);
       ui.delete.hidden = !!draft || !active?.custom;
       ui.draft.hidden = !draft;
-      ui.use.textContent = draft ? "Salvar e usar" : "Usar na barra";
+      ui.use.textContent = replaceSlot !== null ? draft ? "Salvar e substituir" : "Substituir neste espaço" : draft ? "Salvar e usar" : "Usar na barra";
       ui.price.textContent = "◈ " + fmt3.format(stampCost(source, getEconomy()));
       const estimate2 = draft ? null : rows2.find((x) => x.card.key === source.key);
-      ui.flow.textContent = estimate2?.flow != null ? sign(estimate2.flow) + "/G" : g ? sign((net + stampCost(source, getEconomy())) / g) + "/G" : "—";
+      ui.flow.textContent = estimate2?.flow != null ? sign(estimate2.flow) + "/G" : g ? sign((net2 + stampCost(source, getEconomy())) / g) + "/G" : "—";
       ui.flow.title = draft ? "Média das gerações do ensaio" : estimate2?.horizon === 1024 ? "Projeção isolada · amostra G897–1024" : "Projeção isolada a partir do plantio";
-      ui.balance.textContent = "◈ " + sign(net);
+      ui.balance.textContent = "◈ " + sign(net2);
       ui.stats.textContent = frame2.size + " vivas · " + mature + " maduras · " + added + " nascimentos · " + lost + " mortes";
       ui.balance.title = "Receita menos plantio e nascimentos, em isolamento e com financiamento disponível.";
       ui.use.disabled = !source.offsets.length;
@@ -9546,7 +9610,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       draft.offsets = [...frame2.keys()].map(patternOffset);
       delete draft.nativeKey;
       delete draft.sample;
-      net = -stampCost(draft, getEconomy());
+      net2 = -stampCost(draft, getEconomy());
       view.set(frame2, true);
       metrics();
     });
@@ -9559,7 +9623,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function edit(fresh = false) {
       if (fresh) {
         draft = { key: "", name: "", rule: ui.family.value || active.rule, group: "personalizado", resolver: "contact", sense: "native", ballot: "support", custom: true, offsets: [] };
-      } else draft = { ...active, key: active.custom ? active.key : "", name: active.custom ? active.name : active.name + " · cópia", nativeKey: active.nativeKey ?? (!active.custom ? active.key : void 0), custom: true, offsets: active.offsets.map((p) => [...p]) };
+      } else {
+        const shared = replaceSlot !== null && active.custom && (deck.some((c) => c.slotKey !== replaceSlot && c.key === active.key) || Object.entries(saved.replacements).some(([slot, key2]) => slot !== replaceSlot && key2 === active.key) || saved.pins.includes(active.key) && replaceSlot !== active.key);
+        draft = { ...active, key: active.custom && !shared ? active.key : "", name: active.custom ? active.name : active.name + " · cópia", nativeKey: active.nativeKey ?? (!active.custom ? active.key : void 0), custom: true, offsets: active.offsets.map((p) => [...p]) };
+      }
       ui.name.value = draft.name;
       ui.physics.value = draft.rule;
       reset2();
@@ -9580,7 +9647,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const z = advanceFrame(frame2, source, getEconomy(), wallet().mature);
         frame2 = z.next;
         g++;
-        net += z.flow;
+        net2 += z.flow;
         added += z.births;
         lost += z.deaths;
         if (!frame2.size) {
@@ -9641,13 +9708,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const key2 = active.key;
       saved.custom = saved.custom.filter((c) => c.key !== key2);
       saved.pins = saved.pins.filter((k) => k !== key2);
+      for (const slot of Object.keys(saved.replacements)) if (saved.replacements[slot] === key2) delete saved.replacements[slot];
       store();
       refresh();
       inspect(deck[0]);
       onSelect(deck[0]);
     };
     ui.exit.onclick = close;
-    dialog.addEventListener("close", stop2);
+    dialog.addEventListener("close", () => {
+      stop2();
+      replaceSlot = null;
+    });
     ui.one.onclick = () => {
       stop2();
       step2(1);
@@ -9695,26 +9766,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/mixed/hand.js
   var fmt4 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
-  var ruleName = (id) => rules[id]?.label.split(" · ")[0] ?? id;
-  var shortRules = {
-    callahan: "Callahan",
-    bays: "Bays",
-    "hex-b2s34": "B2/S34",
-    "hex-b2s245": "B2/S245",
-    bays245: "Bays 245",
-    andreen: "Andreen",
-    highhex: "HighHex",
-    ashley15: "Ashley 15",
-    ashley: "Ashley 16"
-  };
-  function createHand(getMatch) {
-    const hand = $("mx-hand"), mods = /* @__PURE__ */ new Map(), buttons = /* @__PURE__ */ new Map();
+  var slotKey = (card2) => card2.slotKey ?? card2.key;
+  function createHand(getMatch, { onInspect = () => {
+  } } = {}) {
+    const hand = $("mx-hand"), preview = $("mx-preview"), mods = /* @__PURE__ */ new Map(), buttons = /* @__PURE__ */ new Map();
     let selected;
     const modifier = (c) => {
-      let m = mods.get(c.key);
+      const key2 = slotKey(c);
+      let m = mods.get(key2);
       if (!m) {
         m = { resolver: c.resolver ?? "contact", ballot: c.ballot ?? "support" };
-        mods.set(c.key, m);
+        mods.set(key2, m);
       }
       if (m.original !== c.offsets) {
         m.original = c.offsets;
@@ -9728,11 +9790,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       world.cachedStampOffsets = m.shape;
       world.stampCount = m.shape.length;
       world.needsDraw = true;
-      $("mx-selected").textContent = c.name + " · " + ruleName(c.rule);
+      $("mx-selected").textContent = c.name;
       $("mx-selected").title = c.name + " · " + rules[c.rule].label;
+      drawDeckIcon(preview, m.shape);
+      preview.setAttribute("aria-label", "Prévia de " + c.name + " na orientação atual");
       $("mx-ballot").value = m.ballot;
       for (const btn of $("mx-resolver").children) btn.setAttribute("aria-pressed", String(btn.dataset.mode === m.resolver));
-      for (const [key2, node] of buttons) node.setAttribute("aria-pressed", String(key2 === c.key));
+      for (const [key2, node] of buttons) node.setAttribute("aria-pressed", String(key2 === slotKey(c)));
       update();
     }
     function update() {
@@ -9743,6 +9807,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const c = btn.card, cost = c.offsets.length * match.stampPrice(modifier(c).resolver);
         const affordable = wallet + 1e-9 >= cost;
         if (btn.dataset.afford !== String(affordable)) btn.dataset.afford = String(affordable);
+        const progress = btn.querySelector(".mx-card-energy"), available = Math.max(0, Math.min(wallet, cost));
+        progress.style.setProperty("--charge", String(cost ? available / cost : 1));
+        progress.setAttribute("aria-valuemax", String(cost));
+        progress.setAttribute("aria-valuenow", String(available));
+        progress.setAttribute("aria-valuetext", affordable ? "Pronto para usar" : "Faltam ◈ " + fmt4.format(cost - available));
         if (btn.dataset.price !== String(cost)) {
           btn.dataset.price = String(cost);
           btn.querySelector(".mx-card-cost").textContent = "◈" + fmt4.format(cost);
@@ -9760,11 +9829,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       hand.replaceChildren();
       $("mx-count").textContent = String(cards2.length);
       for (const c of cards2) {
-        const btn = document.createElement("button"), icon = document.createElement("canvas"), name = document.createElement("b"), price = document.createElement("small");
+        const btn = document.createElement("button"), icon = document.createElement("canvas"), name = document.createElement("b"), price = document.createElement("small"), progress = document.createElement("span");
         btn.type = "button";
         btn.className = "mx-card";
         btn.card = c;
         btn.dataset.key = c.key;
+        btn.dataset.slot = slotKey(c);
         btn.dataset.rule = c.rule;
         btn.title = c.name + " · " + rules[c.rule].label;
         btn.setAttribute("aria-label", btn.title);
@@ -9772,18 +9842,24 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         icon.height = 52;
         icon.setAttribute("aria-hidden", "true");
         name.textContent = c.name.replace(/^Oscilador (principal )?/, "").replace(/^Fazenda /, "").replace("Crescedor de colmeia (stalk)", "Crescedor").replace("stalk by a collision of 3 gliders", "Stalk · 3 gliders").replace("stalk by a collision of 2 gilders and eater", "Stalk · 2 + eater");
-        const family = document.createElement("span"), value = document.createElement("span");
-        family.className = "mx-card-rule";
-        family.textContent = shortRules[c.rule];
-        value.className = "mx-card-cost";
-        price.append(family, value);
-        btn.append(icon, name, price);
+        price.className = "mx-card-cost";
+        progress.className = "mx-card-energy";
+        progress.setAttribute("role", "progressbar");
+        progress.setAttribute("aria-label", "Energia disponível para " + c.name);
+        progress.setAttribute("aria-valuemin", "0");
+        btn.append(icon, name, price, progress);
         btn.onclick = () => choose2(c);
+        btn.oncontextmenu = (e) => {
+          e.preventDefault();
+          choose2(c);
+          const m = modifier(c);
+          onInspect({ ...c, offsets: m.shape, resolver: m.resolver, ballot: m.ballot });
+        };
         hand.append(btn);
         drawDeckIcon(icon, c.offsets);
-        buttons.set(c.key, btn);
+        buttons.set(slotKey(c), btn);
       }
-      const keep = cards2.find((c) => c.key === selected?.key);
+      const keep = selected && cards2.find((c) => slotKey(c) === slotKey(selected));
       if (keep || cards2.length) choose2(keep ?? cards2[0]);
     }
     for (const [id, type] of [["hl-stampccw", "ccw"], ["hl-stampcw", "cw"], ["hl-stampflip", "flip"]]) {
@@ -9803,6 +9879,48 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     $("mx-ballot").onchange = () => {
       if (selected) modifier(selected).ballot = $("mx-ballot").value;
     };
+    new ResizeObserver(([entry]) => {
+      preview.width = Math.round(entry.contentRect.width * 2);
+      preview.height = Math.round(entry.contentRect.height * 2);
+      if (selected) drawDeckIcon(preview, modifier(selected).shape);
+    }).observe(preview);
+    const vote = $("mx-ballot").closest(".mx-vote"), help = $("mx-ballot-help"), tooltip = $("mx-ballot-tip");
+    let helpTimer;
+    function positionHelp() {
+      if (tooltip.hidden) return;
+      const anchor = vote.getBoundingClientRect(), padding = 8, gap = 6;
+      const above = Math.max(0, anchor.top - gap - padding), below = Math.max(0, innerHeight - anchor.bottom - gap - padding), upward = above > below;
+      tooltip.style.maxHeight = (upward ? above : below) + "px";
+      const bounds = tooltip.getBoundingClientRect();
+      tooltip.style.left = Math.max(padding, Math.min(anchor.right - bounds.width, innerWidth - bounds.width - padding)) + "px";
+      tooltip.style.top = Math.max(padding, Math.min(upward ? anchor.top - gap - bounds.height : anchor.bottom + gap, innerHeight - bounds.height - padding)) + "px";
+    }
+    const showHelp = (visible) => {
+      clearTimeout(helpTimer);
+      tooltip.hidden = !visible;
+      help.setAttribute("aria-expanded", String(visible));
+      if (visible) positionHelp();
+    };
+    vote.onmouseenter = () => showHelp(true);
+    vote.onmouseleave = () => {
+      if (!vote.contains(document.activeElement)) helpTimer = setTimeout(() => showHelp(false), 120);
+    };
+    vote.addEventListener("focusin", () => showHelp(true));
+    vote.addEventListener("focusout", (e) => {
+      if (!vote.contains(e.relatedTarget)) showHelp(false);
+    });
+    help.onclick = () => showHelp(true);
+    vote.onkeydown = (e) => {
+      if (e.key === "Escape") {
+        showHelp(false);
+        e.stopPropagation();
+      }
+    };
+    document.addEventListener("pointerdown", (e) => {
+      if (!vote.contains(e.target)) showHelp(false);
+    }, true);
+    window.addEventListener("resize", positionHelp);
+    window.addEventListener("scroll", positionHelp, true);
     return { fill, choose: choose2, update, get selected() {
       return selected;
     }, get current() {
@@ -11180,11 +11298,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       c.drawImage(bitmap.canvas, 0, 0);
       c.restore();
     }
-    if (world.hover?.id !== void 0 && !world.drag && placementAt(world.hover)) {
+    const preview = world.hover?.id !== void 0 && !world.drag && placementPreview(world.hover);
+    if (preview) {
       const ids = stampTargets(world.hover, stampOffsets()), path = new Path2D();
       for (const id of ids) atlasMark(path, id, a);
-      c.fillStyle = "#f0b95155";
-      c.strokeStyle = "#ffd078";
+      c.fillStyle = preview.ready ? "#f0b95155" : "#ff725a55";
+      c.strokeStyle = preview.ready ? "#ffd078" : "#ff8d78";
       c.lineWidth = 1;
       c.fill(path);
       c.stroke(path);
@@ -11235,15 +11354,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         c.stroke(paths[id]);
       }
     }
-    if (world.hover && !world.drag && placementAt(world.hover)) {
+    const preview = world.hover && !world.drag && placementPreview(world.hover);
+    if (preview) {
       c.beginPath();
       for (const [dq, dr] of stampOffsets()) {
         const q = world.hover.q + dq, r = world.hover.r + dr;
         hexPath(c, DX * (q + r / 2), DY * r, R * 0.91);
       }
-      c.fillStyle = "#f0b95155";
+      c.fillStyle = preview.ready ? "#f0b95155" : "#ff725a55";
       c.fill();
-      c.strokeStyle = "#ffd078";
+      c.strokeStyle = preview.ready ? "#ffd078" : "#ff8d78";
       c.lineWidth = 1 / world.zoom;
       c.stroke();
     }
@@ -11346,6 +11466,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     );
     target.append(fallbackMini, gpuCanvas);
     g.append(target);
+    new ResizeObserver(() => {
+      navigatorView.dirty = true;
+    }).observe(target);
     $("br-mini-toggle").onclick = () => {
       const p = $("br-mini-panel"), collapsed = p.classList.toggle("collapsed");
       $("br-mini-toggle").textContent = collapsed ? "+" : "−";
@@ -11826,8 +11949,199 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     };
   }
 
-  // src/mixed/game.js
+  // src/mixed/colony.js
+  function nearestColony(graph, cells2, owner, look) {
+    const { coords, adj, deg } = graph;
+    let nearest = null, best = -Infinity;
+    for (const [site, cell] of cells2) {
+      if (cell.owner !== owner) continue;
+      const dot = coords[site * 3] * look[0] + coords[site * 3 + 1] * look[1] + coords[site * 3 + 2] * look[2];
+      if (dot > best || dot === best && site < nearest) {
+        nearest = site;
+        best = dot;
+      }
+    }
+    if (nearest === null) return null;
+    const group = [nearest], seen = new Set(group), explored = /* @__PURE__ */ new Set(), center = [0, 0, 0];
+    function include(site) {
+      if (!seen.has(site) && cells2.get(site)?.owner === owner) {
+        seen.add(site);
+        group.push(site);
+      }
+    }
+    for (let index = 0; index < group.length; index++) {
+      const site = group[index];
+      for (let axis = 0; axis < 3; axis++) center[axis] += coords[site * 3 + axis];
+      for (let edge = 0; edge < deg[site]; edge++) {
+        const neighbor = adj[site * 6 + edge];
+        include(neighbor);
+        if (explored.has(neighbor)) continue;
+        explored.add(neighbor);
+        for (let next = 0; next < deg[neighbor]; next++) include(adj[neighbor * 6 + next]);
+      }
+    }
+    return Math.hypot(...center) < 1e-9 ? nearest : nearestGlobeVertex(graph, center, nearest);
+  }
+
+  // src/mixed/score.js
   var number = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
+  var signed3 = (value) => (value > 0 ? "+" : "") + number.format(value);
+  var net = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
+  var fields = [
+    ["Campo e reserva", [
+      ["reserve", "Reserva"],
+      ["conventional", "Células vivas"],
+      ["mature", "Células maduras"],
+      ["waves", "Células de onda"],
+      ["flow", "Fluxo recente / G", "Média recente da renda menos custos de nascimentos e substituições."]
+    ]],
+    ["Última geração", [
+      ["lastBirths", "Nascimentos"],
+      ["lastDeaths", "Mortes"],
+      ["lastIncome", "Energia gerada"],
+      ["lastCost", "Custo de expansão e cortes"],
+      ["lastFlow", "Saldo da geração"],
+      ["lastEroded", "Células liquidadas"],
+      ["lastRefused", "Propostas sem energia"]
+    ]],
+    ["Economia acumulada", [
+      ["income", "Energia gerada"],
+      ["matureIncome", "Por células maduras"],
+      ["birthIncome", "Por nascimentos"],
+      ["deathIncome", "Por mortes"],
+      ["birthSpent", "Gasto com nascimentos"],
+      ["eraseSpent", "Cortes de adversárias"],
+      ["friendlyEraseSpent", "Cortes de aliadas"],
+      ["stampSpent", "Gasto com carimbos"],
+      ["balance", "Saldo operacional", "Energia gerada menos nascimentos e cortes."],
+      ["salvageIncome", "Energia de liquidações"],
+      ["eroded", "Células liquidadas", "Células vendidas para financiar a expansão de uma onda."],
+      ["refused", "Propostas sem energia"],
+      ["unfundedCost", "Custo das propostas recusadas", "Soma dos custos recusados em cada geração."]
+    ]],
+    ["Campo acumulado", [
+      ["stamps", "Carimbos inseridos"],
+      ["stampedCells", "Células carimbadas"],
+      ["births", "Nascimentos"],
+      ["deaths", "Mortes"],
+      ["erased", "Adversárias substituídas"],
+      ["lost", "Células tomadas"],
+      ["friendlyErased", "Aliadas substituídas"],
+      ["detonations", "Detonações"],
+      ["waveBirths", "Nascimentos de onda"],
+      ["waveErased", "Cortes por ondas"]
+    ]]
+  ];
+  function createScoreboard(getSession) {
+    const score = $("mx-score"), rows2 = /* @__PURE__ */ new Map();
+    let ledger = [], expanded = null;
+    function reset2() {
+      expanded = null;
+      ledger = getSession().match.players.map((p) => p && {
+        net: net(p),
+        income: p.income,
+        cost: p.birthSpent + p.eraseSpent + p.friendlyEraseSpent,
+        eroded: p.eroded,
+        refused: p.refused,
+        flow: 0,
+        lastFlow: 0,
+        lastIncome: 0,
+        lastCost: 0,
+        lastEroded: 0,
+        lastRefused: 0
+      });
+    }
+    function recordGeneration() {
+      for (const [id, p] of getSession().match.players.entries()) {
+        if (!p) continue;
+        const entry = ledger[id], cost = p.birthSpent + p.eraseSpent + p.friendlyEraseSpent;
+        entry.lastFlow = net(p) - entry.net;
+        entry.flow = 0.8 * entry.flow + 0.2 * entry.lastFlow;
+        if (getSession().match.gen === 1) entry.flow = entry.lastFlow;
+        entry.lastIncome = p.income - entry.income;
+        entry.lastCost = cost - entry.cost;
+        entry.lastEroded = p.eroded - entry.eroded;
+        entry.lastRefused = p.refused - entry.refused;
+        entry.net = net(p);
+        entry.income = p.income;
+        entry.cost = cost;
+        entry.eroded = p.eroded;
+        entry.refused = p.refused;
+      }
+    }
+    function addRow(id) {
+      const box = document.createElement("li"), button2 = document.createElement("button"), name = document.createElement("span"), summary = document.createElement("small");
+      const details = document.createElement("div"), status = document.createElement("p"), values = /* @__PURE__ */ new Map();
+      box.dataset.player = String(id);
+      button2.type = "button";
+      button2.style.setProperty("--player", game.colors[id]);
+      button2.title = "Ver estatísticas e centralizar nas células de " + game.names[id];
+      name.textContent = game.symbols[id] + " " + game.names[id];
+      button2.append(name, summary);
+      details.id = "mx-stats-" + id;
+      details.className = "mx-player-stats";
+      details.hidden = true;
+      button2.setAttribute("aria-controls", details.id);
+      button2.setAttribute("aria-expanded", "false");
+      details.append(status);
+      for (const [title, items] of fields) {
+        const section = document.createElement("section"), heading = document.createElement("h3"), list = document.createElement("dl");
+        heading.textContent = title;
+        for (const [key2, label, help] of items) {
+          const row2 = document.createElement("div"), term = document.createElement("dt"), value = document.createElement("dd");
+          term.textContent = label;
+          if (help) term.title = help;
+          value.dataset.stat = key2;
+          row2.append(term, value);
+          list.append(row2);
+          values.set(key2, value);
+        }
+        section.append(heading, list);
+        details.append(section);
+      }
+      button2.onclick = () => {
+        expanded = expanded === id ? null : id;
+        if (expanded !== null) {
+          const session = getSession();
+          const look = world.chart ? pointOnSphere(session.graph, world.center) : atlasCamera.look;
+          const site = nearestColony(session.graph, session.match.cells, id, look);
+          if (site !== null) {
+            centerOnPlayer(site);
+            world.needsDraw = world.needsGrid = true;
+          }
+        }
+        update();
+      };
+      box.append(button2, details);
+      const row = { box, button: button2, summary, details, status, values };
+      rows2.set(id, row);
+      return row;
+    }
+    function update() {
+      const session = getSession(), m = session.match;
+      const ids = m.players.slice(1).map((_, i) => i + 1).sort((a, b) => Number(session.alive[b]) - Number(session.alive[a]) || m.players[b].conventional - m.players[a].conventional || m.players[b].reserve - m.players[a].reserve);
+      for (const [index, id] of ids.entries()) {
+        const row = rows2.get(id) ?? addRow(id), p = m.players[id], open = expanded === id;
+        row.summary.textContent = session.alive[id] ? p.conventional.toLocaleString("pt-BR") + " · ◈ " + number.format(p.reserve) : "Eliminado";
+        row.button.setAttribute("aria-expanded", String(open));
+        row.details.hidden = !open;
+        if (open) {
+          row.status.textContent = !session.alive[id] ? "Eliminado na geração " + number.format(session.eliminatedAt[id]) : p.stamps === 0 ? "Aguardando o primeiro carimbo." : "Em jogo · geração " + number.format(m.gen);
+          const values = { ...p, ...ledger[id], waves: p.field - p.conventional, balance: net(p) };
+          for (const [key2, node] of row.values) {
+            node.textContent = ["flow", "lastFlow", "balance"].includes(key2) ? signed3(values[key2]) : number.format(values[key2] ?? 0);
+          }
+        }
+        if (score.children[index] !== row.box) score.insertBefore(row.box, score.children[index] ?? null);
+      }
+    }
+    return { reset: reset2, recordGeneration, update, get flow() {
+      return ledger[1]?.flow ?? 0;
+    } };
+  }
+
+  // src/mixed/game.js
+  var number2 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
   function mount() {
     const root = $("hexlab"), fragment = $("mx-panel-template").content.cloneNode(true);
     root.classList.add("mixed");
@@ -11850,45 +12164,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function startMixedGame() {
     mount();
-    let session, controllers, atlas, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, flow2 = 0, lastOrders = [], event = null;
-    const hand = createHand(() => session?.match);
-    const score = $("mx-score"), scoreRows = /* @__PURE__ */ new Map();
-    function syncScore() {
-      const m = session.match;
-      const ids = m.players.slice(1).map((_, i) => i + 1).sort((a, b) => Number(session.alive[b]) - Number(session.alive[a]) || m.players[b].conventional - m.players[a].conventional || m.players[b].reserve - m.players[a].reserve);
-      for (const id of ids) {
-        let box = scoreRows.get(id);
-        if (!box) {
-          box = document.createElement("li");
-          const btn = document.createElement("button"), name = document.createElement("span"), nums = document.createElement("small");
-          btn.type = "button";
-          btn.style.setProperty("--player", game.colors[id]);
-          name.textContent = game.symbols[id] + " " + game.names[id];
-          btn.title = "Centralizar em " + game.names[id];
-          btn.append(name, nums);
-          box.append(btn);
-          btn.onclick = () => {
-            let site = session.starts[id];
-            for (const [i, c] of session.match.cells) if (c.owner === id && !c.wave) {
-              site = i;
-              break;
-            }
-            centerOnPlayer(site);
-            world.needsDraw = world.needsGrid = true;
-          };
-          scoreRows.set(id, box);
-        }
-        const p = m.players[id];
-        box.querySelector("small").textContent = session.alive[id] ? p.conventional.toLocaleString("pt-BR") + " · ◈ " + number.format(p.reserve) : "Eliminado";
-        score.append(box);
-      }
-    }
+    let session, controllers, atlas, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null;
+    const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }) });
+    const scoreboard = createScoreboard(() => session);
     function hud() {
       const m = session.match, p = m.players[1];
       $("br-rail-gen").textContent = "G " + m.gen.toLocaleString("pt-BR");
-      $("mx-cash").textContent = "◈ " + number.format(p.reserve);
+      $("mx-cash").textContent = "◈ " + number2.format(p.reserve);
       $("mx-field").textContent = p.conventional.toLocaleString("pt-BR");
-      $("mx-flow").textContent = (flow2 > 0 ? "+" : "") + number.format(flow2);
+      $("mx-flow").textContent = (scoreboard.flow > 0 ? "+" : "") + number2.format(scoreboard.flow);
       if ($("mx-conflicts").open && event) {
         const votes2 = event.policy === "support" ? event.weightYes + " / " + event.weightNo : event.yes + " / " + event.no;
         const owner = event.winner ? game.names[event.winner.owner] : "";
@@ -11896,14 +12180,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         $("mx-locate").hidden = false;
       }
       hand.update();
-      syncScore();
+      scoreboard.update();
       lastUI = performance.now();
     }
     function reset2(next, prepared, storage2) {
       const sameGraph = prepared ?? (session?.graph.f === next.F ? session.graph : void 0);
-      const fresh = createGameMatch({ ...next, ...sameGraph ? { graph: sameGraph } : {} });
+      const fresh = createGameMatch({ ...next, unseededOwners: [1], ...sameGraph ? { graph: sameGraph } : {} });
       session = fresh;
       options = next;
+      scoreboard.reset();
       controllers = createGameBots(session.match, { seed: options.seed, interval: options.botInterval, budget: options.botBudget, onOrder: (o) => {
         lastOrders.push(o);
         if (lastOrders.length > 40) lastOrders.shift();
@@ -11912,7 +12197,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       game.winner = 0;
       world.matchStarted = false;
       lastOrders = [];
-      flow2 = 0;
       elapsed = 0;
       event = null;
       $("mx-event").textContent = "Avance para observar.";
@@ -11947,16 +12231,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function preview(anchor) {
       if (!session.alive[1] || game.ended || !hand.selected) return null;
       const ids = targetIds(anchor), { resolver, ballot } = hand.current, c = hand.selected;
-      return ids && session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native") ? ids : null;
+      return ids ? { ids, ready: session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native") } : null;
     }
     function place(anchor) {
-      const ids = preview(anchor), c = hand.selected, p = session.match.players[1], m = hand.current;
-      if (!ids) {
+      const proposed = preview(anchor), c = hand.selected, p = session.match.players[1], m = hand.current;
+      if (!proposed?.ready) {
         const cost = c && m ? c.offsets.length * session.match.stampPrice(m.resolver) : 0;
-        toast(game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : p.reserve < cost ? "Faltam ◈ " + number.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
+        toast(game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
-      const ok = session.match.stamp(1, c.rule, m.resolver, ids, m.ballot, c.sense ?? "native");
+      const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native");
       if (ok) {
         dirty = true;
         syncField(session.match);
@@ -11982,10 +12266,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     };
     function step2() {
       if (!session.step($("mx-conflicts").open ? observe : void 0)) return false;
-      const p = session.match.players[1];
-      const net = p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
-      flow2 = session.match.gen === 1 ? net : 0.8 * flow2 + 0.2 * (net - prevNet);
-      prevNet = net;
+      scoreboard.recordGeneration();
       if (session.outcome === null) controllers.turn();
       else {
         game.ended = true;
@@ -11998,7 +12279,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       dirty = true;
       return true;
     }
-    let prevNet = 0;
     $("hl-play").onclick = () => {
       if (game.ended) {
         reset2(options);

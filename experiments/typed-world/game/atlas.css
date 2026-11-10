@@ -6,6 +6,8 @@
 .hxa input:focus-visible,.hxa select:focus-visible,.hxa button:focus-visible{outline:2px solid #6de2bd;outline-offset:2px}
 .hxa h2,.hxa h3,.hxa header,.hxa section,.hxa footer{margin:0}.hxa small{color:#a4babb}
 .hxa .hxa-head{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid #344952}
+.hxa-target{margin:0;padding:9px 18px;color:#b8e4d2;background:#1c3833;font-size:12px}
+.hxa-interaction{margin:5px 0;color:#aec9c7;font-size:11px}
 .hxa-head small,.hxa-title small{font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:#74d8ba}.hxa h2{font-size:23px;letter-spacing:-.035em}.hxa-head button{height:32px;width:34px;padding:0;font-size:21px}
 .hxa-columns{display:grid;grid-template-columns:minmax(235px,.8fr) minmax(300px,1.22fr)}
 .hxa-library,.hxa-detail{min-width:0;padding:16px 18px}.hxa-library{border-right:1px solid #334b53;display:flex;flex-direction:column;gap:9px}

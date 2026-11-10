@@ -19,9 +19,11 @@ export const defaultGameOptions=Object.freeze({F:32,seed:1,players:6,bank:640,po
 
 export function createGameMatch(options={}) {
   const {F,seed,players,bank,policy,arbitration,eligibility,existence,passage,friendlyFire,
-    economy={},graph=buildSphere(F)}={...defaultGameOptions,...options};
+    economy={},unseededOwners=[],graph=buildSphere(F)}={...defaultGameOptions,...options};
   if(!Object.hasOwn(gameEconomies,policy))throw RangeError('Economia desconhecida.');
   if(!Number.isInteger(players)||players<2||players>graph.n)throw RangeError('A partida precisa de pelo menos dois jogadores e espaço na esfera.');
+  if(!Array.isArray(unseededOwners)||unseededOwners.some(owner=>!Number.isInteger(owner)||owner<1||owner>players))
+    throw RangeError('A abertura vazia precisa indicar jogadores da partida.');
   const match=createTypedWorld(graph,{seed,wallets:Array(players).fill(bank),
     economy:{...gameEconomies[policy],...economy},arbitration,eligibility,existence,passage,friendlyFire});
   const sites=spreadSites(graph,players), starts=[null], opening=[null], alive=[false];
@@ -29,10 +31,12 @@ export function createGameMatch(options={}) {
   const [rule]=farm.split('/');
   for(let owner=1;owner<=players;owner++){
     const site=sites[((seed>>>0)+owner-1)%players],rotation=((seed>>>0)+owner)%6;
+    starts.push(site);alive.push(true);
+    if(unseededOwners.includes(owner)){opening.push(null);continue;}
     const ids=footprint(graph,farm,site,rotation);
     if(!ids || !match.stamp(owner,rule,'contact',ids))
       throw RangeError('A reserva e o espaço devem comportar a colônia inicial de cada jogador.');
-    starts.push(site);alive.push(true);opening.push({owner,key:farm,site,ids,rotation,rule,resolver:'contact',ballot:'support',sense:'native'});
+    opening.push({owner,key:farm,site,ids,rotation,rule,resolver:'contact',ballot:'support',sense:'native'});
   }
   const eliminatedAt=alive.map(()=>null);
   let outcome=null;
@@ -42,8 +46,12 @@ export function createGameMatch(options={}) {
     let survivors=0,survivor=0;
     for(let owner=1;owner<=players;owner++){
       if(!alive[owner])continue;
-      if(match.players[owner].conventional>0){survivors++;survivor=owner;}
-      else{alive[owner]=false;match.players[owner].out=true;eliminatedAt[owner]=match.gen;}
+      const player=match.players[owner];
+      // A successful stamp records entry even if its cells die on the first tick.
+      // A waiting player keeps the right to choose an opening later.
+      if(player.stamps===0)player.out=false;
+      if(player.conventional>0||player.stamps===0){survivors++;survivor=owner;}
+      else{alive[owner]=false;player.out=true;eliminatedAt[owner]=match.gen;}
     }
     if(survivors<=1)outcome=survivors?survivor:0;
     return true;
