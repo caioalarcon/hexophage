@@ -1,9 +1,9 @@
 name: Verify Hexophage
 on:
   push:
-    branches: [dev, preview/grower-siege]
+    branches: [dev, preview/grower-siege, research/mixed-stamp-collisions]
   pull_request:
-    branches: [main]
+    branches: [main, preview/economic-tactics]
 permissions:
   contents: write
 jobs:
@@ -20,9 +20,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - run: git diff --exit-code --stat -- experiments/typed-world/index.html
+      - name: Verify the published game matches its sources
+        if: github.event_name == 'pull_request'
+        run: git diff --exit-code --stat -- index.html
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - run: node tests/mixed-ui-polish.cjs
       - name: Verify the offline economic experiments
         run: |
           node --test "experiments/economy/*.test.js"
@@ -30,8 +35,8 @@ jobs:
           git diff --exit-code --stat -- experiments/economy/lab.html
           node experiments/economy/lab/browser.test.js
           node experiments/economy/incoming-glider-replay.mjs
-      - name: Update only the dev preview HTML after successful checks
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/preview/grower-siege')
+      - name: Update the tested preview HTML after successful checks
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/preview/grower-siege' || github.ref == 'refs/heads/research/mixed-stamp-collisions')
         run: |
           git add index.html
           if ! git diff --cached --quiet; then

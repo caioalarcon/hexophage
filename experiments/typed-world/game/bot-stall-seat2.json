@@ -1,0 +1,642 @@
+{
+  "choices": [
+    {
+      "gen": 19,
+      "owner": 2,
+      "key": "callahan/bagley-stalk-p8",
+      "role": "farm",
+      "pay": 124.62337662337654,
+      "cost": 160,
+      "flow": 6.935064935064933,
+      "modeledCash": -208.25974025974023,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 661.4545454545455
+    },
+    {
+      "gen": 20,
+      "owner": 5,
+      "key": "callahan/bagley-stalk-p8",
+      "role": "farm",
+      "pay": 141.308308130226,
+      "cost": 160,
+      "flow": 7.185064935064936,
+      "modeledCash": -203.57480875289093,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 2,
+      "reserve": 671.4545454545455
+    },
+    {
+      "gen": 39,
+      "owner": 2,
+      "key": "callahan/bagley-stalk-by-a-collision-of-2-gilders-and-eater",
+      "role": "farm",
+      "pay": -670.6986301369859,
+      "cost": 120,
+      "flow": -8.065068493150676,
+      "modeledCash": -283.5753424657535,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 650.4203394435864
+    },
+    {
+      "gen": 40,
+      "owner": 5,
+      "key": "ashley/scan-b1cf68",
+      "role": "farm",
+      "pay": -115.69863013698568,
+      "cost": 24,
+      "flow": -1.315068493150676,
+      "modeledCash": -52.57534246575324,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 871.4545454545455
+    },
+    {
+      "gen": 62,
+      "owner": 2,
+      "key": "hex-b2s34/db-46",
+      "role": "raid",
+      "pay": -824.3638586582165,
+      "cost": 208,
+      "flow": -39.5,
+      "modeledCash": -878.9999999999992,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 1069.2796477205377
+    },
+    {
+      "gen": 63,
+      "owner": 5,
+      "key": "highhex/db-1",
+      "role": "raid",
+      "pay": -824,
+      "cost": 96,
+      "flow": -11,
+      "modeledCash": -296,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 1101.4545454545455
+    },
+    {
+      "gen": 82,
+      "owner": 2,
+      "key": "callahan/bagley-stalk-p8",
+      "role": "farm",
+      "pay": -539.1658814910097,
+      "cost": 160,
+      "flow": -1.804174710424661,
+      "modeledCash": -250.0525590921925,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 1536.6974847174226
+    },
+    {
+      "gen": 102,
+      "owner": 2,
+      "key": "callahan/bagley-stalk-by-a-collision-of-3-gliders",
+      "role": "farm",
+      "pay": -2060.800000000007,
+      "cost": 152,
+      "flow": -8.942857142857179,
+      "modeledCash": -343.7714285714287,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 2067.7843075573915
+    },
+    {
+      "gen": 126,
+      "owner": 2,
+      "key": "ashley/scan-954b34",
+      "role": "farm",
+      "pay": -509,
+      "cost": 56,
+      "flow": -2,
+      "modeledCash": -125,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 2738.0417394232736
+    },
+    {
+      "gen": 146,
+      "owner": 2,
+      "key": "callahan/bagley-stalk-by-a-collision-of-3-gliders",
+      "role": "farm",
+      "pay": -2063.891891891889,
+      "cost": 152,
+      "flow": -8.95863210148923,
+      "modeledCash": -343.8345284059569,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 3348.882235072595
+    },
+    {
+      "gen": 169,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": 479.3247795875818,
+      "cost": 80,
+      "flow": 3.0163074129684446,
+      "modeledCash": -99.80624370235955,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 4101.3543242871765
+    },
+    {
+      "gen": 189,
+      "owner": 2,
+      "key": "callahan/bagley-stalk-by-a-collision-of-3-gliders",
+      "role": "farm",
+      "pay": -2066.139924257536,
+      "cost": 152,
+      "flow": -8.970101654375185,
+      "modeledCash": -343.88040661750074,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 4700.497348952633
+    },
+    {
+      "gen": 212,
+      "owner": 2,
+      "key": "highhex/db-1",
+      "role": "raid",
+      "pay": -755.4439101401085,
+      "cost": 96,
+      "flow": -9.875148714185798,
+      "modeledCash": -281.43677185919023,
+      "rejection": "return",
+      "occupied": 2,
+      "hostileNeighbors": 0,
+      "reserve": 5595.346320276932
+    },
+    {
+      "gen": 232,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": 167.691088856408,
+      "cost": 80,
+      "flow": 1.4294621917028962,
+      "modeledCash": -106.76565195054809,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 6393.95604511376
+    },
+    {
+      "gen": 252,
+      "owner": 2,
+      "key": "hex-b2s34/bagley-11211211-p8",
+      "role": "farm",
+      "pay": -2484,
+      "cost": 80,
+      "flow": -11.5,
+      "modeledCash": -276,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 6954.8134103662815
+    },
+    {
+      "gen": 274,
+      "owner": 2,
+      "key": "ashley/scan-3b7705",
+      "role": "raid",
+      "pay": -939.3270523411456,
+      "cost": 64,
+      "flow": -26.25,
+      "modeledCash": -578,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 7746.858703549114
+    },
+    {
+      "gen": 294,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": 67.83369030414178,
+      "cost": 80,
+      "flow": 0.920949252734772,
+      "modeledCash": -108.98856622093444,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 8431.433734848511
+    },
+    {
+      "gen": 314,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": 63.45542967601796,
+      "cost": 80,
+      "flow": 0.8986529201993108,
+      "modeledCash": -109.08593100224971,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 9095.377672862856
+    },
+    {
+      "gen": 337,
+      "owner": 2,
+      "key": "ashley15/scan-acba7e",
+      "role": "raid",
+      "pay": -484,
+      "cost": 56,
+      "flow": -7,
+      "modeledCash": -148,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 9923.817616390897
+    },
+    {
+      "gen": 357,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": -8408,
+      "cost": 80,
+      "flow": -41.75,
+      "modeledCash": -392,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 10747.828060255135
+    },
+    {
+      "gen": 377,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": -5602,
+      "cost": 80,
+      "flow": -27.5,
+      "modeledCash": -322,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 11569.838504119372
+    },
+    {
+      "gen": 399,
+      "owner": 2,
+      "key": "andreen/bagley-asym-glider2",
+      "role": "raid",
+      "pay": -80,
+      "cost": 56,
+      "flow": 0,
+      "modeledCash": -80,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 12423.87697359971
+    },
+    {
+      "gen": 419,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": -4624.951879146456,
+      "cost": 80,
+      "flow": -22.893796771345023,
+      "modeledCash": -229.34289904821162,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 12842.536436681228
+    },
+    {
+      "gen": 439,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": 32.706249346014374,
+      "cost": 80,
+      "flow": 0.7420610669751113,
+      "modeledCash": -109.769475513207,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 12888.043641292184
+    },
+    {
+      "gen": 464,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": 32.706249346014374,
+      "cost": 80,
+      "flow": 0.7420610669751113,
+      "modeledCash": -109.769475513207,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 11830.017814965004
+    },
+    {
+      "gen": 484,
+      "owner": 2,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "pay": 31.90345248221456,
+      "cost": 80,
+      "flow": 0.7379727474972242,
+      "modeledCash": -109.78731503725248,
+      "rejection": null,
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 9037.00773783858
+    },
+    {
+      "gen": 509,
+      "owner": 2,
+      "key": "hex-b2s34/bagley-12",
+      "role": "farm",
+      "pay": -34,
+      "cost": 24,
+      "flow": 0,
+      "modeledCash": -34,
+      "rejection": "return",
+      "occupied": 0,
+      "hostileNeighbors": 0,
+      "reserve": 3241.9844135486646
+    }
+  ],
+  "orders": [
+    {
+      "owner": 2,
+      "gen": 19,
+      "key": "callahan/bagley-stalk-p8",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 3,
+      "gen": 20,
+      "key": "callahan/bagley-stalk-p8",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 4,
+      "gen": 20,
+      "key": "callahan/bagley-stalk-p8",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 6,
+      "gen": 20,
+      "key": "callahan/bagley-stalk-p8",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 6,
+      "gen": 63,
+      "key": "ashley/scan-5ab33f",
+      "role": "raid",
+      "target": 5
+    },
+    {
+      "owner": 4,
+      "gen": 106,
+      "key": "highhex/db-1",
+      "role": "raid",
+      "target": 2
+    },
+    {
+      "owner": 6,
+      "gen": 145,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 2,
+      "gen": 169,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 4,
+      "gen": 189,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 3,
+      "gen": 191,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 4,
+      "gen": 209,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 3,
+      "gen": 213,
+      "key": "ashley/scan-5ab33f",
+      "role": "raid",
+      "target": 1
+    },
+    {
+      "owner": 4,
+      "gen": 231,
+      "key": "ashley15/scan-acba7e",
+      "role": "raid",
+      "target": 2
+    },
+    {
+      "owner": 2,
+      "gen": 232,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 3,
+      "gen": 233,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 2,
+      "gen": 294,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 2,
+      "gen": 314,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 6,
+      "gen": 318,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 4,
+      "gen": 334,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 3,
+      "gen": 388,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 6,
+      "gen": 405,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 6,
+      "gen": 430,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 2,
+      "gen": 439,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 2,
+      "gen": 464,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    },
+    {
+      "owner": 2,
+      "gen": 484,
+      "key": "hex-b2s245/farm-10-36",
+      "role": "farm",
+      "target": 0
+    }
+  ],
+  "closures": {
+    "gen": 75,
+    "victim": 5,
+    "paid": 0,
+    "hold": 12
+  },
+  "missed": {
+    "gen": 256,
+    "reserve": 7089.623719165911,
+    "mature": 237,
+    "conventional": 252,
+    "site": 697,
+    "evaluated": 8,
+    "positive": 2,
+    "best": "hex-b2s245/farm-10-36",
+    "predicted": 83.24812584884694,
+    "observedCash128": 25.138604087756903,
+    "observedField128": 36
+  },
+  "seats": [
+    {
+      "id": 2,
+      "eliminatedAt": null,
+      "cash": 2423.2087572240816,
+      "field": 929,
+      "orders": 8,
+      "raids": 0,
+      "trials": 25,
+      "raidTrials": 5,
+      "raidHolds": 5,
+      "raidInvalid": 0,
+      "rescueTrials": 3,
+      "rescueOrders": 2,
+      "delayed": 0,
+      "holds": 16,
+      "invalidated": 0,
+      "first": 19,
+      "last": 484,
+      "studied": [
+        "callahan",
+        "hex-b2s34",
+        "ashley",
+        "hex-b2s245",
+        "highhex",
+        "ashley15",
+        "andreen"
+      ],
+      "bought": [
+        "callahan",
+        "hex-b2s245"
+      ],
+      "expected": 1000.2443162217694,
+      "work": 396
+    },
+    {
+      "id": 5,
+      "eliminatedAt": 75,
+      "cash": 1062.1991729573579,
+      "field": 0,
+      "orders": 0,
+      "raids": 0,
+      "trials": 4,
+      "raidTrials": 1,
+      "raidHolds": 1,
+      "raidInvalid": 0,
+      "rescueTrials": 0,
+      "rescueOrders": 0,
+      "delayed": 0,
+      "holds": 2,
+      "invalidated": 1,
+      "first": null,
+      "last": null,
+      "studied": [
+        "callahan",
+        "ashley",
+        "highhex",
+        "ashley15"
+      ],
+      "bought": [],
+      "expected": 0,
+      "work": 59
+    }
+  ]
+}

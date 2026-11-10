@@ -6,7 +6,7 @@ import { DX, DY, R } from './hex-metrics.js';
 import { hexPath } from './hex-path.js';
 import { drawAnomalyOverlay } from './pentagon.js';
 import { stampOffsets } from '../../patterns/editor/stamp-grid.js';
-import { placementAt } from '../../patterns/placement/plant.js';
+import { placementPreview } from '../../patterns/placement/plant.js';
 
 function drawFlat() {
   const c = ctx,
@@ -48,16 +48,17 @@ function drawFlat() {
       c.stroke(paths[id]);
     }
   }
-  if (world.hover && !world.drag && placementAt(world.hover)) {
+  const preview = world.hover && !world.drag && placementPreview(world.hover);
+  if (preview) {
     c.beginPath();
     for (const [dq, dr] of stampOffsets()) {
       const q = world.hover.q + dq,
         r = world.hover.r + dr;
       hexPath(c, DX * (q + r / 2), DY * r, R * 0.91);
     }
-    c.fillStyle = '#f0b95155';
+    c.fillStyle = preview.ready ? '#f0b95155' : '#ff725a55';
     c.fill();
-    c.strokeStyle = '#ffd078';
+    c.strokeStyle = preview.ready ? '#ffd078' : '#ff8d78';
     c.lineWidth = 1 / world.zoom;
     c.stroke();
   }

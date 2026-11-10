@@ -1,3 +1,5 @@
+import {startMixedGame} from './mixed/game.js';
+import {MIXED_MODE} from './match/controls/mode.js';
 import { browserBrainArchive } from './browser/brain-archive.js';
 import { frame } from './browser/frame.js';
 import { browserMatchEffects } from './browser/game-effects.js';
@@ -24,31 +26,37 @@ import { bindWorldSize } from './world/size-selector.js';
 import { exposeSphereLab } from './browser/inspection.js';
 import { bindAtlasBrowser } from './patterns/atlas-browser.js';
 
-attachMatchEffects(browserMatchEffects, browserBrainArchive());
-newStamp(11, false);
+function startClassicGame(){
+  attachMatchEffects(browserMatchEffects, browserBrainArchive());
+  newStamp(11, false);
 
-bindMapGestures();
-bindEditorGestures();
-bindTurnControls();
-bindMapControls();
-bindWorldSize();
-bindStampControls();
+  bindMapGestures();
+  bindEditorGestures();
+  bindTurnControls();
+  bindMapControls();
+  bindWorldSize();
+  bindStampControls();
 
-observeCanvasSizes();
-setupRealLayout();
-newWorld(Number($('hl-frequency').value));
+  observeCanvasSizes();
+  setupRealLayout();
+  newWorld(Number($('hl-frequency').value));
 
-bindWireBenchmark();
-bindLayoutControls();
-bindAtlasBrowser();
-buildDeckConfig();
-$('br-reset').onclick = resetGame;
-bindTuning();
-bindEnergyPanel();
+  bindWireBenchmark();
+  bindLayoutControls();
+  bindAtlasBrowser();
+  buildDeckConfig();
+  $('br-reset').onclick = resetGame;
+  bindTuning();
+  bindEnergyPanel();
 
-bindPlayerFollow();
-bindRuleControls();
+  bindPlayerFollow();
+  bindRuleControls();
 
-resetGame();
-requestAnimationFrame(frame);
-exposeSphereLab();
+  resetGame();
+  requestAnimationFrame(frame);
+  exposeSphereLab();
+}
+
+const requestedMode=new URLSearchParams(location.search).get('rule')??MIXED_MODE;
+if(requestedMode===MIXED_MODE)startMixedGame();
+else startClassicGame();

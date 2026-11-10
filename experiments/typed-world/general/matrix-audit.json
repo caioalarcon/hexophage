@@ -1,0 +1,176 @@
+[
+  {
+    "matrixName": "forward",
+    "bits": "111111111111111111111111111111111111",
+    "order": [
+      "callahan",
+      "bays",
+      "hex-b2s34",
+      "hex-b2s245",
+      "bays245",
+      "andreen",
+      "highhex",
+      "ashley15",
+      "ashley"
+    ],
+    "worlds": 12,
+    "horizon": 64,
+    "counts": {
+      "crossRule": 16688,
+      "tripleTopCycles": 0,
+      "championPresent": 1817,
+      "championPreferred": 1817,
+      "championFunded": 1732
+    }
+  },
+  {
+    "matrixName": "reverse",
+    "bits": "000000000000000000000000000000000000",
+    "order": [
+      "callahan",
+      "bays",
+      "hex-b2s34",
+      "hex-b2s245",
+      "bays245",
+      "andreen",
+      "highhex",
+      "ashley15",
+      "ashley"
+    ],
+    "worlds": 12,
+    "horizon": 64,
+    "counts": {
+      "crossRule": 15091,
+      "tripleTopCycles": 0,
+      "championPresent": 4741,
+      "championPreferred": 4741,
+      "championFunded": 4111
+    }
+  },
+  {
+    "matrixName": "circular",
+    "bits": "111100001111000111100111101111111111",
+    "order": [
+      "callahan",
+      "bays",
+      "hex-b2s34",
+      "hex-b2s245",
+      "bays245",
+      "andreen",
+      "highhex",
+      "ashley15",
+      "ashley"
+    ],
+    "worlds": 12,
+    "horizon": 64,
+    "counts": {
+      "crossRule": 16180,
+      "tripleTopCycles": 106,
+      "championPresent": 0,
+      "championPreferred": 0,
+      "championFunded": 0
+    },
+    "example": {
+      "seed": 1,
+      "gen": 2,
+      "site": 225,
+      "claims": [
+        {
+          "owner": 2,
+          "rule": "ashley",
+          "resolver": "guard",
+          "ballot": "age",
+          "wave": false,
+          "support": 1,
+          "age": 1,
+          "robustness": 0,
+          "parent": 225,
+          "geometry": 3071110317,
+          "kind": "survival"
+        },
+        {
+          "owner": 1,
+          "rule": "hex-b2s245",
+          "resolver": "antimatter",
+          "ballot": "age",
+          "wave": true,
+          "support": 0,
+          "age": 1,
+          "robustness": 0,
+          "parent": 224,
+          "geometry": 2579069056,
+          "kind": "ignition"
+        },
+        {
+          "owner": 1,
+          "rule": "ashley15",
+          "resolver": "contact",
+          "ballot": "support",
+          "wave": false,
+          "support": 1,
+          "age": 1,
+          "robustness": 0,
+          "parent": 214,
+          "geometry": 2344209369,
+          "kind": "birth"
+        }
+      ],
+      "winner": {
+        "owner": 2,
+        "rule": "ashley",
+        "resolver": "guard",
+        "ballot": "age",
+        "wave": false,
+        "support": 1,
+        "age": 1,
+        "robustness": 0,
+        "parent": 225,
+        "geometry": 3071110317,
+        "kind": "survival"
+      },
+      "round": {
+        "eligible": [
+          0,
+          1,
+          2
+        ],
+        "top": [
+          0,
+          1,
+          2
+        ],
+        "preferred": 0,
+        "accepted": true,
+        "edges": [
+          {
+            "winner": 0,
+            "loser": 1,
+            "for": 0,
+            "against": 0,
+            "abstain": 0,
+            "reason": "matrix",
+            "votes": []
+          },
+          {
+            "winner": 2,
+            "loser": 0,
+            "for": 0,
+            "against": 0,
+            "abstain": 0,
+            "reason": "matrix",
+            "votes": []
+          },
+          {
+            "winner": 1,
+            "loser": 2,
+            "for": 0,
+            "against": 0,
+            "abstain": 0,
+            "reason": "matrix",
+            "votes": []
+          }
+        ]
+      }
+    }
+  }
+]

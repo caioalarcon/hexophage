@@ -1,0 +1,392 @@
+{
+  "F": 32,
+  "seed": 632,
+  "bank": 16000,
+  "liveRulesAtG11": [
+    "andreen",
+    "ashley",
+    "ashley15",
+    "bays",
+    "bays245",
+    "callahan",
+    "hex-b2s245",
+    "hex-b2s34",
+    "highhex"
+  ],
+  "legalPaidOrders": 18,
+  "scheduledOrders": [
+    {
+      "gen": 0,
+      "site": 7199,
+      "key": "callahan/p4f",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 5
+    },
+    {
+      "gen": 0,
+      "site": 1115,
+      "key": "bays/poly-3fdc3dd6",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 6
+    },
+    {
+      "gen": 0,
+      "site": 2817,
+      "key": "hex-b2s34/bagley-111-p4",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 3
+    },
+    {
+      "gen": 0,
+      "site": 3722,
+      "key": "hex-b2s245/farm-4-12",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 4
+    },
+    {
+      "gen": 0,
+      "site": 732,
+      "key": "bays245/bagley-divvy-p6",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 4
+    },
+    {
+      "gen": 0,
+      "site": 2579,
+      "key": "andreen/bagley-toggle-pair",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 6
+    },
+    {
+      "gen": 0,
+      "site": 3339,
+      "key": "highhex/scan-633388",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 5
+    },
+    {
+      "gen": 0,
+      "site": 4245,
+      "key": "ashley15/rotor126",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 5
+    },
+    {
+      "gen": 0,
+      "site": 5049,
+      "key": "ashley/scan-b1cf68",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 3
+    },
+    {
+      "gen": 0,
+      "site": 221,
+      "key": "highhex/scan-012b5a",
+      "rotation": 3,
+      "resolver": "guard",
+      "owner": 1,
+      "cells": 6
+    },
+    {
+      "gen": 0,
+      "site": 274,
+      "key": "hex-b2s245/scan-b1cf68",
+      "rotation": 0,
+      "resolver": "guard",
+      "owner": 1,
+      "cells": 3
+    },
+    {
+      "gen": 1,
+      "site": 360,
+      "key": "andreen/bagley-half-c-p4",
+      "rotation": 5,
+      "resolver": "phase",
+      "owner": 1,
+      "cells": 6
+    },
+    {
+      "gen": 1,
+      "site": 293,
+      "key": "highhex/scan-ab387f",
+      "rotation": 0,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 3
+    },
+    {
+      "gen": 1,
+      "site": 197,
+      "key": "andreen/bagley-toggle-pair",
+      "rotation": 1,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 6
+    },
+    {
+      "gen": 2,
+      "site": 342,
+      "key": "highhex/poly-15d07950",
+      "rotation": 1,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 5
+    },
+    {
+      "gen": 4,
+      "site": 361,
+      "key": "ashley15/scan-0aa91d",
+      "rotation": 4,
+      "resolver": "guard",
+      "owner": 1,
+      "cells": 6
+    },
+    {
+      "gen": 5,
+      "site": 337,
+      "key": "bays245/bagley-snake-p4",
+      "rotation": 2,
+      "resolver": "guard",
+      "owner": 1,
+      "cells": 6
+    },
+    {
+      "gen": 6,
+      "site": 250,
+      "key": "bays245/poly-35061ccf",
+      "rotation": 2,
+      "resolver": "contact",
+      "owner": 1,
+      "cells": 3
+    }
+  ],
+  "event": {
+    "gen": 11,
+    "site": 246,
+    "incumbent": {
+      "owner": 1,
+      "rule": "highhex",
+      "resolver": "contact",
+      "ballot": "support",
+      "wave": false,
+      "age": 4
+    },
+    "eligibility": "contest",
+    "phasePriority": 0,
+    "survives": true,
+    "claims": [
+      {
+        "owner": 1,
+        "rule": "andreen",
+        "resolver": "contact",
+        "ballot": "support",
+        "wave": false,
+        "support": 1,
+        "age": 6,
+        "robustness": 1,
+        "parent": 247,
+        "geometry": 3365663691,
+        "kind": "birth"
+      },
+      {
+        "owner": 1,
+        "rule": "highhex",
+        "resolver": "contact",
+        "ballot": "support",
+        "wave": false,
+        "support": 0,
+        "age": 4,
+        "robustness": 4,
+        "parent": 246,
+        "geometry": 1426701412,
+        "kind": "survival"
+      },
+      {
+        "owner": 1,
+        "rule": "bays245",
+        "resolver": "guard",
+        "ballot": "support",
+        "wave": false,
+        "support": 2,
+        "age": 1,
+        "robustness": 2,
+        "parent": 271,
+        "geometry": 1565676431,
+        "kind": "birth"
+      }
+    ],
+    "preferred": {
+      "owner": 1,
+      "rule": "andreen",
+      "resolver": "contact",
+      "ballot": "support",
+      "wave": false,
+      "support": 1,
+      "age": 6,
+      "robustness": 1,
+      "parent": 247,
+      "geometry": 3365663691,
+      "kind": "birth"
+    },
+    "winner": {
+      "owner": 1,
+      "rule": "andreen",
+      "resolver": "contact",
+      "ballot": "support",
+      "wave": false,
+      "support": 1,
+      "age": 6,
+      "robustness": 1,
+      "parent": 247,
+      "geometry": 3365663691,
+      "kind": "birth"
+    },
+    "cycle": true,
+    "anyCycle": true
+  },
+  "pairs": [
+    {
+      "winner": "bays245",
+      "loser": "andreen",
+      "for": [
+        "support",
+        "robustness"
+      ],
+      "against": [
+        "age"
+      ]
+    },
+    {
+      "winner": "andreen",
+      "loser": "highhex",
+      "for": [
+        "support",
+        "age"
+      ],
+      "against": [
+        "robustness"
+      ]
+    },
+    {
+      "winner": "highhex",
+      "loser": "bays245",
+      "for": [
+        "age",
+        "robustness"
+      ],
+      "against": [
+        "support"
+      ]
+    }
+  ],
+  "round": {
+    "eligible": [
+      0,
+      1,
+      2
+    ],
+    "top": [
+      0,
+      1,
+      2
+    ],
+    "preferred": 0,
+    "accepted": true,
+    "edges": [
+      {
+        "winner": 0,
+        "loser": 1,
+        "for": 2,
+        "against": 1,
+        "abstain": 0,
+        "reason": "ecology",
+        "votes": [
+          {
+            "criterion": "support",
+            "voter": null,
+            "choice": 0
+          },
+          {
+            "criterion": "age",
+            "voter": null,
+            "choice": 0
+          },
+          {
+            "criterion": "robustness",
+            "voter": null,
+            "choice": 1
+          }
+        ]
+      },
+      {
+        "winner": 2,
+        "loser": 0,
+        "for": 2,
+        "against": 1,
+        "abstain": 0,
+        "reason": "ecology",
+        "votes": [
+          {
+            "criterion": "support",
+            "voter": null,
+            "choice": 2
+          },
+          {
+            "criterion": "age",
+            "voter": null,
+            "choice": 0
+          },
+          {
+            "criterion": "robustness",
+            "voter": null,
+            "choice": 2
+          }
+        ]
+      },
+      {
+        "winner": 1,
+        "loser": 2,
+        "for": 2,
+        "against": 1,
+        "abstain": 0,
+        "reason": "ecology",
+        "votes": [
+          {
+            "criterion": "support",
+            "voter": null,
+            "choice": 2
+          },
+          {
+            "criterion": "age",
+            "voter": null,
+            "choice": 1
+          },
+          {
+            "criterion": "robustness",
+            "voter": null,
+            "choice": 1
+          }
+        ]
+      }
+    ]
+  },
+  "cash": 11596
+}

@@ -13,7 +13,7 @@ import { liveTileContours } from '../population/tile-contours.js';
 import { visitLiveTiles } from '../population/tile-index.js';
 import { stampOffsets } from '../../patterns/editor/stamp-grid.js';
 import { stampTargets } from '../../patterns/placement/footprint.js';
-import { placementAt } from '../../patterns/placement/plant.js';
+import { placementPreview } from '../../patterns/placement/plant.js';
 import { clamp } from '../../world/geometry.js';
 import { sphereCorner } from '../../world/sphere.js';
 
@@ -152,12 +152,13 @@ function drawAtlas() {
     c.drawImage(bitmap.canvas, 0, 0);
     c.restore();
   }
-  if (world.hover?.id !== undefined && !world.drag && placementAt(world.hover)) {
+  const preview = world.hover?.id !== undefined && !world.drag && placementPreview(world.hover);
+  if (preview) {
     const ids = stampTargets(world.hover, stampOffsets()),
       path = new Path2D();
     for (const id of ids) atlasMark(path, id, a);
-    c.fillStyle = '#f0b95155';
-    c.strokeStyle = '#ffd078';
+    c.fillStyle = preview.ready ? '#f0b95155' : '#ff725a55';
+    c.strokeStyle = preview.ready ? '#ffd078' : '#ff8d78';
     c.lineWidth = 1;
     c.fill(path);
     c.stroke(path);

@@ -27,12 +27,11 @@ function cancelBuild() {
   if (job.wasPlaying) setPlay(true);
   toast('Construção cancelada. A partida continua disponível.');
 }
-function requestSphere() {
-  const f = Number($('hl-frequency').value),
-    wasPlaying = world.playing,
+function requestSphere(f=Number($('hl-frequency').value),install) {
+  const wasPlaying = world.playing,
     globeExpanded = navigatorView.expanded;
   if (buildJob) return;
-  if (f === world.graph.f) {
+  if (world.graph && f === world.graph.f) {
     resetGame();
     return;
   }
@@ -94,8 +93,8 @@ function requestSphere() {
   function ready(g, buffers) {
     if (buildJob !== job) return;
     try {
-      newWorld(f, g, buffers);
-      resetGame();
+      if(install)install(g,buffers);
+      else {newWorld(f,g,buffers);resetGame();}
       if (globeExpanded) openFullGlobe(true);
       navigatorView.dirty = true;
       let bytes = 0;
