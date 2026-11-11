@@ -14,6 +14,7 @@
 #hexlab.mixed .mx-mode select,#hexlab.mixed .mx-modline select,#hexlab.mixed .mx-vote select,#hexlab.mixed #mx-setup select,#hexlab.mixed #mx-setup input{width:100%;max-width:100%;min-width:0;color:var(--mx-ink);background:#213249;border:1px solid #425770;border-radius:5px;font:inherit;padding:6px}
 #hexlab.mixed .mx-actions{display:flex;gap:4px;flex-wrap:wrap}
 #hexlab.mixed .mx-actions button{display:inline-block!important;min-height:31px;flex:1 1 auto;padding:4px 6px;font-size:12px}
+#hexlab.mixed .mx-actions button[hidden]{display:none!important}
 #hexlab.mixed .mx-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px 6px}
 #hexlab.mixed .mx-metrics div:first-child{grid-column:1/-1}
 #hexlab.mixed .mx-metrics small{display:block;font-size:9px;color:var(--mx-soft);letter-spacing:.08em}
