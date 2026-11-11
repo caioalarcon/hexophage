@@ -76,6 +76,8 @@ test('cancel, lost capture, blur and tool changes stop held painting without a r
     canvas.emit('pointermove',{clientX:300});canvas.emit('pointerup',{clientX:300});
     assert.equal(calls.length,count,event);
   }
+  reset('stamp');canvas.emit('pointermove');mode='paint';window.emit('hexophage:toolchange');
+  assert.deepEqual(world.hover,{q:0,r:0});assert.equal(world.painting,false);assert.equal(calls.length,0);
 });
 
 test('two-finger pinch cancels a pending touch without erasing, while taps and holds paint',async()=>{

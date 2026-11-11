@@ -261,7 +261,10 @@ function bindMapGestures() {
     { passive: false },
   );
   window.addEventListener('blur',cancelGesture);
-  window.addEventListener('hexophage:toolchange',cancelGesture);
+  window.addEventListener('hexophage:toolchange',()=>{
+    cancelGesture();
+    if(world.view==='flat'&&Number.isFinite(cursorX)&&Number.isFinite(cursorY))world.hover=hit(cursorX,cursorY);
+  });
 }
 
 export { bindMapGestures, flushWheel, queuedWheel };

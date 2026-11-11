@@ -2,7 +2,7 @@ import {$} from '../layout/elements.js';
 import {world} from '../browser/world-state.js';
 import {toast} from '../layout/announcements.js';
 import {key} from '../world/geometry.js';
-import {atlasOrientationAt} from '../map/atlas/camera.js';
+import {atlasCamera,atlasOrientationAt} from '../map/atlas/camera.js';
 import {DEFAULT_TOOL_SETTINGS,normalizeToolSettings,circularSites,brushAngularRadius,capturePattern,nearestPatternSite} from './field-tools.js';
 
 const storage='hexophage.mixed.tools.v1';
@@ -50,8 +50,9 @@ export function createFieldTools({getMatch,canEdit=()=>true,onCapture=()=>{},onE
   function preview(anchor){
     const match=getMatch(),center=siteAt(anchor);
     if(mode==='stamp'||!match||center===undefined||!canEdit())return null;
-    const token=[mode,center,radius,match.gen,match.actionRevision,match.toolSettings.maxStampCells,world.orient,world.side].join(':');
-    if(cache?.match===match&&cache.token===token)return cache.preview;
+    const view=mode==='pick'?[world.center,...atlasCamera.look,...atlasCamera.right]:[];
+    const token=[mode,center,radius,match.gen,match.actionRevision,match.toolSettings.maxStampCells,world.orient,world.side,...view].join(':');
+    if(cache?.match===match&&cache.chart===world.chart&&cache.token===token)return cache.preview;
     let p;
     if(mode==='erase'){
       const footprint=circularSites(match.graph,center,radius);
@@ -61,7 +62,7 @@ export function createFieldTools({getMatch,canEdit=()=>true,onCapture=()=>{},onE
       const result=capture(match,center);
       p={tool:'pick',ids:result.ids??[],ready:result.ok,center:result.center??center,result};
     }
-    cache={match,token,preview:p};return p;
+    cache={match,chart:world.chart,token,preview:p};return p;
   }
   function apply(anchor,{quiet=false}={}){
     const p=preview(anchor);if(!p)return false;

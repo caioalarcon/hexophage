@@ -11519,7 +11519,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       { passive: false }
     );
     window.addEventListener("blur", cancelGesture);
-    window.addEventListener("hexophage:toolchange", cancelGesture);
+    window.addEventListener("hexophage:toolchange", () => {
+      cancelGesture();
+      if (world.view === "flat" && Number.isFinite(cursorX) && Number.isFinite(cursorY)) world.hover = hit(cursorX, cursorY);
+    });
   }
 
   // src/map/local/pentagon.js
@@ -12713,8 +12716,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function preview(anchor) {
       const match = getMatch(), center = siteAt(anchor);
       if (mode === "stamp" || !match || center === void 0 || !canEdit()) return null;
-      const token = [mode, center, radius2, match.gen, match.actionRevision, match.toolSettings.maxStampCells, world.orient, world.side].join(":");
-      if (cache2?.match === match && cache2.token === token) return cache2.preview;
+      const view = mode === "pick" ? [world.center, ...atlasCamera.look, ...atlasCamera.right] : [];
+      const token = [mode, center, radius2, match.gen, match.actionRevision, match.toolSettings.maxStampCells, world.orient, world.side, ...view].join(":");
+      if (cache2?.match === match && cache2.chart === world.chart && cache2.token === token) return cache2.preview;
       let p;
       if (mode === "erase") {
         const footprint2 = circularSites(match.graph, center, radius2);
@@ -12731,7 +12735,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const result = capture(match, center);
         p = { tool: "pick", ids: result.ids ?? [], ready: result.ok, center: result.center ?? center, result };
       }
-      cache2 = { match, token, preview: p };
+      cache2 = { match, chart: world.chart, token, preview: p };
       return p;
     }
     function apply(anchor, { quiet = false } = {}) {
