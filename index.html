@@ -755,6 +755,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab.mixed .mx-mode select,#hexlab.mixed .mx-modline select,#hexlab.mixed .mx-vote select,#hexlab.mixed #mx-setup select,#hexlab.mixed #mx-setup input{width:100%;max-width:100%;min-width:0;color:var(--mx-ink);background:#213249;border:1px solid #425770;border-radius:5px;font:inherit;padding:6px}
 #hexlab.mixed .mx-actions{display:flex;gap:4px;flex-wrap:wrap}
 #hexlab.mixed .mx-actions button{display:inline-block!important;min-height:31px;flex:1 1 auto;padding:4px 6px;font-size:12px}
+#hexlab.mixed .mx-actions button[hidden]{display:none!important}
 #hexlab.mixed .mx-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px 6px}
 #hexlab.mixed .mx-metrics div:first-child{grid-column:1/-1}
 #hexlab.mixed .mx-metrics small{display:block;font-size:9px;color:var(--mx-soft);letter-spacing:.08em}
@@ -6403,23 +6404,49 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     $("br-globe-zoom-reset").textContent = "100%";
   }
 
+  // src/match/controls/playback-state.js
+  function playbackState({ started = false, playing = false, ended = false, eliminated = false, stopped = false } = {}) {
+    const terminal = ended || eliminated || stopped;
+    return {
+      state: ended ? "finished" : eliminated ? "eliminated" : stopped ? "stopped" : playing ? "running" : started ? "paused" : "ready",
+      label: terminal ? "Nova partida" : playing ? "Pausar" : started ? "Retomar" : "Iniciar",
+      icon: terminal ? "↻" : playing ? "❚❚" : "▶",
+      canStep: started && !playing && !terminal,
+      canStop: (started || playing) && !terminal,
+      canRun: !terminal
+    };
+  }
+
   // src/match/controls/playback.js
   function syncPlayButton() {
     const button2 = $("hl-play"), heading = $("br-match-heading");
     const result = game.winner === 1 ? "Você venceu" : game.winner ? game.names[game.winner] + " venceu" : "Empate";
-    const title = game.ended ? result : "⬡ HEXOPHAGE";
+    const mixed = world.rule === "mixed";
+    const title = game.ended ? result : mixed && game.humanEliminated ? "Você foi eliminado" : mixed && game.stopped ? "Partida interrompida" : "⬡ HEXOPHAGE";
     if (heading.textContent !== title) heading.textContent = title;
     const started = world.matchStarted || world.gen > 0;
-    const label = game.ended ? "Nova partida" : world.playing ? "Pausar" : started ? "Retomar" : "Iniciar";
-    button2.firstElementChild.textContent = game.ended ? "↻" : world.playing ? "❚❚" : "▶";
+    const controls2 = playbackState({
+      started,
+      playing: world.playing,
+      ended: game.ended,
+      eliminated: mixed && game.humanEliminated,
+      stopped: mixed && game.stopped
+    });
+    const { label } = controls2;
+    button2.firstElementChild.textContent = controls2.icon;
     button2.lastElementChild.textContent = label;
     button2.setAttribute("aria-label", label);
-    $("hl-clear").hidden = !started || game.ended;
-    button2.title = game.ended ? "Voltar à preparação com os ajustes atuais" : label;
+    $("hl-clear").hidden = !controls2.canStop;
+    if (mixed) {
+      $("hl-step").hidden = !controls2.canStep;
+      $("hl-step").disabled = !controls2.canStep;
+      $("mx-actions").dataset.state = controls2.state;
+    }
+    button2.title = controls2.canRun ? label : "Voltar à preparação com os ajustes atuais";
     button2.classList.toggle("primary", !world.playing);
   }
   function setPlay(on) {
-    world.playing = !!on && !game.ended;
+    world.playing = !!on && !game.ended && !(world.rule === "mixed" && (game.stopped || game.humanEliminated));
     world.accum = 0;
     syncPlayButton();
   }
@@ -8504,6 +8531,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     });
     function instance(cells2, players, gen, lastIgnitions = [], domain = null, outside = null, observe = false, limits2 = normalizeToolSettings(toolSettings), actionRevision = 0) {
       const { adj, deg } = graph;
+      const actionListeners = /* @__PURE__ */ new Set();
+      function subscribeActions(listener) {
+        if (typeof listener !== "function") throw TypeError("Expected an action listener");
+        actionListeners.add(listener);
+        return () => actionListeners.delete(listener);
+      }
+      function changed(kind, owner, ids = []) {
+        actionRevision++;
+        if (!actionListeners.size) return;
+        const event = Object.freeze({ kind, owner, ids: Object.freeze([...ids]), gen, revision: actionRevision });
+        for (const listener of actionListeners) listener(event);
+      }
       const stampPrice = (resolver) => economy.stampCost + (resolver === "guard" ? economy.guardStampExtra : 0);
       function canStamp(owner, rule, resolver, ids, ballot = "support", sense = "native") {
         if (!Number.isInteger(owner) || owner < 1 || owner >= players.length) return false;
@@ -8530,13 +8569,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         p.reserve = Math.max(0, p.reserve - ids.length * stampPrice(resolver));
         p.lastFieldAt = gen;
         for (const site of ids) cells2.set(site, cell(genotype(owner, rule, resolver, ballot, sense), 1));
-        actionRevision++;
+        changed("stamp", owner, ids);
         return true;
       }
       function setToolSettings(values) {
         const next = normalizeToolSettings(values, limits2);
-        if (Object.keys(next).some((key2) => next[key2] !== limits2[key2])) actionRevision++;
+        const differs = Object.keys(next).some((key2) => next[key2] !== limits2[key2]);
         limits2 = next;
+        if (differs) changed("settings", 0);
         return limits2;
       }
       function erasePreview(owner, center, radius2) {
@@ -8556,7 +8596,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         }
         p.toolErased += ids.length;
         p.eraseActions++;
-        actionRevision++;
+        changed("erase", owner, ids);
         return ids.length;
       }
       function step2(hooks) {
@@ -8848,6 +8888,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         erase,
         erasePreview,
         setToolSettings,
+        subscribeActions,
         step: step2,
         fork,
         get cells() {
@@ -9257,7 +9298,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       return c?.owner === owner && c.age < match.economy.stableAfter;
     });
   }
-  function createFieldToolPlanner(match, { stats, horizon: horizon2, lookahead, cadence = 1, onDecision, beforeOrder, onOrder, onLearn, onMutation } = {}) {
+  function createFieldToolPlanner(match, { stats, horizon: horizon2, lookahead, cadence = 1, onDecision, beforeOrder, onOrder, onLearn } = {}) {
     const states = /* @__PURE__ */ new Map();
     function stateFor(bot) {
       if (!states.has(bot.owner)) states.set(bot.owner, {
@@ -9291,6 +9332,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const drain = Math.max(0, state.spend - state.income), runway = 2 * horizon2 * drain;
       return p.lastBirths > 0 && p.reserve < 4 * match.economy.stampCost + runway;
     }
+    function dependencies(owner, region) {
+      const scope3 = new Set(circularSites(match.graph, region.center, 2 * region.radius + 2 * horizon2 + 2));
+      const owners = /* @__PURE__ */ new Set([owner]);
+      for (const id of scope3) {
+        const c = match.cells.get(id);
+        if (c) owners.add(c.owner);
+      }
+      return { scope: scope3, owners };
+    }
     function beginErase(bot, state) {
       state.nextErase = match.gen + Math.max(2, Math.ceil(horizon2 / 2));
       const sample = sampleSites(match, state, bot.owner), sites = sample.young;
@@ -9316,7 +9366,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         stage: "forecast",
         at: match.gen,
         followCenter: region.center,
-        revision: match.actionRevision
+        revision: match.actionRevision,
+        dependencies: dependencies(bot.owner, region)
       };
       stats[bot.owner].eraseTrials++;
       stats[bot.owner].trials++;
@@ -9413,15 +9464,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         revalidated: true
       };
       beforeOrder?.(o);
-      const removed = match.erase(owner, current2.center, current2.radius);
       state.task = null;
+      state.follow = null;
+      const removed = match.erase(owner, current2.center, current2.radius);
       if (!removed) return;
       state.track = current2.center;
       state.nextErase = match.gen + cadence;
       stats[owner].eraseOrders++;
       stats[owner].erasedCells += removed;
-      onMutation?.(bot);
-      state.follow = { ...j, hold: null, play: null, region: current2, until: j.until ?? match.gen + horizon2 };
+      state.follow = { ...j, hold: null, play: null, region: current2, dependencies: dependencies(owner, current2), until: j.until ?? match.gen + horizon2 };
       onOrder?.({ ...o, removed });
     }
     function advanceErase(bot, state, j) {
@@ -9489,13 +9540,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       else advanceCapture(bot, state, state.task);
       return true;
     }
-    function invalidate() {
-      for (const state of states.values()) {
+    function invalidate(action) {
+      for (const [owner, state] of states) {
+        const j = state.task?.kind === "erase" ? state.task : state.follow;
+        if (!j) continue;
+        const d = j.dependencies;
+        const affected = !action || action.kind === "settings" || !d || d.owners.has(action.owner) || action.ids.some((id) => d.scope.has(id));
+        if (!affected) continue;
+        stats[owner].eraseInvalidated = (stats[owner].eraseInvalidated ?? 0) + 1;
         state.follow = null;
-        if (state.task?.kind === "erase") {
-          state.task = null;
-          state.nextErase = Math.min(state.nextErase, match.gen + 1);
-        }
+        if (state.task?.kind === "erase") state.task = null;
+        state.nextErase = Math.min(state.nextErase, match.gen + 1);
       }
     }
     return { work, invalidate, learned: (bot) => stateFor(bot).learned };
@@ -9594,6 +9649,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       holds: 0,
       invalidated: 0,
       eraseTrials: 0,
+      eraseInvalidated: 0,
       eraseHolds: 0,
       eraseOrders: 0,
       erasedCells: 0,
@@ -9610,7 +9666,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       work: 0
     }));
     let revision = match.actionRevision;
-    function invalidateForecasts() {
+    function invalidateForecasts(action) {
       revision = match.actionRevision;
       for (const bot of captains) {
         if (bot.ready) stats[bot.owner].invalidated++;
@@ -9618,7 +9674,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         bot.ready = null;
         bot.pricedAt = -Infinity;
       }
-      field?.invalidate();
+      field?.invalidate(action);
     }
     const field = fieldTools ? createFieldToolPlanner(match, {
       stats,
@@ -9631,9 +9687,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       onLearn: (bot, card2) => {
         bot.learned.push(card2);
         bot.pricedAt = -Infinity;
-      },
-      onMutation: invalidateForecasts
+      }
     }) : null;
+    const unsubscribe = match.subscribeActions(invalidateForecasts);
     function investment(bot, cards3) {
       const p = match.players[bot.owner];
       const possible = cards3.filter((c) => c.offsets.length * match.stampPrice(c.resolver) <= p.reserve);
@@ -9830,7 +9886,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       beforeOrder?.(o);
       if (!match.stamp(o.owner, o.rule, o.resolver, o.ids, o.ballot, o.sense)) return;
-      invalidateForecasts();
       bot.lastBuy = match.gen;
       bot.recoverySeen.clear();
       stat.rescueOrders += Number(o.recovery);
@@ -9866,7 +9921,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if (bot.job) advance2(bot);
       }
     }
-    return { turn, stats };
+    return { turn, stats, destroy: unsubscribe };
   }
 
   // experiments/typed-world/game/atlas-canvas.mjs
@@ -13126,7 +13181,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     populateModeSelector(selector);
     selector.value = MIXED_MODE;
     selector.onchange = () => navigateToMode(selector.value);
-    $("mx-actions").prepend($("hl-play"), $("hl-step"));
+    $("mx-actions").prepend($("hl-play"), $("hl-clear"), $("hl-step"));
+    $("hl-clear").title = "Parar a partida";
+    $("hl-clear").setAttribute("aria-label", "Parar a partida");
     $("mx-speed-slot").append($("hl-speed").closest(".br-speed-knob"));
     const portrait = matchMedia("(orientation: portrait)");
     function fold() {
@@ -13142,7 +13199,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const scoreboard = createScoreboard(() => session);
     tools = createFieldTools({
       getMatch: () => session?.match,
-      canEdit: () => !!session?.alive[1] && !game.ended,
+      canEdit: () => !!session?.alive[1] && !game.ended && !game.stopped,
       onCapture: (card2) => atlas.capture(card2, hand.selected),
       onErase: () => {
         dirty = true;
@@ -13167,6 +13224,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function reset2(next, prepared, storage3) {
       const sameGraph = prepared ?? (session?.graph.f === next.F ? session.graph : void 0);
       const fresh = createGameMatch({ ...next, unseededOwners: [1], ...sameGraph ? { graph: sameGraph } : {} });
+      controllers?.destroy();
       session = fresh;
       options = next;
       scoreboard.reset();
@@ -13176,6 +13234,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       } });
       game.ended = false;
       game.winner = 0;
+      game.stopped = false;
+      game.humanEliminated = false;
       world.matchStarted = false;
       lastOrders = [];
       elapsed = 0;
@@ -13216,7 +13276,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const targetIds = (anchor) => anchor && hand.current ? stampTargets(anchor, hand.current.shape) : null;
     function preview(anchor) {
       if (tools.mode !== "stamp") return tools.preview(anchor);
-      if (!session.alive[1] || game.ended || !hand.selected) return null;
+      if (!session.alive[1] || game.ended || game.stopped || !hand.selected) return null;
       const ids = targetIds(anchor), { resolver, ballot } = hand.current, c = hand.selected;
       return ids ? { ids, ready: session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native") } : null;
     }
@@ -13225,7 +13285,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const proposed = preview(anchor), c = hand.selected, p = session.match.players[1], m = hand.current;
       if (!proposed?.ready) {
         const cost = c && m ? c.offsets.length * session.match.stampPrice(m.resolver) : 0;
-        toast(game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
+        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
       const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native");
@@ -13255,6 +13315,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-economy").focus();
     };
     function step2() {
+      if (game.stopped || game.humanEliminated || game.ended) return false;
       if (!session.step($("mx-conflicts").open ? observe : void 0)) return false;
       if (world.painting && tools.mode === "erase" && world.hover) tools.apply(world.hover, { quiet: true });
       scoreboard.recordGeneration();
@@ -13265,21 +13326,35 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         setPlay(false);
         toast(session.outcome === 1 ? "Você venceu!" : session.outcome ? game.names[session.outcome] + " venceu." : "Empate.");
       }
-      if (session.eliminatedAt[1] === session.match.gen && session.outcome === null) toast("Você foi eliminado · a disputa continua.");
+      if (session.eliminatedAt[1] === session.match.gen) {
+        game.humanEliminated = true;
+        world.painting = false;
+        setPlay(false);
+        if (session.outcome === null) toast("Você foi eliminado · Nova partida disponível.");
+      }
       world.matchStarted = true;
       dirty = true;
       return true;
     }
     $("hl-play").onclick = () => {
-      if (game.ended) {
+      if (game.ended || game.stopped || game.humanEliminated) {
         reset2(options);
         return;
       }
       world.matchStarted = true;
       setPlay(!world.playing);
     };
-    $("hl-step").onclick = () => {
+    $("hl-clear").onclick = () => {
+      if (!world.matchStarted || game.ended || game.stopped || game.humanEliminated) return;
+      game.stopped = true;
+      world.painting = false;
+      elapsed = 0;
       setPlay(false);
+      hud();
+      toast("Partida interrompida · Nova partida disponível.");
+    };
+    $("hl-step").onclick = () => {
+      if (!world.matchStarted || world.playing || game.ended || game.stopped || game.humanEliminated) return;
       step2();
       syncPlayButton();
       hud();

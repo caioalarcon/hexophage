@@ -79,6 +79,7 @@ async function plantFarm(page){
   assert(point,'A clear site must be available for the isolated source farm.');
   await page.mouse.click(point.x,point.y);
   assert.equal(await page.evaluate(()=>__hexophageMixed.session.match.players[1].reserve),point.balance-point.price);
+  await page.evaluate(()=>{document.getElementById('hl-play').click();document.getElementById('hl-play').click();});
   await page.click('#hl-step');await page.click('#hl-step');
   const own=await page.evaluate(()=>[...__hexophageMixed.session.match.cells].filter(([,c])=>c.owner===1)
     .map(([id,c])=>({id,rule:c.rule,resolver:c.resolver,ballot:c.ballot,sense:c.sense})));

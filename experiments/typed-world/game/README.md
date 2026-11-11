@@ -16,6 +16,10 @@ A página principal abre em **Mundo misto · experimental**, com F128 (163.842 s
 - Em **⚙**, escolha esfera, semente, ritmo dos bots, preços, renda por maduras, nascimentos ou mortes, votação de existência e precedência de identidade. **Nova partida com estes ajustes** aplica a configuração e reclassifica o baralho. A matriz de precedência pode comparar pares de interações ou de autômatos.
 - Em **⚙ → Ferramentas**, os padrões iniciais são raio máximo **12** e **1.024 células por carimbo**. **Aplicar ferramentas nesta partida** muda esses limites sem reiniciar campo, reserva ou geração e guarda a preferência para a próxima partida. O limite de carimbo vale também para compras dos bots e para o editor. As colônias de abertura dos bots fazem parte da preparação do cenário.
 
+## Controles da sessão
+
+A preparação mostra **Iniciar**. Durante a execução aparecem **Pausar** e **Parar**. Na pausa aparecem **Retomar**, **Parar** e **+1 geração**. Parar conserva o último campo para inspeção e oferece **Nova partida**, que volta à preparação com os ajustes atuais. A derrota do jogador humano pausa a sessão e oferece imediatamente **Nova partida**, inclusive enquanto a disputa global entre bots ainda está em aberto. Vitória e empate usam a mesma ação de reinício. O avanço manual só executa quando a sessão já começou e está pausada.
+
 ## Infestações e ferramentas
 
 A borracha dá uma ação de controle ao jogador quando uma região consome a reserva. A remoção usa uma distância angular na esfera, em unidades do espaçamento local entre células. A prévia destaca exatamente as células próprias atingidas. O registro econômico separa essas remoções em **Células apagadas com borracha** e **Aplicações da borracha**. O campo, as maduras e a população convencional mudam imediatamente; a eliminação segue a liquidação normal da próxima geração. Apagar custa zero e rende zero: não produz renda de mortes, revenda ou crédito de combate.
@@ -44,3 +48,23 @@ Os seis tratamentos terminaram com as 66 células da fazenda, zero nascimentos n
 Na configuração de estabilidade, o *stalk P8* e o Crescedor de Callahan estão entre as primeiras opções acessíveis. Ao recompensar eventos, sobem o canhão triplo Hawk de Ashley 2016 e o *glider gunship* P28 de Andreen. Cada física conserva pelo menos quatro cartas, entre elas uma nave. [Medições e ordenação](atlas-model.mjs)
 
 O runner de comparação usa aberturas pagas para todos os participantes e compartilha as carteiras, compras, eliminação, previsão local e política do cliente. Em cada par, uma cópia do planeta recebe ordens dos bots e a outra evolui a mesma abertura sem compras adicionais. [Resultados dos bots e comparação das economias](BOTS.md)
+
+
+### Recuperação sob intervenções concorrentes
+
+`node experiments/typed-world/game/concurrent-tool-recovery.mjs` compara recuperação com e sem intervenções distantes de outra carteira a cada duas gerações. A amostra F48 começa insolvente em G256 e avança 160 gerações, com orçamento de um passo mental por geração. A amostra F128 usa cinco controladores, orçamento compartilhado de quatro passos e 256 gerações adicionais. O catálogo inicial de compras é vazio; captura e compra de padrões observados continuam habilitadas.
+
+A invalidação da versão publicada em `538aec1` descartava a previsão inteira a cada ação. O motor agora notifica os comandos efetivamente aplicados a cada instância, e o planejador de limpeza acompanha dependências espaciais e carteiras participantes. Intervenções distantes de outras carteiras preservam o trabalho em andamento. Ações próximas, gasto das carteiras envolvidas e alterações de configuração invalidam as previsões relevantes. Cada pincelada continua sendo validada contra o estado corrente. Simulações privadas mantêm seus próprios observadores.
+
+| Mundo / semente / controladores | Cortes antes | Cortes depois | Reserva antes | Reserva depois |
+| --- | ---: | ---: | ---: | ---: |
+| F48 / 1 / 1 | 0 | 2 | 0,43 | 4.082,35 |
+| F48 / 43 / 1 | 0 | 2 | 0,74 | 4.487,69 |
+| F48 / 211 / 1 | 0 | 3 | 0,23 | 4.454,91 |
+| F128 / 43 / 5 | 0 | 3 | 0,03 | 5.183,92 |
+
+Os quatro tratamentos preservaram as 66 células maduras originais e terminaram com zero nascimentos. A regressão também verifica invalidação por ação próxima, gasto próprio e configurações; a métrica `eraseInvalidated` registra previsões de limpeza descartadas.
+
+#### Ressalvas e contrapontos
+
+Estes são ensaios dirigidos de concorrência, com sementes e produtores conhecidos. A avaliação de partidas completas com o catálogo integral, combates diversos e infestações repetidas continua na issue #20. As dependências espaciais usam um horizonte finito; ações e evolução posteriores continuam exigindo revalidação.

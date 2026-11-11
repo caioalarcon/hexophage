@@ -41,6 +41,7 @@ const {chromium}=require('playwright');
     assert.equal(await stat(1,'stamps').textContent(),'0');
     assert.match(await page.locator('#mx-stats-1 > p').textContent(),/Aguardando/);
 
+    await page.evaluate(()=>{document.getElementById('hl-play').click();document.getElementById('hl-play').click();});
     for(let gen=0;gen<4;gen++)await page.click('#hl-step');
     await page.click('#hl-play');
     await page.waitForFunction(()=>__hexophageMixed.session.match.gen>=10);
@@ -140,6 +141,7 @@ const {chromium}=require('playwright');
       const {session}=__hexophageMixed;
       return session.match.stamp(1,'callahan','contact',[session.starts[1]]);
     }));
+    await page.evaluate(()=>{document.getElementById('hl-play').click();document.getElementById('hl-play').click();});
     await page.click('#hl-step');
     assert.equal(await page.evaluate(()=>__hexophageMixed.session.eliminatedAt[1]),1);
     assert.equal(await page.evaluate(()=>__hexophageMixed.session.alive[1]),false);
