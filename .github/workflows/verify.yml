@@ -1,7 +1,7 @@
 name: Verify Hexophage
 on:
   push:
-    branches: [dev, preview/grower-siege, research/mixed-stamp-collisions]
+    branches: [dev, preview/grower-siege, research/mixed-stamp-collisions, preview/session-recovery]
   pull_request:
     branches: [main, preview/economic-tactics]
 permissions:
@@ -19,6 +19,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Package reproducible development workspace
+        if: github.event_name == 'push' && github.ref == 'refs/heads/preview/session-recovery'
+        run: tar -czf /tmp/hexophage-workspace.tar.gz --null -T <(git ls-files -z) node_modules
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push' && github.ref == 'refs/heads/preview/session-recovery'
+        with:
+          name: hexophage-workspace
+          path: /tmp/hexophage-workspace.tar.gz
+          retention-days: 1
       - run: npm run build
       - run: git diff --exit-code --stat -- experiments/typed-world/index.html
       - name: Verify the published game matches its sources
@@ -38,11 +47,11 @@ jobs:
           node experiments/economy/lab/browser.test.js
           node experiments/economy/incoming-glider-replay.mjs
       - name: Update the tested preview HTML after successful checks
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/preview/grower-siege' || github.ref == 'refs/heads/research/mixed-stamp-collisions')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/preview/grower-siege' || github.ref == 'refs/heads/research/mixed-stamp-collisions' || github.ref == 'refs/heads/preview/session-recovery')
         run: |
           git add index.html
           if ! git diff --cached --quiet; then
-            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Build dev preview from tested features'
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Build preview from tested features'
             git push origin HEAD:${GITHUB_REF_NAME}
           fi
       - uses: actions/upload-artifact@v4
