@@ -49,19 +49,20 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
   const captains=owners.map(owner=>({owner,pick:random(seed^Math.imul(owner,0x9e3779b9)),decision:0,learned:[],
     pricedAt:-Infinity,prices:null,recoverySeen:new Set(),family:owner%Math.max(1,families.length),raidFamily:owner%Math.max(1,families.length),raidIndex:0,ready:null,next:1,lastBuy:-Infinity,job:null,memory:new Map()}));
   const stats=Array.from({length:match.players.length},()=>({orders:0,raids:0,trials:0,raidTrials:0,raidHolds:0,raidInvalid:0,rescueTrials:0,rescueOrders:0,delayed:0,holds:0,invalidated:0,
-    eraseTrials:0,eraseHolds:0,eraseOrders:0,erasedCells:0,eraseWork:0,captureTrials:0,captures:0,capturedOrders:0,captureWork:0,
+    eraseTrials:0,eraseInvalidated:0,eraseHolds:0,eraseOrders:0,erasedCells:0,eraseWork:0,captureTrials:0,captures:0,capturedOrders:0,captureWork:0,
     first:null,last:null,studied:new Set(),bought:new Set(),expected:0,work:0}));
   let revision=match.actionRevision;
-  function invalidateForecasts(){
+  function invalidateForecasts(action){
     revision=match.actionRevision;
     for(const bot of captains){
       if(bot.ready)stats[bot.owner].invalidated++;
       bot.job=null;bot.ready=null;bot.pricedAt=-Infinity;
     }
-    field?.invalidate();
+    field?.invalidate(action);
   }
   const field=fieldTools?createFieldToolPlanner(match,{stats,horizon,lookahead,cadence:Math.max(1,Math.ceil(owners.length/Math.max(1,budget))),onDecision,beforeOrder,onOrder,
-    onLearn:(bot,card)=>{bot.learned.push(card);bot.pricedAt=-Infinity;},onMutation:invalidateForecasts}):null;
+    onLearn:(bot,card)=>{bot.learned.push(card);bot.pricedAt=-Infinity;}}):null;
+  const unsubscribe=match.subscribeActions(invalidateForecasts);
   function investment(bot,cards){
     const p=match.players[bot.owner];
     const possible=cards.filter(c=>c.offsets.length*match.stampPrice(c.resolver)<=p.reserve);
@@ -202,7 +203,6 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     }
     beforeOrder?.(o);
     if(!match.stamp(o.owner,o.rule,o.resolver,o.ids,o.ballot,o.sense))return;
-    invalidateForecasts();
     bot.lastBuy=match.gen;bot.recoverySeen.clear();stat.rescueOrders+=Number(o.recovery);stat.first??=match.gen;stat.last=match.gen;
     stat.delayed+=Number(match.gen>o.gen);o.gen=match.gen;
     stat.orders++;stat.raids+=Number(raid);stat.bought.add(o.rule);stat.expected+=o.expected;
@@ -226,5 +226,5 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
       if(bot.job)advance(bot);
     }
   }
-  return {turn,stats};
+  return {turn,stats,destroy:unsubscribe};
 }
