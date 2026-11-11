@@ -31,6 +31,12 @@
      </div>
     </div>
    </div>
+   <div id="mx-field-tools" role="toolbar" aria-label="Ferramentas do campo">
+    <button id="mx-tool-stamp" type="button" aria-label="Carimbo" aria-pressed="true" title="Carimbo (V)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v6l2 3v4H7v-4l2-3zM5 16h14v4H5z"/></svg></button>
+    <button id="mx-tool-erase" type="button" aria-label="Borracha" aria-pressed="false" title="Borracha (B) · arraste para apagar suas células; Shift para mover o mapa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 3 7 7-10 10H6l-4-4zM8 10l7 7M11 20h10"/></svg></button>
+    <button id="mx-tool-pick" type="button" aria-label="Conta-gotas" aria-pressed="false" title="Conta-gotas (I) · copiar o padrão mais próximo para este espaço"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 3 7 7M16 5l3-3 3 3-3 3M15 8 5 18l-3 1 1-3L13 6M5 18l2 2"/></svg></button>
+    <label id="mx-erase-control" hidden title="Raio da borracha em espaçamentos entre células"><span>Raio</span><input id="mx-erase-radius" type="range" min="1" max="12" step="1" value="3" aria-label="Raio da borracha"><output id="mx-erase-value" for="mx-erase-radius">3</output></label>
+   </div>
   </div>
   <div id="mx-hand" role="group" aria-label="Baralho por relevância econômica"></div>
  </aside>
@@ -39,6 +45,7 @@
   <form id="mx-setup">
    <fieldset><legend>Partida</legend><label>Esfera<select id="mx-size"></select></label><label>Semente<input type="number" id="mx-seed" min="0" max="4294967295" step="1" required></label><label>Reserva inicial<input type="number" id="mx-bank" min="0" step="any" placeholder="Do perfil"></label></fieldset>
    <fieldset><legend>Bots</legend><label>Intervalo de compra (G)<input type="number" id="mx-bot-interval" min="1" step="1" required></label><label>Passos de pesquisa por G<input type="number" id="mx-bot-budget" min="0" step="1" required></label></fieldset>
+   <fieldset><legend>Ferramentas</legend><label>Raio máximo da borracha<input type="number" id="mx-erase-max" min="1" step="1" required></label><label>Máximo de células por carimbo<input type="number" id="mx-stamp-max" min="1" step="1" required></label><button type="button" id="mx-tools-apply" class="mx-wide">Aplicar ferramentas nesta partida</button></fieldset>
    <fieldset><legend>Economia</legend><label class="mx-wide">Gerar energia por<select id="mx-economy"><option value="stability">Células fixas maduras</option><option value="birth">Nascimentos</option><option value="death">Mortes</option><option value="activity">Nascimentos e mortes</option></select></label><div id="mx-tariffs" class="mx-wide"></div></fieldset>
    <fieldset><legend>Colisões</legend><label>Vida ou vazio<select id="mx-existence"><option value="majority">Maioria das linhagens</option><option value="support">Maioria por apoio</option><option value="any">Basta um sim</option><option value="unanimous">Unanimidade</option><option value="legacy">Só propostas positivas</option></select></label><label>Quem ocupa<select id="mx-identity"><option value="ballot">Voto do carimbo</option><option value="ecology">Maioria ecológica</option><option value="support">Apoio local</option><option value="cycle">Ciclo entre interações</option><option value="dominant">Dominante designado</option><option value="majority">Maioria de três critérios</option><option value="fixed">Ordem fixa</option><option value="matrix">Matriz editável</option><option value="phase">Preferência à travessia</option><option value="legacy">Original</option></select></label>
    <div id="mx-families" class="mx-wide" hidden><label>Comparar por<select id="mx-axis"><option value="resolver">Interação</option><option value="rule">Autômato</option></select></label><label id="mx-order-line"><span id="mx-order-label"></span><input id="mx-order" type="text" spellcheck="false"></label><div id="mx-matrix" hidden></div></div>

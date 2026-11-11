@@ -870,6 +870,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab.mixed .mx-vote label{grid-column:1;grid-row:1;display:block;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px}
 #hexlab.mixed #mx-ballot-help{grid-column:2;grid-row:1}
 #hexlab.mixed .mx-vote select{grid-column:1/-1;grid-row:2}
+#hexlab.mixed #mx-field-tools{display:flex;align-items:center;gap:4px;min-width:0}
+#hexlab.mixed #mx-field-tools>button{display:grid;place-items:center;flex:none;width:27px;min-width:27px;height:26px;min-height:26px;padding:3px;border:1px solid #425770;border-radius:4px;background:#213249;color:var(--mx-soft)}
+#hexlab.mixed #mx-field-tools svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+#hexlab.mixed #mx-tool-stamp[aria-pressed=true]{background:#19453f;border-color:var(--mx-mint);color:var(--mx-mint)}
+#hexlab.mixed #mx-tool-erase[aria-pressed=true]{background:#4b2e30;border-color:#ff9d89;color:#ffad9a}
+#hexlab.mixed #mx-tool-pick[aria-pressed=true]{background:#143e4c;border-color:#75d8ed;color:#75d8ed}
+#hexlab.mixed #mx-erase-control{display:flex;align-items:center;gap:4px;flex:1 1 auto;min-width:0;font-size:10px;color:var(--mx-soft);margin-left:3px}
+#hexlab.mixed #mx-erase-control[hidden]{display:none}
+#hexlab.mixed #mx-erase-radius{width:40px;min-width:20px;flex:1 1 auto;margin:0;accent-color:#ffad9a}
+#hexlab.mixed #mx-erase-value{min-width:18px;text-align:right;color:#ffad9a}
+#hexlab.mixed[data-field-tool=erase] #hl-world,#hexlab.mixed[data-field-tool=pick] #hl-world{cursor:crosshair}
+#hexlab.mixed #mx-tools-apply{font-size:11px;padding:6px}
 @media(orientation:portrait){
  #hexlab.mixed .mx-tools{padding:3px 0;gap:3px}
  #hexlab.mixed .mx-tools-row{gap:5px}
@@ -1206,6 +1218,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
      </div>
     </div>
    </div>
+   <div id="mx-field-tools" role="toolbar" aria-label="Ferramentas do campo">
+    <button id="mx-tool-stamp" type="button" aria-label="Carimbo" aria-pressed="true" title="Carimbo (V)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v6l2 3v4H7v-4l2-3zM5 16h14v4H5z"/></svg></button>
+    <button id="mx-tool-erase" type="button" aria-label="Borracha" aria-pressed="false" title="Borracha (B) · arraste para apagar suas células; Shift para mover o mapa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 3 7 7-10 10H6l-4-4zM8 10l7 7M11 20h10"/></svg></button>
+    <button id="mx-tool-pick" type="button" aria-label="Conta-gotas" aria-pressed="false" title="Conta-gotas (I) · copiar o padrão mais próximo para este espaço"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 3 7 7M16 5l3-3 3 3-3 3M15 8 5 18l-3 1 1-3L13 6M5 18l2 2"/></svg></button>
+    <label id="mx-erase-control" hidden title="Raio da borracha em espaçamentos entre células"><span>Raio</span><input id="mx-erase-radius" type="range" min="1" max="12" step="1" value="3" aria-label="Raio da borracha"><output id="mx-erase-value" for="mx-erase-radius">3</output></label>
+   </div>
   </div>
   <div id="mx-hand" role="group" aria-label="Baralho por relevância econômica"></div>
  </aside>
@@ -1214,6 +1232,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <form id="mx-setup">
    <fieldset><legend>Partida</legend><label>Esfera<select id="mx-size"></select></label><label>Semente<input type="number" id="mx-seed" min="0" max="4294967295" step="1" required></label><label>Reserva inicial<input type="number" id="mx-bank" min="0" step="any" placeholder="Do perfil"></label></fieldset>
    <fieldset><legend>Bots</legend><label>Intervalo de compra (G)<input type="number" id="mx-bot-interval" min="1" step="1" required></label><label>Passos de pesquisa por G<input type="number" id="mx-bot-budget" min="0" step="1" required></label></fieldset>
+   <fieldset><legend>Ferramentas</legend><label>Raio máximo da borracha<input type="number" id="mx-erase-max" min="1" step="1" required></label><label>Máximo de células por carimbo<input type="number" id="mx-stamp-max" min="1" step="1" required></label><button type="button" id="mx-tools-apply" class="mx-wide">Aplicar ferramentas nesta partida</button></fieldset>
    <fieldset><legend>Economia</legend><label class="mx-wide">Gerar energia por<select id="mx-economy"><option value="stability">Células fixas maduras</option><option value="birth">Nascimentos</option><option value="death">Mortes</option><option value="activity">Nascimentos e mortes</option></select></label><div id="mx-tariffs" class="mx-wide"></div></fieldset>
    <fieldset><legend>Colisões</legend><label>Vida ou vazio<select id="mx-existence"><option value="majority">Maioria das linhagens</option><option value="support">Maioria por apoio</option><option value="any">Basta um sim</option><option value="unanimous">Unanimidade</option><option value="legacy">Só propostas positivas</option></select></label><label>Quem ocupa<select id="mx-identity"><option value="ballot">Voto do carimbo</option><option value="ecology">Maioria ecológica</option><option value="support">Apoio local</option><option value="cycle">Ciclo entre interações</option><option value="dominant">Dominante designado</option><option value="majority">Maioria de três critérios</option><option value="fixed">Ordem fixa</option><option value="matrix">Matriz editável</option><option value="phase">Preferência à travessia</option><option value="legacy">Original</option></select></label>
    <div id="mx-families" class="mx-wide" hidden><label>Comparar por<select id="mx-axis"><option value="resolver">Interação</option><option value="rule">Autômato</option></select></label><label id="mx-order-line"><span id="mx-order-label"></span><input id="mx-order" type="text" spellcheck="false"></label><div id="mx-matrix" hidden></div></div>
@@ -2368,7 +2387,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       return { own: move.own - base.own, rival: move.rival - base.rival };
     }
     const recent = new Float64Array(8 * 7);
-    const operating2 = audit ? [new Float64Array(8 * 7), new Float64Array(8 * 7)] : null;
+    const operating3 = audit ? [new Float64Array(8 * 7), new Float64Array(8 * 7)] : null;
     const trial = {
       nodes: graph.n,
       get generations() {
@@ -2388,9 +2407,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           for (const p of action.players) {
             const slot = turns % 8 * 7 + p.id;
             recent[slot] = p.lastFlow - control.players[p.id - 1].lastFlow;
-            if (operating2 && (p.id === owner || p.id === rival)) {
-              operating2[0][slot] = p.operatingFlow;
-              operating2[1][slot] = control.players[p.id - 1].operatingFlow;
+            if (operating3 && (p.id === owner || p.id === rival)) {
+              operating3[0][slot] = p.operatingFlow;
+              operating3[1][slot] = control.players[p.id - 1].operatingFlow;
             }
           }
           turns++;
@@ -2436,8 +2455,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
             const side = (id) => ({
               action: endpoint(action, id),
               hold: endpoint(control, id),
-              tailAction: tail(operating2[0], id),
-              tailHold: tail(operating2[1], id),
+              tailAction: tail(operating3[0], id),
+              tailHold: tail(operating3[1], id),
               actionOperating: action.operating[id],
               holdOperating: control.operating[id],
               outsideBirths: outside.births[id],
@@ -2525,8 +2544,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         bias = (3 * bias + local.count * local.mean) / (local.count + 3);
       }
       const fit = memory.lookup(id, "fit/" + context, pose);
-      const operating2 = result[side + "Cash"] + (side === "own" ? result.cost : 0);
-      const limit = Math.max(Math.abs(result[prop]), Math.abs(operating2) / result.turns);
+      const operating3 = result[side + "Cash"] + (side === "own" ? result.cost : 0);
+      const limit = Math.max(Math.abs(result[prop]), Math.abs(operating3) / result.turns);
       const shadow = Math.min(limit, Math.max(-limit, bias));
       return { shadow, applied: fit.count >= 2 && fit.mean >= 0.5 ? shadow : 0 };
     }
@@ -3752,15 +3771,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function encode([ns, rows2]) {
     return [ns, Object.fromEntries(kinds.map((kind) => [kind, [...rows2[kind]].map(([key2, { count: count2, mean }]) => [key2, count2, mean])]))];
   }
-  function createBrainArchive(storage2, onDirty) {
+  function createBrainArchive(storage3, onDirty) {
     let archive = /* @__PURE__ */ new Map();
     function refresh() {
-      if (!storage2) return;
+      if (!storage3) return;
       let raw;
       try {
-        raw = storage2.getItem(STORE_KEY);
+        raw = storage3.getItem(STORE_KEY);
       } catch {
-        storage2 = null;
+        storage3 = null;
         return;
       }
       try {
@@ -3790,7 +3809,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         }
         pending2.clear();
         checkpoints++;
-        if (!storage2) return;
+        if (!storage3) return;
         const scopes2 = [...archive].map(encode);
         let raw = JSON.stringify(scopes2);
         while (raw.length > MAX_STORE_CHARS && scopes2.length > 1) {
@@ -3798,9 +3817,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           raw = JSON.stringify(scopes2);
         }
         try {
-          storage2.setItem(STORE_KEY, raw);
+          storage3.setItem(STORE_KEY, raw);
         } catch {
-          storage2 = null;
+          storage3 = null;
         }
       }
       return {
@@ -6333,6 +6352,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function usePlacement(adapter) {
     alternatePlacement = adapter;
   }
+  function placementGesture() {
+    return alternatePlacement?.gesture === "paint" ? "paint" : "stamp";
+  }
   function placementAt(anchor) {
     if (alternatePlacement) {
       const preview = alternatePlacement.preview(anchor);
@@ -7900,9 +7922,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/world/load-planet.js
-  function newWorld(f, prepared, storage2) {
+  function newWorld(f, prepared, storage3) {
     const graph = prepared || buildSphere(f), n = graph.n;
-    const buffers = storage2 || allocateCells(n);
+    const buffers = storage3 || allocateCells(n);
     setPlay(false);
     world.graph = graph;
     clearLiveTileIndex();
@@ -8221,6 +8243,143 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return { votes: votes2, yes, no, weightYes, weightNo, approve, aliveBefore: !!old };
   }
 
+  // src/mixed/field-tools.js
+  var DEFAULT_TOOL_SETTINGS = Object.freeze({ maxEraseRadius: 12, maxStampCells: 1024 });
+  function normalizeToolSettings(values = {}, previous2 = DEFAULT_TOOL_SETTINGS) {
+    const settings = { ...previous2, ...values };
+    for (const key2 of Object.keys(DEFAULT_TOOL_SETTINGS))
+      if (!Number.isSafeInteger(settings[key2]) || settings[key2] < 1)
+        throw new RangeError("Os limites das ferramentas precisam ser inteiros positivos.");
+    return Object.freeze(Object.fromEntries(Object.keys(DEFAULT_TOOL_SETTINGS).map((key2) => [key2, settings[key2]])));
+  }
+  var validSite = (graph, site) => Number.isSafeInteger(site) && site >= 0 && site < graph.n;
+  function angularDistance(graph, a, b) {
+    const c = graph.coords, i = 3 * a, j = 3 * b;
+    const cross2 = Math.hypot(c[i + 1] * c[j + 2] - c[i + 2] * c[j + 1], c[i + 2] * c[j] - c[i] * c[j + 2], c[i] * c[j + 1] - c[i + 1] * c[j]);
+    const dot = c[i] * c[j] + c[i + 1] * c[j + 1] + c[i + 2] * c[j + 2];
+    return Math.atan2(cross2, dot);
+  }
+  function brushAngularRadius(graph, center, radius2) {
+    if (!validSite(graph, center) || !Number.isFinite(radius2) || radius2 < 0) return null;
+    let spacing = 0;
+    for (let k = 0; k < graph.deg[center]; k++) spacing += angularDistance(graph, center, graph.adj[6 * center + k]);
+    return Math.min(Math.PI, radius2 * spacing / graph.deg[center]);
+  }
+  function circularSites(graph, center, radius2) {
+    const limit = brushAngularRadius(graph, center, radius2);
+    if (limit === null) return [];
+    if (limit >= Math.PI) return Array.from({ length: graph.n }, (_, site) => site);
+    const sites = [center], seen = new Set(sites);
+    for (let head = 0; head < sites.length; head++) {
+      const site = sites[head];
+      for (let k = 0; k < graph.deg[site]; k++) {
+        const next = graph.adj[6 * site + k];
+        if (seen.has(next)) continue;
+        seen.add(next);
+        if (angularDistance(graph, center, next) <= limit + 1e-7) sites.push(next);
+      }
+    }
+    return sites;
+  }
+  var sameType = (a, b) => a && b && ["owner", "rule", "resolver", "ballot", "sense", "wave"].every((k) => a[k] === b[k]);
+  function nearestPatternSite(match, center) {
+    const { graph, cells: cells2 } = match;
+    if (!validSite(graph, center)) return null;
+    if (cells2.has(center)) return center;
+    let nearest = null, best = Infinity;
+    for (const [site] of cells2) {
+      const distance = angularDistance(graph, center, site);
+      if (distance < best - 1e-12 || Math.abs(distance - best) <= 1e-12 && (nearest === null || site < nearest)) {
+        nearest = site;
+        best = distance;
+      }
+    }
+    return nearest;
+  }
+  function stepFrame(graph, frame2, k, side) {
+    const d = mod(side * (k - frame2.ori), 6), id = graph.adj[6 * frame2.id + k];
+    if (graph.deg[id] !== 6) return null;
+    let back = 0;
+    while (back < 6 && graph.adj[6 * id + back] !== frame2.id) back++;
+    if (back === 6) return null;
+    return { id, q: frame2.q + DIR[d][0], r: frame2.r + DIR[d][1], ori: mod(back - side * ((d + 3) % 6), 6) };
+  }
+  function capturePattern(match, center, { maxCells = match.toolSettings?.maxStampCells ?? DEFAULT_TOOL_SETTINGS.maxStampCells, orientation = 0, side = 1 } = {}) {
+    if (!Number.isSafeInteger(maxCells) || maxCells < 1) throw new RangeError("Limite de captura inválido.");
+    if (!Number.isInteger(orientation) || ![1, -1].includes(side)) throw new RangeError("Orientação de captura inválida.");
+    const { graph, cells: cells2 } = match, first = nearestPatternSite(match, center);
+    if (first === null) return { ok: false, reason: "empty" };
+    const type = cells2.get(first), ids = [first], members = new Set(ids), support = new Set(ids);
+    for (let head = 0; head < ids.length; head++) {
+      const site = ids[head], near = [{ id: site, depth: 0 }], visited = /* @__PURE__ */ new Set([site]);
+      const include = (n) => {
+        if (!members.has(n) && sameType(cells2.get(n), type)) {
+          members.add(n);
+          ids.push(n);
+        }
+      };
+      for (let index = 0; index < near.length; index++) {
+        const { id, depth } = near[index];
+        include(id);
+        if (ids.length > maxCells) return { ok: false, reason: "too-large", center: first, limit: maxCells, atLeast: ids.length };
+        if (depth < 3) {
+          support.add(id);
+          for (let k = 0; k < graph.deg[id]; k++) {
+            const next = graph.adj[6 * id + k];
+            if (!visited.has(next)) {
+              visited.add(next);
+              near.push({ id: next, depth: depth + 1 });
+            }
+          }
+        }
+      }
+      if (ids.length > maxCells) return { ok: false, reason: "too-large", center: first, limit: maxCells, atLeast: ids.length };
+    }
+    if (ids.some((site) => graph.deg[site] !== 6)) return { ok: false, reason: "geometry", center: first };
+    const origin = { id: first, q: 0, r: 0, ori: mod(orientation, 6) }, frames = /* @__PURE__ */ new Map([[first, origin]]), positions = /* @__PURE__ */ new Map([["0,0", first]]), queue = [origin];
+    for (let head = 0; head < queue.length; head++) {
+      const frame2 = queue[head];
+      for (let k = 0; k < 6; k++) {
+        const next = graph.adj[6 * frame2.id + k];
+        if (!support.has(next) || graph.deg[next] !== 6) continue;
+        const candidate = stepFrame(graph, frame2, k, side), old = frames.get(next);
+        if (!candidate) return { ok: false, reason: "geometry", center: first };
+        if (old) {
+          if (old.q !== candidate.q || old.r !== candidate.r || old.ori !== candidate.ori)
+            return { ok: false, reason: "geometry", center: first };
+          continue;
+        }
+        const key2 = candidate.q + "," + candidate.r;
+        if (positions.has(key2) && positions.get(key2) !== next) return { ok: false, reason: "geometry", center: first };
+        positions.set(key2, next);
+        frames.set(next, candidate);
+        queue.push(candidate);
+      }
+    }
+    if (ids.some((site) => !frames.has(site))) return { ok: false, reason: "geometry", center: first };
+    const points = ids.map((site) => frames.get(site));
+    const q = Math.round(points.reduce((sum, p) => sum + p.q, 0) / points.length), r = Math.round(points.reduce((sum, p) => sum + p.r, 0) / points.length);
+    const offsets = points.map((p) => [p.q - q, p.r - r]).sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+    return {
+      ok: true,
+      ids,
+      center: first,
+      connectivity: 3,
+      sourceOwner: type.owner,
+      sourceWave: !!type.wave,
+      card: {
+        name: "Captura · " + ids.length + " células",
+        rule: type.rule,
+        resolver: type.resolver,
+        ballot: type.ballot ?? "support",
+        sense: type.sense ?? "native",
+        offsets,
+        custom: true,
+        group: "capturado"
+      }
+    };
+  }
+
   // experiments/typed-world/engine.mjs
   var defaultEconomy = Object.freeze({
     stampCost: 8,
@@ -8275,6 +8434,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       requestedCost: 0,
       unfundedCost: 0,
       salvageIncome: 0,
+      toolErased: 0,
+      eraseActions: 0,
       lastFieldAt: 0,
       out: false
     };
@@ -8302,6 +8463,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     friendlyFire = false,
     existence = "legacy",
     passage = "legacy",
+    toolSettings = {},
     onContest,
     onBirth,
     onExistence
@@ -8340,13 +8502,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       age,
       type
     });
-    function instance(cells2, players, gen, lastIgnitions = [], domain = null, outside = null, observe = false) {
+    function instance(cells2, players, gen, lastIgnitions = [], domain = null, outside = null, observe = false, limits2 = normalizeToolSettings(toolSettings), actionRevision = 0) {
       const { adj, deg } = graph;
       const stampPrice = (resolver) => economy.stampCost + (resolver === "guard" ? economy.guardStampExtra : 0);
       function canStamp(owner, rule, resolver, ids, ballot = "support", sense = "native") {
         if (!Number.isInteger(owner) || owner < 1 || owner >= players.length) return false;
         const p = players[owner];
-        if (!p || p.out || !rules2.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !senses.includes(sense) || !ids?.length || new Set(ids).size !== ids.length || p.reserve + EPS < ids.length * stampPrice(resolver)) return false;
+        if (!p || p.out || !rules2.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !senses.includes(sense) || !ids?.length || ids.length > limits2.maxStampCells || new Set(ids).size !== ids.length || p.reserve + EPS < ids.length * stampPrice(resolver)) return false;
         for (const id of ids) {
           if (!Number.isSafeInteger(id) || id < 0 || id >= graph.n || domain && !domain.has(id) || cells2.has(id)) return false;
           for (let k = 0; k < deg[id]; k++) {
@@ -8368,7 +8530,34 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         p.reserve = Math.max(0, p.reserve - ids.length * stampPrice(resolver));
         p.lastFieldAt = gen;
         for (const site of ids) cells2.set(site, cell(genotype(owner, rule, resolver, ballot, sense), 1));
+        actionRevision++;
         return true;
+      }
+      function setToolSettings(values) {
+        const next = normalizeToolSettings(values, limits2);
+        if (Object.keys(next).some((key2) => next[key2] !== limits2[key2])) actionRevision++;
+        limits2 = next;
+        return limits2;
+      }
+      function erasePreview(owner, center, radius2) {
+        if (!Number.isInteger(owner) || owner < 1 || owner >= players.length || players[owner].out || !Number.isSafeInteger(radius2) || radius2 < 0 || radius2 > limits2.maxEraseRadius) return [];
+        return circularSites(graph, center, radius2).filter((site) => (!domain || domain.has(site)) && cells2.get(site)?.owner === owner);
+      }
+      function erase(owner, center, radius2) {
+        const ids = erasePreview(owner, center, radius2);
+        if (!ids.length) return 0;
+        const p = players[owner];
+        for (const site of ids) {
+          const c = cells2.get(site);
+          cells2.delete(site);
+          p.field--;
+          if (!c.wave) p.conventional--;
+          if (c.age >= economy.stableAfter) p.mature--;
+        }
+        p.toolErased += ids.length;
+        p.eraseActions++;
+        actionRevision++;
+        return ids.length;
       }
       function step2(hooks) {
         const contestEvent = hooks?.onContest ?? (observe && onContest);
@@ -8631,7 +8820,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       function fork(sites) {
         const accounts = players.map((p) => p && { ...p });
-        if (!sites) return instance(new Map(cells2), accounts, gen, lastIgnitions.map((e) => ({ ...e, sites: [...e.sites] })), domain, outside);
+        if (!sites) return instance(new Map(cells2), accounts, gen, lastIgnitions.map((e) => ({ ...e, sites: [...e.sites] })), domain, outside, false, limits2, actionRevision);
         const cut = new Set(domain ? [...sites].filter((id) => domain.has(id)) : sites), snapshot = /* @__PURE__ */ new Map();
         const remote = players.map((p) => p && { field: p.field, mature: p.mature, conventional: p.conventional });
         for (const id of cut) {
@@ -8642,7 +8831,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           if (c.age >= economy.stableAfter) remote[c.owner].mature--;
           if (!c.wave) remote[c.owner].conventional--;
         }
-        return instance(snapshot, accounts, gen, [], cut, remote);
+        return instance(snapshot, accounts, gen, [], cut, remote, false, limits2, actionRevision);
       }
       return {
         graph,
@@ -8656,6 +8845,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         stampPrice,
         stamp,
         canStamp,
+        erase,
+        erasePreview,
+        setToolSettings,
         step: step2,
         fork,
         get cells() {
@@ -8663,6 +8855,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         },
         get gen() {
           return gen;
+        },
+        get toolSettings() {
+          return limits2;
+        },
+        get actionRevision() {
+          return actionRevision;
         },
         get lastIgnitions() {
           return lastIgnitions;
@@ -8757,6 +8955,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       passage,
       friendlyFire,
       economy = {},
+      toolSettings,
       unseededOwners = [],
       graph = buildSphere(F)
     } = { ...defaultGameOptions, ...options };
@@ -8790,6 +8989,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         throw RangeError("A reserva e o espaço devem comportar a colônia inicial de cada jogador.");
       opening.push({ owner, key: farm, site, ids, rotation, rule, resolver: "contact", ballot: "support", sense: "native" });
     }
+    if (toolSettings) match.setToolSettings(toolSettings);
     const eliminatedAt = alive.map(() => null);
     let outcome = null;
     function step2(hooks) {
@@ -8974,6 +9174,333 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return { sites: seen, edge: list.slice(outer) };
   }
 
+  // src/patterns/editor/axial-transform.js
+  function transformOffsets(offsets, type) {
+    return offsets.map(([q, r]) => {
+      if (type === "cw") return [-r, q + r];
+      if (type === "ccw") return [q + r, -q];
+      if (type === "flip") return [-q - r, r];
+      return [q, r];
+    });
+  }
+
+  // experiments/typed-world/game/bot-tools.mjs
+  var operating = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
+  var matureIncome = (n, e) => e.stableEnergy * (e.productionScale ? n / (1 + n / e.productionScale) : n);
+  var EPS2 = 1e-8;
+  function observedPatternKey(card2) {
+    let shape = card2.offsets, canonical;
+    for (let flipped = 0; flipped < 2; flipped++) {
+      for (let angle = 0; angle < 6; angle++) {
+        const [q, r] = shape.reduce(([q2, r2], [x, y]) => [Math.min(q2, x), Math.min(r2, y)], [Infinity, Infinity]);
+        const signature2 = shape.map(([x, y]) => [x - q, y - r]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map((p) => p.join(",")).join(";");
+        if (canonical === void 0 || signature2 < canonical) canonical = signature2;
+        shape = transformOffsets(shape, "cw");
+      }
+      shape = transformOffsets(shape, "flip");
+    }
+    return [card2.rule, card2.resolver, card2.ballot, card2.sense, canonical].join("/");
+  }
+  function regionEconomy(match, owner, center, radius2) {
+    const ids = match.erasePreview(owner, center, radius2), e = match.economy;
+    let young = 0, mature = 0, newborn = 0, conventional = 0;
+    for (const id of ids) {
+      const c = match.cells.get(id);
+      if (!c) continue;
+      if (!c.wave) conventional++;
+      if (c.age >= e.stableAfter) mature++;
+      else young += (c.wave ? e.blastBirthCost : e.birthCost) / Math.max(1, c.age);
+      if (c.age === 1) newborn++;
+    }
+    const all = match.players[owner].mature;
+    const income = matureIncome(all, e) - matureIncome(Math.max(0, all - mature), e);
+    return { center, radius: radius2, ids, young, mature, newborn, conventional, income, drain: young - income };
+  }
+  function sampleSites(match, state, owner, limit = 384) {
+    state.scan ?? (state.scan = match.cells.keys());
+    const young = [], old = [], seen = /* @__PURE__ */ new Set();
+    for (let n = 0; n < limit; n++) {
+      let next = state.scan.next();
+      if (next.done) {
+        state.scan = match.cells.keys();
+        next = state.scan.next();
+        if (next.done) break;
+      }
+      const id = next.value;
+      if (seen.has(id)) break;
+      seen.add(id);
+      const c = match.cells.get(id);
+      if (!c) continue;
+      if (c.owner === owner && c.age < match.economy.stableAfter) young.push(id);
+      if (!c.wave && c.age >= match.economy.stableAfter) old.push(id);
+    }
+    return { young, old };
+  }
+  function bestRegion(match, owner, sites, maximum) {
+    if (!sites.length) return null;
+    const radii = [.../* @__PURE__ */ new Set([maximum, Math.max(1, Math.ceil(maximum / 2)), Math.min(maximum, 2)])];
+    const candidates = [...new Set(Array.from({ length: Math.min(5, sites.length) }, (_, i) => sites[Math.floor(i * (sites.length - 1) / Math.max(1, Math.min(5, sites.length) - 1))]))];
+    let best;
+    for (const center of candidates) for (const radius2 of radii) {
+      const p = regionEconomy(match, owner, center, radius2);
+      if (!p.ids.length || !p.young || p.conventional >= match.players[owner].conventional) continue;
+      if (!best || p.drain > best.drain + EPS2 || Math.abs(p.drain - best.drain) < EPS2 && p.ids.length < best.ids.length) best = p;
+    }
+    return best?.drain > EPS2 ? best : null;
+  }
+  function localFork(match, center, radius2, horizon2) {
+    return match.cells.size <= 2048 ? match.fork() : match.fork(new Set(circularSites(match.graph, center, radius2 + horizon2 + 2)));
+  }
+  function nearbyActivity(match, owner, center, radius2) {
+    return circularSites(match.graph, center, radius2).filter((id) => {
+      const c = match.cells.get(id);
+      return c?.owner === owner && c.age < match.economy.stableAfter;
+    });
+  }
+  function createFieldToolPlanner(match, { stats, horizon: horizon2, lookahead, cadence = 1, onDecision, beforeOrder, onOrder, onLearn, onMutation } = {}) {
+    const states = /* @__PURE__ */ new Map();
+    function stateFor(bot) {
+      if (!states.has(bot.owner)) states.set(bot.owner, {
+        task: null,
+        follow: null,
+        nextErase: 0,
+        nextCapture: 48,
+        scan: null,
+        track: null,
+        seen: /* @__PURE__ */ new Set(),
+        learned: [],
+        captureSerial: 0,
+        lastGen: match.gen,
+        lastIncome: match.players[bot.owner].income,
+        lastSpent: match.players[bot.owner].birthSpent + match.players[bot.owner].eraseSpent + match.players[bot.owner].friendlyEraseSpent,
+        income: 0,
+        spend: 0
+      });
+      return states.get(bot.owner);
+    }
+    function strain(bot, state) {
+      const p = match.players[bot.owner], spent = p.birthSpent + p.eraseSpent + p.friendlyEraseSpent;
+      if (match.gen > state.lastGen) {
+        const dt = match.gen - state.lastGen;
+        state.income = (p.income - state.lastIncome) / dt;
+        state.spend = (spent - state.lastSpent) / dt;
+        state.lastGen = match.gen;
+        state.lastIncome = p.income;
+        state.lastSpent = spent;
+      }
+      const drain = Math.max(0, state.spend - state.income), runway = 2 * horizon2 * drain;
+      return p.lastBirths > 0 && p.reserve < 4 * match.economy.stampCost + runway;
+    }
+    function beginErase(bot, state) {
+      state.nextErase = match.gen + Math.max(2, Math.ceil(horizon2 / 2));
+      const sample = sampleSites(match, state, bot.owner), sites = sample.young;
+      if (state.track !== null) {
+        for (const id of circularSites(match.graph, state.track, match.toolSettings.maxEraseRadius * 2)) {
+          const c = match.cells.get(id);
+          if (c?.owner === bot.owner && c.age < match.economy.stableAfter) sites.push(id);
+        }
+      }
+      const region = bestRegion(match, bot.owner, sites, match.toolSettings.maxEraseRadius);
+      if (!region) return false;
+      const hold = localFork(match, region.center, region.radius, horizon2), play2 = hold.fork();
+      const removed = play2.erase(bot.owner, region.center, region.radius);
+      if (!removed) return false;
+      state.task = {
+        kind: "erase",
+        owner: bot.owner,
+        hold,
+        play: play2,
+        region,
+        t: 0,
+        turns: horizon2,
+        stage: "forecast",
+        at: match.gen,
+        followCenter: region.center,
+        revision: match.actionRevision
+      };
+      stats[bot.owner].eraseTrials++;
+      stats[bot.owner].trials++;
+      return true;
+    }
+    function beginCapture(bot, state) {
+      state.nextCapture = match.gen + 96;
+      const { old } = sampleSites(match, state, bot.owner);
+      if (!old.length) return false;
+      const pick = old[bot.pick(old.length)], captured = capturePattern(match, pick);
+      stats[bot.owner].captureTrials++;
+      if (!captured.ok || match.cells.get(pick)?.wave) return false;
+      const signature2 = observedPatternKey(captured.card);
+      if (state.seen.has(signature2)) return false;
+      state.seen.add(signature2);
+      const card2 = { ...captured.card, key: "observed/" + bot.owner + "/" + ++state.captureSerial, source: captured.card.rule, observed: true };
+      state.task = { kind: "capture", card: card2, signature: signature2, frame: seedFrame(card2), t: 0, turns: Math.max(32, 2 * horizon2), births: 0, deaths: 0, counts: /* @__PURE__ */ new Map() };
+      return true;
+    }
+    function advanceCapture(bot, state, j) {
+      const e = match.economy;
+      for (const age of j.frame.values()) j.counts.set(age, (j.counts.get(age) ?? 0) + 1);
+      const step2 = advanceFrame(j.frame, j.card, e);
+      j.frame = step2.next;
+      j.births += step2.births;
+      j.deaths += step2.deaths;
+      j.t++;
+      stats[bot.owner].work++;
+      stats[bot.owner].captureWork++;
+      if (j.frame.size > Math.max(1024, 4 * match.toolSettings.maxStampCells)) {
+        state.task = null;
+        return;
+      }
+      if (j.t < j.turns && j.frame.size) return;
+      state.task = null;
+      j.card.sample = { births: j.births / j.t, deaths: j.deaths / j.t, bands: [...j.counts].sort((a, b) => a[0] - b[0]).flatMap(([age, count2]) => [age, age, count2]), window: j.t, horizon: j.t, finalCells: j.frame.size };
+      const q = rankCards([j.card], e, { mature: match.players[bot.owner].mature })[0];
+      if (q.flow <= EPS2 || !j.frame.size) return;
+      state.learned.push(j.card);
+      stats[bot.owner].captures++;
+      onLearn?.(bot, j.card);
+      onDecision?.({ gen: match.gen, owner: bot.owner, key: j.card.key, role: "capture", tool: "eyedropper", ids: [], cost: q.cost, flow: q.flow, rejection: null });
+    }
+    function rejectErase(bot, state, j, reason) {
+      state.task = null;
+      state.follow = null;
+      stats[bot.owner].eraseHolds++;
+      stats[bot.owner].holds++;
+      onDecision?.({
+        gen: match.gen,
+        owner: bot.owner,
+        key: "tool/eraser",
+        role: "erase",
+        tool: "eraser",
+        ids: j.region.ids,
+        radius: j.region.radius,
+        cost: 0,
+        pay: j.pay ?? 0,
+        flow: j.flow ?? 0,
+        rejection: reason
+      });
+    }
+    function revalidate(bot, state, j) {
+      const { owner } = bot, near = new Set(circularSites(match.graph, j.region.center, 2 * j.region.radius + horizon2));
+      const sites = [];
+      for (const [id, c] of j.hold?.cells ?? []) if (near.has(id) && c.owner === owner && c.age < match.economy.stableAfter) sites.push(id);
+      for (const id of near) {
+        const c = match.cells.get(id);
+        if (c?.owner === owner && c.age < match.economy.stableAfter) sites.push(id);
+      }
+      const current2 = bestRegion(match, owner, sites, Math.min(j.region.radius, match.toolSettings.maxEraseRadius));
+      if (!current2 || current2.mature > j.region.mature) return rejectErase(bot, state, j, "changed");
+      const hold = localFork(match, current2.center, current2.radius, 1), play2 = hold.fork();
+      if (!play2.erase(owner, current2.center, current2.radius)) return rejectErase(bot, state, j, "empty");
+      hold.step();
+      play2.step();
+      stats[owner].work++;
+      stats[owner].eraseWork++;
+      if (!play2.players[owner].conventional || play2.players[owner].out || play2.players[owner].reserve + EPS2 < hold.players[owner].reserve)
+        return rejectErase(bot, state, j, "current-return");
+      const o = {
+        gen: match.gen,
+        forecastAt: j.at,
+        owner,
+        key: "tool/eraser",
+        role: "erase",
+        tool: "eraser",
+        target: 0,
+        ids: current2.ids,
+        site: current2.center,
+        radius: current2.radius,
+        expected: j.pay,
+        flow: j.flow,
+        revalidated: true
+      };
+      beforeOrder?.(o);
+      const removed = match.erase(owner, current2.center, current2.radius);
+      state.task = null;
+      if (!removed) return;
+      state.track = current2.center;
+      state.nextErase = match.gen + cadence;
+      stats[owner].eraseOrders++;
+      stats[owner].erasedCells += removed;
+      onMutation?.(bot);
+      state.follow = { ...j, hold: null, play: null, region: current2, until: j.until ?? match.gen + horizon2 };
+      onOrder?.({ ...o, removed });
+    }
+    function advanceErase(bot, state, j) {
+      if (j.stage === "revalidate") {
+        revalidate(bot, state, j);
+        return;
+      }
+      const net2 = () => operating(j.play.players[bot.owner]) - operating(j.hold.players[bot.owner]);
+      if (j.t === j.turns - 4) j.base = net2();
+      if (j.t > 0 && j.t % cadence === 0) {
+        const sites = nearbyActivity(j.play, bot.owner, j.followCenter, 2 * j.region.radius + horizon2);
+        const next = bestRegion(j.play, bot.owner, sites, j.region.radius);
+        if (next && next.mature <= j.region.mature) {
+          j.play.erase(bot.owner, next.center, next.radius);
+          j.followCenter = next.center;
+        }
+      }
+      j.hold.step();
+      j.play.step();
+      j.t++;
+      stats[bot.owner].work++;
+      stats[bot.owner].eraseWork++;
+      if (j.t < j.turns) return;
+      j.flow = (net2() - j.base) / 4;
+      j.pay = j.play.players[bot.owner].reserve - j.hold.players[bot.owner].reserve + lookahead * j.flow;
+      const p = j.play.players[bot.owner];
+      if (!p.conventional || p.out) return rejectErase(bot, state, j, "extinction");
+      if (j.pay <= EPS2) return rejectErase(bot, state, j, "return");
+      onDecision?.({
+        gen: match.gen,
+        owner: bot.owner,
+        key: "tool/eraser",
+        role: "erase",
+        tool: "eraser",
+        ids: j.region.ids,
+        radius: j.region.radius,
+        cost: 0,
+        pay: j.pay,
+        flow: j.flow,
+        rejection: null,
+        policy: "repeat",
+        cadence
+      });
+      j.stage = "revalidate";
+    }
+    function work(bot) {
+      const state = stateFor(bot), urgent = strain(bot, state);
+      if (state.follow) {
+        if (match.gen > state.follow.until) state.follow = null;
+        else {
+          if (match.gen >= state.nextErase) revalidate(bot, state, state.follow);
+          return true;
+        }
+      }
+      if (urgent && state.task?.kind === "capture") {
+        state.seen.delete(state.task.signature);
+        state.task = null;
+      }
+      if (!state.task) {
+        if (urgent && match.gen >= state.nextErase) beginErase(bot, state);
+        if (!state.task && !bot.job && !bot.ready && match.gen >= state.nextCapture && !urgent) beginCapture(bot, state);
+      }
+      if (!state.task) return false;
+      if (state.task.kind === "erase") advanceErase(bot, state, state.task);
+      else advanceCapture(bot, state, state.task);
+      return true;
+    }
+    function invalidate() {
+      for (const state of states.values()) {
+        state.follow = null;
+        if (state.task?.kind === "erase") {
+          state.task = null;
+          state.nextErase = Math.min(state.nextErase, match.gen + 1);
+        }
+      }
+    }
+    return { work, invalidate, learned: (bot) => stateFor(bot).learned };
+  }
+
   // experiments/typed-world/game/bots.mjs
   var ballots2 = ["support", "age", "geometry", "robustness"];
   function targetPose(m, site) {
@@ -8991,7 +9518,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       return Math.floor(x / 4294967296 * limit);
     };
   }
-  var operating = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
+  var operating2 = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
   function chooseTarget(match, other, pick) {
     let candidate, highest = -Infinity, n = 0;
     function consider(site, c) {
@@ -9025,7 +9552,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     interval = 12,
     phaseWindow = 18,
     adaptive = true,
-    recoveryOwners = owners
+    recoveryOwners = owners,
+    fieldTools = true
   } = {}) {
     if (!Number.isSafeInteger(budget) || budget < 0 || !Number.isSafeInteger(horizon2) || horizon2 < 4 || !Number.isSafeInteger(phaseWindow) || phaseWindow < 0 || !Number.isFinite(lookahead) || lookahead < 0 || !Number.isSafeInteger(interval) || interval < 1) throw RangeError("Invalid bot timing.");
     if (new Set(owners).size !== owners.length || owners.some((owner) => !match.players[owner])) throw RangeError("Invalid bot owners.");
@@ -9036,15 +9564,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       byRule.get(card2.rule).push(card2);
     }
     const families = [...byRule.keys()], recoverySeats = new Set(recoveryOwners);
-    const captains = (families.length ? owners : []).map((owner) => ({
+    const captains = owners.map((owner) => ({
       owner,
       pick: random(seed ^ Math.imul(owner, 2654435769)),
       decision: 0,
+      learned: [],
       pricedAt: -Infinity,
       prices: null,
       recoverySeen: /* @__PURE__ */ new Set(),
-      family: owner % families.length,
-      raidFamily: owner % families.length,
+      family: owner % Math.max(1, families.length),
+      raidFamily: owner % Math.max(1, families.length),
       raidIndex: 0,
       ready: null,
       next: 1,
@@ -9064,6 +9593,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       delayed: 0,
       holds: 0,
       invalidated: 0,
+      eraseTrials: 0,
+      eraseHolds: 0,
+      eraseOrders: 0,
+      erasedCells: 0,
+      eraseWork: 0,
+      captureTrials: 0,
+      captures: 0,
+      capturedOrders: 0,
+      captureWork: 0,
       first: null,
       last: null,
       studied: /* @__PURE__ */ new Set(),
@@ -9071,6 +9609,31 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       expected: 0,
       work: 0
     }));
+    let revision = match.actionRevision;
+    function invalidateForecasts() {
+      revision = match.actionRevision;
+      for (const bot of captains) {
+        if (bot.ready) stats[bot.owner].invalidated++;
+        bot.job = null;
+        bot.ready = null;
+        bot.pricedAt = -Infinity;
+      }
+      field?.invalidate();
+    }
+    const field = fieldTools ? createFieldToolPlanner(match, {
+      stats,
+      horizon: horizon2,
+      lookahead,
+      cadence: Math.max(1, Math.ceil(owners.length / Math.max(1, budget))),
+      onDecision,
+      beforeOrder,
+      onOrder,
+      onLearn: (bot, card2) => {
+        bot.learned.push(card2);
+        bot.pricedAt = -Infinity;
+      },
+      onMutation: invalidateForecasts
+    }) : null;
     function investment(bot, cards3) {
       const p = match.players[bot.owner];
       const possible = cards3.filter((c) => c.offsets.length * match.stampPrice(c.resolver) <= p.reserve);
@@ -9091,10 +9654,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function propose(bot) {
       const { owner, pick } = bot;
       if (match.players[owner].out) return;
+      const known = [...ranked, ...bot.learned].filter((card2) => card2.offsets.length <= match.toolSettings.maxStampCells);
+      if (!known.length) return;
       const rivals = match.players.map((p, id) => p && !p.out && id !== owner && p.conventional > 0 ? id : 0).filter(Boolean);
-      if (!rivals.length) return;
       bot.decision++;
-      const raid = bot.decision % 3 === 0, other = rivals[pick(rivals.length)];
+      const raid = rivals.length > 0 && families.length > 0 && bot.decision % 3 === 0, other = rivals.length ? rivals[pick(rivals.length)] : owner;
       const rescue = !raid && recoverySeats.has(owner) && match.gen - Math.max(0, bot.lastBuy) >= 96;
       let item, center, ids, rotation, resolver, ballot, scoped;
       if (raid) {
@@ -9117,12 +9681,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           ids = null;
         }
       } else {
-        const family = families[bot.family++ % families.length];
-        let pool = bot.decision % 4 === 1 ? ranked : byRule.get(family);
-        if (rescue || adaptive && stats[owner].orders && match.economy.stableEnergy > 0) {
+        const available = [...new Set(known.map((card2) => card2.rule))], family = available[bot.family++ % available.length];
+        let pool = bot.decision % 4 === 1 ? known : known.filter((card2) => card2.rule === family);
+        if (rescue || bot.learned.length || adaptive && stats[owner].orders && match.economy.stableEnergy > 0) {
           if (match.gen - bot.pricedAt >= 48) {
             const p = match.players[owner];
-            const priced = rankCards(cards2, match.economy, { reserve: p.reserve, mature: p.mature });
+            const priced = rankCards(known, match.economy, { reserve: p.reserve, mature: p.mature });
             bot.prices = priced.sort((a, b) => a.payback === b.payback ? 0 : (a.payback ?? Infinity) - (b.payback ?? Infinity));
             bot.pricedAt = match.gen;
           }
@@ -9187,7 +9751,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const j = bot.job;
       if (!j) return;
       const { owner, other, play: play2, hold, item, raid } = j, stat = stats[owner];
-      const net2 = (id) => operating(play2.players[id]) - operating(hold.players[id]);
+      const net2 = (id) => operating2(play2.players[id]) - operating2(hold.players[id]);
       if (j.t === j.turns - 4) {
         j.ownBase = net2(owner);
         j.enemyBase = net2(other);
@@ -9233,6 +9797,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         resolver: j.resolver,
         ballot: j.ballot,
         sense: item.sense,
+        tool: "stamp",
+        observed: !!item.observed,
         ids: j.ids,
         site: j.center,
         rotation: j.rotation,
@@ -9264,6 +9830,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       beforeOrder?.(o);
       if (!match.stamp(o.owner, o.rule, o.resolver, o.ids, o.ballot, o.sense)) return;
+      invalidateForecasts();
       bot.lastBuy = match.gen;
       bot.recoverySeen.clear();
       stat.rescueOrders += Number(o.recovery);
@@ -9275,12 +9842,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       stat.raids += Number(raid);
       stat.bought.add(o.rule);
       stat.expected += o.expected;
+      stat.capturedOrders += Number(o.observed);
       onOrder?.(o);
     }
     let cursor = 0, last = -1;
     function turn() {
       if (last === match.gen || !captains.length) return;
       last = match.gen;
+      if (match.actionRevision !== revision) invalidateForecasts();
       for (const b of captains) if (b.ready && !match.players[b.owner].out) execute(b);
       for (let n = 0; n < budget; n++) {
         const bot = captains[cursor++ % captains.length];
@@ -9288,6 +9857,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           bot.job = null;
           continue;
         }
+        if (field?.work(bot)) continue;
         if (bot.ready) continue;
         if (!bot.job && match.gen >= bot.next) {
           bot.next = match.gen + Math.max(2, Math.ceil(interval / 3));
@@ -9489,7 +10059,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <div class="hxa-stats" data-ui="stats"></div><div class="hxa-note" data-ui="note" role="status"></div>
 <footer><button data-ui="unpin" hidden>Desafixar</button><button data-ui="delete" hidden>Excluir</button><button class="hxa-primary" data-ui="use">Usar na barra</button></footer>
 </section></div>`;
-  function createGameAtlas({ host, getEconomy, getWallet = () => Infinity, onSelect = () => {
+  function createGameAtlas({ host, getEconomy, getWallet = () => Infinity, getToolSettings = () => ({ maxStampCells: Infinity }), onSelect = () => {
   }, onDeck = () => {
   } }) {
     const dialog = document.createElement("dialog");
@@ -9545,6 +10115,54 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       store();
       refresh();
       onSelect(deck.find((c) => c.slotKey === card2.key) ?? card2);
+    }
+    function capture(pattern, slot) {
+      const slotKey2 = slot?.slotKey ?? slot?.key ?? slot;
+      if (!deck.some((c) => c.slotKey === slotKey2)) throw new Error("Selecione um espaço do baralho para copiar o padrão.");
+      if (pattern.offsets.length > getToolSettings().maxStampCells) throw new Error("Padrão acima do limite de células por carimbo.");
+      const card2 = { ...pattern, key: "custom/" + crypto.randomUUID(), custom: true, offsets: pattern.offsets.map((p) => [...p]) };
+      const previous2 = saved.replacements[slotKey2];
+      saved.custom.unshift(card2);
+      saved.replacements[slotKey2] = card2.key;
+      if (!store()) {
+        saved.custom.shift();
+        if (previous2 === void 0) delete saved.replacements[slotKey2];
+        else saved.replacements[slotKey2] = previous2;
+        throw new Error("O navegador não conseguiu guardar o carimbo.");
+      }
+      const replacement = { ...card2, slotKey: slotKey2 };
+      refreshCatalog();
+      deck = deck.map((c) => c.slotKey === slotKey2 ? replacement : c);
+      onDeck(deck);
+      onSelect(replacement);
+      let trial = seedFrame(card2), births = 0, deaths = 0, used = 0;
+      const counts = /* @__PURE__ */ new Map(), economy = { ...getEconomy() };
+      function measure2() {
+        const start = performance.now();
+        do {
+          for (const age of trial.values()) counts.set(age, (counts.get(age) ?? 0) + 1);
+          const z = advanceFrame(trial, card2, economy);
+          trial = z.next;
+          births += z.births;
+          deaths += z.deaths;
+          used++;
+        } while (used < 96 && trial.size <= 12e3 && performance.now() - start < 4);
+        if (used < 96 && trial.size <= 12e3) {
+          setTimeout(measure2, 0);
+          return;
+        }
+        if (!saved.custom.some((c) => c === card2)) return;
+        card2.sample = { births: births / used, deaths: deaths / used, bands: [...counts].sort((a, b) => a[0] - b[0]).flatMap(([age, count2]) => [age, age, count2]), window: used, horizon: used, finalCells: trial.size, limited: used < 96 };
+        replacement.sample = card2.sample;
+        store();
+        refreshCatalog();
+        if (dialog.open) {
+          renderResults();
+          metrics();
+        }
+      }
+      setTimeout(measure2, 0);
+      return replacement;
     }
     function stop2() {
       clearInterval(timer2);
@@ -9629,7 +10247,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ui.balance.textContent = "◈ " + sign(net2);
       ui.stats.textContent = frame2.size + " vivas · " + mature + " maduras · " + added + " nascimentos · " + lost + " mortes";
       ui.balance.title = "Receita menos plantio e nascimentos, em isolamento e com financiamento disponível.";
-      ui.use.disabled = !source.offsets.length;
+      ui.use.disabled = !source.offsets.length || source.offsets.length > getToolSettings().maxStampCells;
+      ui.use.title = source.offsets.length > getToolSettings().maxStampCells ? "Acima do limite de células por carimbo" : "";
     }
     const view = createAtlasCanvas(ui.canvas, (id, value) => {
       if (!draft || g) return;
@@ -9691,6 +10310,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function commitDraft() {
       draft.name = ui.name.value.trim() || "Meu carimbo";
       if (!draft.offsets.length) return;
+      if (draft.offsets.length > getToolSettings().maxStampCells) {
+        ui.note.textContent = "Acima do limite configurado de células por carimbo.";
+        return;
+      }
       const card2 = { ...draft, key: draft.key || "custom/" + crypto.randomUUID(), group: draft.nativeKey ? defaults[draft.nativeKey]?.group ?? "personalizado" : "personalizado" };
       if (!card2.nativeKey || defaults[card2.nativeKey]?.rule !== card2.rule) {
         delete card2.nativeKey;
@@ -9775,35 +10398,27 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ui.results.scrollTop = 0;
     };
     refresh();
-    return { open, close, refresh, deck: () => deck, select, destroy() {
+    return { open, close, refresh, deck: () => deck, select, capture, destroy() {
       stop2();
       view.destroy();
       dialog.remove();
     } };
   }
 
-  // src/patterns/editor/axial-transform.js
-  function transformOffsets(offsets, type) {
-    return offsets.map(([q, r]) => {
-      if (type === "cw") return [-r, q + r];
-      if (type === "ccw") return [q + r, -q];
-      if (type === "flip") return [-q - r, r];
-      return [q, r];
-    });
-  }
-
   // src/mixed/hand.js
   var fmt4 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
   var slotKey = (card2) => card2.slotKey ?? card2.key;
   function createHand(getMatch, { onInspect = () => {
+  }, onChoose = () => {
   } } = {}) {
     const hand = $("mx-hand"), preview = $("mx-preview"), mods = /* @__PURE__ */ new Map(), buttons = /* @__PURE__ */ new Map();
     let selected;
     const modifier = (c) => {
       const key2 = slotKey(c);
       let m = mods.get(key2);
-      if (!m) {
-        m = { resolver: c.resolver ?? "contact", ballot: c.ballot ?? "support" };
+      const sourceResolver = c.resolver ?? "contact", sourceBallot = c.ballot ?? "support";
+      if (!m || m.cardKey !== c.key || m.sourceResolver !== sourceResolver || m.sourceBallot !== sourceBallot) {
+        m = { cardKey: c.key, sourceResolver, sourceBallot, resolver: sourceResolver, ballot: sourceBallot };
         mods.set(key2, m);
       }
       if (m.original !== c.offsets) {
@@ -9826,6 +10441,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-resolver").value = m.resolver;
       for (const [key2, node] of buttons) node.setAttribute("aria-pressed", String(key2 === slotKey(c)));
       update();
+      onChoose(c);
     }
     function update() {
       const match = getMatch();
@@ -9833,17 +10449,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const wallet = match.players[1].reserve;
       for (const btn of buttons.values()) {
         const c = btn.card, cost = c.offsets.length * match.stampPrice(modifier(c).resolver);
-        const affordable = wallet + 1e-9 >= cost;
+        const withinLimit = c.offsets.length <= (match.toolSettings?.maxStampCells ?? Infinity);
+        const affordable = withinLimit && wallet + 1e-9 >= cost;
         if (btn.dataset.afford !== String(affordable)) btn.dataset.afford = String(affordable);
         const progress = btn.querySelector(".mx-card-energy"), available = Math.max(0, Math.min(wallet, cost));
         progress.style.setProperty("--charge", String(cost ? available / cost : 1));
         progress.setAttribute("aria-valuemax", String(cost));
         progress.setAttribute("aria-valuenow", String(available));
-        progress.setAttribute("aria-valuetext", affordable ? "Pronto para usar" : "Faltam ◈ " + fmt4.format(cost - available));
-        if (btn.dataset.price !== String(cost)) {
+        progress.setAttribute("aria-valuetext", !withinLimit ? "Acima do limite de células por carimbo" : affordable ? "Pronto para usar" : "Faltam ◈ " + fmt4.format(cost - available));
+        if (btn.dataset.price !== String(cost) || btn.dataset.withinLimit !== String(withinLimit)) {
           btn.dataset.price = String(cost);
+          btn.dataset.withinLimit = String(withinLimit);
           btn.querySelector(".mx-card-cost").textContent = "◈" + fmt4.format(cost);
-          btn.title = c.name + " · " + rules[c.rule].label + " · ◈ " + fmt4.format(cost);
+          btn.title = c.name + " · " + rules[c.rule].label + " · ◈ " + fmt4.format(cost) + (!withinLimit ? " · acima do limite configurado" : "");
           btn.setAttribute("aria-label", btn.title);
         }
       }
@@ -10662,7 +11280,53 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function bindMapGestures() {
     let cursorX = NaN, cursorY = NaN;
     const touches = /* @__PURE__ */ new Map();
-    let pinch = null;
+    let pinch = null, touchPaint = null;
+    world.painting = false;
+    function clearTouchPaint() {
+      if (touchPaint !== null) clearTimeout(touchPaint);
+      touchPaint = null;
+    }
+    function cancelGesture() {
+      clearTouchPaint();
+      touches.clear();
+      pinch = null;
+      world.drag = null;
+      world.painting = false;
+      world.hover = null;
+      cv.style.cursor = "";
+      world.needsDraw = true;
+    }
+    function paintPoint(x, y) {
+      const anchor = hit(x, y);
+      world.hover = anchor;
+      if (anchor) stampAt(anchor);
+      world.needsDraw = true;
+    }
+    function startPaint(p) {
+      clearTouchPaint();
+      if (world.drag !== p || pinch || world.graph !== p.graph || world.view !== "flat" || placementGesture() !== "paint") return;
+      p.mode = "paint";
+      world.painting = true;
+      cv.style.cursor = "crosshair";
+      paintPoint(p.x, p.y);
+    }
+    function paintLine(p, x, y) {
+      const fromX = p.x, fromY = p.y, anchor = hit(fromX, fromY), preview = anchor && placementPreview(anchor);
+      const pitch = world.chart ? DX * world.zoom : atlasMetrics.pitch;
+      const spacing = Math.max(0.5, pitch * Math.max(0.4, (preview?.radius ?? 0) * 0.5));
+      const steps = Math.max(1, Math.ceil(Math.hypot(x - fromX, y - fromY) / spacing));
+      let previous2 = null;
+      for (let i = 1; i <= steps; i++) {
+        const at = hit(fromX + (x - fromX) * i / steps, fromY + (y - fromY) * i / steps);
+        const key2 = at && (at.id ?? at.q + "," + at.r);
+        world.hover = at;
+        if (at && key2 !== previous2) stampAt(at);
+        previous2 = key2;
+      }
+      p.x = x;
+      p.y = y;
+      world.needsDraw = true;
+    }
     function touchPair() {
       const [a, b] = touches.values();
       return {
@@ -10673,14 +11337,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     cv.addEventListener("pointerdown", (e) => {
       flushWheel();
-      if (e.button !== 0) return;
+      if (e.button !== 0 && e.button !== 1) return;
+      const panOnly = e.button === 1 || e.shiftKey;
+      if (panOnly) e.preventDefault();
       if (e.pointerType === "touch") {
         touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
         cv.setPointerCapture(e.pointerId);
         if (touches.size >= 2) {
+          clearTouchPaint();
+          world.painting = false;
           pinch = touchPair();
           world.drag = null;
           world.hover = null;
+          cv.style.cursor = "";
           world.needsDraw = true;
           return;
         }
@@ -10693,8 +11362,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         y: e.clientY,
         startX: e.clientX,
         startY: e.clientY,
-        moved: false
+        moved: false,
+        panOnly,
+        graph: world.graph,
+        mode: !panOnly && world.view === "flat" && placementGesture() === "paint" ? "pending-paint" : "stamp"
       };
+      if (world.drag.mode === "pending-paint") {
+        const p = world.drag;
+        world.hover = hit(e.clientX, e.clientY);
+        world.needsDraw = true;
+        if (e.pointerType === "touch") touchPaint = setTimeout(() => startPaint(p), 180);
+        else startPaint(p);
+      }
     });
     cv.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "touch") {
@@ -10722,6 +11401,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       const p = world.drag;
       if (p && p.id === e.pointerId) {
+        if (p.mode === "pending-paint" && Math.hypot(e.clientX - p.startX, e.clientY - p.startY) > 4) startPaint(p);
+        if (p.mode === "paint") {
+          paintLine(p, e.clientX, e.clientY);
+          return;
+        }
+        if (p.mode === "pending-paint") {
+          p.x = e.clientX;
+          p.y = e.clientY;
+          return;
+        }
         let dx = e.clientX - p.x, dy = e.clientY - p.y;
         p.x = e.clientX;
         p.y = e.clientY;
@@ -10756,7 +11445,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       const p = world.drag;
       if (!p || p.id !== e.pointerId) return;
-      if (!p.moved) {
+      clearTouchPaint();
+      if (p.mode === "paint") paintLine(p, e.clientX, e.clientY);
+      else if (p.mode === "pending-paint") paintPoint(e.clientX, e.clientY);
+      else if (!p.moved && !p.panOnly) {
         if (world.view === "flat") {
           const anchor = hit(e.clientX, e.clientY);
           if (anchor) stampAt(anchor);
@@ -10775,6 +11467,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (p.moved && world.view === "globe") world.needsGlobeBase = true;
       if (p.moved && world.view === "flat" && !world.chart) syncLocalFromAtlas();
       world.drag = null;
+      world.painting = false;
       cv.style.cursor = "";
       world.hover = world.view === "flat" && e.pointerType !== "touch" ? hit(e.clientX, e.clientY) : null;
       world.needsDraw = true;
@@ -10783,6 +11476,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       touches.delete(e.pointerId);
       if (!touches.size) pinch = null;
       if (world.drag?.id === e.pointerId) {
+        clearTouchPaint();
+        world.painting = false;
         world.drag = null;
         world.hover = null;
         cv.style.cursor = "";
@@ -10793,6 +11488,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       touches.delete(e.pointerId);
       if (!touches.size) pinch = null;
       world.drag = null;
+      clearTouchPaint();
+      world.painting = false;
       world.needsGlobeBase = true;
       world.hover = null;
       cv.style.cursor = "";
@@ -10810,6 +11507,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       "wheel",
       (e) => {
         e.preventDefault();
+        if (world.painting || world.drag?.mode === "pending-paint") cancelGesture();
         const units = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? cv.clientHeight : 1;
         if (!queuedWheel) queuedWheel = { logScale: 0, graph: world.graph, view: world.view };
         queuedWheel.logScale -= e.deltaY * units * 12e-4;
@@ -10820,6 +11518,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       },
       { passive: false }
     );
+    window.addEventListener("blur", cancelGesture);
+    window.addEventListener("hexophage:toolchange", () => {
+      cancelGesture();
+      if (world.view === "flat" && Number.isFinite(cursorX) && Number.isFinite(cursorY)) world.hover = hit(cursorX, cursorY);
+    });
   }
 
   // src/map/local/pentagon.js
@@ -11234,6 +11937,25 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     atlasCell(path, id, a);
     return true;
   }
+  function atlasBrush(path, preview, a) {
+    const center = preview.center;
+    if (!Number.isSafeInteger(center) || center < 0 || center >= a.g.n) return;
+    const radius2 = preview.angularRadius > 0 ? preview.angularRadius : brushAngularRadius(a.g, center, 0.45);
+    if (!(radius2 > 0) || radius2 >= Math.PI) return;
+    const look = normal(Array.from(a.g.coords.subarray(3 * center, 3 * center + 3))), { right, up } = basis(look);
+    const cos = Math.cos(radius2), sin = Math.sin(radius2), segments = 128;
+    let previous2 = null;
+    for (let i = 0; i <= segments; i++) {
+      const angle = 2 * Math.PI * i / segments;
+      const p = look.map((v, k) => cos * v + sin * (Math.cos(angle) * right[k] + Math.sin(angle) * up[k]));
+      const lat = Math.asin(clamp(vdot(p, a.up), -1, 1)), lon = Math.atan2(vdot(p, a.right), vdot(p, a.look));
+      const x = a.cx + a.s * atlasCapLon(lon, lat, a.capBlend), y = a.cy - a.s * lat;
+      const cut = previous2 && (Math.abs(lon - previous2.lon) > Math.PI || a.capBlend > 0 && Math.max(Math.abs(lat), Math.abs(previous2.lat)) > atlasCapLat && atlasMeridian(lon) !== atlasMeridian(previous2.lon));
+      if (!previous2 || cut) path.moveTo(x, y);
+      else path.lineTo(x, y);
+      previous2 = { lon, lat };
+    }
+  }
   function drawAtlas() {
     const a = atlasState();
     if (a.builtVersion !== a.version) {
@@ -11326,8 +12048,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       c.drawImage(bitmap.canvas, 0, 0);
       c.restore();
     }
-    const preview = world.hover?.id !== void 0 && !world.drag && placementPreview(world.hover);
-    if (preview) {
+    const preview = world.hover?.id !== void 0 && (!world.drag || world.painting) && placementPreview(world.hover);
+    if (preview?.tool) {
+      const active = new Path2D(), area = new Path2D();
+      for (const id of preview.ids ?? []) atlasMark(active, id, a);
+      if (preview.tool === "erase") {
+        for (const id of preview.footprint ?? []) atlasMark(area, id, a);
+        c.fillStyle = "#ff8d7818";
+        c.fill(area);
+        c.fillStyle = "#ff8d7866";
+        c.strokeStyle = "#ff8d78";
+      } else {
+        c.fillStyle = "#58ddeb45";
+        c.strokeStyle = "#7de9f5";
+      }
+      c.lineWidth = 1;
+      c.fill(active);
+      c.stroke(active);
+      if (preview.tool === "erase") {
+        const outline = new Path2D();
+        atlasBrush(outline, preview, a);
+        c.lineWidth = 1.6;
+        c.stroke(outline);
+      }
+    } else if (preview) {
       const ids = stampTargets(world.hover, stampOffsets()), path = new Path2D();
       for (const id of ids) atlasMark(path, id, a);
       c.fillStyle = preview.ready ? "#f0b95155" : "#ff725a55";
@@ -11382,8 +12126,36 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         c.stroke(paths[id]);
       }
     }
-    const preview = world.hover && !world.drag && placementPreview(world.hover);
-    if (preview) {
+    const preview = world.hover && (!world.drag || world.painting) && placementPreview(world.hover);
+    if (preview?.tool) {
+      const picked = new Set(preview.ids ?? []), footprint2 = new Set(preview.footprint ?? []);
+      const area = new Path2D(), active = new Path2D();
+      let center = null;
+      for (const item of vis.values()) {
+        const x = DX * (item.q + item.r / 2), y = DY * item.r;
+        if (footprint2.has(item.id)) hexPath(area, x, y, R * 0.91);
+        if (picked.has(item.id)) hexPath(active, x, y, R * 0.91);
+        if (item.id === preview.center) center = { x, y };
+      }
+      if (preview.tool === "erase") {
+        c.fillStyle = "#ff8d7818";
+        c.fill(area);
+        c.fillStyle = "#ff8d7866";
+        c.strokeStyle = "#ff8d78";
+      } else {
+        c.fillStyle = "#58ddeb45";
+        c.strokeStyle = "#7de9f5";
+      }
+      c.lineWidth = 1 / world.zoom;
+      c.fill(active);
+      c.stroke(active);
+      if (preview.tool === "erase" && center) {
+        c.beginPath();
+        c.arc(center.x, center.y, DX * Math.max(0.45, preview.radius), 0, 2 * Math.PI);
+        c.lineWidth = 1.6 / world.zoom;
+        c.stroke();
+      }
+    } else if (preview) {
       c.beginPath();
       for (const [dq, dr] of stampOffsets()) {
         const q = world.hover.q + dq, r = world.hover.r + dr;
@@ -11763,8 +12535,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     bumpPopulationRevision();
     navigatorView.dirty = world.needsDraw = true;
   }
-  function loadViewport(session, storage2) {
-    newWorld(session.graph.f, session.graph, storage2);
+  function loadViewport(session, storage3) {
+    newWorld(session.graph.f, session.graph, storage3);
     world.rule = "mixed";
     world.physics = null;
     syncField(session.match);
@@ -11875,6 +12647,145 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     } };
   }
 
+  // src/mixed/tool-controls.js
+  var storage2 = "hexophage.mixed.tools.v1";
+  function loadToolSettings() {
+    try {
+      return normalizeToolSettings(JSON.parse(localStorage.getItem(storage2) || "{}"));
+    } catch {
+      return DEFAULT_TOOL_SETTINGS;
+    }
+  }
+  function saveToolSettings(settings) {
+    try {
+      localStorage.setItem(storage2, JSON.stringify(normalizeToolSettings(settings)));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  function createFieldTools({ getMatch, canEdit = () => true, onCapture = () => {
+  }, onErase = () => {
+  } }) {
+    let mode = "stamp", radius2 = 3, cache2 = null;
+    const modes = ["stamp", "erase", "pick"];
+    function select(next) {
+      if (!modes.includes(next)) throw new RangeError("Ferramenta inválida.");
+      if (mode !== next) {
+        world.painting = false;
+        window.dispatchEvent(new Event("hexophage:toolchange"));
+      }
+      mode = next;
+      cache2 = null;
+      for (const name of modes) $("mx-tool-" + name).setAttribute("aria-pressed", String(mode === name));
+      $("mx-erase-control").hidden = mode !== "erase";
+      $("hexlab").dataset.fieldTool = mode;
+      world.needsDraw = true;
+      return mode;
+    }
+    function setRadius(value) {
+      const max = getMatch()?.toolSettings.maxEraseRadius ?? DEFAULT_TOOL_SETTINGS.maxEraseRadius;
+      if (!Number.isFinite(Number(value))) return radius2;
+      radius2 = Math.max(1, Math.min(max, Math.round(Number(value))));
+      $("mx-erase-radius").value = String(radius2);
+      $("mx-erase-value").value = String(radius2);
+      cache2 = null;
+      world.needsDraw = true;
+      return radius2;
+    }
+    function refresh() {
+      $("mx-erase-radius").max = String(getMatch()?.toolSettings.maxEraseRadius ?? DEFAULT_TOOL_SETTINGS.maxEraseRadius);
+      setRadius(radius2);
+      cache2 = null;
+      world.needsDraw = true;
+    }
+    const siteAt = (anchor) => anchor?.id ?? (anchor && world.chart?.map.get(key(anchor.q, anchor.r))?.id);
+    function capture(match, center) {
+      const nearest = nearestPatternSite(match, center);
+      if (nearest === null) return { ok: false, reason: "empty" };
+      let orientation;
+      if (world.chart) {
+        for (const frame2 of world.chart.map.values()) if (frame2.id === nearest) {
+          orientation = frame2.ori;
+          break;
+        }
+      }
+      orientation ?? (orientation = atlasOrientationAt(nearest));
+      return capturePattern(match, nearest, { orientation, side: world.side });
+    }
+    function preview(anchor) {
+      const match = getMatch(), center = siteAt(anchor);
+      if (mode === "stamp" || !match || center === void 0 || !canEdit()) return null;
+      const view = mode === "pick" ? [world.center, ...atlasCamera.look, ...atlasCamera.right] : [];
+      const token = [mode, center, radius2, match.gen, match.actionRevision, match.toolSettings.maxStampCells, world.orient, world.side, ...view].join(":");
+      if (cache2?.match === match && cache2.chart === world.chart && cache2.token === token) return cache2.preview;
+      let p;
+      if (mode === "erase") {
+        const footprint2 = circularSites(match.graph, center, radius2);
+        p = {
+          tool: "erase",
+          ids: footprint2.filter((id) => match.cells.get(id)?.owner === 1),
+          footprint: footprint2,
+          ready: true,
+          center,
+          radius: radius2,
+          angularRadius: brushAngularRadius(match.graph, center, radius2)
+        };
+      } else {
+        const result = capture(match, center);
+        p = { tool: "pick", ids: result.ids ?? [], ready: result.ok, center: result.center ?? center, result };
+      }
+      cache2 = { match, chart: world.chart, token, preview: p };
+      return p;
+    }
+    function apply(anchor, { quiet = false } = {}) {
+      const p = preview(anchor);
+      if (!p) return false;
+      if (mode === "erase") {
+        const removed = getMatch().erase(1, p.center, radius2);
+        if (removed) {
+          cache2 = null;
+          world.needsDraw = true;
+          onErase(removed);
+        }
+        return removed;
+      }
+      if (mode === "pick") {
+        if (!p.result.ok) {
+          if (!quiet) toast(p.result.reason === "empty" ? "Não há padrão em campo para copiar." : p.result.reason === "too-large" ? "Padrão maior que o limite de " + getMatch().toolSettings.maxStampCells + " células." : "Este padrão atravessa uma deformação da malha.");
+          return false;
+        }
+        try {
+          const card2 = onCapture(p.result.card);
+          select("stamp");
+          if (!quiet) toast("Padrão copiado · " + p.result.ids.length + " células");
+          return card2;
+        } catch (error) {
+          if (!quiet) toast(error.message);
+          return false;
+        }
+      }
+      return false;
+    }
+    for (const name of modes) $("mx-tool-" + name).onclick = () => select(name);
+    $("mx-erase-radius").oninput = (e) => setRadius(e.target.valueAsNumber);
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.repeat || e.defaultPrevented || e.target.closest?.('input,textarea,select,[contenteditable="true"]') || document.querySelector("dialog[open]")) return;
+      const next = { v: "stamp", b: "erase", i: "pick", Escape: "stamp" }[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+      if (next) {
+        e.preventDefault();
+        select(next);
+      }
+    });
+    refresh();
+    select("stamp");
+    return { select, setRadius, refresh, preview, apply, get mode() {
+      return mode;
+    }, get radius() {
+      return radius2;
+    } };
+  }
+
   // src/mixed/settings.js
   var tariffs = {
     stampCost: "Plantio por célula",
@@ -11889,7 +12800,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     salvage: "Revenda por célula",
     protectedMature: "Maduras protegidas"
   };
-  function bindSettings(getOptions, getMatch, apply) {
+  function bindSettings(getOptions, getMatch, apply, { onToolsChanged = () => {
+  } } = {}) {
     const dialog = $("mx-settings"), inputs = /* @__PURE__ */ new Map();
     for (const f of [16, 24, 32, 48, 64, 96, 128, 160, 320])
       $("mx-size").add(new Option("F" + f + " · " + (10 * f * f + 2).toLocaleString("pt-BR"), String(f)));
@@ -11939,9 +12851,28 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-axis").value = o.arbitration.by ?? "resolver";
       $("mx-friendly").checked = o.friendlyFire;
       setArb(o.arbitration);
+      $("mx-erase-max").value = getMatch().toolSettings.maxEraseRadius;
+      $("mx-stamp-max").value = getMatch().toolSettings.maxStampCells;
+      $("mx-tools-apply").textContent = "Aplicar ferramentas nesta partida";
       setRates(getMatch().economy);
       $("mx-error").textContent = "";
       dialog.showModal();
+    };
+    const readTools = () => normalizeToolSettings({ maxEraseRadius: $("mx-erase-max").valueAsNumber, maxStampCells: $("mx-stamp-max").valueAsNumber });
+    $("mx-tools-apply").onclick = () => {
+      try {
+        const toolSettings = readTools();
+        getMatch().setToolSettings(toolSettings);
+        saveToolSettings(toolSettings);
+        onToolsChanged(toolSettings);
+        $("mx-error").textContent = "";
+        $("mx-tools-apply").textContent = "Ferramentas aplicadas";
+      } catch (error) {
+        $("mx-error").textContent = error.message;
+      }
+    };
+    for (const id of ["mx-erase-max", "mx-stamp-max"]) $(id).oninput = () => {
+      $("mx-tools-apply").textContent = "Aplicar ferramentas nesta partida";
     };
     $("mx-economy").onchange = () => setRates(gameEconomies[$("mx-economy").value]);
     $("mx-setup").onsubmit = (e) => {
@@ -11950,8 +12881,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       try {
         const mode = $("mx-identity").value, by = $("mx-axis").value;
         const arbitration = presets.includes(mode) ? { mode, by, order: mode === "matrix" ? by === "rule" ? ruleIds : resolvers : $("mx-order").value.split(",").map((x) => x.trim()), ...mode === "matrix" ? { matrix: matrix.bits } : {} } : mode;
+        const toolSettings = readTools();
         apply({
           ...getOptions(),
+          toolSettings,
           botInterval: $("mx-bot-interval").valueAsNumber,
           botBudget: $("mx-bot-budget").valueAsNumber,
           F: +$("mx-size").value,
@@ -11963,6 +12896,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           friendlyFire: $("mx-friendly").checked,
           economy
         });
+        saveToolSettings(toolSettings);
         dialog.close();
       } catch (error) {
         $("mx-error").textContent = error.message;
@@ -12057,7 +12991,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ["friendlyErased", "Aliadas substituídas"],
       ["detonations", "Detonações"],
       ["waveBirths", "Nascimentos de onda"],
-      ["waveErased", "Cortes por ondas"]
+      ["waveErased", "Cortes por ondas"],
+      ["toolErased", "Células apagadas com borracha"],
+      ["eraseActions", "Aplicações da borracha"]
     ]]
   ];
   function createScoreboard(getSession) {
@@ -12201,9 +13137,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function startMixedGame() {
     mount();
-    let session, controllers, atlas, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null;
-    const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }) });
+    let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null;
+    const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }), onChoose: () => tools?.select("stamp") });
     const scoreboard = createScoreboard(() => session);
+    tools = createFieldTools({
+      getMatch: () => session?.match,
+      canEdit: () => !!session?.alive[1] && !game.ended,
+      onCapture: (card2) => atlas.capture(card2, hand.selected),
+      onErase: () => {
+        dirty = true;
+      }
+    });
     function hud() {
       const m = session.match, p = m.players[1];
       $("br-rail-gen").textContent = "G " + m.gen.toLocaleString("pt-BR");
@@ -12220,7 +13164,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       scoreboard.update();
       lastUI = performance.now();
     }
-    function reset2(next, prepared, storage2) {
+    function reset2(next, prepared, storage3) {
       const sameGraph = prepared ?? (session?.graph.f === next.F ? session.graph : void 0);
       const fresh = createGameMatch({ ...next, unseededOwners: [1], ...sameGraph ? { graph: sameGraph } : {} });
       session = fresh;
@@ -12239,16 +13183,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-event").textContent = "Avance para observar.";
       $("mx-locate").hidden = true;
       $("mx-profile-button").textContent = "Economia · " + { stability: "Maduras", birth: "Nascimentos", death: "Mortes", activity: "Atividade" }[options.policy];
-      loadViewport(session, storage2);
+      loadViewport(session, storage3);
       world.speed = Number($("hl-speed").value);
       syncPlayButton();
+      tools.refresh();
+      tools.select("stamp");
+      world.painting = false;
       if (atlas) atlas.refresh();
       dirty = true;
       hud();
       toast("Partida pronta · " + (options.players - 1) + " bots");
     }
     const query = new URLSearchParams(location.search), requestedSeed = query.get("seed");
-    const initial = { ...defaultGameOptions, botInterval: 12, botBudget: 4 };
+    const initial = { ...defaultGameOptions, botInterval: 12, botBudget: 4, toolSettings: loadToolSettings() };
     if (Object.hasOwn(gameEconomies, query.get("economy"))) initial.policy = query.get("economy");
     if (requestedSeed !== null && /^\d{1,10}$/.test(requestedSeed) && Number(requestedSeed) <= 4294967295) initial.seed = Number(requestedSeed);
     if (["16", "24", "32", "48", "64", "96", "128", "160", "320"].includes(query.get("f"))) initial.F = Number(query.get("f"));
@@ -12261,18 +13208,24 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     bindSettings(() => options, () => session.match, (next) => {
       if (next.F !== session.graph.f && next.F >= 64) requestSphere(next.F, (graph, buffers) => reset2(next, graph, buffers));
       else reset2(next);
-    });
+    }, { onToolsChanged: (toolSettings) => {
+      options = { ...options, toolSettings };
+      tools.refresh();
+      hand.update();
+    } });
     const targetIds = (anchor) => anchor && hand.current ? stampTargets(anchor, hand.current.shape) : null;
     function preview(anchor) {
+      if (tools.mode !== "stamp") return tools.preview(anchor);
       if (!session.alive[1] || game.ended || !hand.selected) return null;
       const ids = targetIds(anchor), { resolver, ballot } = hand.current, c = hand.selected;
       return ids ? { ids, ready: session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native") } : null;
     }
     function place(anchor) {
+      if (tools.mode !== "stamp") return tools.apply(anchor);
       const proposed = preview(anchor), c = hand.selected, p = session.match.players[1], m = hand.current;
       if (!proposed?.ready) {
         const cost = c && m ? c.offsets.length * session.match.stampPrice(m.resolver) : 0;
-        toast(game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
+        toast(game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
       const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native");
@@ -12284,7 +13237,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       return ok;
     }
-    usePlacement({ preview, place });
+    usePlacement({ preview, place, get gesture() {
+      return tools.mode === "erase" ? "paint" : "stamp";
+    } });
     const observe = { onExistence: (e) => {
       if (e.yes && e.no) event = e;
     } };
@@ -12301,6 +13256,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     };
     function step2() {
       if (!session.step($("mx-conflicts").open ? observe : void 0)) return false;
+      if (world.painting && tools.mode === "erase" && world.hover) tools.apply(world.hover, { quiet: true });
       scoreboard.recordGeneration();
       if (session.outcome === null) controllers.turn();
       else {
@@ -12366,13 +13322,25 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return lastOrders.slice();
       },
       get selection() {
-        return { key: hand.selected?.key, ...hand.current };
+        return { key: hand.selected?.key, slotKey: hand.selected?.slotKey, card: hand.selected, ...hand.current };
       },
-      world
+      world,
+      tools: { get mode() {
+        return tools.mode;
+      }, get radius() {
+        return tools.radius;
+      }, select: tools.select, setRadius: tools.setRadius, preview, apply: place }
     };
     function boot(graph, buffers) {
       reset2(initial, graph, buffers);
-      atlas = createGameAtlas({ host: $("mx-atlas-host"), getWallet: () => session.match.players[1], getEconomy: () => session.match.economy, onSelect: hand.choose, onDeck: hand.fill });
+      atlas = createGameAtlas({
+        host: $("mx-atlas-host"),
+        getWallet: () => session.match.players[1],
+        getEconomy: () => session.match.economy,
+        getToolSettings: () => session.match.toolSettings,
+        onSelect: hand.choose,
+        onDeck: hand.fill
+      });
       $("mx-atlas").onclick = () => atlas.open(hand.selected);
       requestAnimationFrame(frame2);
     }
@@ -12382,9 +13350,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // src/browser/brain-archive.js
   function browserBrainArchive() {
-    let storage2;
+    let storage3;
     try {
-      storage2 = window.localStorage;
+      storage3 = window.localStorage;
     } catch {
     }
     let session, timer2;
@@ -12393,7 +13361,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       timer2 = void 0;
       session?.checkpoint();
     };
-    const archive = createBrainArchive(storage2, () => {
+    const archive = createBrainArchive(storage3, () => {
       timer2 ?? (timer2 = setTimeout(flush, 15e3));
     });
     window.addEventListener("pagehide", flush);

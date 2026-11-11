@@ -5,12 +5,14 @@ import { zoomGlobe } from '../../globe/camera/zoom.js';
 import { toast } from '../../layout/announcements.js';
 import { cv } from '../../layout/elements.js';
 import { atlasPan, syncLocalFromAtlas } from '../atlas/camera.js';
+import { atlasMetrics } from '../atlas/viewport.js';
 import { toggleView } from './orientation.js';
 import { moveCenterTo, panBy } from './pan.js';
 import { chooseEast } from './world-point.js';
 import { zoom } from './zoom.js';
 import { hit } from '../hit-test.js';
-import { stampAt } from '../../patterns/placement/plant.js';
+import { placementGesture, placementPreview, stampAt } from '../../patterns/placement/plant.js';
+import { DX } from '../local/hex-metrics.js';
 import { clamp } from '../../world/geometry.js';
 
 // Trackpads can send several wheel events between two paints. Apply their
@@ -28,7 +30,46 @@ function bindMapGestures() {
   let cursorX = NaN,
     cursorY = NaN;
   const touches = new Map();
-  let pinch = null;
+  let pinch = null, touchPaint = null;
+  world.painting = false;
+  function clearTouchPaint() {
+    if(touchPaint!==null)clearTimeout(touchPaint);
+    touchPaint=null;
+  }
+  function cancelGesture() {
+    clearTouchPaint();
+    touches.clear();pinch=null;
+    world.drag=null;world.painting=false;world.hover=null;
+    cv.style.cursor='';world.needsDraw=true;
+  }
+  function paintPoint(x,y) {
+    const anchor=hit(x,y);
+    world.hover=anchor;
+    if(anchor)stampAt(anchor);
+    world.needsDraw=true;
+  }
+  function startPaint(p) {
+    clearTouchPaint();
+    if(world.drag!==p || pinch || world.graph!==p.graph || world.view!=='flat' || placementGesture()!=='paint')return;
+    p.mode='paint';world.painting=true;cv.style.cursor='crosshair';
+    paintPoint(p.x,p.y);
+  }
+  function paintLine(p,x,y) {
+    const fromX=p.x,fromY=p.y,anchor=hit(fromX,fromY),preview=anchor&&placementPreview(anchor);
+    const pitch=world.chart?DX*world.zoom:atlasMetrics.pitch;
+    // Successive circles overlap; radius-zero brushes sample below one cell.
+    const spacing=Math.max(.5,pitch*Math.max(.4,(preview?.radius??0)*.5));
+    const steps=Math.max(1,Math.ceil(Math.hypot(x-fromX,y-fromY)/spacing));
+    let previous=null;
+    for(let i=1;i<=steps;i++){
+      const at=hit(fromX+(x-fromX)*i/steps,fromY+(y-fromY)*i/steps);
+      const key=at&&(at.id??at.q+','+at.r);
+      world.hover=at;
+      if(at&&key!==previous)stampAt(at);
+      previous=key;
+    }
+    p.x=x;p.y=y;world.needsDraw=true;
+  }
   function touchPair() {
     const [a, b] = touches.values();
     return {
@@ -39,14 +80,18 @@ function bindMapGestures() {
   }
   cv.addEventListener('pointerdown', (e) => {
     flushWheel();
-    if (e.button !== 0) return;
+    if (e.button !== 0 && e.button !== 1) return;
+    const panOnly=e.button===1 || e.shiftKey;
+    if(panOnly)e.preventDefault();
     if (e.pointerType === 'touch') {
       touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
       cv.setPointerCapture(e.pointerId);
       if (touches.size >= 2) {
+        clearTouchPaint();world.painting=false;
         pinch = touchPair();
         world.drag = null;
         world.hover = null;
+        cv.style.cursor='';
         world.needsDraw = true;
         return;
       }
@@ -60,7 +105,17 @@ function bindMapGestures() {
       startX: e.clientX,
       startY: e.clientY,
       moved: false,
+      panOnly,
+      graph:world.graph,
+      mode:!panOnly&&world.view==='flat'&&placementGesture()==='paint'?'pending-paint':'stamp',
     };
+    if(world.drag.mode==='pending-paint'){
+      const p=world.drag;
+      world.hover=hit(e.clientX,e.clientY);world.needsDraw=true;
+      // Give a second finger time to claim a pinch before touching the field.
+      if(e.pointerType==='touch')touchPaint=setTimeout(()=>startPaint(p),180);
+      else startPaint(p);
+    }
   });
   cv.addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'touch') {
@@ -88,6 +143,15 @@ function bindMapGestures() {
     }
     const p = world.drag;
     if (p && p.id === e.pointerId) {
+      if(p.mode==='pending-paint'&&Math.hypot(e.clientX-p.startX,e.clientY-p.startY)>4)startPaint(p);
+      if(p.mode==='paint'){
+        paintLine(p,e.clientX,e.clientY);
+        return;
+      }
+      if(p.mode==='pending-paint'){
+        p.x=e.clientX;p.y=e.clientY;
+        return;
+      }
       let dx = e.clientX - p.x,
         dy = e.clientY - p.y;
       p.x = e.clientX;
@@ -123,7 +187,10 @@ function bindMapGestures() {
     }
     const p = world.drag;
     if (!p || p.id !== e.pointerId) return;
-    if (!p.moved) {
+    clearTouchPaint();
+    if(p.mode==='paint')paintLine(p,e.clientX,e.clientY);
+    else if(p.mode==='pending-paint')paintPoint(e.clientX,e.clientY);
+    else if (!p.moved && !p.panOnly) {
       if (world.view === 'flat') {
         const anchor = hit(e.clientX, e.clientY);
         if (anchor) stampAt(anchor);
@@ -142,6 +209,7 @@ function bindMapGestures() {
     if (p.moved && world.view === 'globe') world.needsGlobeBase = true;
     if (p.moved && world.view === 'flat' && !world.chart) syncLocalFromAtlas();
     world.drag = null;
+    world.painting=false;
     cv.style.cursor = '';
     world.hover =
       world.view === 'flat' && e.pointerType !== 'touch' ? hit(e.clientX, e.clientY) : null;
@@ -151,6 +219,7 @@ function bindMapGestures() {
     touches.delete(e.pointerId);
     if (!touches.size) pinch = null;
     if (world.drag?.id === e.pointerId) {
+      clearTouchPaint();world.painting=false;
       world.drag = null;
       world.hover = null;
       cv.style.cursor = '';
@@ -161,6 +230,7 @@ function bindMapGestures() {
     touches.delete(e.pointerId);
     if (!touches.size) pinch = null;
     world.drag = null;
+    clearTouchPaint();world.painting=false;
     world.needsGlobeBase = true;
     world.hover = null;
     cv.style.cursor = '';
@@ -178,6 +248,7 @@ function bindMapGestures() {
     'wheel',
     (e) => {
       e.preventDefault();
+      if(world.painting||world.drag?.mode==='pending-paint')cancelGesture();
       const units = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? cv.clientHeight : 1;
       if (!queuedWheel) queuedWheel = { logScale: 0, graph: world.graph, view: world.view };
       queuedWheel.logScale -= e.deltaY * units * 0.0012;
@@ -189,6 +260,11 @@ function bindMapGestures() {
     },
     { passive: false },
   );
+  window.addEventListener('blur',cancelGesture);
+  window.addEventListener('hexophage:toolchange',()=>{
+    cancelGesture();
+    if(world.view==='flat'&&Number.isFinite(cursorX)&&Number.isFinite(cursorY))world.hover=hit(cursorX,cursorY);
+  });
 }
 
 export { bindMapGestures, flushWheel, queuedWheel };

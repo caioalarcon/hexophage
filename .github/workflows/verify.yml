@@ -25,7 +25,9 @@ jobs:
         if: github.event_name == 'pull_request'
         run: git diff --exit-code --stat -- index.html
       - run: npm test
-      - run: npx playwright install --with-deps chromium
+      # The hosted Ubuntu image supplies the Chromium runtime libraries.
+      # Keep Playwright's pinned browser; launches still validate dependencies.
+      - run: npx playwright install chromium
       - run: npm run test:browser
       - run: node tests/mixed-ui-polish.cjs
       - name: Verify the offline economic experiments

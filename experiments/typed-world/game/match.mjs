@@ -19,7 +19,7 @@ export const defaultGameOptions=Object.freeze({F:128,seed:1,players:6,bank:640,p
 
 export function createGameMatch(options={}) {
   const {F,seed,players,bank,policy,arbitration,eligibility,existence,passage,friendlyFire,
-    economy={},unseededOwners=[],graph=buildSphere(F)}={...defaultGameOptions,...options};
+    economy={},toolSettings,unseededOwners=[],graph=buildSphere(F)}={...defaultGameOptions,...options};
   if(!Object.hasOwn(gameEconomies,policy))throw RangeError('Economia desconhecida.');
   if(!Number.isInteger(players)||players<2||players>graph.n)throw RangeError('A partida precisa de pelo menos dois jogadores e espaço na esfera.');
   if(!Array.isArray(unseededOwners)||unseededOwners.some(owner=>!Number.isInteger(owner)||owner<1||owner>players))
@@ -38,6 +38,9 @@ export function createGameMatch(options={}) {
       throw RangeError('A reserva e o espaço devem comportar a colônia inicial de cada jogador.');
     opening.push({owner,key:farm,site,ids,rotation,rule,resolver:'contact',ballot:'support',sense:'native'});
   }
+  // Opening colonies belong to scenario setup. The configurable stamp limit
+  // applies to every player action after this setup, including bot purchases.
+  if(toolSettings)match.setToolSettings(toolSettings);
   const eliminatedAt=alive.map(()=>null);
   let outcome=null;
   function step(hooks){

@@ -14,8 +14,9 @@ import { visitLiveTiles } from '../population/tile-index.js';
 import { stampOffsets } from '../../patterns/editor/stamp-grid.js';
 import { stampTargets } from '../../patterns/placement/footprint.js';
 import { placementPreview } from '../../patterns/placement/plant.js';
-import { clamp } from '../../world/geometry.js';
+import { basis, clamp, normal, vdot } from '../../world/geometry.js';
 import { sphereCorner } from '../../world/sphere.js';
+import { brushAngularRadius } from '../../mixed/field-tools.js';
 
 function atlasMark(path, id, a) {
   if (a.visible) {
@@ -30,6 +31,27 @@ function atlasMark(path, id, a) {
   }
   atlasCell(path, id, a);
   return true;
+}
+
+// A small circle on the sphere, projected with the same cuts as the atlas.
+function atlasBrush(path,preview,a){
+  const center=preview.center;
+  if(!Number.isSafeInteger(center)||center<0||center>=a.g.n)return;
+  const radius=preview.angularRadius>0?preview.angularRadius:brushAngularRadius(a.g,center,.45);
+  if(!(radius>0)||radius>=Math.PI)return;
+  const look=normal(Array.from(a.g.coords.subarray(3*center,3*center+3))),{right,up}=basis(look);
+  const cos=Math.cos(radius),sin=Math.sin(radius),segments=128;
+  let previous=null;
+  for(let i=0;i<=segments;i++){
+    const angle=2*Math.PI*i/segments;
+    const p=look.map((v,k)=>cos*v+sin*(Math.cos(angle)*right[k]+Math.sin(angle)*up[k]));
+    const lat=Math.asin(clamp(vdot(p,a.up),-1,1)),lon=Math.atan2(vdot(p,a.right),vdot(p,a.look));
+    const x=a.cx+a.s*atlasCapLon(lon,lat,a.capBlend),y=a.cy-a.s*lat;
+    const cut=previous&&(Math.abs(lon-previous.lon)>Math.PI || a.capBlend>0&&
+      Math.max(Math.abs(lat),Math.abs(previous.lat))>atlasCapLat&&atlasMeridian(lon)!==atlasMeridian(previous.lon));
+    if(!previous||cut)path.moveTo(x,y);else path.lineTo(x,y);
+    previous={lon,lat};
+  }
 }
 
 function drawAtlas() {
@@ -152,8 +174,20 @@ function drawAtlas() {
     c.drawImage(bitmap.canvas, 0, 0);
     c.restore();
   }
-  const preview = world.hover?.id !== undefined && !world.drag && placementPreview(world.hover);
-  if (preview) {
+  const preview = world.hover?.id !== undefined && (!world.drag || world.painting) && placementPreview(world.hover);
+  if(preview?.tool){
+    const active=new Path2D(),area=new Path2D();
+    for(const id of preview.ids??[])atlasMark(active,id,a);
+    if(preview.tool==='erase'){
+      for(const id of preview.footprint??[])atlasMark(area,id,a);
+      c.fillStyle='#ff8d7818';c.fill(area);
+      c.fillStyle='#ff8d7866';c.strokeStyle='#ff8d78';
+    }else{c.fillStyle='#58ddeb45';c.strokeStyle='#7de9f5';}
+    c.lineWidth=1;c.fill(active);c.stroke(active);
+    if(preview.tool==='erase'){
+      const outline=new Path2D();atlasBrush(outline,preview,a);c.lineWidth=1.6;c.stroke(outline);
+    }
+  }else if (preview) {
     const ids = stampTargets(world.hover, stampOffsets()),
       path = new Path2D();
     for (const id of ids) atlasMark(path, id, a);

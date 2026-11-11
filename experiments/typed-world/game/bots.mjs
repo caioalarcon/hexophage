@@ -4,6 +4,7 @@ import {atlasCards,rankCards} from './atlas-model.mjs';
 import {disk} from '../pilots.mjs';
 import {card as shipMotion} from '../duels-fixtures.mjs';
 import {patchForStamp} from '../../../src/patterns/spherical-patch.js';
+import {createFieldToolPlanner} from './bot-tools.mjs';
 
 const ballots=['support','age','geometry','robustness'];
 function targetPose(m,site){
@@ -33,7 +34,7 @@ function chooseTarget(match,other,pick){
 }
 
 export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((_,i)=>i+2),
-  onOrder,beforeOrder,onDecision,cards=atlasCards,budget=4,horizon=16,lookahead=48,interval=12,phaseWindow=18,adaptive=true,recoveryOwners=owners}={}){
+  onOrder,beforeOrder,onDecision,cards=atlasCards,budget=4,horizon=16,lookahead=48,interval=12,phaseWindow=18,adaptive=true,recoveryOwners=owners,fieldTools=true}={}){
   if(!Number.isSafeInteger(budget)||budget<0||!Number.isSafeInteger(horizon)||horizon<4||
      !Number.isSafeInteger(phaseWindow)||phaseWindow<0||!Number.isFinite(lookahead)||lookahead<0||
      !Number.isSafeInteger(interval)||interval<1)throw RangeError('Invalid bot timing.');
@@ -45,10 +46,22 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     byRule.get(card.rule).push(card);
   }
   const families=[...byRule.keys()], recoverySeats=new Set(recoveryOwners);
-  const captains=(families.length?owners:[]).map(owner=>({owner,pick:random(seed^Math.imul(owner,0x9e3779b9)),decision:0,
-    pricedAt:-Infinity,prices:null,recoverySeen:new Set(),family:owner%families.length,raidFamily:owner%families.length,raidIndex:0,ready:null,next:1,lastBuy:-Infinity,job:null,memory:new Map()}));
+  const captains=owners.map(owner=>({owner,pick:random(seed^Math.imul(owner,0x9e3779b9)),decision:0,learned:[],
+    pricedAt:-Infinity,prices:null,recoverySeen:new Set(),family:owner%Math.max(1,families.length),raidFamily:owner%Math.max(1,families.length),raidIndex:0,ready:null,next:1,lastBuy:-Infinity,job:null,memory:new Map()}));
   const stats=Array.from({length:match.players.length},()=>({orders:0,raids:0,trials:0,raidTrials:0,raidHolds:0,raidInvalid:0,rescueTrials:0,rescueOrders:0,delayed:0,holds:0,invalidated:0,
+    eraseTrials:0,eraseHolds:0,eraseOrders:0,erasedCells:0,eraseWork:0,captureTrials:0,captures:0,capturedOrders:0,captureWork:0,
     first:null,last:null,studied:new Set(),bought:new Set(),expected:0,work:0}));
+  let revision=match.actionRevision;
+  function invalidateForecasts(){
+    revision=match.actionRevision;
+    for(const bot of captains){
+      if(bot.ready)stats[bot.owner].invalidated++;
+      bot.job=null;bot.ready=null;bot.pricedAt=-Infinity;
+    }
+    field?.invalidate();
+  }
+  const field=fieldTools?createFieldToolPlanner(match,{stats,horizon,lookahead,cadence:Math.max(1,Math.ceil(owners.length/Math.max(1,budget))),onDecision,beforeOrder,onOrder,
+    onLearn:(bot,card)=>{bot.learned.push(card);bot.pricedAt=-Infinity;},onMutation:invalidateForecasts}):null;
   function investment(bot,cards){
     const p=match.players[bot.owner];
     const possible=cards.filter(c=>c.offsets.length*match.stampPrice(c.resolver)<=p.reserve);
@@ -66,10 +79,11 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
   }
   function propose(bot){
     const {owner,pick}=bot;if(match.players[owner].out)return;
+    const known=[...ranked,...bot.learned].filter(card=>card.offsets.length<=match.toolSettings.maxStampCells);
+    if(!known.length)return;
     const rivals=match.players.map((p,id)=>p&&!p.out&&id!==owner&&p.conventional>0?id:0).filter(Boolean);
-    if(!rivals.length)return;
     bot.decision++;
-    const raid=bot.decision%3===0, other=rivals[pick(rivals.length)];
+    const raid=rivals.length>0&&families.length>0&&bot.decision%3===0, other=rivals.length?rivals[pick(rivals.length)]:owner;
     const rescue=!raid && recoverySeats.has(owner) && match.gen-Math.max(0,bot.lastBuy)>=96;
     let item,center,ids,rotation,resolver,ballot,scoped;
     if(raid){
@@ -91,12 +105,12 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
         ids=null;
       }
     } else {
-      const family=families[bot.family++%families.length];
-      let pool=bot.decision%4===1?ranked:byRule.get(family);
-      if(rescue || adaptive && stats[owner].orders && match.economy.stableEnergy>0){
+      const available=[...new Set(known.map(card=>card.rule))],family=available[bot.family++%available.length];
+      let pool=bot.decision%4===1?known:known.filter(card=>card.rule===family);
+      if(rescue || bot.learned.length || adaptive && stats[owner].orders && match.economy.stableEnergy>0){
         if(match.gen-bot.pricedAt>=48){
           const p=match.players[owner];
-          const priced=rankCards(cards,match.economy,{reserve:p.reserve,mature:p.mature});
+          const priced=rankCards(known,match.economy,{reserve:p.reserve,mature:p.mature});
           // Shortest measured payback proposes cheap producers even after
           // saturation has made the once-profitable grower consume cash.
           bot.prices=priced.sort((a,b)=>a.payback===b.payback?0:(a.payback??Infinity)-(b.payback??Infinity));
@@ -171,7 +185,7 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     onDecision?.({gen:match.gen,owner,key:item.key,ids:j.ids,role:raid?'raid':'farm',pay,cost,flow:flow(owner),
       modeledCash:gain(owner),rejection});
     if(rejection){stat.holds++;stat.raidHolds+=Number(raid);return;}
-    bot.ready={owner,gen:match.gen,key:item.key,rule:item.rule,resolver:j.resolver,ballot:j.ballot,sense:item.sense,
+    bot.ready={owner,gen:match.gen,key:item.key,rule:item.rule,resolver:j.resolver,ballot:j.ballot,sense:item.sense,tool:'stamp',observed:!!item.observed,
       ids:j.ids,site:j.center,rotation:j.rotation,target:raid?other:0,role:raid?'raid':'farm',expected:pay,recovery:j.rescue,pose:j.pose};
     execute(bot);
   }
@@ -188,19 +202,23 @@ export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((
     }
     beforeOrder?.(o);
     if(!match.stamp(o.owner,o.rule,o.resolver,o.ids,o.ballot,o.sense))return;
+    invalidateForecasts();
     bot.lastBuy=match.gen;bot.recoverySeen.clear();stat.rescueOrders+=Number(o.recovery);stat.first??=match.gen;stat.last=match.gen;
     stat.delayed+=Number(match.gen>o.gen);o.gen=match.gen;
     stat.orders++;stat.raids+=Number(raid);stat.bought.add(o.rule);stat.expected+=o.expected;
+    stat.capturedOrders+=Number(o.observed);
     onOrder?.(o);
   }
   let cursor=0,last=-1;
   function turn(){
     if(last===match.gen||!captains.length)return;
     last=match.gen;
+    if(match.actionRevision!==revision)invalidateForecasts();
     for(const b of captains)if(b.ready&&!match.players[b.owner].out)execute(b);
     for(let n=0;n<budget;n++){
       const bot=captains[cursor++%captains.length];
       if(match.players[bot.owner].out){bot.job=null;continue;}
+      if(field?.work(bot))continue;
       if(bot.ready)continue;
       if(!bot.job && match.gen>=bot.next){
         bot.next=match.gen+Math.max(2,Math.ceil(interval/3));propose(bot);

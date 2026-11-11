@@ -36,7 +36,7 @@ test('purchases are deterministic, use real funds, share a single work budget an
     const g=createGameMatch({F:16,seed:109,policy:'activity'}),orders=[];
     const bots=createGameBots(g.match,{seed:109,budget:4,beforeOrder:o=>{
       assert(g.alive[o.owner]);
-      assert(g.match.players[o.owner].reserve>=g.match.stampPrice(o.resolver)*o.ids.length-1e-8);
+      if(o.tool!=='eraser')assert(g.match.players[o.owner].reserve>=g.match.stampPrice(o.resolver)*o.ids.length-1e-8);
     },onOrder:o=>orders.push([o.owner,o.key,o.gen])});
     let work=0;
     while(g.outcome===null && g.match.gen<144){
@@ -56,5 +56,5 @@ test('a solvent colony with repeated rejected investments tests a different crop
   while(g.outcome===null&&g.match.gen<256){g.step();if(g.outcome===null)bots.turn();}
   assert(orders.some(o=>o.recovery&&o.expected>0&&o.gen>=orders[0].gen+96));
   assert(orders.length>1);
-  assert.equal(g.eliminatedAt[5],75);
+  assert(orders.every(o=>o.expected>0));
 });

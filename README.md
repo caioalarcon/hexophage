@@ -62,6 +62,8 @@ The default preview opens the six-player mixed game on an F128 sphere (163,842 s
 
 In landscape, controls, wallets and the globe are on the left. The right rail offers 54 economically ranked stamps in three columns, with thin per-card energy indicators. In portrait the controls move above the map and the hand below it. Rotate/mirror and the stamp preview sit beside the interaction and ballot selectors. Player names navigate to the nearest colony, while a separate chevron expands the player's statistics. The atlas supports all 409 native cards, isolated evolution, editing and persistent custom shapes. Settings let you replay a seed and compare mature-cell, birth, death or activity income.
 
+The field toolbar adds a circular eraser (`B`) and an eyedropper (`I`) beside stamping (`V`). The eraser removes owned material for free, including at zero reserve, and follows pointer strokes or a held brush across generations. The eyedropper copies the nearest complete same-type pattern into the selected saved deck slot. Tool limits apply live: the default maximum eraser radius is 12 local cell spacings and the maximum stamp has 1,024 cells. Bots compare cleaning against waiting on paired forecasts, revalidate each stroke, and can learn productive observed patterns for later paid placement.
+
 [Playing the mixed game](experiments/typed-world/game/README.md) · [Existence, ownership and paid passage](experiments/typed-world/game/EXISTENCE.md) · [Nine-rule arbitration laboratory](experiments/typed-world/index.html)
 
 ## An isolated match
