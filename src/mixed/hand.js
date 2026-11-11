@@ -7,14 +7,15 @@ import {rules} from '../../experiments/typed-world/catalog.mjs';
 const fmt=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2});
 const slotKey=card=>card.slotKey??card.key;
 
-export function createHand(getMatch,{onInspect=()=>{}}={}){
+export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
   const hand=$('mx-hand'),preview=$('mx-preview'),mods=new Map(),buttons=new Map();
   let selected;
   const modifier=c=>{
     const key=slotKey(c);
     let m=mods.get(key);
-    if(!m){
-      m={resolver:c.resolver??'contact',ballot:c.ballot??'support'};mods.set(key,m);
+    const sourceResolver=c.resolver??'contact',sourceBallot=c.ballot??'support';
+    if(!m || m.cardKey!==c.key || m.sourceResolver!==sourceResolver || m.sourceBallot!==sourceBallot){
+      m={cardKey:c.key,sourceResolver,sourceBallot,resolver:sourceResolver,ballot:sourceBallot};mods.set(key,m);
     }
     if(m.original!==c.offsets){m.original=c.offsets;m.shape=c.offsets;}
     return m;
@@ -31,24 +32,26 @@ export function createHand(getMatch,{onInspect=()=>{}}={}){
     $('mx-ballot').value=m.ballot;
     $('mx-resolver').value=m.resolver;
     for(const [key,node] of buttons)node.setAttribute('aria-pressed',String(key===slotKey(c)));
-    update();
+    update();onChoose(c);
   }
   function update(){
     const match=getMatch();if(!match)return;
     const wallet=match.players[1].reserve;
     for(const btn of buttons.values()){
       const c=btn.card, cost=c.offsets.length*match.stampPrice(modifier(c).resolver);
-      const affordable=wallet+1e-9>=cost;
+      const withinLimit=c.offsets.length<=(match.toolSettings?.maxStampCells??Infinity);
+      const affordable=withinLimit&&wallet+1e-9>=cost;
       if(btn.dataset.afford!==String(affordable))btn.dataset.afford=String(affordable);
       const progress=btn.querySelector('.mx-card-energy'),available=Math.max(0,Math.min(wallet,cost));
       progress.style.setProperty('--charge',String(cost?available/cost:1));
       progress.setAttribute('aria-valuemax',String(cost));
       progress.setAttribute('aria-valuenow',String(available));
-      progress.setAttribute('aria-valuetext',affordable?'Pronto para usar':'Faltam ◈ '+fmt.format(cost-available));
-      if(btn.dataset.price!==String(cost)){
+      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':affordable?'Pronto para usar':'Faltam ◈ '+fmt.format(cost-available));
+      if(btn.dataset.price!==String(cost)||btn.dataset.withinLimit!==String(withinLimit)){
         btn.dataset.price=String(cost);
+        btn.dataset.withinLimit=String(withinLimit);
         btn.querySelector('.mx-card-cost').textContent='◈'+fmt.format(cost);
-        btn.title=c.name+' · '+rules[c.rule].label+' · ◈ '+fmt.format(cost);btn.setAttribute('aria-label',btn.title);
+        btn.title=c.name+' · '+rules[c.rule].label+' · ◈ '+fmt.format(cost)+(!withinLimit?' · acima do limite configurado':'');btn.setAttribute('aria-label',btn.title);
       }
     }
     if(selected){

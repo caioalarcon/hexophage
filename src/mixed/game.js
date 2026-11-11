@@ -17,6 +17,7 @@ import {createHand} from './hand.js';
 import {bindMixedViewport,loadViewport,paintViewport,syncField} from './viewport.js';
 import {bindSettings} from './settings.js';
 import {createScoreboard} from './score.js';
+import {createFieldTools,loadToolSettings} from './tool-controls.js';
 
 const number=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2});
 function mount(){
@@ -35,9 +36,11 @@ function mount(){
 }
 export function startMixedGame(){
   mount();
-  let session,controllers,atlas,options,dirty=true,lastUI=-Infinity,elapsed=0,previous=0,lastOrders=[],event=null;
-  const hand=createHand(()=>session?.match,{onInspect:card=>atlas.open(card,{replace:true})});
+  let session,controllers,atlas,tools,options,dirty=true,lastUI=-Infinity,elapsed=0,previous=0,lastOrders=[],event=null;
+  const hand=createHand(()=>session?.match,{onInspect:card=>atlas.open(card,{replace:true}),onChoose:()=>tools?.select('stamp')});
   const scoreboard=createScoreboard(()=>session);
+  tools=createFieldTools({getMatch:()=>session?.match,canEdit:()=>!!session?.alive[1]&&!game.ended,
+    onCapture:card=>atlas.capture(card,hand.selected),onErase:()=>{dirty=true;}});
   function hud(){
     const m=session.match,p=m.players[1];
     $('br-rail-gen').textContent='G '+m.gen.toLocaleString('pt-BR');
@@ -64,11 +67,12 @@ export function startMixedGame(){
     event=null;$('mx-event').textContent='Avance para observar.';$('mx-locate').hidden=true;
     $('mx-profile-button').textContent='Economia · '+({stability:'Maduras',birth:'Nascimentos',death:'Mortes',activity:'Atividade'}[options.policy]);
     loadViewport(session,storage);world.speed=Number($('hl-speed').value);syncPlayButton();
+    tools.refresh();tools.select('stamp');world.painting=false;
     if(atlas)atlas.refresh();dirty=true;hud();
     toast('Partida pronta · '+(options.players-1)+' bots');
   }
   const query=new URLSearchParams(location.search),requestedSeed=query.get('seed');
-  const initial={...defaultGameOptions,botInterval:12,botBudget:4};
+  const initial={...defaultGameOptions,botInterval:12,botBudget:4,toolSettings:loadToolSettings()};
   if(Object.hasOwn(gameEconomies,query.get('economy')))initial.policy=query.get('economy');
   if(requestedSeed!==null && /^\d{1,10}$/.test(requestedSeed) && Number(requestedSeed)<=0xffffffff)initial.seed=Number(requestedSeed);
   if(['16','24','32','48','64','96','128','160','320'].includes(query.get('f')))initial.F=Number(query.get('f'));
@@ -78,18 +82,21 @@ export function startMixedGame(){
   bindSettings(()=>options,()=>session.match,next=>{
     if(next.F!==session.graph.f && next.F>=64)requestSphere(next.F,(graph,buffers)=>reset(next,graph,buffers));
     else reset(next);
-  });
+  },{onToolsChanged:toolSettings=>{options={...options,toolSettings};tools.refresh();hand.update();}});
   const targetIds=anchor=>anchor&&hand.current?stampTargets(anchor,hand.current.shape):null;
   function preview(anchor){
+    if(tools.mode!=='stamp')return tools.preview(anchor);
     if(!session.alive[1]||game.ended||!hand.selected)return null;
     const ids=targetIds(anchor),{resolver,ballot}=hand.current,c=hand.selected;
     return ids?{ids,ready:session.match.canStamp(1,c.rule,resolver,ids,ballot,c.sense??'native')}:null;
   }
   function place(anchor){
+    if(tools.mode!=='stamp')return tools.apply(anchor);
     const proposed=preview(anchor),c=hand.selected,p=session.match.players[1],m=hand.current;
     if(!proposed?.ready){
       const cost=c&&m?c.offsets.length*session.match.stampPrice(m.resolver):0;
-      toast(game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':p.reserve<cost?
+      toast(game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':c?.offsets.length>session.match.toolSettings.maxStampCells?
+        'Carimbo acima do limite de '+session.match.toolSettings.maxStampCells+' células.':p.reserve<cost?
         'Faltam ◈ '+number.format(cost-p.reserve)+' para este carimbo.':!targetIds(anchor)?'O carimbo não cabe nesta região da malha.':'Posição ocupada ou junto de uma colônia adversária.');
       return false;
     }
@@ -97,13 +104,14 @@ export function startMixedGame(){
     if(ok){dirty=true;syncField(session.match);hud();toast(c.name+' · '+resolverNames[m.resolver]);}
     return ok;
   }
-  usePlacement({preview,place});
+  usePlacement({preview,place,get gesture(){return tools.mode==='erase'?'paint':'stamp';}});
   const observe={onExistence:e=>{if(e.yes && e.no)event=e;}};
   $('mx-globe').onclick=()=>openFullGlobe(true);
   $('mx-locate').onclick=()=>{if(event){centerOnPlayer(event.site);world.needsDraw=world.needsGrid=true;}};
   $('mx-profile-button').onclick=()=>{$('mx-config').click();$('mx-economy').focus();};
   function step(){
     if(!session.step($('mx-conflicts').open?observe:undefined))return false;
+    if(world.painting&&tools.mode==='erase'&&world.hover)tools.apply(world.hover,{quiet:true});
     scoreboard.recordGeneration();
     if(session.outcome===null)controllers.turn();
     else {
@@ -130,10 +138,12 @@ export function startMixedGame(){
   }
   // Same inspectability as the classic game, with typed cells and real purchase receipts.
   window.__hexophageMixed={get session(){return session;},get controllers(){return controllers;},get orders(){return lastOrders.slice();},
-    get selection(){return {key:hand.selected?.key,...hand.current};},world};
+    get selection(){return {key:hand.selected?.key,slotKey:hand.selected?.slotKey,card:hand.selected,...hand.current};},world,
+    tools:{get mode(){return tools.mode;},get radius(){return tools.radius;},select:tools.select,setRadius:tools.setRadius,preview,apply:place}};
   function boot(graph,buffers){
     reset(initial,graph,buffers);
-    atlas=createGameAtlas({host:$('mx-atlas-host'),getWallet:()=>session.match.players[1],getEconomy:()=>session.match.economy,onSelect:hand.choose,onDeck:hand.fill});
+    atlas=createGameAtlas({host:$('mx-atlas-host'),getWallet:()=>session.match.players[1],getEconomy:()=>session.match.economy,
+      getToolSettings:()=>session.match.toolSettings,onSelect:hand.choose,onDeck:hand.fill});
     $('mx-atlas').onclick=()=>atlas.open(hand.selected);
     requestAnimationFrame(frame);
   }

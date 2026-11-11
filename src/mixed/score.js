@@ -29,6 +29,7 @@ const fields=[
     ['stamps','Carimbos inseridos'],['stampedCells','Células carimbadas'],['births','Nascimentos'],['deaths','Mortes'],
     ['erased','Adversárias substituídas'],['lost','Células tomadas'],['friendlyErased','Aliadas substituídas'],
     ['detonations','Detonações'],['waveBirths','Nascimentos de onda'],['waveErased','Cortes por ondas'],
+    ['toolErased','Células apagadas com borracha'],['eraseActions','Aplicações da borracha'],
   ]],
 ];
 

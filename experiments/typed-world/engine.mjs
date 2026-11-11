@@ -3,6 +3,7 @@
 import {ruleProfiles} from '../../src/match/rule-profiles.js';
 import {ballots,configureArbitration,material,rankProposals,resolvers} from './arbitration.mjs';
 import {existenceModes,passageModes,senses,sensorMask,voteOnExistence} from './existence.mjs';
+import {circularSites,normalizeToolSettings} from '../../src/mixed/field-tools.js';
 
 export {resolvers};
 export {existenceModes,passageModes,senses};
@@ -20,7 +21,7 @@ function account(reserve) {
   return {reserve, income:0, matureIncome:0,birthIncome:0,deathIncome:0,deaths:0,conventional:0,
     births:0, stamps:0, stampedCells:0, stampSpent:0, birthSpent:0, eraseSpent:0,
     erased:0, lost:0, friendlyErased:0, ownLost:0, friendlyEraseSpent:0, field:0, mature:0, refused:0, eroded:0, detonations:0, waveBirths:0, waveErased:0,
-    requested:0, requestedCost:0, unfundedCost:0, salvageIncome:0, lastFieldAt:0, out:false};
+    requested:0, requestedCost:0, unfundedCost:0, salvageIncome:0, toolErased:0, eraseActions:0, lastFieldAt:0, out:false};
 }
 const EPS = 1e-9;
 const robustnessCache=new WeakMap();
@@ -40,7 +41,7 @@ function robustTables(tables) {
 }
 
 export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:overrides={},
-  arbitration='legacy',eligibility='legacy',friendlyFire=false,existence='legacy',passage='legacy',onContest,onBirth,onExistence}={}) {
+  arbitration='legacy',eligibility='legacy',friendlyFire=false,existence='legacy',passage='legacy',toolSettings={},onContest,onBirth,onExistence}={}) {
   const policy=configureArbitration(arbitration);
   if(!['legacy','contest'].includes(eligibility) || typeof friendlyFire!=='boolean' ||
       !existenceModes.includes(existence) || !passageModes.includes(passage))
@@ -62,14 +63,14 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
   const cell = (type, age) => Object.freeze({owner:type.owner,rule:type.rule,resolver:type.resolver,ballot:type.ballot,
     sense:type.sense,wave:type.wave,age,type});
 
-  function instance(cells, players, gen, lastIgnitions=[], domain=null, outside=null,observe=false) {
+  function instance(cells, players, gen, lastIgnitions=[], domain=null, outside=null,observe=false,limits=normalizeToolSettings(toolSettings),actionRevision=0) {
     const {adj,deg}=graph;
     const stampPrice=resolver=>economy.stampCost+(resolver==='guard'?economy.guardStampExtra:0);
     function canStamp(owner, rule, resolver, ids, ballot='support',sense='native') {
       if (!Number.isInteger(owner) || owner<1 || owner>=players.length) return false;
       const p=players[owner];
       if (!p || p.out || !rules.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !senses.includes(sense) || !ids?.length ||
-          new Set(ids).size!==ids.length || p.reserve+EPS<ids.length*stampPrice(resolver)) return false;
+          ids.length>limits.maxStampCells || new Set(ids).size!==ids.length || p.reserve+EPS<ids.length*stampPrice(resolver)) return false;
       for (const id of ids) {
         if (!Number.isSafeInteger(id) || id<0 || id>=graph.n || (domain && !domain.has(id)) || cells.has(id)) return false;
         for (let k=0;k<deg[id];k++) {
@@ -89,7 +90,32 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       p.reserve=Math.max(0,p.reserve-ids.length*stampPrice(resolver));
       p.lastFieldAt=gen;
       for(const site of ids) cells.set(site,cell(genotype(owner,rule,resolver,ballot,sense),1));
+      actionRevision++;
       return true;
+    }
+    function setToolSettings(values){
+      const next=normalizeToolSettings(values,limits);
+      if(Object.keys(next).some(key=>next[key]!==limits[key]))actionRevision++;
+      limits=next;return limits;
+    }
+    function erasePreview(owner,center,radius){
+      if(!Number.isInteger(owner)||owner<1||owner>=players.length||players[owner].out ||
+          !Number.isSafeInteger(radius)||radius<0||radius>limits.maxEraseRadius)return [];
+      return circularSites(graph,center,radius).filter(site=>(!domain||domain.has(site))&&cells.get(site)?.owner===owner);
+    }
+    function erase(owner,center,radius){
+      const ids=erasePreview(owner,center,radius);
+      if(!ids.length)return 0;
+      const p=players[owner];
+      for(const site of ids){
+        const c=cells.get(site);cells.delete(site);p.field--;
+        if(!c.wave)p.conventional--;
+        if(c.age>=economy.stableAfter)p.mature--;
+      }
+      p.toolErased+=ids.length;p.eraseActions++;actionRevision++;
+      // No event revenue, salvage, combat credit or immediate resurrection.
+      // The usual match settlement decides elimination on its next step.
+      return ids.length;
     }
     function step(hooks) {
       const contestEvent=hooks?.onContest??(observe && onContest);
@@ -314,7 +340,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
     // Only assets within its field of view can be liquidated in the forecast.
     function fork(sites) {
       const accounts=players.map(p=>p&&{...p});
-      if(!sites)return instance(new Map(cells),accounts,gen,lastIgnitions.map(e=>({...e,sites:[...e.sites]})),domain,outside);
+      if(!sites)return instance(new Map(cells),accounts,gen,lastIgnitions.map(e=>({...e,sites:[...e.sites]})),domain,outside,false,limits,actionRevision);
       const cut=new Set(domain ? [...sites].filter(id=>domain.has(id)) : sites), snapshot=new Map();
       const remote=players.map(p=>p&&{field:p.field,mature:p.mature,conventional:p.conventional});
       for(const id of cut){
@@ -325,9 +351,10 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         if(c.age>=economy.stableAfter)remote[c.owner].mature--;
         if(!c.wave)remote[c.owner].conventional--;
       }
-      return instance(snapshot,accounts,gen,[],cut,remote);
+      return instance(snapshot,accounts,gen,[],cut,remote,false,limits,actionRevision);
     }
-    return {graph,economy,arbitration:policy,eligibility,friendlyFire,existence,passage,players,stampPrice,stamp,canStamp,step,fork,get cells(){return cells;},get gen(){return gen;},
+    return {graph,economy,arbitration:policy,eligibility,friendlyFire,existence,passage,players,stampPrice,stamp,canStamp,erase,erasePreview,setToolSettings,step,fork,get cells(){return cells;},get gen(){return gen;},
+      get toolSettings(){return limits;},get actionRevision(){return actionRevision;},
       get lastIgnitions(){return lastIgnitions;}};
   }
   return instance(new Map(),[null,...wallets.map(account)],0,[],null,null,true);

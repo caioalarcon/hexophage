@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node scripts/build.js && node experiments/typed-world/build.mjs",
     "test": "node --test \"src/**/*.test.js\" \"tests/*.test.js\" \"experiments/typed-world/*.test.mjs\" \"experiments/typed-world/game/*.test.mjs\" && node tests/bot-isolation.cjs",
-    "test:browser": "node tests/browser-economy.cjs && node tests/render-detail.cjs && node tests/typed-world.cjs && node tests/mixed-game.cjs && node tests/mixed-game-atlas.cjs && node tests/globe-preview.cjs && node tests/mixed-player-panel.cjs"
+    "test:browser": "node tests/browser-economy.cjs && node tests/render-detail.cjs && node tests/typed-world.cjs && node tests/mixed-game.cjs && node tests/mixed-game-atlas.cjs && node tests/globe-preview.cjs && node tests/mixed-player-panel.cjs && node tests/field-tools-browser.cjs"
   },
   "devDependencies": {
     "esbuild": "0.25.12",

@@ -5,6 +5,7 @@ import { stampReady } from './readiness.js';
 
 let alternatePlacement;
 export function usePlacement(adapter){ alternatePlacement=adapter; }
+export function placementGesture(){ return alternatePlacement?.gesture==='paint'?'paint':'stamp'; }
 
 function placementAt(anchor) {
   if (alternatePlacement) {

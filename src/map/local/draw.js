@@ -48,8 +48,27 @@ function drawFlat() {
       c.stroke(paths[id]);
     }
   }
-  const preview = world.hover && !world.drag && placementPreview(world.hover);
-  if (preview) {
+  const preview = world.hover && (!world.drag || world.painting) && placementPreview(world.hover);
+  if(preview?.tool){
+    const picked=new Set(preview.ids??[]),footprint=new Set(preview.footprint??[]);
+    const area=new Path2D(),active=new Path2D();
+    let center=null;
+    for(const item of vis.values()){
+      const x=DX*(item.q+item.r/2),y=DY*item.r;
+      if(footprint.has(item.id))hexPath(area,x,y,R*.91);
+      if(picked.has(item.id))hexPath(active,x,y,R*.91);
+      if(item.id===preview.center)center={x,y};
+    }
+    if(preview.tool==='erase'){
+      c.fillStyle='#ff8d7818';c.fill(area);
+      c.fillStyle='#ff8d7866';c.strokeStyle='#ff8d78';
+    }else{c.fillStyle='#58ddeb45';c.strokeStyle='#7de9f5';}
+    c.lineWidth=1/world.zoom;c.fill(active);c.stroke(active);
+    if(preview.tool==='erase'&&center){
+      c.beginPath();c.arc(center.x,center.y,DX*Math.max(.45,preview.radius),0,2*Math.PI);
+      c.lineWidth=1.6/world.zoom;c.stroke();
+    }
+  }else if (preview) {
     c.beginPath();
     for (const [dq, dr] of stampOffsets()) {
       const q = world.hover.q + dq,

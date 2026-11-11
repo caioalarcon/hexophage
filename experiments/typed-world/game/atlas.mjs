@@ -45,7 +45,7 @@ const template=`
 <div class="hxa-stats" data-ui="stats"></div><div class="hxa-note" data-ui="note" role="status"></div>
 <footer><button data-ui="unpin" hidden>Desafixar</button><button data-ui="delete" hidden>Excluir</button><button class="hxa-primary" data-ui="use">Usar na barra</button></footer>
 </section></div>`;
-export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect=()=>{},onDeck=()=>{}}){
+export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,getToolSettings=()=>({maxStampCells:Infinity}),onSelect=()=>{},onDeck=()=>{}}){
   const dialog=document.createElement('dialog');dialog.className='hxa';dialog.setAttribute('aria-label','Atlas de carimbos');dialog.innerHTML=template;host.append(dialog);
   const ui=Object.fromEntries([...dialog.querySelectorAll('[data-ui]')].map(e=>[e.dataset.ui,e]));
   const saved=load();let library=[],rows=[],deck=[],active,draft=null,source,frame,g,net,added,lost,mature,timer,limit=48,replaceSlot=null;
@@ -73,6 +73,36 @@ export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect
     }
     delete saved.replacements[card.key];
     saved.pins=[card.key,...saved.pins.filter(k=>k!==card.key)];store();refresh();onSelect(deck.find(c=>c.slotKey===card.key)??card);
+  }
+  function capture(pattern,slot){
+    const slotKey=slot?.slotKey??slot?.key??slot;
+    if(!deck.some(c=>c.slotKey===slotKey))throw new Error('Selecione um espaço do baralho para copiar o padrão.');
+    if(pattern.offsets.length>getToolSettings().maxStampCells)throw new Error('Padrão acima do limite de células por carimbo.');
+    const card={...pattern,key:'custom/'+crypto.randomUUID(),custom:true,offsets:pattern.offsets.map(p=>[...p])};
+    const previous=saved.replacements[slotKey];
+    saved.custom.unshift(card);saved.replacements[slotKey]=card.key;
+    if(!store()){
+      saved.custom.shift();
+      if(previous===undefined)delete saved.replacements[slotKey];else saved.replacements[slotKey]=previous;
+      throw new Error('O navegador não conseguiu guardar o carimbo.');
+    }
+    const replacement={...card,slotKey};
+    refreshCatalog();deck=deck.map(c=>c.slotKey===slotKey?replacement:c);onDeck(deck);onSelect(replacement);
+    // Price the captured shape cooperatively. A growing pattern never occupies
+    // the entire pointer event with a synchronous 96-generation projection.
+    let trial=seedFrame(card),births=0,deaths=0,used=0;const counts=new Map(),economy={...getEconomy()};
+    function measure(){
+      const start=performance.now();
+      do{
+        for(const age of trial.values())counts.set(age,(counts.get(age)??0)+1);
+        const z=advanceFrame(trial,card,economy);trial=z.next;births+=z.births;deaths+=z.deaths;used++;
+      }while(used<96&&trial.size<=12000&&performance.now()-start<4);
+      if(used<96&&trial.size<=12000){setTimeout(measure,0);return;}
+      if(!saved.custom.some(c=>c===card))return;
+      card.sample={births:births/used,deaths:deaths/used,bands:[...counts].sort((a,b)=>a[0]-b[0]).flatMap(([age,count])=>[age,age,count]),window:used,horizon:used,finalCells:trial.size,limited:used<96};
+      replacement.sample=card.sample;store();refreshCatalog();if(dialog.open){renderResults();metrics();}
+    }
+    setTimeout(measure,0);return replacement;
   }
   function stop(){clearInterval(timer);timer=null;ui.play.textContent='Evoluir';}
   function close(){stop();replaceSlot=null;dialog.close();}
@@ -119,7 +149,8 @@ export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect
     ui.balance.textContent='◈ '+sign(net);
     ui.stats.textContent=frame.size+' vivas · '+mature+' maduras · '+added+' nascimentos · '+lost+' mortes';
     ui.balance.title='Receita menos plantio e nascimentos, em isolamento e com financiamento disponível.';
-    ui.use.disabled=!source.offsets.length;
+    ui.use.disabled=!source.offsets.length||source.offsets.length>getToolSettings().maxStampCells;
+    ui.use.title=source.offsets.length>getToolSettings().maxStampCells?'Acima do limite de células por carimbo':'';
   }
   const view=createAtlasCanvas(ui.canvas,(id,value)=>{
     if(!draft||g)return;
@@ -154,6 +185,7 @@ export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect
   }
   function commitDraft(){
     draft.name=ui.name.value.trim()||'Meu carimbo';if(!draft.offsets.length)return;
+    if(draft.offsets.length>getToolSettings().maxStampCells){ui.note.textContent='Acima do limite configurado de células por carimbo.';return;}
     const card={...draft,key:draft.key||'custom/'+crypto.randomUUID(),group:draft.nativeKey?(defaults[draft.nativeKey]?.group??'personalizado'):'personalizado'};
     if(!card.nativeKey || defaults[card.nativeKey]?.rule!==card.rule){
       delete card.nativeKey;card.sample=measurePattern(card,getEconomy());
@@ -176,5 +208,5 @@ export function createGameAtlas({host,getEconomy,getWallet=()=>Infinity,onSelect
   ui.fit.onclick=()=>view.fit();ui.plus.onclick=()=>view.zoom(1.35);ui.minus.onclick=()=>view.zoom(1/1.35);
   for(const el of [ui.search,ui.family,ui.group])el.oninput=()=>{limit=48;renderResults();ui.results.scrollTop=0;};
   refresh();
-  return {open,close,refresh,deck:()=>deck,select,destroy(){stop();view.destroy();dialog.remove();}};
+  return {open,close,refresh,deck:()=>deck,select,capture,destroy(){stop();view.destroy();dialog.remove();}};
 }
