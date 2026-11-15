@@ -11,7 +11,7 @@ export const resourceKinds=Object.freeze([
   Object.freeze({id:'accumulator',name:'Acumulador',symbol:'A',color:'#e2bd62',use:'Carga: capacidade de energia em cada célula.'}),
   Object.freeze({id:'catalyst',name:'Catalisador',symbol:'K',color:'#bf8ee6',use:'Circuito: contrato e profundidade da cadeia de fabricação.'}),
 ]);
-export const progressionDesignLimits=Object.freeze({totalPoints:64,childPoints:20});
+export const progressionDesignLimits=Object.freeze({totalPoints:64,childPoints:28});
 const EPS=1e-9;
 const knownResolvers=['contact','phase','guard','antimatter'];
 const knownBallots=['support','age','geometry','robustness'];
@@ -107,10 +107,10 @@ export function defaultProgressionPlan(initialCard,availableCards=[]){
     offsets:card.offsets.map(p=>p.slice()),resolver:card.resolver??'contact',ballot:card.ballot??'support',sense:card.sense??'native',
     parent,weights:[40,20,20,20],vision:6,reach:8,capacity:256,...traits});
   return {version:1,base:'base',nodes:[
-    node('base','Base escolhida',base,null),
-    node('relay','Posto de fabricação',fallback,'base',{vision:8,reach:12,capacity:128}),
-    node('scout','Exploração',scout,'relay',{vision:10,reach:8,capacity:128}),
-    node('battery','Acumulação',fallback,'base',{vision:4,reach:6,capacity:512}),
+    node('base','Centro celular',base,null,{vision:10,reach:10}),
+    node('relay','Oficina celular',fallback,'base',{vision:12,reach:12,capacity:128}),
+    node('scout','Batedor · glider',scout,'relay',{vision:16,reach:8,capacity:128}),
+    node('battery','Torre de alcance',fallback,'base',{vision:16,reach:10,capacity:256}),
     node('pulse','Circuito experimental',pulse,'battery',{vision:6,reach:8,capacity:256}),
   ]};
 }

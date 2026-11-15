@@ -67,6 +67,11 @@ export function createProgressionPanel(getSelected){
     draft.nodes=draft.nodes.filter(n=>n.id!==selected);selected=draft.base;render();
   };
   $('mx-plan-reset').onclick=()=>{draft=defaultProgressionPlan(initialCard);selected=draft.base;render();};
+  $('mx-plan-free').onclick=()=>{
+    const template=defaultProgressionPlan(initialCard);
+    draft={version:1,base:template.base,nodes:template.nodes.slice(0,1)};
+    selected=draft.base;render();
+  };
   $('mx-plan-import').onclick=()=>{
     try{const value=normalizeProgressionPlan(JSON.parse($('mx-plan-json').value));draft=clone(value);selected=draft.base;render();}
     catch(e){error.textContent=e.message;}
