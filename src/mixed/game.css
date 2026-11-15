@@ -163,3 +163,5 @@
  #hexlab.mixed .mx-interaction select,#hexlab.mixed .mx-vote select{height:23px}
  #hexlab.mixed .mx-vote{grid-template-rows:auto 23px}
 }
+
+#hexlab.mixed #mx-spatial-settings input[type=checkbox]{width:auto;min-width:14px}

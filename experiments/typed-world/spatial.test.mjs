@@ -255,3 +255,11 @@ test('the discovered map remains buildable after losing live vision when cells e
   assert(m.stamp(1,'callahan','contact',[target]));
   conserved(m);
 });
+
+test('open-map vision shows remote cells without giving construction rights in unvisited terrain',()=>{
+  const m=start({spatial:{fullMap:true}}),dark=Array.from({length:graph.n},(_,i)=>i).find(i=>!m.visibility(1).explored.has(i));
+  assert(Number.isInteger(dark));
+  assert.equal(m.canSee(1,dark),true);
+  assert.equal(m.canBuild(1,dark),false);
+  assert.equal(m.stampRejection(1,'callahan','contact',[dark]),'darkness');
+});

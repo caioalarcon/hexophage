@@ -163,7 +163,7 @@ export function startMixedGame(){
     }
     pendingHazard=null;
     const ok=session.match.stamp(1,c.rule,m.resolver,proposed.ids,m.ballot,c.sense??'native');
-    if(ok){lastUndo={match:before,alive:session.alive.slice(),eliminatedAt:session.eliminatedAt.slice(),generation:before.gen,field:before.players[1].conventional};$('mx-undo').hidden=false;dirty=true;syncField(session.match);hud();toast(c.name+' · '+resolverNames[m.resolver]);}
+    if(ok){setPlay(false);lastUndo={match:before,alive:session.alive.slice(),eliminatedAt:session.eliminatedAt.slice(),generation:before.gen,field:before.players[1].conventional};$('mx-undo').hidden=false;dirty=true;syncField(session.match);hud();toast(c.name+' · colocado · pausa para inspeção');}
     return ok;
   }
   usePlacement({preview,place,get gesture(){return tools.mode==='erase'?'paint':'stamp';}});
