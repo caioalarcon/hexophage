@@ -1,6 +1,7 @@
 import {cards} from '../catalog.mjs';
 import {createTypedWorld} from '../engine.mjs';
 import {patchForStamp} from '../../../src/patterns/spherical-patch.js';
+import {graphBall} from '../spatial.mjs';
 
 export function normalizeOpening(value) {
   const fallback=cards.get('hex-b2s245/farm-4-12');
@@ -11,6 +12,18 @@ export function normalizeOpening(value) {
   return {key:String(c.key??'custom-base'),name:String(c.name??'Minha base'),rule:c.rule??c.source,
     offsets:raw.map(p=>[...p]),resolver:c.resolver??'contact',ballot:c.ballot??'support',sense:c.sense??'native',
     ...(c.contract?{contract:c.contract}:{})};
+}
+
+// A larger custom seed may meet a pentagonal seam at one player's preferred
+// anchor. Search its nearby sector before rejecting the player's whole design.
+export function locateOpening(match,owner,card,preferred,rotation){
+  const span=Math.max(...card.offsets.map(([q,r])=>Math.max(Math.abs(q),Math.abs(r),Math.abs(q+r))));
+  if(match.players[owner].reserve+1e-9<card.offsets.length*match.stampPrice(card.resolver))return null;
+  for(const site of graphBall(match.graph,[preferred],Math.min(24,Math.max(6,span)))){
+    const ids=patchForStamp({graph:match.graph},site,rotation,card.offsets);
+    if(ids&&match.stampRejection(owner,card.rule,card.resolver,ids,card.ballot,card.sense,{contract:card.contract},true)===null)return {site,ids};
+  }
+  return null;
 }
 
 // The actual automaton supplies the qualification; no catalogue-name whitelist.

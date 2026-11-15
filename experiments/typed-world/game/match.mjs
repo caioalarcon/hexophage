@@ -2,8 +2,7 @@ import {buildSphere} from '../../../src/world/sphere.js';
 import {footprint} from '../catalog.mjs';
 import {createTypedWorld} from '../engine.mjs';
 import {spreadSites} from '../general/scene.mjs';
-import {patchForStamp} from '../../../src/patterns/spherical-patch.js';
-import {normalizeOpening,measureOpening} from './opening.mjs';
+import {normalizeOpening,measureOpening,locateOpening} from './opening.mjs';
 
 // Event income can only be spent in a later generation. Each preset has the
 // same opening capital, birth/stamp prices and destruction tariff.
@@ -29,19 +28,20 @@ export function createGameMatch(options={}) {
   const match=createTypedWorld(graph,{seed,wallets:Array(players).fill(bank),
     economy:{...gameEconomies[policy],...economy},arbitration,eligibility,existence,passage,friendlyFire,spatial});
   const sites=spreadSites(graph,players), starts=[null], opening=[null], alive=[false];
-  const local=!!spatial?.enabled,base=local?normalizeOpening(initialCard):null;
+  const local=match.spatial.enabled,base=local?normalizeOpening(initialCard):null;
   let baseTrial=null;
   const farm=policy==='stability'?'hex-b2s245/farm-4-12':'bays/osc2';
   const [rule]=farm.split('/');
   for(let owner=1;owner<=players;owner++){
-    const site=sites[((seed>>>0)+owner-1)%players],rotation=((seed>>>0)+owner)%6;
-    starts.push(site);alive.push(true);
-    if(!local&&unseededOwners.includes(owner)){opening.push(null);continue;}
+    const preferred=sites[((seed>>>0)+owner-1)%players],rotation=((seed>>>0)+owner)%6;
+    if(!local&&unseededOwners.includes(owner)){starts.push(preferred);alive.push(true);opening.push(null);continue;}
+    const located=local?locateOpening(match,owner,base,preferred,rotation):{site:preferred,ids:footprint(graph,farm,preferred,rotation)};
+    if(!located)throw RangeError('A base precisa caber no setor inicial da esfera e no capital de abertura. Aumente a esfera ou ajuste o desenho.');
+    const {site,ids}=located;starts.push(site);alive.push(true);
     if(local&&owner===1){
       baseTrial=measureOpening(graph,base,site,rotation,{bank,seed,economy:match.economy,spatial,arbitration,eligibility,existence,passage,friendlyFire});
       if(!baseTrial.ok)throw RangeError(baseTrial.reason);
     }
-    const ids=local?patchForStamp({graph},site,rotation,base.offsets):footprint(graph,farm,site,rotation);
     const placed=ids&&(local?match.bootstrapStamp(owner,base.rule,base.resolver,ids,base.ballot,base.sense,{contract:base.contract}):match.stamp(owner,rule,'contact',ids));
     if(!placed)
       throw RangeError('A reserva e o espaço devem comportar a colônia inicial de cada jogador.');

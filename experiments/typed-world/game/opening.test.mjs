@@ -33,3 +33,11 @@ test('invalid base coordinates and duplicated cells are rejected',()=>{
   assert.throws(()=>normalizeOpening({offsets:[[0,0],[0,0]]}),RangeError);
   assert.throws(()=>normalizeOpening({offsets:[[Infinity,0]]}),RangeError);
 });
+
+test('a larger user composition finds a valid initial sector for all six players',()=>{
+  const card=normalizeOpening(),shape=card.offsets;card.key='custom/double-producer';card.name='Minha composição';
+  card.offsets=[...shape.map(([q,r])=>[q-4,r]),...shape.map(([q,r])=>[q+4,r])];
+  const s=createGameMatch({F:32,spatial:{enabled:true},initialCard:card});
+  assert(s.opening.slice(1).every(c=>c.ids.length===8));assert(s.baseTrial.income>0);
+  assert.equal(new Set(s.opening.slice(1).flatMap(c=>c.ids)).size,48);
+});
