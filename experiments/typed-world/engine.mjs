@@ -85,7 +85,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       }
       return vision.get(owner);
     }
-    const canSee=(owner,id)=>!spatial.enabled||visibility(owner).visible?.has(id)===true;
+    const canSee=(owner,id)=>!spatial.enabled||spatial.fullMap||visibility(owner).visible?.has(id)===true;
     const canBuild=(owner,id)=>!spatial.enabled||visibility(owner).explored?.has(id)===true;
     function refreshVision(){
       if(!spatial.enabled)return;

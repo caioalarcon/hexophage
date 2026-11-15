@@ -97,7 +97,7 @@ export function progressionSpatialTypes(plan){
 /** A playable starting document, fully editable before the match. The catalogue
  * is merely sample geometry; custom offsets follow the exact same schema. */
 export function defaultProgressionPlan(initialCard,availableCards=[]){
-  const fallback={cardKey:'hex-b2s245/farm-4-12',...catalogue.get('hex-b2s245/farm-4-12')};
+  const fallback={cardKey:'hex-b2s245/scan-cf5664',...catalogue.get('hex-b2s245/scan-cf5664')};
   const base={...fallback,...(initialCard??{})};base.rule=initialCard?.rule??initialCard?.source??fallback.source;
   if(initialCard)base.cardKey=initialCard.cardKey??initialCard.key??null;
   const pick=(key,predicate)=>availableCards.find(predicate)??{cardKey:key,...catalogue.get(key)};
@@ -157,10 +157,19 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
     return plan.nodes.find(n=>n.rule===(c?.rule??c?.source)&&n.resolver===(c?.resolver??'contact')&&
       n.offsets.map(p=>p.join(',')).join(';')===geometry)?.id??null;
   }
-  function source(node,owner,ids){
+  function source(node,owner,ids,sourceSite=null){
     const parent=byId.get(node.parent??plan.base),sources=living(owner,parent.id);
     if(sources.length<parent.minimumBuilders)return {ok:false,code:'parent',reason:'A linhagem '+parent.name+' precisa de '+parent.minimumBuilders+' células vivas.',parent:parent.id};
     const sourceIds=new Set(sources.map(([site])=>site));
+    if(sourceSite!==null){
+      if(!Number.isSafeInteger(sourceSite)||!sourceIds.has(sourceSite))
+        return {ok:false,code:'source',reason:'Fonte selecionada indisponível.',parent:parent.id};
+      const disk=graphBall(graph,[sourceSite],parent.reach);
+      if(ids.some(site=>!disk.has(site)))return {ok:false,code:'range',reason:'Fora do alcance desta estrutura.',parent:parent.id};
+      const count=[...disk].filter(site=>sourceIds.has(site)).length;
+      if(count<parent.minimumBuilders)return {ok:false,code:'parent',reason:'Estrutura com poucas células vivas.',parent:parent.id};
+      return {ok:true,parent:parent.id,source:sourceSite,builders:count};
+    }
     // One local cluster must authorize the whole footprint; a distant copy
     // cannot supply the missing builders for a small isolated fragment.
     const near=graphBall(graph,[ids[0]],parent.reach);
@@ -173,7 +182,7 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
     }
     return {ok:false,code:'range',reason:'O carimbo inteiro precisa do alcance de uma fonte '+parent.name+'.',parent:parent.id};
   }
-  function getQuote(owner,id,ids){
+  function getQuote(owner,id,ids,sourceSite=null){
     const node=byId.get(id);
     if(!ownerValid(owner)||observedOwner!==null&&owner!==observedOwner)return {ok:false,code:'owner',reason:'Jogador inválido.'};
     if(!node)return {ok:false,code:'contract',reason:'Inclua este carimbo no plano antes da partida.'};
@@ -181,16 +190,16 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
     const quote={contract:id,cost:node.cost.slice(),available:inventory[owner].slice(),energyCost:energy?.total??node.size*match.stampPrice(node.resolver)};
     if(!Array.isArray(ids)||ids.length!==node.size||new Set(ids).size!==ids.length||ids.some(site=>!Number.isSafeInteger(site)||site<0||site>=graph.n))
       return {...quote,ok:false,code:'footprint',reason:'O carimbo precisa corresponder à quantidade de células da receita.'};
-    const permission=source(node,owner,ids);if(!permission.ok)return {...quote,...permission};
+    const permission=source(node,owner,ids,sourceSite);if(!permission.ok)return {...quote,...permission};
     const missing=node.cost.map((cost,k)=>Math.max(0,cost-inventory[owner][k]));
     if(missing.some(n=>n>EPS))return {...quote,...permission,ok:false,code:'resources',missing,reason:'Faltam recursos: '+missing.map((n,k)=>n>EPS?resourceKinds[k].symbol+' '+Math.ceil(n):'').filter(Boolean).join(' · ')};
     if(!raw.canStamp(owner,node.rule,node.resolver,ids,node.ballot,node.sense,{contract:id}))
-      return {...quote,...permission,ok:false,code:'field',reason:'A posição precisa de luz, energia local e espaço livre.'};
+      return {...quote,...permission,ok:false,code:'field',reason:'Verifique área explorada, energia e espaço livre.'};
     return {...quote,...permission,ok:true,code:'ready',reason:'Fabricação disponível.'};
   }
   function matches(node,rule,resolver,ballot,sense){return node&&node.rule===rule&&node.resolver===resolver&&node.ballot===ballot&&node.sense===sense;}
   function canStamp(owner,rule,resolver,ids,ballot='support',sense='native',metadata={}){
-    const id=metadata?.contract,node=byId.get(id);return !!matches(node,rule,resolver,ballot,sense)&&getQuote(owner,id,ids).ok;
+    const id=metadata?.contract,node=byId.get(id);return !!matches(node,rule,resolver,ballot,sense)&&getQuote(owner,id,ids,metadata?.sourceSite??null).ok;
   }
   function stamp(owner,rule,resolver,ids,ballot='support',sense='native',metadata={}){
     if(!canStamp(owner,rule,resolver,ids,ballot,sense,metadata))return false;
@@ -270,6 +279,9 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
   const api={match,plan,resources:resourceKinds,contractForCard,getQuote,quote:getQuote,canStamp,stamp,bootstrap,
     inventory:owner=>ownerValid(owner)&&(observedOwner===null||owner===observedOwner)?inventory[owner].slice():[0,0,0,0],
     stats:owner=>ownerValid(owner)&&(observedOwner===null||owner===observedOwner)?{initial:initial[owner].slice(),harvested:harvested[owner].slice(),spent:spent[owner].slice(),inventory:inventory[owner].slice()}:null,
+    sourceAt:(site,owner)=>{const c=match.cells.get(site);if(!ownerValid(owner)||c?.owner!==owner||c.wave||!c.contract)return null;
+      const node=byId.get(c.contract);return node?{site,contract:node.id,name:node.name,reach:node.reach}:null;},
+    childrenFor:contract=>plan.nodes.filter(n=>n.parent===contract||n.id===contract&&contract===plan.base).map(card),
     legalCards:owner=>!ownerValid(owner)?[]:plan.nodes.filter(n=>{
       const parent=byId.get(n.parent??plan.base);return living(owner,parent.id).length>=parent.minimumBuilders&&n.cost.every((v,k)=>inventory[owner][k]+EPS>=v);
     }).map(card),
