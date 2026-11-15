@@ -1,0 +1,888 @@
+{
+  "version": 1,
+  "F": 24,
+  "horizon": 768,
+  "seeds": [
+    1,
+    17,
+    73
+  ],
+  "notes": [
+    "A mesma reserva inicial de energia (640) é distribuída na abertura de cada amostra.",
+    "Extração exige sítio e vizinhança estáveis por 12 gerações; limite 0.2/coletora e 0.4/depósito/geração.",
+    "Cada tipo de recurso começa acessível perto da abertura; o restante é terreno determinístico finito.",
+    "Rótulos de amostra não são lidos pelo motor. Ilhas que se tornam estáveis são medidas como produtoras."
+  ],
+  "rows": [
+    {
+      "seed": 1,
+      "specimen": "hex-b2s245/farm-4-12",
+      "opening": 4,
+      "peak": 12,
+      "finalCells": 12,
+      "income": 2476.0000000000005,
+      "births": 12,
+      "birthSpent": 12,
+      "refused": 0,
+      "energy": 3072,
+      "harvest": [
+        31.999999999999964,
+        31.99999999999992,
+        31.99999999999999,
+        32.00000000000001
+      ],
+      "rootAlive": true,
+      "conservationError": 8.171241461241152e-14,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 12,
+          "energy": 1207.9999999999998,
+          "matureIncome": 612,
+          "harvest": [
+            14.586666666666643,
+            10.399999999999995,
+            14.69333333333332,
+            17.17333333333331
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 12,
+          "energy": 3006,
+          "matureIncome": 2410.0000000000005,
+          "harvest": [
+            31.999999999999964,
+            31.99999999999992,
+            31.99999999999999,
+            32.00000000000001
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 12,
+          "energy": 3072,
+          "matureIncome": 2476.0000000000005,
+          "harvest": [
+            31.999999999999964,
+            31.99999999999992,
+            31.99999999999999,
+            32.00000000000001
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "specimen": "bays/osc2",
+      "opening": 2,
+      "peak": 2,
+      "finalCells": 0,
+      "income": 0,
+      "births": 509,
+      "birthSpent": 509,
+      "refused": 1,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 2,
+          "energy": 384,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "specimen": "callahan/glider",
+      "opening": 6,
+      "peak": 7,
+      "finalCells": 0,
+      "income": 0,
+      "births": 579,
+      "birthSpent": 579,
+      "refused": 1,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 6,
+          "energy": 272.00000000000006,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "specimen": "ashley/gun",
+      "opening": 3,
+      "peak": 12,
+      "finalCells": 0,
+      "income": 0,
+      "births": 12,
+      "birthSpent": 12,
+      "refused": 6,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "specimen": "custom/noise",
+      "opening": 20,
+      "peak": 39,
+      "finalCells": 0,
+      "income": 0,
+      "births": 418,
+      "birthSpent": 418,
+      "refused": 104,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "specimen": "hex-b2s245/farm-4-12",
+      "opening": 4,
+      "peak": 12,
+      "finalCells": 12,
+      "income": 2476.0000000000005,
+      "births": 12,
+      "birthSpent": 12,
+      "refused": 0,
+      "energy": 3072,
+      "harvest": [
+        31.999999999999986,
+        31.999999999999993,
+        32.00000000000001,
+        32
+      ],
+      "rootAlive": true,
+      "conservationError": 1.4210854715202004e-14,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 12,
+          "energy": 1207.9999999999998,
+          "matureIncome": 612,
+          "harvest": [
+            19.786666666666612,
+            19.733333333333274,
+            19.81333333333328,
+            19.706666666666603
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 12,
+          "energy": 3006,
+          "matureIncome": 2410.0000000000005,
+          "harvest": [
+            31.999999999999986,
+            31.999999999999993,
+            32.00000000000001,
+            32
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 12,
+          "energy": 3072,
+          "matureIncome": 2476.0000000000005,
+          "harvest": [
+            31.999999999999986,
+            31.999999999999993,
+            32.00000000000001,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "specimen": "bays/osc2",
+      "opening": 2,
+      "peak": 2,
+      "finalCells": 0,
+      "income": 0,
+      "births": 509,
+      "birthSpent": 509,
+      "refused": 1,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 2,
+          "energy": 384,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "specimen": "callahan/glider",
+      "opening": 6,
+      "peak": 7,
+      "finalCells": 0,
+      "income": 0,
+      "births": 579,
+      "birthSpent": 579,
+      "refused": 1,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 6,
+          "energy": 271.99999999999983,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "specimen": "ashley/gun",
+      "opening": 3,
+      "peak": 12,
+      "finalCells": 0,
+      "income": 0,
+      "births": 12,
+      "birthSpent": 12,
+      "refused": 6,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "specimen": "custom/noise",
+      "opening": 20,
+      "peak": 42,
+      "finalCells": 0,
+      "income": 4,
+      "births": 403,
+      "birthSpent": 403,
+      "refused": 97,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 4,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 4,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 4,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "specimen": "hex-b2s245/farm-4-12",
+      "opening": 4,
+      "peak": 12,
+      "finalCells": 12,
+      "income": 2476.0000000000005,
+      "births": 12,
+      "birthSpent": 12,
+      "refused": 0,
+      "energy": 3072,
+      "harvest": [
+        31.999999999999982,
+        31.999999999999975,
+        31.99999999999992,
+        32.00000000000001
+      ],
+      "rootAlive": true,
+      "conservationError": 8.171241461241152e-14,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 12,
+          "energy": 1207.9999999999998,
+          "matureIncome": 612,
+          "harvest": [
+            5.160000000000003,
+            16.666666666666643,
+            10.399999999999995,
+            18.386666666666624
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 12,
+          "energy": 3006,
+          "matureIncome": 2410.0000000000005,
+          "harvest": [
+            31.999999999999982,
+            31.999999999999975,
+            31.99999999999992,
+            32.00000000000001
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 12,
+          "energy": 3072,
+          "matureIncome": 2476.0000000000005,
+          "harvest": [
+            31.999999999999982,
+            31.999999999999975,
+            31.99999999999992,
+            32.00000000000001
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "specimen": "bays/osc2",
+      "opening": 2,
+      "peak": 2,
+      "finalCells": 0,
+      "income": 0,
+      "births": 509,
+      "birthSpent": 509,
+      "refused": 1,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 2,
+          "energy": 384,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "specimen": "callahan/glider",
+      "opening": 6,
+      "peak": 7,
+      "finalCells": 0,
+      "income": 0,
+      "births": 171,
+      "birthSpent": 171,
+      "refused": 0,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "specimen": "ashley/gun",
+      "opening": 3,
+      "peak": 12,
+      "finalCells": 0,
+      "income": 0,
+      "births": 12,
+      "birthSpent": 12,
+      "refused": 6,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 73,
+      "specimen": "custom/noise",
+      "opening": 20,
+      "peak": 42,
+      "finalCells": 0,
+      "income": 0,
+      "births": 416,
+      "birthSpent": 416,
+      "refused": 82,
+      "energy": 0,
+      "harvest": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rootAlive": false,
+      "conservationError": 0,
+      "samples": [
+        {
+          "generation": 64,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 256,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "generation": 768,
+          "cells": 0,
+          "energy": 0,
+          "matureIncome": 0,
+          "harvest": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

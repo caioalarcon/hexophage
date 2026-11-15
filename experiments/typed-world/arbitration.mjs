@@ -80,7 +80,7 @@ function sourceComponent(reach) {
 // neighbour types, the incumbent and local ignitions can take part.
 function election(policy,pool,rank) {
   const voters=policy.mode==='ballot'
-    ? [...new Set(pool.map(c=>c.type))].map(type=>type.ballot)
+    ? [...new Set(pool.map(c=>c.type.physical??c.type))].map(type=>type.ballot)
     : policy.mode==='ecology'?ecologyCriteria:majorityCriteria;
   if(pool.length===2) {
     const preferred=pairPreference(policy,pool[0],pool[1],voters,rank);

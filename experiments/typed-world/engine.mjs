@@ -1,3 +1,4 @@
+import {fundLocalRequests} from './spatial-funding.mjs';
 // Sparse, simultaneous proposals on the production sphere and positional CA tables.
 // Genotype, ownership and age belong to a site; the treasury belongs to its owner.
 import {ruleProfiles} from '../../src/match/rule-profiles.js';
@@ -5,7 +6,6 @@ import {ballots,configureArbitration,material,rankProposals,resolvers} from './a
 import {existenceModes,passageModes,senses,sensorMask,voteOnExistence} from './existence.mjs';
 import {circularSites,normalizeToolSettings} from '../../src/mixed/field-tools.js';
 import {normalizeSpatial,typeTraits,graphBall,illuminated,sameNeighborhood} from './spatial.mjs';
-import {fundLocalRequests} from './spatial-funding.mjs';
 
 export {resolvers};
 export {existenceModes,passageModes,senses};
@@ -61,10 +61,13 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
   function genotype(owner, rule, resolver, ballot='support', sense='native',wave=false,contract='') {
     const key = owner+'/'+rule+'/'+resolver+'/'+ballot+'/'+sense+'/'+Number(wave)+'/'+contract;
     if (!types.has(key)) types.set(key, Object.freeze({owner,rule,resolver,ballot,sense,wave,
-      ...(contract?{contract}:{}),
+      // A fabrication contract is inherited payload. Physical sensing, voting
+      // and collisions use the same canonical identity as an unlabelled cell.
+      ...(contract?{contract,physical:genotype(owner,rule,resolver,ballot,sense,wave)}:{}),
       tables:rules.get(rule).physics.tables,robust:robustTables(rules.get(rule).physics.tables)}));
     return types.get(key);
   }
+  const physical=type=>type?.physical??type;
   const cell = (type, age,energy=0,stableAge=1) => Object.freeze({owner:type.owner,rule:type.rule,resolver:type.resolver,ballot:type.ballot,
     sense:type.sense,wave:type.wave,age,type,...(type.contract?{contract:type.contract}:{}),...(spatial.enabled?{energy,stableAge}:{})});
   const isMature=c=>spatial.enabled?!c.wave&&c.stableAge>=typeTraits(spatial,c.type).stableAfter:c.age>=economy.stableAfter;
@@ -286,8 +289,8 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
           for(let k=0;k<deg[id];k++) {
             const n=adj[6*id+k], other=cells.get(n);
             if(!other)continue;
-            if(other.type===t && !visited.has(n)) { visited.add(n); group.push(n); }
-            if(other.type!==t && (site===undefined || rank(id)>rank(site) ||
+            if(physical(other.type)===physical(t) && !visited.has(n)) { visited.add(n); group.push(n); }
+            if(physical(other.type)!==physical(t) && (site===undefined || rank(id)>rank(site) ||
                 id===site && rank(n)>rank(target))) {site=id;target=n;direction=k;}
           }
         }
@@ -296,7 +299,8 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         const flank=rank(flanks[0])>rank(flanks[1])?flanks[0]:flanks[1];
         // Clipping a forecast must never move its charge to a different vertex.
         const sites=domain && !domain.has(flank)?[site,target]:[site,target,flank];
-        const wave=genotype(t.owner,'hex-b2s245','antimatter',t.ballot,t.sense,true,t.contract??'');
+        const carrier=cells.get(site).type;
+        const wave=genotype(t.owner,'hex-b2s245','antimatter',t.ballot,t.sense,true,carrier.contract??'');
         for(const id of group)spent.add(id);
         for(const id of sites) {
           if(!ignitionClaims.has(id))ignitionClaims.set(id,[]);
@@ -308,7 +312,8 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       lastIgnitions.sort((a,b)=>rank(a.site)-rank(b.site));
 
       // Each type present in this neighbourhood proposes at most once. Contact
-      // reads the material ring; phase and shock read only their own genotype.
+      // reads the material ring; phase and shock read their physical genotype.
+      // Contract labels never split sensor masks or multiply votes.
       // A spectral neighbour cannot secretly kill a material survivor by crowding.
       const bySite=new Map(), resources=players.map(()=>[]), seized=new Set();
       const masks=new Map();
@@ -320,17 +325,25 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
           const parent=adj[6*id+k], c=cells.get(parent);
           if(!c || spent.has(parent))continue;
           if(material(c.type))materialMask|=1<<k;
-          masks.set(c.type,(masks.get(c.type)??0)|(1<<k));
+          const family=physical(c.type);
+          masks.set(family,(masks.get(family)??0)|(1<<k));
         }
-        const oldType=incumbent?.type;
-        const decision=existence==='legacy'?null:voteOnExistence(existence,degree,materialMask,masks,oldType);
+        const oldType=incumbent?.type,oldPhysical=physical(oldType);
+        const decision=existence==='legacy'?null:voteOnExistence(existence,degree,materialMask,masks,oldPhysical);
         if(decisions && decision.votes.size)decisions.set(id,decision);
-        const oldMask=oldType?sensorMask(oldType,materialMask,masks.get(oldType)??0):0;
+        const oldMask=oldType?sensorMask(oldType,materialMask,masks.get(oldPhysical)??0):0;
         const survives=incumbent && !spent.has(id) && oldType.tables[degree][1][oldMask] &&
           (!decision || !material(oldType) || decision.approve);
-        const guarded=survives && oldType.resolver==='guard' && bitCount[masks.get(oldType)??0]>=2;
+        const guarded=survives && oldType.resolver==='guard' && bitCount[masks.get(oldPhysical)??0]>=2;
         const claims=[];
-        for(const [type,mask] of masks) {
+        for(const [family,mask] of masks) {
+          let parent,age=0;
+          for(let k=0;k<degree;k++)if(mask&(1<<k)) {
+            const n=adj[6*id+k];
+            if(parent===undefined || rank(n)>rank(parent))parent=n;
+            age=Math.max(age,cells.get(n).age);
+          }
+          const type=cells.get(parent).type;
           const voted=decision && material(type);
           const observed=sensorMask(type,materialMask,mask);
           // On an occupied material site the explicit ballot tests S for every
@@ -338,7 +351,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
           const state=voted && material(oldType)?1:0;
           if(voted && !decision.approve || !type.tables[degree][state][observed])continue;
           if(incumbent){
-            if(incumbent.type===type)continue;
+            if(oldPhysical===family)continue;
             if(voted && material(oldType)){
               if(survives && !friendlyFire && incumbent.owner===type.owner)continue;
             }else {
@@ -347,16 +360,10 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
             }
             if(passage==='literal' && type.resolver==='phase' && guarded)continue;
           }
-          let parent,age=0;
-          for(let k=0;k<degree;k++)if(mask&(1<<k)) {
-            const n=adj[6*id+k];
-            if(parent===undefined || rank(n)>rank(parent))parent=n;
-            age=Math.max(age,cells.get(n).age);
-          }
           claims.push({type,support:bitCount[mask],age,robustness:type.robust[degree][state][observed],parent,kind:'birth'});
         }
         for(const c of ignitionClaims.get(id)??[]) {
-          if(incumbent?.type!==c.type)claims.push(c);
+          if(oldPhysical!==physical(c.type))claims.push(c);
         }
         if(!claims.length) {
           if(survives) {
@@ -367,7 +374,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         }
         // Under the old admission rule survival is a fallback after bids. In a
         // contest the physically viable incumbent also casts a ballot and bids.
-        const resident=survives?{type:oldType,support:bitCount[masks.get(oldType)??0],age:incumbent.age,
+        const resident=survives?{type:oldType,support:bitCount[masks.get(oldPhysical)??0],age:incumbent.age,
           robustness:oldType.robust[degree][1][oldMask],parent:id,kind:'survival'}:null;
         const passive=resident && eligibility==='legacy' && !(decision && material(oldType)) &&
           !(passage==='literal' && oldType.resolver==='phase');
@@ -468,7 +475,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
           // A moving automaton carries its conserved fuel through local lineage.
           // Closing inheritance cannot pay for births rejected earlier this tick.
           let remaining=balances.get(id);
-          let heirs=[...graphBall(graph,[id],typeTraits(spatial,c.type).inheritanceRadius,domain)].filter(site=>next.get(site)?.type===c.type);
+          let heirs=[...graphBall(graph,[id],typeTraits(spatial,c.type).inheritanceRadius,domain)].filter(site=>physical(next.get(site)?.type)===physical(c.type));
           while(remaining>EPS&&heirs.length){
             const portion=remaining/heirs.length;let moved=0;
             for(const site of heirs){

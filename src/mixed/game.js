@@ -40,6 +40,7 @@ export function startMixedGame(){
   let session,controllers,atlas,tools,options,dirty=true,lastUI=-Infinity,elapsed=0,previous=0,lastOrders=[],event=null;
   const hand=createHand(()=>session?.match,{onInspect:card=>atlas.open(card,{replace:true}),onChoose:()=>tools?.select('stamp')});
   const fillDeck=cards=>{
+    if(session?.match.progression){hand.fill(session.match.progression.cards());return;}
     if(!session?.match.spatial?.enabled){hand.fill(cards);return;}
     const base=session.opening[1],known=cards.find(c=>c.key===base.key),opening=known??{...base,source:base.rule,custom:true,slotKey:base.key};
     hand.fill([opening,...cards.filter(c=>c.key!==base.key)].slice(0,Math.max(54,cards.length)));
@@ -58,6 +59,19 @@ export function startMixedGame(){
       const targets=targetIds(world.hover),cell=world.hover?.id===undefined?null:m.cells.get(world.hover.id);
       $('mx-local-energy').textContent=targets?'Energia perto do carimbo: ◈ '+number.format(m.localReserve(1,targets)):
         cell?.owner===1?'Célula: ◈ '+number.format(cell.energy)+' · Estável por '+cell.stableAge+' G':'Energia guardada nas células · ◈ '+number.format(p.reserve);
+    }
+    if(m.progression){
+      const progression=m.progression,inventory=progression.inventory(1),objective=progression.objective(1);
+      for(let i=0;i<4;i++)$('mx-resource-'+i).textContent=number.format(inventory[i]);
+      $('mx-objective').textContent='Preserve sua linhagem-base · '+objective.rootCells+' células';
+      const contract=progression.contractForCard(hand.selected),node=progression.plan.nodes.find(n=>n.id===contract),ids=targetIds(world.hover);
+      if(node){
+        const parent=progression.plan.nodes.find(n=>n.id===(node.parent??progression.plan.base));
+        $('mx-permission').textContent=ids?progression.getQuote(1,contract,ids).reason:'Construído por '+parent.name+' · '+node.cost.map((v,i)=>progression.resources[i].symbol+' '+v).join(' · ');
+      }else $('mx-permission').textContent='Adicione este carimbo ao plano na preparação da próxima partida.';
+      const site=world.hover?.id??(world.hover&&world.chart?.map.get(world.hover.q+','+world.hover.r)?.id);
+      const deposit=progression.resourceAt(site,1);
+      $('mx-deposit-info').textContent=deposit?deposit.resource.name+' no terreno: '+number.format(deposit.remaining):'Colete mantendo células estáveis sobre ou ao lado dos depósitos.';
     }
     if($('mx-conflicts').open && event){
       const votes=event.policy==='support'?event.weightYes+' / '+event.weightNo:event.yes+' / '+event.no;
@@ -81,6 +95,18 @@ export function startMixedGame(){
     $('mx-frontier').hidden=!session.match.spatial?.enabled;
     $('mx-cash').previousElementSibling.textContent=session.match.spatial?.enabled?'ENERGIA EM CAMPO':'RESERVA';
     if(session.match.spatial?.enabled)$('mx-profile-button').textContent='Economia · Celular';
+    $('mx-materials').hidden=!session.match.progression;
+    $('hexlab').dataset.experiment=session.match.progression?'resources':session.match.spatial?.enabled?'local':'classic';
+    if(session.match.progression){
+      $('mx-profile-button').textContent='Plano · Recursos';
+      const stores=$('mx-resource-stores');stores.replaceChildren();
+      for(const [i,r] of session.match.progression.resources.entries()){
+        const item=document.createElement('div'),name=document.createElement('small'),amount=document.createElement('b');
+        item.style.setProperty('--resource',r.color);item.title=r.use;name.textContent=r.name;amount.id='mx-resource-'+i;
+        item.append(name,amount);stores.append(item);
+      }
+      $('mx-frontier-help').textContent='Construa fontes vivas, colete depósitos e avance pela área iluminada.';
+    }else $('mx-frontier-help').textContent='Expanda a luz com células próprias. Carimbe dentro dela e abasteça a construção com energia próxima.';
     loadViewport(session,storage);world.speed=Number($('hl-speed').value);syncPlayButton();
     tools.refresh();tools.select('stamp');world.painting=false;
     if(atlas)atlas.refresh();dirty=true;hud();
@@ -89,6 +115,7 @@ export function startMixedGame(){
   const query=new URLSearchParams(location.search),requestedSeed=query.get('seed');
   const initial={...defaultGameOptions,botInterval:12,botBudget:4,toolSettings:loadToolSettings()};
   if(query.get('experiment')==='local')initial.spatial={enabled:true};
+  if(query.get('experiment')==='resources'){initial.spatial={enabled:true};initial.progression={enabled:true};}
   if(Object.hasOwn(gameEconomies,query.get('economy')))initial.policy=query.get('economy');
   if(requestedSeed!==null && /^\d{1,10}$/.test(requestedSeed) && Number(requestedSeed)<=0xffffffff)initial.seed=Number(requestedSeed);
   if(['16','24','32','48','64','96','128','160','320'].includes(query.get('f')))initial.F=Number(query.get('f'));
@@ -105,14 +132,19 @@ export function startMixedGame(){
     if(tools.mode!=='stamp')return tools.preview(anchor);
     if(!session.alive[1]||game.ended||game.stopped||!hand.selected)return null;
     const ids=targetIds(anchor),{resolver,ballot}=hand.current,c=hand.selected;
-    return ids?{ids,ready:session.match.canStamp(1,c.rule,resolver,ids,ballot,c.sense??'native')}:null;
+    const contract=session.match.progression?.contractForCard(c);
+    return ids?{ids,ready:session.match.canStamp(1,c.rule,resolver,ids,ballot,c.sense??'native',contract?{contract}:{})}:null;
   }
   function place(anchor){
     if(tools.mode!=='stamp')return tools.apply(anchor);
     const proposed=preview(anchor),c=hand.selected,p=session.match.players[1],m=hand.current;
     if(!proposed?.ready){
-      const cost=c&&m?session.match.stampQuote(c.rule,m.resolver,c.offsets.length).total:0;
+      const contract=session.match.progression?.contractForCard(c);
+      const cost=c&&m?session.match.stampQuote(c.rule,m.resolver,c.offsets.length,{contract}).total:0;
       const reason=c&&m?session.match.stampRejection(1,c.rule,m.resolver,targetIds(anchor),m.ballot,c.sense??'native'):null;
+      if(session.match.progression&&!game.stopped&&!game.ended&&session.alive[1]){
+        toast(session.match.progression.getQuote(1,contract,targetIds(anchor)).reason);return false;
+      }
       toast(game.stopped?'Partida interrompida.':game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':reason==='darkness'?
         'Todo o carimbo precisa caber na luz atual. Expanda a iluminação primeiro.':reason==='local-energy'?
         'As células próximas precisam de mais energia para construir e abastecer este carimbo.':c?.offsets.length>session.match.toolSettings.maxStampCells?
@@ -120,7 +152,8 @@ export function startMixedGame(){
         'Faltam ◈ '+number.format(cost-p.reserve)+' para este carimbo.':!targetIds(anchor)?'O carimbo não cabe nesta região da malha.':'Posição ocupada ou junto de uma colônia adversária.');
       return false;
     }
-    const ok=session.match.stamp(1,c.rule,m.resolver,proposed.ids,m.ballot,c.sense??'native');
+    const contract=session.match.progression?.contractForCard(c);
+    const ok=session.match.stamp(1,c.rule,m.resolver,proposed.ids,m.ballot,c.sense??'native',contract?{contract}:{});
     if(ok){dirty=true;syncField(session.match);hud();toast(c.name+' · '+resolverNames[m.resolver]);}
     return ok;
   }

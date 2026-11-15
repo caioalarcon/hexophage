@@ -75,6 +75,20 @@ function drawAtlas() {
       if(sites===world.fog.visible&&atlasMetrics.pitch>4){c.strokeStyle='#71ac8f40';c.lineWidth=.6;c.stroke(path);}
     }
   }
+  const groundEdges=new Map();
+  if(world.resourceDeposits?.size){
+    const ground=new Map();
+    for(const [id,deposit] of world.resourceDeposits){
+      if(world.fog&&!world.fog.visible.has(id))continue;
+      if(!ground.has(deposit.fill))ground.set(deposit.fill,new Path2D());
+      atlasMark(ground.get(deposit.fill),id,a);
+      if(world.cells[id]&&atlasMetrics.pitch>9){
+        if(!groundEdges.has(deposit.edge))groundEdges.set(deposit.edge,new Path2D());
+        atlasMark(groundEdges.get(deposit.edge),id,a);
+      }
+    }
+    for(const [color,path] of ground){c.fillStyle=color;c.fill(path);}
+  }
   const g = a.g,
     paths = new Array(8),
     counts = new Uint16Array(8),
@@ -183,6 +197,8 @@ function drawAtlas() {
     c.drawImage(bitmap.canvas, 0, 0);
     c.restore();
   }
+  // A thin ground seam remains readable under occupied resource hexagons.
+  for(const [color,path] of groundEdges){c.strokeStyle=color;c.lineWidth=.8;c.stroke(path);}
   const preview = world.hover?.id !== undefined && (!world.drag || world.painting) && placementPreview(world.hover);
   if(preview?.tool){
     const active=new Path2D(),area=new Path2D();

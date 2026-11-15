@@ -28,6 +28,30 @@ function drawFog(c,v){
   }
 }
 
+function drawResources(c,v){
+  if(!world.resourceDeposits?.size)return;
+  const g=world.graph,corner=new Float64Array(3),paths=new Map();
+  for(const [id,deposit] of world.resourceDeposits){
+    if(world.fog&&!world.fog.visible.has(id))continue;
+    const j=id*3,coords=g.coords;
+    if(coords[j]*v.look[0]+coords[j+1]*v.look[1]+coords[j+2]*v.look[2]<.03)continue;
+    const points=[];
+    for(let k=0;k<g.deg[id];k++){
+      sphereCorner(g,id,k,corner);
+      const z=corner[0]*v.look[0]+corner[1]*v.look[1]+corner[2]*v.look[2];
+      if(z<.02){points.length=0;break;}
+      const scale=v.inside?v.focal/z:v.radius;
+      points.push([v.cx+scale*(corner[0]*v.right[0]+corner[1]*v.right[1]+corner[2]*v.right[2]),
+        v.cy-scale*(corner[0]*v.up[0]+corner[1]*v.up[1]+corner[2]*v.up[2])]);
+    }
+    if(!points.length)continue;
+    if(!paths.has(deposit.fill))paths.set(deposit.fill,new Path2D());
+    const path=paths.get(deposit.fill);path.moveTo(...points[0]);
+    for(const p of points.slice(1))path.lineTo(...p);path.closePath();
+  }
+  for(const [color,path] of paths){c.fillStyle=color;c.fill(path);}
+}
+
 function drawMiniBackdrop() {
   const canvas = fallbackMini,
     rect = globeTarget.getBoundingClientRect(),
@@ -101,6 +125,7 @@ function drawMiniFallback(wire) {
     ctx.stroke();
   }
   if(world.fog)drawFog(ctx,v);
+  drawResources(ctx,v);
   drawGlobePopulation2D(ctx, v, Math.min(devicePixelRatio || 1, 2));
   ctx.restore();
   if (v.inside) return;

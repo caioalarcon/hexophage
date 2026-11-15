@@ -30,6 +30,22 @@ export function bindMixedViewport(){
 export function syncField(match){
   world.gen=match.gen;
   world.fog=match.spatial?.enabled?match.visibility(1):null;
+  world.resourceDeposits=new Map();
+  if(match.progression){
+    // Inspect only the player's lit cells. The renderers never receive the
+    // unseen terrain layer or remembered deposits outside current sight.
+    const deposits=world.fog?[...world.fog.visible].map(id=>match.progression.resourceAt(id,1)).filter(Boolean):
+      match.progression.visibleDeposits(1);
+    for(const deposit of deposits){
+      if(world.fog&&!world.fog.visible.has(deposit.site))continue;
+      const resource=match.progression.resources[deposit.kind],remaining=Math.max(0,deposit.remaining);
+      if(!resource)continue;
+      const level=Math.round(4*Math.min(1,remaining/32)),depleted=remaining<=0;
+      const color=depleted?'#91a0a6':resource.color,alpha=Math.round(255*(depleted ? .065 : .16+.28*level/4));
+      world.resourceDeposits.set(deposit.site,{kind:deposit.kind,remaining,color:resource.color,
+        fill:color+alpha.toString(16).padStart(2,'0'),edge:color+(depleted?'24':'80'),depleted});
+    }
+  }
   for(let i=0;i<world.activeCount;i++){
     const id=world.active[i];world.cells[id]=0;world.owners[id]=0;
   }

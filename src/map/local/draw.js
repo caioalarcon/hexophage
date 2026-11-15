@@ -35,6 +35,18 @@ function drawFlat() {
     c.fillStyle='#21483d55';c.fill(lit);
     c.strokeStyle='#62ae9240';c.lineWidth=.55/world.zoom;c.stroke(lit);
   }
+  // Deposits tint the floor, below the smaller opaque living-cell glyphs.
+  // Equal stock bands share paths so a large discovered region stays cheap.
+  if(world.resourceDeposits?.size){
+    const ground=new Map();
+    for(const item of vis.values()){
+      const deposit=world.resourceDeposits.get(item.id);
+      if(!deposit||world.fog&&!world.fog.visible.has(item.id))continue;
+      if(!ground.has(deposit.fill))ground.set(deposit.fill,new Path2D());
+      hexPath(ground.get(deposit.fill),DX*(item.q+item.r/2),DY*item.r,R*1.025);
+    }
+    for(const [color,path] of ground){c.fillStyle=color;c.fill(path);}
+  }
   // Owner-aware rendering, using only cells in the local chart.
   const paths = Array.from({ length: 8 }, () => new Path2D());
   let count = 0;

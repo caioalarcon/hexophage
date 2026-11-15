@@ -1,0 +1,1114 @@
+{
+  "version": 1,
+  "plan": {
+    "version": 1,
+    "base": "base",
+    "designPoints": 43,
+    "nodes": [
+      {
+        "id": "base",
+        "name": "Base escolhida",
+        "cardKey": "hex-b2s245/farm-4-12",
+        "rule": "hex-b2s245",
+        "offsets": [
+          [
+            1,
+            -2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "resolver": "contact",
+        "ballot": "support",
+        "sense": "native",
+        "parent": null,
+        "weights": [
+          40,
+          20,
+          20,
+          20
+        ],
+        "vision": 6,
+        "reach": 8,
+        "capacity": 256,
+        "depth": 0,
+        "size": 4,
+        "minimumBuilders": 1,
+        "cost": [
+          7,
+          6,
+          10,
+          2
+        ],
+        "designPoints": 9,
+        "childPoints": 17
+      },
+      {
+        "id": "relay",
+        "name": "Posto de fabricação",
+        "cardKey": "hex-b2s245/farm-4-12",
+        "rule": "hex-b2s245",
+        "offsets": [
+          [
+            1,
+            -2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "resolver": "contact",
+        "ballot": "support",
+        "sense": "native",
+        "parent": "base",
+        "weights": [
+          40,
+          20,
+          20,
+          20
+        ],
+        "vision": 8,
+        "reach": 12,
+        "capacity": 128,
+        "depth": 1,
+        "size": 4,
+        "minimumBuilders": 1,
+        "cost": [
+          7,
+          7,
+          6,
+          3
+        ],
+        "designPoints": 8,
+        "childPoints": 9
+      },
+      {
+        "id": "scout",
+        "name": "Exploração",
+        "cardKey": "callahan/glider",
+        "rule": "callahan",
+        "offsets": [
+          [
+            2,
+            -2
+          ],
+          [
+            2,
+            -1
+          ],
+          [
+            -2,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            -1,
+            2
+          ]
+        ],
+        "resolver": "contact",
+        "ballot": "support",
+        "sense": "native",
+        "parent": "relay",
+        "weights": [
+          40,
+          20,
+          20,
+          20
+        ],
+        "vision": 10,
+        "reach": 8,
+        "capacity": 128,
+        "depth": 2,
+        "size": 6,
+        "minimumBuilders": 2,
+        "cost": [
+          11,
+          10,
+          8,
+          7
+        ],
+        "designPoints": 9,
+        "childPoints": 0
+      },
+      {
+        "id": "battery",
+        "name": "Acumulação",
+        "cardKey": "hex-b2s245/farm-4-12",
+        "rule": "hex-b2s245",
+        "offsets": [
+          [
+            1,
+            -2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "resolver": "contact",
+        "ballot": "support",
+        "sense": "native",
+        "parent": "base",
+        "weights": [
+          40,
+          20,
+          20,
+          20
+        ],
+        "vision": 4,
+        "reach": 6,
+        "capacity": 512,
+        "depth": 1,
+        "size": 4,
+        "minimumBuilders": 1,
+        "cost": [
+          7,
+          5,
+          18,
+          3
+        ],
+        "designPoints": 9,
+        "childPoints": 8
+      },
+      {
+        "id": "pulse",
+        "name": "Circuito experimental",
+        "cardKey": "bays/osc2",
+        "rule": "bays",
+        "offsets": [
+          [
+            -1,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "resolver": "contact",
+        "ballot": "support",
+        "sense": "native",
+        "parent": "battery",
+        "weights": [
+          40,
+          20,
+          20,
+          20
+        ],
+        "vision": 6,
+        "reach": 8,
+        "capacity": 256,
+        "depth": 2,
+        "size": 2,
+        "minimumBuilders": 1,
+        "cost": [
+          3,
+          3,
+          5,
+          3
+        ],
+        "designPoints": 8,
+        "childPoints": 0
+      }
+    ]
+  },
+  "rows": [
+    {
+      "seed": 7,
+      "F": 24,
+      "generations": 256,
+      "players": 3,
+      "budget": 4,
+      "work": 1024,
+      "maxWork": 4,
+      "illegal": 0,
+      "firstContact": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "firstDefeat": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "orders": [
+        {
+          "owner": 2,
+          "gen": 32,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 32,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 48,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 64,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 64,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 88,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 104,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 104,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 160,
+          "contract": "scout",
+          "key": "callahan/glider",
+          "role": "explore",
+          "research": true,
+          "expected": -424.39999999999714,
+          "researchBudget": 802.6500000000001,
+          "researchCharge": 424.39999999999714
+        },
+        {
+          "owner": 3,
+          "gen": 160,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 176,
+          "contract": "scout",
+          "key": "callahan/glider",
+          "role": "explore",
+          "research": true,
+          "expected": -363.0666666666651,
+          "researchBudget": 1023.2000000000002,
+          "researchCharge": 363.0666666666651
+        },
+        {
+          "owner": 3,
+          "gen": 200,
+          "key": "tool/eraser",
+          "role": "erase",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 208,
+          "contract": "battery",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 232,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 232,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 248,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 256,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        }
+      ],
+      "seats": [
+        {
+          "owner": 1,
+          "field": 12,
+          "energy": 3006,
+          "explored": 211,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 12,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              85.6133333333321,
+              23.719999999999967,
+              79.36000000000041,
+              48.80000000000015
+            ],
+            "spent": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "inventory": [
+              133.6133333333323,
+              55.720000000000255,
+              119.36000000000242,
+              72.80000000000055
+            ]
+          },
+          "conservationError": 2.0037305148434825e-12,
+          "trials": 0,
+          "orders": 0,
+          "researchOrders": 0,
+          "researchSpent": 0
+        },
+        {
+          "owner": 2,
+          "field": 96,
+          "energy": 10018.00000000001,
+          "explored": 1440,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 60,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              450.8714558086063,
+              97.60000000000149,
+              415.6407883641013,
+              758.8377770989118
+            ],
+            "spent": [
+              60,
+              53,
+              78,
+              24
+            ],
+            "inventory": [
+              438.87145580860636,
+              76.60000000000129,
+              377.64078836410056,
+              758.8377770989134
+            ]
+          },
+          "conservationError": 1.5916157281026244e-12,
+          "trials": 32,
+          "orders": 8,
+          "researchOrders": 1,
+          "researchSpent": 424.39999999999714
+        },
+        {
+          "owner": 3,
+          "field": 88,
+          "energy": 11171.000000000011,
+          "explored": 1335,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 60,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              739.0001064106447,
+              50.3599999999998,
+              28.82666666666657,
+              592.811851851852
+            ],
+            "spent": [
+              60,
+              55,
+              66,
+              24
+            ],
+            "inventory": [
+              727.0001064106433,
+              27.359999999999566,
+              2.82666666666678,
+              592.8118518518529
+            ]
+          },
+          "conservationError": 1.3642420526593924e-12,
+          "trials": 32,
+          "orders": 8,
+          "researchOrders": 1,
+          "researchSpent": 363.0666666666651
+        }
+      ]
+    },
+    {
+      "seed": 41,
+      "F": 24,
+      "generations": 256,
+      "players": 3,
+      "budget": 4,
+      "work": 992,
+      "maxWork": 4,
+      "illegal": 0,
+      "firstContact": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "firstDefeat": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "orders": [
+        {
+          "owner": 2,
+          "gen": 8,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 24,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 24,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 88,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 88,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 104,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 128,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 144,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 160,
+          "contract": "battery",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 176,
+          "contract": "battery",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 176,
+          "contract": "pulse",
+          "key": "bays/osc2",
+          "role": "explore",
+          "research": true,
+          "expected": -157.65000000000092,
+          "researchBudget": 851.2500000000001,
+          "researchCharge": 157.65000000000092
+        },
+        {
+          "owner": 3,
+          "gen": 192,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 208,
+          "contract": "scout",
+          "key": "callahan/glider",
+          "role": "explore",
+          "research": true,
+          "expected": -424.40000000000236,
+          "researchBudget": 1030.1999999999991,
+          "researchCharge": 424.40000000000236
+        },
+        {
+          "owner": 2,
+          "gen": 232,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 248,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 248,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        }
+      ],
+      "seats": [
+        {
+          "owner": 1,
+          "field": 12,
+          "energy": 3006,
+          "explored": 206,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 12,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              422.6568442496028,
+              33.18352129980148,
+              74.59424000000007,
+              39.43183466666644
+            ],
+            "spent": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "inventory": [
+              470.65684424959954,
+              65.18352129980153,
+              114.59424000000206,
+              63.43183466666634
+            ]
+          },
+          "conservationError": 3.240074875066057e-12,
+          "trials": 0,
+          "orders": 0,
+          "researchOrders": 0,
+          "researchSpent": 0
+        },
+        {
+          "owner": 2,
+          "field": 96,
+          "energy": 12387.000000000015,
+          "explored": 957,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 60,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              183.74101508916345,
+              680.8932708809418,
+              32.6666666666666,
+              97.59999999999958
+            ],
+            "spent": [
+              49,
+              43,
+              70,
+              17
+            ],
+            "inventory": [
+              182.74101508916317,
+              669.8932708809425,
+              2.6666666666665626,
+              104.59999999999872
+            ]
+          },
+          "conservationError": 8.668621376273222e-13,
+          "trials": 31,
+          "orders": 7,
+          "researchOrders": 0,
+          "researchSpent": 0
+        },
+        {
+          "owner": 3,
+          "field": 96,
+          "energy": 11670.000000000007,
+          "explored": 1460,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 60,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              409.58080293239254,
+              94.32000000000109,
+              48.80000000000015,
+              393.16265020575065
+            ],
+            "spent": [
+              63,
+              56,
+              83,
+              27
+            ],
+            "inventory": [
+              394.5808029323915,
+              70.32000000000039,
+              5.800000000000217,
+              390.1626502057498
+            ]
+          },
+          "conservationError": 1.0231815394945443e-12,
+          "trials": 31,
+          "orders": 9,
+          "researchOrders": 2,
+          "researchSpent": 582.0500000000033
+        }
+      ]
+    },
+    {
+      "seed": 109,
+      "F": 24,
+      "generations": 256,
+      "players": 3,
+      "budget": 4,
+      "work": 1008,
+      "maxWork": 4,
+      "illegal": 0,
+      "firstContact": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "firstDefeat": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "orders": [
+        {
+          "owner": 2,
+          "gen": 40,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 64,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 80,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 104,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 128,
+          "contract": "relay",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 152,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 152,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 168,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 184,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 208,
+          "contract": "battery",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 224,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 2,
+          "gen": 232,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        },
+        {
+          "owner": 3,
+          "gen": 248,
+          "contract": "base",
+          "key": "hex-b2s245/farm-4-12",
+          "role": "explore",
+          "research": false
+        }
+      ],
+      "seats": [
+        {
+          "owner": 1,
+          "field": 12,
+          "energy": 3006,
+          "explored": 211,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 12,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              18.675296212932952,
+              27.001885830747874,
+              111.49081437794834,
+              416.78220399822175
+            ],
+            "spent": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "inventory": [
+              66.67529621293306,
+              59.001885830747966,
+              151.49081437794808,
+              440.7822039982203
+            ]
+          },
+          "conservationError": 1.4210854715202004e-12,
+          "trials": 0,
+          "orders": 0,
+          "researchOrders": 0,
+          "researchSpent": 0
+        },
+        {
+          "owner": 2,
+          "field": 56,
+          "energy": 8194.553953998879,
+          "explored": 714,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 32,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              328.38667320482466,
+              351.83999999999486,
+              101.3666666666677,
+              541.899999999993
+            ],
+            "spent": [
+              35,
+              30,
+              54,
+              12
+            ],
+            "inventory": [
+              341.386673204822,
+              353.8399999999949,
+              87.36666666666876,
+              553.899999999995
+            ]
+          },
+          "conservationError": 2.6716406864579767e-12,
+          "trials": 32,
+          "orders": 5,
+          "researchOrders": 0,
+          "researchSpent": 0
+        },
+        {
+          "owner": 3,
+          "field": 108,
+          "energy": 10888.000000000015,
+          "explored": 985,
+          "objective": {
+            "started": true,
+            "base": "base",
+            "rootCells": 96,
+            "defeated": false
+          },
+          "enemyCellsReplaced": 0,
+          "ownCellsLostToReplacement": 0,
+          "resources": {
+            "initial": [
+              48,
+              32,
+              40,
+              24
+            ],
+            "harvested": [
+              14.986666666666638,
+              587.5708343349099,
+              94.41333333333422,
+              503.09126047857137
+            ],
+            "spent": [
+              56,
+              49,
+              76,
+              17
+            ],
+            "inventory": [
+              6.986666666666718,
+              570.5708343349056,
+              58.41333333333377,
+              510.09126047857046
+            ]
+          },
+          "conservationError": 4.320099833421409e-12,
+          "trials": 31,
+          "orders": 8,
+          "researchOrders": 0,
+          "researchSpent": 0
+        }
+      ]
+    }
+  ]
+}

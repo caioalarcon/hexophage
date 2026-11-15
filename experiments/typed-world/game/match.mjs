@@ -3,6 +3,7 @@ import {footprint} from '../catalog.mjs';
 import {createTypedWorld} from '../engine.mjs';
 import {spreadSites} from '../general/scene.mjs';
 import {normalizeOpening,measureOpening,locateOpening} from './opening.mjs';
+import {attachProgression,defaultProgressionPlan,normalizeProgressionPlan,progressionSpatialTypes} from './progression.mjs';
 
 // Event income can only be spent in a later generation. Each preset has the
 // same opening capital, birth/stamp prices and destruction tariff.
@@ -20,15 +21,19 @@ export const defaultGameOptions=Object.freeze({F:128,seed:1,players:6,bank:640,p
 
 export function createGameMatch(options={}) {
   const {F,seed,players,bank,policy,arbitration,eligibility,existence,passage,friendlyFire,
-    economy={},toolSettings,spatial,initialCard,unseededOwners=[],graph=buildSphere(F)}={...defaultGameOptions,...options};
+    economy={},toolSettings,spatial:spatialInput,initialCard,progression,unseededOwners=[],graph=buildSphere(F)}={...defaultGameOptions,...options};
   if(!Object.hasOwn(gameEconomies,policy))throw RangeError('Economia desconhecida.');
   if(!Number.isInteger(players)||players<2||players>graph.n)throw RangeError('A partida precisa de pelo menos dois jogadores e espaço na esfera.');
   if(!Array.isArray(unseededOwners)||unseededOwners.some(owner=>!Number.isInteger(owner)||owner<1||owner>players))
     throw RangeError('A abertura vazia precisa indicar jogadores da partida.');
+  const plan=progression?.enabled?normalizeProgressionPlan(progression.plan??defaultProgressionPlan(initialCard)):null;
+  const spatial=plan?{...spatialInput,enabled:true,types:{...spatialInput?.types,...progressionSpatialTypes(plan)}}:spatialInput;
   const match=createTypedWorld(graph,{seed,wallets:Array(players).fill(bank),
     economy:{...gameEconomies[policy],...economy},arbitration,eligibility,existence,passage,friendlyFire,spatial});
   const sites=spreadSites(graph,players), starts=[null], opening=[null], alive=[false];
-  const local=match.spatial.enabled,base=local?normalizeOpening(initialCard):null;
+  const local=match.spatial.enabled,root=plan?.nodes.find(n=>n.id===plan.base);
+  const base=local?normalizeOpening(root?{...root,key:root.cardKey??'custom/'+root.id,contract:root.id}:initialCard):null;
+  if(plan)attachProgression(match,{...progression,plan,seed});
   let baseTrial=null;
   const farm=policy==='stability'?'hex-b2s245/farm-4-12':'bays/osc2';
   const [rule]=farm.split('/');
@@ -59,6 +64,7 @@ export function createGameMatch(options={}) {
     for(let owner=1;owner<=players;owner++){
       if(!alive[owner])continue;
       const player=match.players[owner];
+      if(match.progression?.objective(owner).defeated){alive[owner]=false;player.out=true;eliminatedAt[owner]=match.gen;continue;}
       // A successful stamp records entry even if its cells die on the first tick.
       // A waiting player keeps the right to choose an opening later.
       if(player.stamps===0)player.out=false;

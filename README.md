@@ -116,6 +116,16 @@ Only currently illuminated sites accept manual stamps, including every cell of t
 
 [Mechanics, measured outcomes and reproduction commands](experiments/local-economy/README.md). The study includes paired outbreaks, original CA pattern evolution, moving scouts, and seeded bot matches.
 
+## Experimental resources and player-designed progression
+
+Open `index.html?experiment=resources` or choose **Recursos finitos + plano de construção** in match settings. This experiment builds on cellular energy and darkness. Four finite terrain materials pay for construction: **Substrato** for body, **Condutor** for sight/fabrication range, **Acumulador** for storage capacity, and **Catalisador** for the fabrication chain. Stable cells collect nearby deposits, which visibly fade as they empty.
+
+Prepare your plan before a match. Choose the initial seed, assign a live parent to each recipe, configure sight, fabrication range and capacity, and distribute 100 cost points across the four materials. Universal cost floors and a 64-point design budget constrain the plan; each lineage can authorize at most 20 points of child recipes. The preparation panel supports adding the selected Atlas drawing, replacing a shape, changing dependencies, and importing/exporting JSON. All player-defined shapes use the same rules.
+
+Construction requires a living parent covering the whole footprint, current light, local fuel and the four materials. The material inventory is per player. Losing every descendant of the chosen base lineage ends that player's agency, even if other patterns remain. Copies and moving descendants of the base preserve the lineage. Cell contracts carry these permissions while canonical physical types keep sensing, ballots and CA transitions unchanged.
+
+The default editable plan is base → fabrication outpost → explorer and base → storage → experimental circuit. The bot uses the player's actual plan and a limited research budget to try newly enabled capabilities. [Rules, cost equations and resource trials](experiments/frontier-resources/README.md) · [Long bot trial and current strategic limitations](experiments/frontier-resources/BOTS.md).
+
 ## Development and promotion
 
 Push changes to `dev`. CI rebuilds the HTML, checks for a stale distribution, runs both test suites, and attaches the tested HTML to the workflow run. The branch preview serves the committed HTML and follows future pushes. The private development deployment is a separately published snapshot for playtesting.
