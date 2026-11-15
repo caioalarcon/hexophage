@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hexophage</title>
+<title>Hexophage — Recuperação dos experimentos</title>
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
@@ -1292,7 +1292,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <header><h2 id="mx-settings-title">Partida e bots</h2><button type="button" id="mx-settings-close" aria-label="Fechar configurações">×</button></header>
   <form id="mx-setup">
    <fieldset><legend>Experimento</legend><label class="mx-wide">Regras econômicas e território<select id="mx-experiment"><option value="classic">Economia compartilhada · atual</option><option value="local">Economia por célula + escuridão</option><option value="resources">Recursos finitos + plano de construção</option></select></label></fieldset>
-   <fieldset id="mx-progression-settings" hidden><legend>Seu plano de construção</legend><p class="mx-wide">Escolha quem constrói quem. As formas evoluem pelo autômato e suas descendentes mantêm as permissões. Para fabricar, mantenha a linhagem de origem viva e próxima.</p><output id="mx-plan-budget" class="mx-wide"></output><div id="mx-plan-rows" class="mx-wide" aria-label="Carimbos planejados"></div><label class="mx-wide">Nome<input type="text" id="mx-plan-name" maxlength="100"></label><label class="mx-wide">Construído por<select id="mx-plan-parent"></select></label><output id="mx-plan-shape" class="mx-wide"></output><label>Raio de iluminação<input type="number" id="mx-plan-vision" min="1" max="16" step="1"></label><label>Raio de construção<input type="number" id="mx-plan-reach" min="1" max="24" step="1"></label><label>Energia máxima por célula<input type="number" id="mx-plan-capacity" min="8" max="512" step="1"></label><p class="mx-wide">Distribua 100 pontos de custo entre os quatro materiais. O custo mínimo acompanha tamanho, alcance, capacidade e profundidade.</p><label>Substrato · corpo<input type="number" id="mx-plan-weight-0" min="0" max="100" step="1"></label><label>Condutor · alcance<input type="number" id="mx-plan-weight-1" min="0" max="100" step="1"></label><label>Acumulador · capacidade<input type="number" id="mx-plan-weight-2" min="0" max="100" step="1"></label><label>Catalisador · dependência<input type="number" id="mx-plan-weight-3" min="0" max="100" step="1"></label><button type="button" id="mx-plan-add" class="mx-wide">Adicionar carimbo selecionado como dependente</button><button type="button" id="mx-plan-replace" class="mx-wide">Usar a forma selecionada nesta etapa</button><button type="button" id="mx-plan-remove">Remover etapa</button><button type="button" id="mx-plan-reset" title="Plano de estratégia inspirado em Age of Empires; todos os desenhos são editáveis">Estratégia celular</button><button type="button" id="mx-plan-free" title="Reiniciar com apenas a base escolhida">Plano livre</button><p id="mx-plan-error" role="alert" class="mx-wide"></p><details class="mx-wide"><summary>Editar ou copiar plano em JSON</summary><textarea id="mx-plan-json" rows="12" spellcheck="false" aria-label="Plano de construção em JSON"></textarea><button type="button" id="mx-plan-import">Aplicar JSON ao plano</button></details></fieldset>
+   <fieldset id="mx-progression-settings" hidden><legend>Seu plano de construção</legend><p class="mx-wide">Escolha quem constrói quem. As formas evoluem pelo autômato e suas descendentes mantêm as permissões. Para fabricar, mantenha a linhagem de origem viva e próxima.</p><output id="mx-plan-budget" class="mx-wide"></output><div id="mx-plan-rows" class="mx-wide" aria-label="Carimbos planejados"></div><label class="mx-wide">Nome<input type="text" id="mx-plan-name" maxlength="100"></label><label class="mx-wide">Construído por<select id="mx-plan-parent"></select></label><output id="mx-plan-shape" class="mx-wide"></output><label>Raio de iluminação<input type="number" id="mx-plan-vision" min="1" max="16" step="1"></label><label>Raio de construção<input type="number" id="mx-plan-reach" min="1" max="24" step="1"></label><label>Energia máxima por célula<input type="number" id="mx-plan-capacity" min="8" max="512" step="1"></label><label>Distância segura deste carimbo<input type="number" id="mx-plan-clearance" min="0" max="8" step="1"></label><label>Custo por nascimento<input type="number" id="mx-plan-birthTariff" placeholder="Global" title="Vazio: herdar o custo global da partida" min="0.05" max="4" step="0.05"></label><p class="mx-wide">Distribua 100 pontos de custo entre os quatro materiais. O custo mínimo acompanha tamanho, alcance, capacidade e profundidade.</p><label>Substrato · corpo<input type="number" id="mx-plan-weight-0" min="0" max="100" step="1"></label><label>Condutor · alcance<input type="number" id="mx-plan-weight-1" min="0" max="100" step="1"></label><label>Acumulador · capacidade<input type="number" id="mx-plan-weight-2" min="0" max="100" step="1"></label><label>Catalisador · dependência<input type="number" id="mx-plan-weight-3" min="0" max="100" step="1"></label><button type="button" id="mx-plan-add" class="mx-wide">Adicionar carimbo selecionado como dependente</button><button type="button" id="mx-plan-replace" class="mx-wide">Usar a forma selecionada nesta etapa</button><button type="button" id="mx-plan-remove">Remover etapa</button><button type="button" id="mx-plan-reset" title="Plano de estratégia inspirado em Age of Empires; todos os desenhos são editáveis">Estratégia celular</button><button type="button" id="mx-plan-free" title="Reiniciar com apenas a base escolhida">Plano livre</button><p id="mx-plan-error" role="alert" class="mx-wide"></p><details class="mx-wide"><summary>Editar ou copiar plano em JSON</summary><textarea id="mx-plan-json" rows="12" spellcheck="false" aria-label="Plano de construção em JSON"></textarea><button type="button" id="mx-plan-import">Aplicar JSON ao plano</button></details></fieldset>
    <fieldset id="mx-spatial-settings" hidden><legend>Base e iluminação</legend><label class="mx-wide"><input id="mx-map-full" type="checkbox"> Mapa visível inteiro; construção em território explorado</label>
    <label class="mx-wide">Distância segura entre carimbos<select id="mx-safe-gap">
      <option value="0">Livre: permitir interações</option><option value="1">1 célula</option><option value="2">2 células</option>
@@ -8572,7 +8572,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     inheritanceRadius: 2,
     types: Object.freeze({})
   });
-  var numeric = ["visionRadius", "cellCapacity", "stableAfter", "stableEnergy", "stampEnergy", "newbornEnergy", "birthRadius", "inheritanceRadius"];
+  var numeric = ["visionRadius", "cellCapacity", "stableAfter", "stableEnergy", "stampEnergy", "newbornEnergy", "birthRadius", "inheritanceRadius", "birthTariff"];
   function validate(values) {
     for (const key2 of numeric) if (values[key2] !== void 0 && (!Number.isFinite(values[key2]) || values[key2] < 0))
       throw RangeError("Expected finite nonnegative spatial trait: " + key2);
@@ -8604,14 +8604,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     settings.types = Object.freeze(types);
     return Object.freeze(settings);
   }
+  var spatialTraitCache = new WeakMap();
   function typeTraits(spatial, type) {
+    const cacheable = Object.isFrozen(spatial) && Object.isFrozen(spatial.types);
+    let cache = cacheable && spatialTraitCache.get(spatial);
+    if (cacheable && !cache) { cache = new Map(); spatialTraitCache.set(spatial, cache); }
+    const traitKey = JSON.stringify([type.rule, type.resolver, type.contract ?? "", !!type.wave]);
+    if (cache && cache.has(traitKey)) return cache.get(traitKey);
     const explicit = spatial.types[type.rule + "/" + type.resolver + "/" + (type.contract ?? "")] ?? spatial.types[type.rule + "/" + type.resolver] ?? spatial.types[type.rule] ?? {};
-    return {
+    const traits = {
       ...spatial,
       ...explicit,
       visionRadius: type.wave ? 0 : explicit.visionRadius ?? spatial.visionRadius,
       stableEnergy: type.wave ? 0 : explicit.stableEnergy ?? spatial.stableEnergy
     };
+    if (cache) { Object.freeze(traits); cache.set(traitKey, traits); }
+    return traits;
   }
   function graphBall(graph, sites, radius2, domain = null) {
     const reached = /* @__PURE__ */ new Set(), queue = [];
@@ -8795,7 +8803,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const isMature = (c) => spatial.enabled ? !c.wave && c.stableAge >= typeTraits(spatial, c.type).stableAfter : c.age >= economy.stableAfter;
     function instance(cells2, players, gen, lastIgnitions = [], domain = null, outside = null, observe = false, limits2 = normalizeToolSettings(toolSettings), actionRevision = 0, exploration = null) {
       const { adj, deg } = graph;
-      const explored = players.map((p, i) => p ? new Set(exploration?.[i] ?? []) : null), vision = /* @__PURE__ */ new Map();
+      const explored = players.map((p, i) => p ? new Set(exploration?.[i] ?? []) : null), vision = /* @__PURE__ */ new Map(), visionSources = new Map();
       function visibility(owner) {
         if (!players[owner]) return { visible: /* @__PURE__ */ new Set(), explored: /* @__PURE__ */ new Set() };
         if (!spatial.enabled) return { visible: null, explored: null };
@@ -8810,8 +8818,23 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const canBuild = (owner, id) => !spatial.enabled || visibility(owner).explored?.has(id) === true;
       function refreshVision() {
         if (!spatial.enabled) return;
-        vision.clear();
-        for (let owner = 1; owner < players.length; owner++) visibility(owner);
+        const sources = players.map(p => p && new Map());
+        for (const [site, c] of cells2) if (!c.wave) sources[c.owner].set(site, c.type);
+        for (let owner = 1; owner < players.length; owner++) {
+          if (!players[owner]) continue;
+          const nextSources = sources[owner], prior = visionSources.get(owner);
+          let same = prior && prior.size === nextSources.size;
+          if (same) {
+            const previousEntries = prior.entries();
+            for (const [site, type] of nextSources) {
+              const previousEntry = previousEntries.next().value;
+              if (previousEntry[0] !== site || previousEntry[1] !== type) { same = false; break; }
+            }
+          }
+          if (!same) vision.delete(owner);
+          visionSources.set(owner, nextSources);
+          visibility(owner);
+        }
       }
       function syncEnergy() {
         if (!spatial.enabled) return;
@@ -9144,7 +9167,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
               break;
             }
             const p = players[type.owner], enemy = incumbent && incumbent.owner !== type.owner;
-            const birth = type.wave ? economy.blastBirthCost : economy.birthCost;
+            const birth = type.wave ? economy.blastBirthCost : (spatial.enabled ? typeTraits(spatial, type).birthTariff ?? economy.birthCost : economy.birthCost);
             const friendly = incumbent && !enemy && !(kind === "ignition" && spent.has(id));
             const fee = enemy || friendly ? economy.eraseCost * (guarded ? economy.guardMultiplier : 1) : 0;
             const cost = birth + fee;
@@ -9502,17 +9525,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const plant = test.bootstrapStamp ?? test.stamp;
     if (!plant(1, card2.rule, card2.resolver, ids, card2.ballot, card2.sense, { contract: card2.contract }))
       return { ok: false, reason: "A reserva inicial precisa pagar a base e sua carga de energia." };
-    const begin = test.players[1].income;
+    const begin = test.players[1].income, overflowBegin = test.players[1].energyOverflow;
     for (let i = 0; i < 64; i++) test.step();
-    const p = test.players[1], income = p.income - begin;
+    const p = test.players[1], income = p.income - begin, production = income + p.energyOverflow - overflowBegin;
     return {
-      ok: p.conventional > 0 && income > 0,
+      ok: p.conventional > 0 && production > 0,
       ids,
       income,
+      production,
       cells: p.conventional,
       reserve: p.reserve,
       generations: 64,
-      reason: income <= 0 ? "A base precisa produzir energia durante o ensaio de 64 gerações. Use o Atlas para preparar uma semente geradora." : p.conventional <= 0 ? "A base perdeu todas as células durante o ensaio de 64 gerações." : null
+      reason: production <= 0 ? "A base precisa produzir energia durante o ensaio de 64 gerações. Use o Atlas para preparar uma semente geradora." : p.conventional <= 0 ? "A base perdeu todas as células durante o ensaio de 64 gerações." : null
     };
   }
 
@@ -9553,7 +9577,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (!knownResolvers.includes(resolver) || !knownBallots.includes(ballot) || !knownSenses.includes(sense)) throw RangeError("Física inválida no plano.");
     return { cardKey: cardKey ?? null, rule, offsets: offsets.map((p) => p.slice()), resolver, ballot, sense };
   }
+  var normalizedProgressionPlans = new WeakSet();
   function normalizeProgressionPlan(input) {
+    if (normalizedProgressionPlans.has(input)) return input;
     if (!input || input.version !== 1 || !Array.isArray(input.nodes) || input.nodes.length < 1 || input.nodes.length > 64) throw RangeError("Plano v1 precisa de 1 a 64 receitas.");
     const ids = /* @__PURE__ */ new Set();
     const nodes = input.nodes.map((value) => {
@@ -9569,9 +9595,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         weights,
         vision: integer(value.vision ?? 6, 1, 16, "Visão precisa estar entre 1 e 16."),
         reach: integer(value.reach ?? 8, 1, 24, "Fabricação precisa estar entre 1 e 24."),
-        capacity: integer(value.capacity ?? 256, 8, 512, "Capacidade precisa estar entre 8 e 512.")
+        capacity: integer(value.capacity ?? 256, 8, 512, "Capacidade precisa estar entre 8 e 512."),
+        clearance: integer(value.clearance ?? 0, 0, 8, "Distância de segurança precisa estar entre 0 e 8."),
+        birthTariff: value.birthTariff ?? null
       };
     });
+    if (nodes.some(n => n.birthTariff !== null && (!Number.isFinite(n.birthTariff) || n.birthTariff < .05 || n.birthTariff > 4))) throw RangeError("Custo por nascimento precisa estar entre 0,05 e 4.");
     if (typeof input.base !== "string" || !ids.has(input.base)) throw RangeError("Escolha a receita inicial do plano.");
     const byId = new Map(nodes.map((n) => [n.id, n])), visiting = /* @__PURE__ */ new Set(), depths = /* @__PURE__ */ new Map();
     function depth(id) {
@@ -9596,7 +9625,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       n.size = n.offsets.length;
       n.minimumBuilders = Math.max(1, Math.ceil(n.size / 4));
       n.cost = recipeCost(n);
-      n.designPoints = Math.ceil(Math.log2(n.size + 1)) + Math.ceil(n.vision / 4) + Math.ceil(n.reach / 6) + Math.ceil(n.capacity / 128);
+      n.designPoints = Math.ceil(Math.log2(n.size + 1)) + Math.ceil(n.vision / 4) + Math.ceil(n.reach / 6) + Math.ceil(n.capacity / 128) + Math.ceil(Math.max(0, 1 - (n.birthTariff ?? 1)) * 2);
     }
     const designPoints = nodes.reduce((sum2, n) => sum2 + n.designPoints, 0);
     if (designPoints > progressionDesignLimits.totalPoints) throw RangeError("O plano usa " + designPoints + " pontos; o orçamento é " + progressionDesignLimits.totalPoints + ".");
@@ -9610,11 +9639,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       n.cost = Object.freeze(n.cost);
       Object.freeze(n);
     }
-    return Object.freeze({ version: 1, base: input.base, designPoints, nodes: Object.freeze(nodes) });
+    const normalizedPlan = Object.freeze({ version: 1, base: input.base, designPoints, nodes: Object.freeze(nodes) });
+    normalizedProgressionPlans.add(normalizedPlan);
+    return normalizedPlan;
   }
   function recipeCost(node) {
     const n = node.offsets.length, d = node.depth ?? 0;
-    const floors = [n, Math.ceil(n * (node.vision + node.reach) / 16), Math.ceil(n * node.capacity / 128), Math.ceil(n * (d + 1) / 4)];
+    const floors = [n, Math.ceil(n * (node.vision + node.reach) / 16), Math.ceil(n * node.capacity / 128), Math.ceil(n * (d + 1) / 4) + Math.ceil(n * Math.max(0, 1 - (node.birthTariff ?? 1)))];
     const budget = 2 * n, exact = node.weights.map((w) => budget * w / 100), extra = exact.map(Math.floor);
     const order = exact.map((x, i) => [x - extra[i], i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
     let left = budget - extra.reduce((a, b) => a + b, 0);
@@ -9623,7 +9654,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function progressionSpatialTypes(plan) {
     const normalized2 = normalizeProgressionPlan(plan);
-    return Object.fromEntries(normalized2.nodes.map((n) => [n.rule + "/" + n.resolver + "/" + n.id, { visionRadius: n.vision, cellCapacity: n.capacity, stampEnergy: Math.min(32, n.capacity) }]));
+    return Object.fromEntries(normalized2.nodes.map((n) => [n.rule + "/" + n.resolver + "/" + n.id, { visionRadius: n.vision, cellCapacity: n.capacity, stampEnergy: Math.min(32, n.capacity), ...(n.birthTariff === null ? {} : {birthTariff: n.birthTariff}) }]));
   }
   function defaultProgressionPlan(initialCard, availableCards = []) {
     const fallback = { cardKey: "hex-b2s245/scan-cf5664", ...cards.get("hex-b2s245/scan-cf5664") };
@@ -9717,6 +9748,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const byId = new Map(allNodes.map((n) => [n.id, n]));
     if (allNodes.length !== byId.size) throw RangeError("Contratos de jogadores diferentes têm identificadores repetidos.");
     const terrain = snapshot ? { kind: Uint8Array.from(snapshot.kind), amount: Float64Array.from(snapshot.amount) } : makeTerrain(graph, seed, stock);
+    const terrainSites = snapshot?.sites ? snapshot.sites.slice() : Array.from(terrain.kind.keys()).filter(site => terrain.kind[site]);
+    const terrainSiteSet = new Set(terrainSites);
     const inventory = snapshot ? copyRows(snapshot.inventory) : match.players.map((p) => p && initialResources.slice());
     const harvested = snapshot ? copyRows(snapshot.harvested) : match.players.map((p) => p && [0, 0, 0, 0]);
     const spent = snapshot ? copyRows(snapshot.spent) : match.players.map((p) => p && [0, 0, 0, 0]);
@@ -9791,12 +9824,20 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const quote = { contract: id, cost: node.cost.slice(), available: inventory[owner].slice(), energyCost: energy?.total ?? node.size * match.stampPrice(node.resolver) };
       if (!Array.isArray(ids) || ids.length !== node.size || new Set(ids).size !== ids.length || ids.some((site) => !Number.isSafeInteger(site) || site < 0 || site >= graph.n))
         return { ...quote, ok: false, code: "footprint", reason: "O carimbo precisa corresponder à quantidade de células da receita." };
+      if (node.clearance > 0 && [...graphBall(graph, ids, node.clearance)].some(site => match.cells.get(site)?.owner === owner))
+        return {...quote, ok: false, code: "near-own", reason: "Respeite a distância de segurança definida para este carimbo."};
       const permission = source(node, owner, ids, sourceSite);
       if (!permission.ok) return { ...quote, ...permission };
       const missing = node.cost.map((cost, k) => Math.max(0, cost - inventory[owner][k]));
       if (missing.some((n) => n > EPS3)) return { ...quote, ...permission, ok: false, code: "resources", missing, reason: "Faltam recursos: " + missing.map((n, k) => n > EPS3 ? resourceKinds[k].symbol + " " + Math.ceil(n) : "").filter(Boolean).join(" · ") };
-      if (!raw.canStamp(owner, node.rule, node.resolver, ids, node.ballot, node.sense, { contract: id }))
-        return { ...quote, ...permission, ok: false, code: "field", reason: "Verifique área explorada, energia e espaço livre." };
+      const blocked = match.stampRejection?.(owner, node.rule, node.resolver, ids, node.ballot, node.sense, {contract: id});
+      if (blocked || !raw.canStamp(owner, node.rule, node.resolver, ids, node.ballot, node.sense, { contract: id })) {
+        const reasons = {darkness: "Explore toda a área do carimbo antes de construir.", occupied: "Esta área já contém células.",
+          enemy: "A área está junto de uma colônia adversária.", "near-own": "Afaste o carimbo conforme a distância de segurança.",
+          "local-energy": match.spatial.constructionFunding === "territory" ? "Energia insuficiente no território." : "Energia insuficiente nas células próximas.",
+          energy: "Energia insuficiente.", invalid: "Pegada, configuração ou limite de células inválido.", owner: "Jogador inválido."};
+        return {...quote, ...permission, ok: false, code: blocked ?? "field", reason: reasons[blocked] ?? "Fabricação indisponível."};
+      }
       return { ...quote, ...permission, ok: true, code: "ready", reason: "Fabricação disponível." };
     }
     function matches(node, rule, resolver, ballot, sense) {
@@ -9821,6 +9862,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       for (let k = 0; k < 4; k++) {
         const site = sites[k];
         if (site === void 0) continue;
+        if (!terrainSiteSet.has(site)) { terrainSites.push(site); terrainSiteSet.add(site); }
         terrain.kind[site] = k + 1;
         terrain.amount[site] = Math.max(stock * 4, terrain.amount[site]);
       }
@@ -9874,17 +9916,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
     }
     function takeSnapshot(owner = null) {
-      const kind = terrain.kind.slice(), amount = terrain.amount.slice();
-      if (owner !== null) {
-        for (let site = 0; site < kind.length; site++) if (!visible(owner, site)) {
-          kind[site] = 0;
-          amount[site] = 0;
-        }
-      }
+      const partial = owner !== null && match.spatial?.enabled && !match.spatial.fullMap;
+      const kind = partial ? new Uint8Array(graph.n) : terrain.kind.slice();
+      const amount = partial ? new Float64Array(graph.n) : terrain.amount.slice();
+      const sites = partial ? [...match.visibility(owner).visible].filter(site => terrain.kind[site]).sort((a,b)=>a-b) : terrainSites.slice();
+      if (partial) for (const site of sites) { kind[site] = terrain.kind[site]; amount[site] = terrain.amount[site]; }
       const visibleRows = (rows2) => rows2.map((row, id) => row && (owner === null || id === owner ? row.slice() : [0, 0, 0, 0]));
       return {
         kind,
         amount,
+        sites,
         inventory: visibleRows(inventory),
         initial: visibleRows(initial),
         harvested: visibleRows(harvested),
@@ -9934,7 +9975,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       resourceAt: (site, owner = null) => Number.isSafeInteger(site) && site >= 0 && site < graph.n && (owner === null || visible(owner, site)) && terrain.kind[site] ? { site, kind: terrain.kind[site] - 1, resource: resourceKinds[terrain.kind[site] - 1], remaining: terrain.amount[site] } : null,
       visibleDeposits: (owner) => {
         const found = [];
-        for (let site = 0; site < graph.n; site++) if (terrain.kind[site] && visible(owner, site)) found.push({ site, kind: terrain.kind[site] - 1, remaining: terrain.amount[site] });
+        const sites = match.spatial?.enabled && !match.spatial.fullMap ? match.visibility(owner).visible : terrainSites;
+        for (const site of sites) if (terrain.kind[site] && visible(owner, site)) found.push({ site, kind: terrain.kind[site] - 1, remaining: terrain.amount[site] });
+        found.sort((a,b)=>a.site-b.site);
         return found;
       },
       objective: (owner) => {
@@ -14519,7 +14562,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     ballot: c.ballot ?? "support",
     sense: c.sense ?? "native"
   });
-  var editable = (n) => Object.fromEntries(["id", "name", "cardKey", "rule", "offsets", "parent", "weights", "vision", "reach", "capacity", "resolver", "ballot", "sense"].map((k) => [k, n[k]]));
+  var editable = (n) => Object.fromEntries(["id", "name", "cardKey", "rule", "offsets", "parent", "weights", "vision", "reach", "capacity", "clearance", "birthTariff", "resolver", "ballot", "sense"].map((k) => [k, n[k]]));
   function createProgressionPanel(getSelected) {
     let draft = defaultProgressionPlan(), selected = draft.base, initialCard = null;
     const error = $("mx-plan-error"), rows2 = $("mx-plan-rows");
@@ -14567,6 +14610,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       parents.disabled = selected === draft.base;
       $("mx-plan-name").value = n.name;
       for (const k of ["vision", "reach", "capacity"]) $("mx-plan-" + k).value = n[k];
+      $("mx-plan-clearance").value = n.clearance ?? 0; $("mx-plan-birthTariff").value = n.birthTariff ?? "";
       for (let k = 0; k < 4; k++) $("mx-plan-weight-" + k).value = n.weights[k];
       $("mx-plan-shape").textContent = n.rule + " · " + n.offsets.length + " células · " + ({ contact: "Contato", guard: "Guarda", phase: "Travessia", antimatter: "Antimatéria" }[n.resolver] ?? n.resolver);
       $("mx-plan-remove").disabled = selected === draft.base;
@@ -14577,10 +14621,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       n.name = $("mx-plan-name").value || n.id;
       n.parent = selected === draft.base ? null : $("mx-plan-parent").value;
       for (const k of ["vision", "reach", "capacity"]) n[k] = $("mx-plan-" + k).valueAsNumber;
+      n.clearance = $("mx-plan-clearance").valueAsNumber; n.birthTariff = $("mx-plan-birthTariff").value.trim() === "" ? null : $("mx-plan-birthTariff").valueAsNumber;
       n.weights = resourceKinds.map((_, k) => $("mx-plan-weight-" + k).valueAsNumber);
       status();
     }
-    for (const id of ["mx-plan-name", "mx-plan-parent", "mx-plan-vision", "mx-plan-reach", "mx-plan-capacity", ...resourceKinds.map((_, k) => "mx-plan-weight-" + k)]) $(id).oninput = update;
+    for (const id of ["mx-plan-name", "mx-plan-parent", "mx-plan-vision", "mx-plan-reach", "mx-plan-capacity", "mx-plan-clearance", "mx-plan-birthTariff", ...resourceKinds.map((_, k) => "mx-plan-weight-" + k)]) $(id).oninput = update;
     $("mx-plan-add").onclick = () => {
       const c = getSelected();
       if (!c) {
@@ -15046,6 +15091,46 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     } };
   }
 
+  // experiments/typed-world/game/construction-safety.mjs
+/** Bounded paired CA forecast. A partial run never reports a completed result. */
+function forecastConstruction(match, command, {
+  horizon = 160, budgetMs = 120, now = () => performance.now(),
+  maxCells = 6000,
+} = {}) {
+  if (!Number.isSafeInteger(horizon) || horizon < 1 || !Number.isFinite(budgetMs) || budgetMs < 0 ||
+      !Number.isSafeInteger(maxCells) || maxCells < 1 || typeof now !== 'function') {
+    throw new RangeError('Invalid construction forecast limits.');
+  }
+  const start = now(), deadline = start + budgetMs;
+  const {owner, rule, resolver, ids, ballot = 'support', sense = 'native', metadata = {}} = command;
+  let steps = 0;
+  const result = (status, reason) => ({status, reason, steps, horizon, elapsedMs: Math.max(0, now() - start)});
+  if (!match.canStamp(owner, rule, resolver, ids, ballot, sense, metadata)) return result('invalid', 'placement');
+  if (now() >= deadline) return result('unknown', 'budget');
+  // The forecast receives exactly the same knowledge as this player.
+  const baseline = match.forkObserved(owner), altered = baseline.fork();
+  if (!altered.stamp(owner, rule, resolver, ids, ballot, sense, metadata)) return result('invalid', 'observed-placement');
+  for (; steps < horizon;) {
+    if (now() >= deadline) return result('unknown', 'budget');
+    if (Math.max(baseline.cells.size, altered.cells.size) > maxCells) return result('unknown', 'size');
+    baseline.step(); altered.step(); steps++;
+    const before = baseline.players[owner].conventional, after = altered.players[owner].conventional;
+    const rootBefore = baseline.progression?.objective(owner).rootCells;
+    const rootAfter = altered.progression?.objective(owner).rootCells;
+    if (rootBefore > 0 && rootAfter === 0) return result('risk', 'base-loss');
+    if (after > Math.max(120, before * 2 + ids.length * 6)) return result('risk', 'growth');
+    if (before >= 12 && after < before * .45) return result('risk', 'collapse');
+  }
+  return result('completed', 'no-trigger-in-horizon');
+}
+
+/** Confirmation is bound to the exact command, epoch and selected physical source. */
+function constructionIntent(match, command) {
+  const {owner, rule, resolver, ids, ballot = 'support', sense = 'native', metadata = {}} = command;
+  return JSON.stringify([match.gen, match.actionRevision, owner, rule, resolver, ballot, sense,
+    metadata.contract ?? null, metadata.sourceSite ?? null, ids]);
+}
+
   // src/mixed/game.js
   var number2 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
   function mount() {
@@ -15228,7 +15313,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       hud();
       toast(session.match.spatial?.enabled ? "Base pronta · explore e selecione estruturas" : "Partida pronta · " + (options.players - 1) + " bots");
     }
-    const query = new URLSearchParams(location.search), requestedSeed = query.get("seed");
+    const query = new URLSearchParams(location.search); if (!query.has("experiment")) query.set("experiment", "resources"); const requestedSeed = query.get("seed");
     const initial = { ...defaultGameOptions, botInterval: 12, botBudget: 4, toolSettings: loadToolSettings() };
     if (query.get("experiment") === "local") initial.spatial = { enabled: true };
     if (query.get("experiment") === "resources") {
@@ -15319,6 +15404,20 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "O carimbo precisa caber em território já explorado." : reason === "near-own" ? "Afaste o carimbo de suas células, ou escolha o modo livre na preparação." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
+      const command = {owner: 1, rule: c.rule, resolver: m.resolver, ids: proposed.ids, ballot: m.ballot, sense: c.sense ?? "native", metadata: metadata2(c)};
+      const intent = constructionIntent(session.match, command);
+      const confirmed = pendingHazard?.intent === intent && performance.now() <= pendingHazard.until;
+      if (session.match.spatial.enabled && !confirmed) {
+        setPlay(false);
+        const forecast = forecastConstruction(session.match, command);
+        if (forecast.status === "invalid") { pendingHazard = null; toast("A colocação mudou; escolha novamente o local."); return false; }
+        if (forecast.status !== "completed") {
+          pendingHazard = {intent, until: performance.now() + 10000};
+          toast(forecast.status === "risk" ? "Reação perigosa no ensaio · clique novamente para confirmar" : "Ensaio parcial · clique novamente para colocar e inspecionar");
+          return false;
+        }
+      }
+      pendingHazard = null;
       const before = session.match.fork();
       const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native", metadata2(c));
       if (ok) {
