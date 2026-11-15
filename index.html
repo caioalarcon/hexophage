@@ -1248,7 +1248,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
    <fieldset><legend>Experimento</legend><label class="mx-wide">Regras econômicas e território<select id="mx-experiment"><option value="classic">Economia compartilhada · atual</option><option value="local">Economia por célula + escuridão</option></select></label></fieldset>
    <fieldset id="mx-spatial-settings" hidden><legend>Base e iluminação</legend>
    <label class="mx-wide"><input id="mx-map-full" type="checkbox"> Mapa visível inteiro; construção só em áreas exploradas</label>
-   <label class="mx-wide">Energia para construir<select id="mx-funding-mode">
+   <label class="mx-wide">Distância segura entre carimbos<select id="mx-safe-gap">
+     <option value="0">Livre: permitir interações</option><option value="1">1 célula</option><option value="2">2 células</option>
+     <option value="3">3 células</option><option value="4">4 células</option>
+   </select></label><label class="mx-wide">Energia para construir<select id="mx-funding-mode">
      <option value="territory">Células do território</option><option value="local">Somente células próximas</option>
    </select></label><p class="mx-wide">A base começa em campo. Cada célula guarda energia. Novas células recebem combustível dos pais próximos. A luz acompanha as células vivas.</p><output class="mx-wide" id="mx-base-name"></output><button type="button" id="mx-use-base" class="mx-wide">Usar o carimbo selecionado como base</button><label>Raio de luz (passos)<input type="number" id="mx-vision-radius" min="1" max="24" step="1" value="6"></label><label>Energia máxima por célula<input type="number" id="mx-cell-capacity" min="1" max="10000" value="256" step="any"></label><label>Combustível por célula carimbada<input type="number" id="mx-stamp-energy" min="0" max="10000" value="32" step="any"></label><label>Combustível por nascimento natural<input type="number" id="mx-newborn-energy" min="0" max="10000" value="2" step="any"></label><label>Alcance do financiamento natural<input type="number" id="mx-birth-radius" min="1" max="6" value="1" step="1"></label><label class="mx-wide">Economias e visão por tipo (JSON)<textarea id="mx-cell-types" rows="4" spellcheck="false" aria-label="Economia e iluminação por tipo de célula">{}</textarea></label><small class="mx-wide">Exemplo: {"callahan/phase":{"visionRadius":8,"stableEnergy":0.5}}. A base passa por 64 gerações de ensaio para verificar sobrevivência e produção.</small></fieldset>
    <fieldset><legend>Partida</legend><label>Esfera<select id="mx-size"></select></label><label>Semente<input type="number" id="mx-seed" min="0" max="4294967295" step="1" required></label><label>Reserva inicial<input type="number" id="mx-bank" min="0" step="any" placeholder="Do perfil"></label></fieldset>
@@ -8433,6 +8436,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     visionRadius: 12,
     constructionFunding: "territory",
     fullMap: false,
+    safeStampGap: 2,
     cellCapacity: 256,
     stableAfter: 12,
     stableEnergy: 1,
@@ -8462,6 +8466,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (typeof settings.enabled !== "boolean") throw TypeError("Expected spatial enabled boolean.");
     if (!["local", "territory"].includes(settings.constructionFunding)) throw RangeError("Invalid construction funding mode.");
     if (typeof settings.fullMap !== "boolean") throw TypeError("fullMap must be a boolean.");
+    if (!Number.isSafeInteger(settings.safeStampGap) || settings.safeStampGap < 0 || settings.safeStampGap > 6) throw RangeError("safeStampGap must be an integer 0..6.");
     validate(settings);
     const types = {};
     for (const [key2, traits] of Object.entries(settings.types ?? {})) {
@@ -8853,6 +8858,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
             const neighbor = cells2.get(adj[id * 6 + k]);
             if (neighbor && neighbor.owner !== owner) return "enemy";
           }
+        }
+        if (spatial.enabled && !bootstrap && spatial.safeStampGap > 0) {
+          for (const site of graphBall(graph, ids, spatial.safeStampGap, domain))
+            if (cells2.get(site)?.owner === owner) return "near-own";
         }
         if (spatial.enabled && !bootstrap) {
           const type = genotype(owner, rule, resolver, ballot, sense, false, metadata2.contract ?? ""), traits = typeTraits(spatial, type);
@@ -13863,6 +13872,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-cell-types").value = JSON.stringify(spatial.types ?? {}, null, 2);
       $("mx-map-full").checked = spatial.fullMap ?? false;
       $("mx-funding-mode").value = spatial.constructionFunding ?? "territory";
+      $("mx-safe-gap").value = String(spatial.safeStampGap ?? 2);
       $("mx-bot-interval").value = o.botInterval;
       $("mx-bot-budget").value = o.botBudget;
       $("mx-size").value = o.F;
@@ -13909,6 +13919,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           enabled: true,
           fullMap: $("mx-map-full").checked,
           constructionFunding: $("mx-funding-mode").value,
+          safeStampGap: Number($("mx-safe-gap").value),
           visionRadius: $("mx-vision-radius").valueAsNumber,
           cellCapacity: $("mx-cell-capacity").valueAsNumber,
           stampEnergy: $("mx-stamp-energy").valueAsNumber,
@@ -14354,7 +14365,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (!proposed?.ready) {
         const cost = c && m ? session.match.stampQuote(c.rule, m.resolver, c.offsets.length).total : 0;
         const reason = c && m ? session.match.stampRejection(1, c.rule, m.resolver, targetIds(anchor), m.ballot, c.sense ?? "native") : null;
-        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "O carimbo precisa caber em território já explorado." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
+        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "O carimbo precisa caber em território já explorado." : reason === "near-own" ? "Afaste o carimbo de suas células, ou escolha o modo livre na preparação." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
       const before = session.match.fork();
