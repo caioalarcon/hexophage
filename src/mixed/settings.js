@@ -60,6 +60,7 @@ export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{},ge
     for(const [id,key,def] of [['mx-vision-radius','visionRadius',12],['mx-cell-capacity','cellCapacity',256],['mx-stamp-energy','stampEnergy',32],['mx-newborn-energy','newbornEnergy',2],['mx-birth-radius','birthRadius',1]])$(id).value=String(spatial[key]??def);
     $('mx-cell-types').value=JSON.stringify(spatial.types??{},null,2);
     $('mx-map-full').checked=spatial.fullMap??false;
+    $('mx-funding-mode').value=spatial.constructionFunding??'territory';
     $('mx-bot-interval').value=o.botInterval;$('mx-bot-budget').value=o.botBudget;
     $('mx-size').value=o.F;$('mx-seed').value=o.seed;$('mx-bank').value=o.bank;
     $('mx-economy').value=o.spatial?.enabled?'stability':o.policy;$('mx-existence').value=o.existence;$('mx-identity').value=o.arbitration.mode??o.arbitration;
@@ -86,7 +87,7 @@ export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{},ge
       const mode=$('mx-identity').value,by=$('mx-axis').value;
       const arbitration=presets.includes(mode)?{mode,by,order:mode==='matrix'?(by==='rule'?ruleIds:resolvers):$('mx-order').value.split(',').map(x=>x.trim()),...(mode==='matrix'?{matrix:matrix.bits}:{})}:mode;
       const toolSettings=readTools();
-      const spatial=$('mx-experiment').value==='classic'?{enabled:false}:{enabled:true,fullMap:$('mx-map-full').checked,constructionFunding:getMatch().spatial?.constructionFunding??'territory',visionRadius:$('mx-vision-radius').valueAsNumber,
+      const spatial=$('mx-experiment').value==='classic'?{enabled:false}:{enabled:true,fullMap:$('mx-map-full').checked,constructionFunding:$('mx-funding-mode').value,visionRadius:$('mx-vision-radius').valueAsNumber,
         cellCapacity:$('mx-cell-capacity').valueAsNumber,stampEnergy:$('mx-stamp-energy').valueAsNumber,newbornEnergy:$('mx-newborn-energy').valueAsNumber,birthRadius:$('mx-birth-radius').valueAsNumber,
         stableAfter:economy.stableAfter,stableEnergy:economy.stableEnergy,types:JSON.parse($('mx-cell-types').value||'{}')};
       const progression=$('mx-experiment').value==='resources'?{enabled:true,plan:planPanel.value()}:{enabled:false};
