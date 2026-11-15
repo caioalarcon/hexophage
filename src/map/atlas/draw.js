@@ -75,16 +75,23 @@ function drawAtlas() {
       if(sites===world.fog.visible&&atlasMetrics.pitch>4){c.strokeStyle='#71ac8f40';c.lineWidth=.6;c.stroke(path);}
     }
   }
+  // Minerals are small diamonds on terrain; living cells remain full hexagons.
   const groundEdges=new Map();
   if(world.resourceDeposits?.size){
-    const ground=new Map();
+    const ground=new Map(),radius=Math.max(.8,Math.min(4,atlasMetrics.pitch*.28));
     for(const [id,deposit] of world.resourceDeposits){
-      if(!ground.has(deposit.fill))ground.set(deposit.fill,new Path2D());
-      atlasMark(ground.get(deposit.fill),id,a);
-      if(world.cells[id]&&atlasMetrics.pitch>9){
-        if(!groundEdges.has(deposit.edge))groundEdges.set(deposit.edge,new Path2D());
-        atlasMark(groundEdges.get(deposit.edge),id,a);
-      }
+      const p=largeAtlasCenter(id,a,2/a.g.f);
+      if(!p)continue;
+      const x=p[0],y=p[1];
+      const fill=deposit.fill,edge=deposit.edge;
+      if(!ground.has(fill))ground.set(fill,new Path2D());
+      const glyph=ground.get(fill);
+      glyph.moveTo(x,y-radius);glyph.lineTo(x+radius*.75,y);glyph.lineTo(x,y+radius);
+      glyph.lineTo(x-radius*.75,y);glyph.closePath();
+      if(!groundEdges.has(edge))groundEdges.set(edge,new Path2D());
+      const line=groundEdges.get(edge);
+      line.moveTo(x,y-radius);line.lineTo(x+radius*.75,y);line.lineTo(x,y+radius);
+      line.lineTo(x-radius*.75,y);line.closePath();
     }
     for(const [color,path] of ground){c.fillStyle=color;c.fill(path);}
   }
