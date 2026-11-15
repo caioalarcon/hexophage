@@ -1,0 +1,31 @@
+name: Isolated recovery workspace
+on:
+  push:
+    branches: [experiment/recovery-validation-20261115]
+permissions:
+  contents: read
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Package source, locked dependencies and public Git history
+        run: |
+          git bundle create "$RUNNER_TEMP/hexophage-history.bundle" --all
+          tar -czf "$RUNNER_TEMP/hexophage-workspace.tgz" --exclude='./.git' .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hexophage-recovery-workspace
+          path: |
+            ${{ runner.temp }}/hexophage-history.bundle
+            ${{ runner.temp }}/hexophage-workspace.tgz
+          retention-days: 7
