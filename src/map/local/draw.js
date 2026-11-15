@@ -24,6 +24,17 @@ function drawFlat() {
   c.translate(a.cx, a.cy);
   c.scale(world.zoom, world.zoom);
   const vis = world.chart.map;
+  if(world.fog){
+    const unknown=new Path2D(),remembered=new Path2D(),lit=new Path2D();
+    for(const item of vis.values()){
+      const path=world.fog.visible.has(item.id)?lit:world.fog.explored.has(item.id)?remembered:unknown;
+      hexPath(path,DX*(item.q+item.r/2),DY*item.r,R*1.035);
+    }
+    c.fillStyle='#060d16';c.fill(unknown);
+    c.fillStyle='#142331';c.fill(remembered);
+    c.fillStyle='#21483d55';c.fill(lit);
+    c.strokeStyle='#62ae9240';c.lineWidth=.55/world.zoom;c.stroke(lit);
+  }
   // Owner-aware rendering, using only cells in the local chart.
   const paths = Array.from({ length: 8 }, () => new Path2D());
   let count = 0;

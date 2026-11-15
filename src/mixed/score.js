@@ -77,7 +77,8 @@ export function createScoreboard(getSession){
     button.onclick=()=>{
       const session=getSession();
       const look=world.chart?pointOnSphere(session.graph,world.center):atlasCamera.look;
-      const site=nearestColony(session.graph,session.match.cells,id,look);
+      const visible=session.match.spatial?.enabled?new Map([...session.match.cells].filter(([site,c])=>c.owner===1||session.match.canSee(1,site))):session.match.cells;
+      const site=nearestColony(session.graph,visible,id,look);
       if(site!==null){centerOnPlayer(site);world.needsDraw=world.needsGrid=true;}
     };
     toggle.onclick=()=>{expanded=expanded===id?null:id;update();};
@@ -86,11 +87,13 @@ export function createScoreboard(getSession){
   }
   function update(){
     const session=getSession(),m=session.match;
-    const ids=m.players.slice(1).map((_,i)=>i+1).sort((a,b)=>Number(session.alive[b])-Number(session.alive[a])||
+    const ids=m.players.slice(1).map((_,i)=>i+1).sort((a,b)=>m.spatial?.enabled?a-b:Number(session.alive[b])-Number(session.alive[a])||
       m.players[b].conventional-m.players[a].conventional || m.players[b].reserve-m.players[a].reserve);
     for(const [index,id] of ids.entries()){
-      const row=rows.get(id)??addRow(id),p=m.players[id],open=expanded===id;
-      row.summary.textContent=session.alive[id]?p.conventional.toLocaleString('pt-BR')+' · ◈ '+number.format(p.reserve):'Eliminado';
+      const row=rows.get(id)??addRow(id),p=m.players[id],hidden=!!m.spatial?.enabled&&id!==1,open=expanded===id&&!hidden;
+      let seen=0;if(hidden)for(const [site,c] of m.cells)if(c.owner===id&&m.canSee(1,site))seen++;
+      row.summary.textContent=hidden?(seen?seen+' à vista':'Sem contato'):session.alive[id]?p.conventional.toLocaleString('pt-BR')+' · ◈ '+number.format(p.reserve):'Eliminado';
+      row.toggle.disabled=hidden;row.button.disabled=hidden&&!seen;
       row.toggle.setAttribute('aria-expanded',String(open));row.toggle.textContent=open?'▾':'▸';
       row.toggle.setAttribute('aria-label',(open?'Fechar':'Abrir')+' estatísticas de '+game.names[id]);
       row.details.hidden=!open;

@@ -5,6 +5,7 @@ import {disk} from '../pilots.mjs';
 import {card as shipMotion} from '../duels-fixtures.mjs';
 import {patchForStamp} from '../../../src/patterns/spherical-patch.js';
 import {createFieldToolPlanner} from './bot-tools.mjs';
+import {createSpatialGameBots} from './spatial-bots.mjs';
 
 const ballots=['support','age','geometry','robustness'];
 function targetPose(m,site){
@@ -35,6 +36,7 @@ function chooseTarget(match,other,pick){
 
 export function createGameBots(match,{seed=1,owners=match.players.slice(2).map((_,i)=>i+2),
   onOrder,beforeOrder,onDecision,cards=atlasCards,budget=4,horizon=16,lookahead=48,interval=12,phaseWindow=18,adaptive=true,recoveryOwners=owners,fieldTools=true}={}){
+  if(match.spatial?.enabled)return createSpatialGameBots(match,{seed,owners,onOrder,beforeOrder,onDecision,cards,budget,horizon,lookahead,interval,fieldTools});
   if(!Number.isSafeInteger(budget)||budget<0||!Number.isSafeInteger(horizon)||horizon<4||
      !Number.isSafeInteger(phaseWindow)||phaseWindow<0||!Number.isFinite(lookahead)||lookahead<0||
      !Number.isSafeInteger(interval)||interval<1)throw RangeError('Invalid bot timing.');

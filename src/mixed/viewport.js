@@ -29,6 +29,7 @@ export function bindMixedViewport(){
 // once per displayed frame, including when many generations were simulated.
 export function syncField(match){
   world.gen=match.gen;
+  world.fog=match.spatial?.enabled?match.visibility(1):null;
   for(let i=0;i<world.activeCount;i++){
     const id=world.active[i];world.cells[id]=0;world.owners[id]=0;
   }
@@ -36,6 +37,7 @@ export function syncField(match){
   world.activeCount=0;
   for(const group of world.ownerCells)group.length=0;
   for(const [id,c] of match.cells){
+    if(world.fog&&c.owner!==1&&!world.fog.visible.has(id))continue;
     world.cells[id]=1;world.owners[id]=c.owner;
     world.active[world.activeCount++]=id;world.ownerCells[c.owner].push(id);
   }

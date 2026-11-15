@@ -40,6 +40,10 @@ export function createFieldTools({getMatch,canEdit=()=>true,onCapture=()=>{},onE
   }
   const siteAt=anchor=>anchor?.id??(anchor&&world.chart?.map.get(key(anchor.q,anchor.r))?.id);
   function capture(match,center){
+    if(match.spatial?.enabled){
+      const cells=new Map([...match.cells].filter(([site,c])=>c.owner===1||match.canSee(1,site)));
+      match={...match,cells};
+    }
     const nearest=nearestPatternSite(match,center);
     if(nearest===null)return {ok:false,reason:'empty'};
     let orientation;

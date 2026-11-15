@@ -3,7 +3,7 @@ on:
   push:
     branches: [dev, preview/grower-siege, research/mixed-stamp-collisions]
   pull_request:
-    branches: [main, preview/economic-tactics]
+    branches: [main, preview/economic-tactics, "experiment/**"]
 permissions:
   contents: write
 jobs:

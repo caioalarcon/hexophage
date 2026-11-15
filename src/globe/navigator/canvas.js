@@ -1,6 +1,32 @@
 import { globeContext } from '../camera/view.js';
 import { drawGlobePopulation2D } from '../canvas/population.js';
 import { fallbackMini, globeTarget } from './surface.js';
+import {world} from '../../browser/world-state.js';
+import {sphereCorner} from '../../world/sphere.js';
+
+function drawFog(c,v){
+  const g=world.graph,corner=new Float64Array(3);
+  c.fillStyle='#060d16';c.fillRect(0,0,v.w,v.h);
+  for(const [sites,color] of [[world.fog.explored,'#152832'],[world.fog.visible,'#2a5749']]){
+    c.beginPath();
+    for(const id of sites){
+      const coords=g.coords,j=id*3;
+      if(coords[j]*v.look[0]+coords[j+1]*v.look[1]+coords[j+2]*v.look[2]<.03)continue;
+      const points=[];
+      for(let k=0;k<g.deg[id];k++){
+        sphereCorner(g,id,k,corner);
+        const z=corner[0]*v.look[0]+corner[1]*v.look[1]+corner[2]*v.look[2];
+        if(z<.02){points.length=0;break;}
+        const scale=v.inside?v.focal/z:v.radius;
+        points.push([v.cx+scale*(corner[0]*v.right[0]+corner[1]*v.right[1]+corner[2]*v.right[2]),
+          v.cy-scale*(corner[0]*v.up[0]+corner[1]*v.up[1]+corner[2]*v.up[2])]);
+      }
+      if(!points.length)continue;
+      c.moveTo(...points[0]);for(const p of points.slice(1))c.lineTo(...p);c.closePath();
+    }
+    c.fillStyle=color;c.fill();
+  }
+}
 
 function drawMiniBackdrop() {
   const canvas = fallbackMini,
@@ -56,7 +82,7 @@ function drawMiniFallback(wire) {
   ctx.lineWidth = 0.65;
   // Even in software fallback, show the actual hexagonal topology at low LOD.
   const lines = wire?.wireLines;
-  if (lines) {
+  if (lines&&!world.fog) {
     ctx.beginPath();
     const focal = v.inside ? v.focal : v.radius;
     for (let k = 0; k < lines.length; k += 6) {
@@ -74,6 +100,7 @@ function drawMiniFallback(wire) {
     }
     ctx.stroke();
   }
+  if(world.fog)drawFog(ctx,v);
   drawGlobePopulation2D(ctx, v, Math.min(devicePixelRatio || 1, 2));
   ctx.restore();
   if (v.inside) return;

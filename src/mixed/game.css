@@ -142,6 +142,17 @@
 #hexlab.mixed #mx-erase-value{min-width:18px;text-align:right;color:#ffad9a}
 #hexlab.mixed[data-field-tool=erase] #hl-world,#hexlab.mixed[data-field-tool=pick] #hl-world{cursor:crosshair}
 #hexlab.mixed #mx-tools-apply{font-size:11px;padding:6px}
+#hexlab.mixed #mx-frontier{padding:8px;border:1px solid #467c69;border-radius:5px;background:#102a25;font-size:11px;line-height:1.4}
+#hexlab.mixed #mx-frontier[hidden],#hexlab.mixed #mx-spatial-settings[hidden]{display:none}
+#hexlab.mixed #mx-frontier strong{color:var(--mx-mint)}
+#hexlab.mixed #mx-frontier p{margin:5px 0;color:#c2d8cc}
+#hexlab.mixed #mx-frontier output{display:block;margin:4px 0;color:#bbcec9}
+#hexlab.mixed #mx-home{font-size:10px;padding:4px 7px}
+#hexlab.mixed #mx-spatial-settings p{font-size:12px;line-height:1.4;margin:0}
+#hexlab.mixed #mx-spatial-settings textarea{box-sizing:border-box;width:100%;min-width:0;resize:vertical;background:#0d1b29;color:#c8eadc;border:1px solid #425770;border-radius:4px;padding:7px;font-size:11px}
+#hexlab.mixed #mx-spatial-settings small{font-size:10px;line-height:1.4;color:var(--mx-soft);overflow-wrap:anywhere}
+#hexlab.mixed #mx-base-name{font-size:12px;color:#d2eee0}
+@media(orientation:portrait){#hexlab.mixed #mx-frontier{grid-column:1/-1;padding:5px}#hexlab.mixed #mx-frontier p{display:none}#hexlab.mixed #mx-frontier output{display:inline-block;margin:0 5px;font-size:10px}}
 @media(orientation:portrait){
  #hexlab.mixed .mx-tools{padding:3px 0;gap:3px}
  #hexlab.mixed .mx-tools-row{gap:5px}

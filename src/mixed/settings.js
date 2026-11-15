@@ -4,14 +4,24 @@ import {$} from '../layout/elements.js';
 import {gameEconomies} from '../../experiments/typed-world/game/match.mjs';
 import {normalizeToolSettings} from './field-tools.js';
 import {saveToolSettings} from './tool-controls.js';
+import {normalizeOpening} from '../../experiments/typed-world/game/opening.mjs';
 
 const tariffs={stampCost:'Plantio por célula',birthCost:'Custo por nascimento',eraseCost:'Custo por substituição',
   stableEnergy:'Renda por madura',stableAfter:'Idade de maturação',productionScale:'Escala de saturação',
   birthEnergy:'Renda por nascimento',deathEnergy:'Renda por morte',blastBirthCost:'Nascimento de onda',
   salvage:'Revenda por célula',protectedMature:'Maduras protegidas'};
 
-export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{}}={}){
+export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{},getSelected=()=>null}={}){
   const dialog=$('mx-settings'),inputs=new Map();
+  let draftBase=null;
+  function baseLabel(){const c=normalizeOpening(draftBase);$('mx-base-name').textContent='Base: '+c.name+' · '+c.offsets.length+' células';}
+  $('mx-experiment').onchange=()=>{
+    const local=$('mx-experiment').value!=='classic';$('mx-spatial-settings').hidden=!local;
+    $('mx-economy').disabled=local;
+    if(local&&$('mx-economy').value!=='stability'){$('mx-economy').value='stability';setRates(gameEconomies.stability);}
+    for(const key of ['productionScale','birthEnergy','deathEnergy','salvage','protectedMature'])if(inputs.has(key))inputs.get(key).disabled=local;
+  };
+  $('mx-use-base').onclick=()=>{const c=getSelected();if(c){draftBase=normalizeOpening(c);baseLabel();}};
   for(const f of [16,24,32,48,64,96,128,160,320])
     $('mx-size').add(new Option('F'+f+' · '+(10*f*f+2).toLocaleString('pt-BR'),String(f)));
   for(const [key,name] of Object.entries(tariffs)){
@@ -40,9 +50,14 @@ export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{}}={
   }
   $('mx-config').onclick=()=>{
     const o=getOptions();
+    draftBase=o.initialCard??null;baseLabel();
+    $('mx-experiment').value=o.spatial?.enabled?'local':'classic';$('mx-experiment').onchange();
+    const spatial=getMatch().spatial??{};
+    for(const [id,key,def] of [['mx-vision-radius','visionRadius',6],['mx-cell-capacity','cellCapacity',256],['mx-stamp-energy','stampEnergy',32],['mx-newborn-energy','newbornEnergy',2],['mx-birth-radius','birthRadius',1]])$(id).value=String(spatial[key]??def);
+    $('mx-cell-types').value=JSON.stringify(spatial.types??{},null,2);
     $('mx-bot-interval').value=o.botInterval;$('mx-bot-budget').value=o.botBudget;
     $('mx-size').value=o.F;$('mx-seed').value=o.seed;$('mx-bank').value=o.bank;
-    $('mx-economy').value=o.policy;$('mx-existence').value=o.existence;$('mx-identity').value=o.arbitration.mode??o.arbitration;
+    $('mx-economy').value=o.spatial?.enabled?'stability':o.policy;$('mx-existence').value=o.existence;$('mx-identity').value=o.arbitration.mode??o.arbitration;
     $('mx-axis').value=o.arbitration.by??'resolver';$('mx-friendly').checked=o.friendlyFire;setArb(o.arbitration);
     $('mx-erase-max').value=getMatch().toolSettings.maxEraseRadius;
     $('mx-stamp-max').value=getMatch().toolSettings.maxStampCells;
@@ -66,7 +81,10 @@ export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{}}={
       const mode=$('mx-identity').value,by=$('mx-axis').value;
       const arbitration=presets.includes(mode)?{mode,by,order:mode==='matrix'?(by==='rule'?ruleIds:resolvers):$('mx-order').value.split(',').map(x=>x.trim()),...(mode==='matrix'?{matrix:matrix.bits}:{})}:mode;
       const toolSettings=readTools();
-      apply({...getOptions(),toolSettings,botInterval:$('mx-bot-interval').valueAsNumber,botBudget:$('mx-bot-budget').valueAsNumber,F:+$('mx-size').value,seed:+$('mx-seed').value,bank:$('mx-bank').value===''?getOptions().bank:+$('mx-bank').value,
+      const spatial=$('mx-experiment').value==='classic'?{enabled:false}:{enabled:true,visionRadius:$('mx-vision-radius').valueAsNumber,
+        cellCapacity:$('mx-cell-capacity').valueAsNumber,stampEnergy:$('mx-stamp-energy').valueAsNumber,newbornEnergy:$('mx-newborn-energy').valueAsNumber,birthRadius:$('mx-birth-radius').valueAsNumber,
+        stableAfter:economy.stableAfter,stableEnergy:economy.stableEnergy,types:JSON.parse($('mx-cell-types').value||'{}')};
+      apply({...getOptions(),spatial,initialCard:draftBase,toolSettings,botInterval:$('mx-bot-interval').valueAsNumber,botBudget:$('mx-bot-budget').valueAsNumber,F:+$('mx-size').value,seed:+$('mx-seed').value,bank:$('mx-bank').value===''?getOptions().bank:+$('mx-bank').value,
         policy:$('mx-economy').value,existence:$('mx-existence').value,arbitration,friendlyFire:$('mx-friendly').checked,economy});
       saveToolSettings(toolSettings);
       dialog.close();

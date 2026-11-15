@@ -39,6 +39,11 @@ export function startMixedGame(){
   mount();
   let session,controllers,atlas,tools,options,dirty=true,lastUI=-Infinity,elapsed=0,previous=0,lastOrders=[],event=null;
   const hand=createHand(()=>session?.match,{onInspect:card=>atlas.open(card,{replace:true}),onChoose:()=>tools?.select('stamp')});
+  const fillDeck=cards=>{
+    if(!session?.match.spatial?.enabled){hand.fill(cards);return;}
+    const base=session.opening[1],known=cards.find(c=>c.key===base.key),opening=known??{...base,source:base.rule,custom:true,slotKey:base.key};
+    hand.fill([opening,...cards.filter(c=>c.key!==base.key)].slice(0,Math.max(54,cards.length)));
+  };
   const scoreboard=createScoreboard(()=>session);
   tools=createFieldTools({getMatch:()=>session?.match,canEdit:()=>!!session?.alive[1]&&!game.ended&&!game.stopped,
     onCapture:card=>atlas.capture(card,hand.selected),onErase:()=>{dirty=true;}});
@@ -48,6 +53,12 @@ export function startMixedGame(){
     $('mx-cash').textContent='◈ '+number.format(p.reserve);
     $('mx-field').textContent=p.conventional.toLocaleString('pt-BR');
     $('mx-flow').textContent=(scoreboard.flow>0?'+':'')+number.format(scoreboard.flow);
+    if(m.spatial?.enabled){
+      const view=m.visibility(1);$('mx-vision').textContent='Luz: '+view.visible.size.toLocaleString('pt-BR')+' · Explorado: '+view.explored.size.toLocaleString('pt-BR');
+      const targets=targetIds(world.hover),cell=world.hover?.id===undefined?null:m.cells.get(world.hover.id);
+      $('mx-local-energy').textContent=targets?'Energia perto do carimbo: ◈ '+number.format(m.localReserve(1,targets)):
+        cell?.owner===1?'Célula: ◈ '+number.format(cell.energy)+' · Estável por '+cell.stableAge+' G':'Energia guardada nas células · ◈ '+number.format(p.reserve);
+    }
     if($('mx-conflicts').open && event){
       const votes=event.policy==='support'?event.weightYes+' / '+event.weightNo:event.yes+' / '+event.no;
       const owner=event.winner?game.names[event.winner.owner]:'';
@@ -67,13 +78,17 @@ export function startMixedGame(){
     game.ended=false;game.winner=0;game.stopped=false;game.humanEliminated=false;world.matchStarted=false;lastOrders=[];elapsed=0;
     event=null;$('mx-event').textContent='Avance para observar.';$('mx-locate').hidden=true;
     $('mx-profile-button').textContent='Economia · '+({stability:'Maduras',birth:'Nascimentos',death:'Mortes',activity:'Atividade'}[options.policy]);
+    $('mx-frontier').hidden=!session.match.spatial?.enabled;
+    $('mx-cash').previousElementSibling.textContent=session.match.spatial?.enabled?'ENERGIA EM CAMPO':'RESERVA';
+    if(session.match.spatial?.enabled)$('mx-profile-button').textContent='Economia · Celular';
     loadViewport(session,storage);world.speed=Number($('hl-speed').value);syncPlayButton();
     tools.refresh();tools.select('stamp');world.painting=false;
     if(atlas)atlas.refresh();dirty=true;hud();
-    toast('Partida pronta · '+(options.players-1)+' bots');
+    toast(session.match.spatial?.enabled?'Base pronta · expanda pela área iluminada':'Partida pronta · '+(options.players-1)+' bots');
   }
   const query=new URLSearchParams(location.search),requestedSeed=query.get('seed');
   const initial={...defaultGameOptions,botInterval:12,botBudget:4,toolSettings:loadToolSettings()};
+  if(query.get('experiment')==='local')initial.spatial={enabled:true};
   if(Object.hasOwn(gameEconomies,query.get('economy')))initial.policy=query.get('economy');
   if(requestedSeed!==null && /^\d{1,10}$/.test(requestedSeed) && Number(requestedSeed)<=0xffffffff)initial.seed=Number(requestedSeed);
   if(['16','24','32','48','64','96','128','160','320'].includes(query.get('f')))initial.F=Number(query.get('f'));
@@ -83,7 +98,8 @@ export function startMixedGame(){
   bindSettings(()=>options,()=>session.match,next=>{
     if(next.F!==session.graph.f && next.F>=64)requestSphere(next.F,(graph,buffers)=>reset(next,graph,buffers));
     else reset(next);
-  },{onToolsChanged:toolSettings=>{options={...options,toolSettings};tools.refresh();hand.update();}});
+  },{onToolsChanged:toolSettings=>{options={...options,toolSettings};tools.refresh();hand.update();},
+    getSelected:()=>hand.selected?{...hand.selected,offsets:hand.current.shape,resolver:hand.current.resolver,ballot:hand.current.ballot}:null});
   const targetIds=anchor=>anchor&&hand.current?stampTargets(anchor,hand.current.shape):null;
   function preview(anchor){
     if(tools.mode!=='stamp')return tools.preview(anchor);
@@ -95,8 +111,11 @@ export function startMixedGame(){
     if(tools.mode!=='stamp')return tools.apply(anchor);
     const proposed=preview(anchor),c=hand.selected,p=session.match.players[1],m=hand.current;
     if(!proposed?.ready){
-      const cost=c&&m?c.offsets.length*session.match.stampPrice(m.resolver):0;
-      toast(game.stopped?'Partida interrompida.':game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':c?.offsets.length>session.match.toolSettings.maxStampCells?
+      const cost=c&&m?session.match.stampQuote(c.rule,m.resolver,c.offsets.length).total:0;
+      const reason=c&&m?session.match.stampRejection(1,c.rule,m.resolver,targetIds(anchor),m.ballot,c.sense??'native'):null;
+      toast(game.stopped?'Partida interrompida.':game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':reason==='darkness'?
+        'Todo o carimbo precisa caber na luz atual. Expanda a iluminação primeiro.':reason==='local-energy'?
+        'As células próximas precisam de mais energia para construir e abastecer este carimbo.':c?.offsets.length>session.match.toolSettings.maxStampCells?
         'Carimbo acima do limite de '+session.match.toolSettings.maxStampCells+' células.':p.reserve<cost?
         'Faltam ◈ '+number.format(cost-p.reserve)+' para este carimbo.':!targetIds(anchor)?'O carimbo não cabe nesta região da malha.':'Posição ocupada ou junto de uma colônia adversária.');
       return false;
@@ -106,7 +125,8 @@ export function startMixedGame(){
     return ok;
   }
   usePlacement({preview,place,get gesture(){return tools.mode==='erase'?'paint':'stamp';}});
-  const observe={onExistence:e=>{if(e.yes && e.no)event=e;}};
+  const observe={onExistence:e=>{if(e.yes&&e.no&&(!session.match.spatial?.enabled||session.match.canSee(1,e.site)))event=e;}};
+  $('mx-home').onclick=()=>{centerOnPlayer(session.starts[1]);world.needsDraw=world.needsGrid=true;};
   $('mx-globe').onclick=()=>openFullGlobe(true);
   $('mx-locate').onclick=()=>{if(event){centerOnPlayer(event.site);world.needsDraw=world.needsGrid=true;}};
   $('mx-profile-button').onclick=()=>{$('mx-config').click();$('mx-economy').focus();};
@@ -139,7 +159,8 @@ export function startMixedGame(){
     if(!world.matchStarted||world.playing||game.ended||game.stopped||game.humanEliminated)return;
     step();syncPlayButton();hud();
   };
-  $('hl-speed').value=String(40);world.speed=40;$('hl-speed-val').textContent='40/s';
+  const initialSpeed=initial.spatial?.enabled?12:40;
+  $('hl-speed').value=String(initialSpeed);world.speed=initialSpeed;$('hl-speed-val').textContent=initialSpeed+'/s';
   $('hl-speed').oninput=()=>{world.speed=Number($('hl-speed').value);$('hl-speed-val').textContent=world.speed+'/s';};
   const visible=()=>!$('mx-settings').open&&!$('mx-atlas-host').querySelector('dialog[open]')&&!document.hidden;
   function frame(t){
@@ -159,7 +180,7 @@ export function startMixedGame(){
   function boot(graph,buffers){
     reset(initial,graph,buffers);
     atlas=createGameAtlas({host:$('mx-atlas-host'),getWallet:()=>session.match.players[1],getEconomy:()=>session.match.economy,
-      getToolSettings:()=>session.match.toolSettings,onSelect:hand.choose,onDeck:hand.fill});
+      getToolSettings:()=>session.match.toolSettings,onSelect:hand.choose,onDeck:fillDeck});
     $('mx-atlas').onclick=()=>atlas.open(hand.selected);
     requestAnimationFrame(frame);
   }
