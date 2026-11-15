@@ -1,6 +1,6 @@
 // Spatial economy traits and sparse graph-distance visibility. No pattern names
 // or shape recognition participate in either mechanic.
-export const spatialDefaults=Object.freeze({enabled:false,visionRadius:12,constructionFunding:'territory',fullMap:false,cellCapacity:256,
+export const spatialDefaults=Object.freeze({enabled:false,visionRadius:12,constructionFunding:'territory',fullMap:false,safeStampGap:2,cellCapacity:256,
   stableAfter:12,stableEnergy:1,stampEnergy:32,newbornEnergy:2,birthRadius:1,inheritanceRadius:2,types:Object.freeze({})});
 const numeric=['visionRadius','cellCapacity','stableAfter','stableEnergy','stampEnergy','newbornEnergy','birthRadius','inheritanceRadius'];
 function validate(values){
@@ -22,6 +22,7 @@ export function normalizeSpatial(value={}){
   if(typeof settings.enabled!=='boolean')throw TypeError('Expected spatial enabled boolean.');
   if(!['local','territory'].includes(settings.constructionFunding))throw RangeError('Invalid construction funding mode.');
   if(typeof settings.fullMap!=='boolean')throw TypeError('fullMap must be a boolean.');
+  if(!Number.isSafeInteger(settings.safeStampGap)||settings.safeStampGap<0||settings.safeStampGap>6)throw RangeError('safeStampGap must be an integer 0..6.');
   validate(settings);
   const types={};
   for(const [key,traits] of Object.entries(settings.types??{})){
