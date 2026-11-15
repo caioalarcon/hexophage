@@ -1200,11 +1200,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <template id="mx-panel-template">
  <section class="mx-console">
   <div class="mx-mode"><label for="hl-rulechoice">Autômato da partida</label><span id="mx-mode-slot"></span></div>
-  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Configurar partida" title="Configurar partida">⚙</button></div>
+  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Preparar partida" title="Preparar partida">⚙</button><button id="mx-undo" type="button" aria-label="Desfazer último carimbo" title="Desfazer último carimbo (Ctrl+Z)" hidden>↶</button></div>
   <div class="mx-metrics"><div><small>RESERVA</small><strong id="mx-cash"></strong></div><div><small>CAMPO</small><strong id="mx-field"></strong></div><div><small title="Média recente da renda menos nascimentos e cortes">FLUXO / G</small><strong id="mx-flow"></strong></div></div>
   <div class="mx-speed" id="mx-speed-slot"></div>
   <div class="mx-rail-links"><button id="mx-profile-button" type="button" title="Ajustes econômicos da partida"></button><button id="mx-globe" type="button">Globo</button></div>
-  <section id="mx-frontier" hidden aria-label="Economia celular e exploração"><strong>Fronteira celular</strong><p id="mx-frontier-help">Expanda a luz com células próprias. Carimbe dentro dela e abasteça a construção com energia próxima.</p><output id="mx-vision"></output><output id="mx-local-energy"></output><button id="mx-home" type="button">Voltar à base</button></section>
+  <section id="mx-frontier" hidden aria-label="Economia celular e exploração"><strong>Fronteira celular</strong><p id="mx-frontier-help" hidden>Explore o mundo para liberar terrenos. Fontes vivas transportam energia e dão alcance às estruturas.</p><output id="mx-vision"></output><output id="mx-local-energy"></output><button id="mx-home" type="button">Voltar à base</button></section>
   <details id="mx-league" open><summary>Classificação</summary><ol id="mx-score"></ol></details>
   <details id="mx-conflicts"><summary>Disputas em campo</summary><div id="mx-event">Avance para observar.</div><button id="mx-locate" type="button" hidden>Ver no mapa</button></details>
  </section>
@@ -9500,7 +9500,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (!Number.isInteger(players) || players < 2 || players > graph.n) throw RangeError("A partida precisa de pelo menos dois jogadores e espaço na esfera.");
     if (!Array.isArray(unseededOwners) || unseededOwners.some((owner) => !Number.isInteger(owner) || owner < 1 || owner > players))
       throw RangeError("A abertura vazia precisa indicar jogadores da partida.");
-    const match = createTypedWorld(graph, {
+    let match = createTypedWorld(graph, {
       seed,
       wallets: Array(players).fill(bank),
       economy: { ...gameEconomies[policy], ...economy },
@@ -9561,7 +9561,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (survivors <= 1) outcome = survivors ? survivor : 0;
       return true;
     }
-    return { match, graph, starts, opening, alive, eliminatedAt, baseTrial, step: step2, get outcome() {
+    function restore(previous2, previousAlive = alive, previousEliminated = eliminatedAt) {
+      if (!previous2 || previous2.graph !== graph) throw RangeError("O estado anterior precisa pertencer à mesma esfera.");
+      match = previous2;
+      alive.splice(0, alive.length, ...previousAlive);
+      eliminatedAt.splice(0, eliminatedAt.length, ...previousEliminated);
+      outcome = null;
+    }
+    return { get match() {
+      return match;
+    }, graph, starts, opening, alive, eliminatedAt, baseTrial, step: step2, restore, get outcome() {
       return outcome;
     } };
   }
@@ -14049,15 +14058,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     function update() {
       const session = getSession(), m = session.match;
-      const ids = m.players.slice(1).map((_, i) => i + 1).sort((a, b) => m.spatial?.enabled ? a - b : Number(session.alive[b]) - Number(session.alive[a]) || m.players[b].conventional - m.players[a].conventional || m.players[b].reserve - m.players[a].reserve);
+      const ids = m.players.slice(1).map((_, i) => i + 1).sort((a, b) => Number(session.alive[b]) - Number(session.alive[a]) || m.players[b].conventional - m.players[a].conventional || m.players[b].reserve - m.players[a].reserve);
       for (const [index, id] of ids.entries()) {
-        const row = rows2.get(id) ?? addRow(id), p = m.players[id], hidden = !!m.spatial?.enabled && id !== 1, open = expanded === id && !hidden;
+        const row = rows2.get(id) ?? addRow(id), p = m.players[id], hidden = !!m.spatial?.enabled && id !== 1, open = expanded === id;
         let seen = 0;
         if (hidden) {
           for (const [site, c] of m.cells) if (c.owner === id && m.canSee(1, site)) seen++;
         }
-        row.summary.textContent = hidden ? seen ? seen + " à vista" : "Sem contato" : session.alive[id] ? p.conventional.toLocaleString("pt-BR") + " · ◈ " + number.format(p.reserve) : "Eliminado";
-        row.toggle.disabled = hidden;
+        row.summary.textContent = session.alive[id] ? "▣" + p.conventional.toLocaleString("pt-BR") + " ◈" + number.format(p.reserve) + " Δ" + signed3(ledger[id]?.flow ?? 0) + (hidden && seen ? " · " + seen + " vistos" : "") : "Eliminado";
+        row.summary.title = "Indicadores públicos: células, energia armazenada e fluxo médio por geração.";
+        row.toggle.disabled = false;
         row.button.disabled = hidden && !seen;
         row.toggle.setAttribute("aria-expanded", String(open));
         row.toggle.textContent = open ? "▾" : "▸";
@@ -14104,7 +14114,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function startMixedGame() {
     mount();
-    let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null;
+    let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null, lastUndo = null, pendingHazard = null;
     const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }), onChoose: () => tools?.select("stamp") });
     const fillDeck = (cards2) => {
       if (!session?.match.spatial?.enabled) {
@@ -14131,9 +14141,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-flow").textContent = (scoreboard.flow > 0 ? "+" : "") + number2.format(scoreboard.flow);
       if (m.spatial?.enabled) {
         const view = m.visibility(1);
-        $("mx-vision").textContent = "Luz: " + view.visible.size.toLocaleString("pt-BR") + " · Explorado: " + view.explored.size.toLocaleString("pt-BR");
+        $("mx-vision").textContent = "◉ " + view.visible.size.toLocaleString("pt-BR") + " · ◌ " + view.explored.size.toLocaleString("pt-BR");
         const targets = targetIds(world.hover), cell = world.hover?.id === void 0 ? null : m.cells.get(world.hover.id);
-        $("mx-local-energy").textContent = targets ? "Energia perto do carimbo: ◈ " + number2.format(m.localReserve(1, targets)) : cell?.owner === 1 ? "Célula: ◈ " + number2.format(cell.energy) + " · Estável por " + cell.stableAge + " G" : "Energia guardada nas células · ◈ " + number2.format(p.reserve);
+        $("mx-local-energy").textContent = targets ? "◈ " + number2.format(m.localReserve(1, targets)) : cell?.owner === 1 ? "◈ " + number2.format(cell.energy) + " · G" + cell.stableAge : "◈ " + number2.format(p.reserve);
+        $("mx-local-energy").title = "Energia armazenada nas células; construções em território explorado podem receber energia do restante do território.";
       }
       if ($("mx-conflicts").open && event) {
         const votes2 = event.policy === "support" ? event.weightYes + " / " + event.weightNo : event.yes + " / " + event.no;
@@ -14164,6 +14175,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       lastOrders = [];
       elapsed = 0;
       event = null;
+      lastUndo = null;
+      pendingHazard = null;
+      $("mx-undo").hidden = true;
       $("mx-event").textContent = "Avance para observar.";
       $("mx-locate").hidden = true;
       $("mx-profile-button").textContent = "Economia · " + { stability: "Maduras", birth: "Nascimentos", death: "Mortes", activity: "Atividade" }[options.policy];
@@ -14179,7 +14193,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (atlas) atlas.refresh();
       dirty = true;
       hud();
-      toast(session.match.spatial?.enabled ? "Base pronta · expanda pela área iluminada" : "Partida pronta · " + (options.players - 1) + " bots");
+      toast(session.match.spatial?.enabled ? "Base pronta · construa na área explorada" : "Partida pronta · " + (options.players - 1) + " bots");
     }
     const query = new URLSearchParams(location.search), requestedSeed = query.get("seed");
     const initial = { ...defaultGameOptions, botInterval: 12, botBudget: 4, toolSettings: loadToolSettings() };
@@ -14211,17 +14225,81 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const ids = targetIds(anchor), { resolver, ballot } = hand.current, c = hand.selected;
       return ids ? { ids, ready: session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native") } : null;
     }
+    function forecastHazard(before, c, ids, resolver, ballot, contract) {
+      if (!before.spatial?.enabled) return null;
+      const changed = before.fork(), control = before.fork(), meta = contract ? { contract } : {};
+      if (!changed.stamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native", meta)) return null;
+      const deadline = performance.now() + 160;
+      for (let t = 0; t < 192; t++) {
+        if (performance.now() > deadline) return "evolução longa com risco ainda incerto";
+        control.step();
+        changed.step();
+        const baseline = control.players[1].conventional, now = changed.players[1].conventional;
+        if (changed.cells.size > 3e3 || now > Math.max(baseline + 80, baseline * 2 + ids.length * 4))
+          return "crescimento rápido próximo às suas estruturas";
+        if (baseline >= 10 && now < baseline * 0.45) return "perda acelerada das suas células";
+      }
+      return null;
+    }
+    function undoStamp() {
+      if (!lastUndo) return;
+      const snapshot = lastUndo;
+      lastUndo = null;
+      pendingHazard = null;
+      setPlay(false);
+      session.restore(snapshot.match, snapshot.alive, snapshot.eliminatedAt);
+      controllers?.destroy();
+      controllers = createGameBots(session.match, { seed: options.seed, interval: options.botInterval, budget: options.botBudget, onOrder: (o) => {
+        lastOrders.push(o);
+        if (lastOrders.length > 40) lastOrders.shift();
+      } });
+      game.ended = false;
+      game.winner = 0;
+      game.stopped = false;
+      game.humanEliminated = false;
+      world.matchStarted = true;
+      world.painting = false;
+      lastOrders = [];
+      elapsed = 0;
+      event = null;
+      $("mx-undo").hidden = true;
+      scoreboard.reset();
+      syncField(session.match);
+      hud();
+      dirty = true;
+      syncPlayButton();
+      toast("Último carimbo desfeito; partida restaurada.");
+    }
+    $("mx-undo").onclick = undoStamp;
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && lastUndo && !e.target.closest?.('input,textarea,select,[contenteditable="true"]')) {
+        e.preventDefault();
+        undoStamp();
+      }
+    });
     function place(anchor) {
       if (tools.mode !== "stamp") return tools.apply(anchor);
       const proposed = preview(anchor), c = hand.selected, p = session.match.players[1], m = hand.current;
       if (!proposed?.ready) {
         const cost = c && m ? session.match.stampQuote(c.rule, m.resolver, c.offsets.length).total : 0;
         const reason = c && m ? session.match.stampRejection(1, c.rule, m.resolver, targetIds(anchor), m.ballot, c.sense ?? "native") : null;
-        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "Todo o carimbo precisa caber na luz atual. Expanda a iluminação primeiro." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
+        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "O carimbo precisa caber em território já explorado." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
+      const before = session.match.fork();
+      const risk = forecastHazard(before, c, proposed.ids, m.resolver, m.ballot, null);
+      const key2 = c.key + ":" + m.resolver + ":" + proposed.ids.join(",");
+      if (risk && (!pendingHazard || pendingHazard.key !== key2 || performance.now() > pendingHazard.until)) {
+        pendingHazard = { key: key2, until: performance.now() + 1e4 };
+        setPlay(false);
+        toast("Possível infestação: " + risk + ". Clique novamente para confirmar.");
+        return false;
+      }
+      pendingHazard = null;
       const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native");
       if (ok) {
+        lastUndo = { match: before, alive: session.alive.slice(), eliminatedAt: session.eliminatedAt.slice(), generation: before.gen, field: before.players[1].conventional };
+        $("mx-undo").hidden = false;
         dirty = true;
         syncField(session.match);
         hud();
@@ -14261,6 +14339,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         game.winner = session.outcome;
         setPlay(false);
         toast(session.outcome === 1 ? "Você venceu!" : session.outcome ? game.names[session.outcome] + " venceu." : "Empate.");
+      }
+      if (lastUndo && !lastUndo.alerted && session.match.gen - lastUndo.generation < 256 && session.match.players[1].conventional > Math.max(500, lastUndo.field * 6)) {
+        lastUndo.alerted = true;
+        setPlay(false);
+        toast("Infestação acelerada · partida pausada. Use ↶ para desfazer.");
       }
       if (session.eliminatedAt[1] === session.match.gen) {
         game.humanEliminated = true;
