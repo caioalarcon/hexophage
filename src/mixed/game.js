@@ -28,7 +28,8 @@ function mount(){
   root.append(fragment);
   const selector=$('hl-rulechoice');$('mx-mode-slot').append(selector);
   populateModeSelector(selector);selector.value=MIXED_MODE;selector.onchange=()=>navigateToMode(selector.value);
-  $('mx-actions').prepend($('hl-play'),$('hl-step'));
+  $('mx-actions').prepend($('hl-play'),$('hl-clear'),$('hl-step'));
+  $('hl-clear').title='Parar a partida';$('hl-clear').setAttribute('aria-label','Parar a partida');
   $('mx-speed-slot').append($('hl-speed').closest('.br-speed-knob'));
   const portrait=matchMedia('(orientation: portrait)');
   function fold(){ $('mx-league').open=!portrait.matches; }
@@ -39,7 +40,7 @@ export function startMixedGame(){
   let session,controllers,atlas,tools,options,dirty=true,lastUI=-Infinity,elapsed=0,previous=0,lastOrders=[],event=null;
   const hand=createHand(()=>session?.match,{onInspect:card=>atlas.open(card,{replace:true}),onChoose:()=>tools?.select('stamp')});
   const scoreboard=createScoreboard(()=>session);
-  tools=createFieldTools({getMatch:()=>session?.match,canEdit:()=>!!session?.alive[1]&&!game.ended,
+  tools=createFieldTools({getMatch:()=>session?.match,canEdit:()=>!!session?.alive[1]&&!game.ended&&!game.stopped,
     onCapture:card=>atlas.capture(card,hand.selected),onErase:()=>{dirty=true;}});
   function hud(){
     const m=session.match,p=m.players[1];
@@ -58,12 +59,12 @@ export function startMixedGame(){
   function reset(next,prepared,storage){
     const sameGraph=prepared??(session?.graph.f===next.F?session.graph:undefined);
     const fresh=createGameMatch({...next,unseededOwners:[1],...(sameGraph?{graph:sameGraph}:{})});
-    session=fresh;options=next;
+    controllers?.destroy();session=fresh;options=next;
     scoreboard.reset();
     controllers=createGameBots(session.match,{seed:options.seed,interval:options.botInterval,budget:options.botBudget,onOrder:o=>{
       lastOrders.push(o);if(lastOrders.length>40)lastOrders.shift();
     }});
-    game.ended=false;game.winner=0;world.matchStarted=false;lastOrders=[];elapsed=0;
+    game.ended=false;game.winner=0;game.stopped=false;game.humanEliminated=false;world.matchStarted=false;lastOrders=[];elapsed=0;
     event=null;$('mx-event').textContent='Avance para observar.';$('mx-locate').hidden=true;
     $('mx-profile-button').textContent='Economia · '+({stability:'Maduras',birth:'Nascimentos',death:'Mortes',activity:'Atividade'}[options.policy]);
     loadViewport(session,storage);world.speed=Number($('hl-speed').value);syncPlayButton();
@@ -86,7 +87,7 @@ export function startMixedGame(){
   const targetIds=anchor=>anchor&&hand.current?stampTargets(anchor,hand.current.shape):null;
   function preview(anchor){
     if(tools.mode!=='stamp')return tools.preview(anchor);
-    if(!session.alive[1]||game.ended||!hand.selected)return null;
+    if(!session.alive[1]||game.ended||game.stopped||!hand.selected)return null;
     const ids=targetIds(anchor),{resolver,ballot}=hand.current,c=hand.selected;
     return ids?{ids,ready:session.match.canStamp(1,c.rule,resolver,ids,ballot,c.sense??'native')}:null;
   }
@@ -95,7 +96,7 @@ export function startMixedGame(){
     const proposed=preview(anchor),c=hand.selected,p=session.match.players[1],m=hand.current;
     if(!proposed?.ready){
       const cost=c&&m?c.offsets.length*session.match.stampPrice(m.resolver):0;
-      toast(game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':c?.offsets.length>session.match.toolSettings.maxStampCells?
+      toast(game.stopped?'Partida interrompida.':game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':c?.offsets.length>session.match.toolSettings.maxStampCells?
         'Carimbo acima do limite de '+session.match.toolSettings.maxStampCells+' células.':p.reserve<cost?
         'Faltam ◈ '+number.format(cost-p.reserve)+' para este carimbo.':!targetIds(anchor)?'O carimbo não cabe nesta região da malha.':'Posição ocupada ou junto de uma colônia adversária.');
       return false;
@@ -110,6 +111,7 @@ export function startMixedGame(){
   $('mx-locate').onclick=()=>{if(event){centerOnPlayer(event.site);world.needsDraw=world.needsGrid=true;}};
   $('mx-profile-button').onclick=()=>{$('mx-config').click();$('mx-economy').focus();};
   function step(){
+    if(game.stopped||game.humanEliminated||game.ended)return false;
     if(!session.step($('mx-conflicts').open?observe:undefined))return false;
     if(world.painting&&tools.mode==='erase'&&world.hover)tools.apply(world.hover,{quiet:true});
     scoreboard.recordGeneration();
@@ -118,11 +120,25 @@ export function startMixedGame(){
       game.ended=true;game.winner=session.outcome;setPlay(false);
       toast(session.outcome===1?'Você venceu!':session.outcome?game.names[session.outcome]+' venceu.':'Empate.');
     }
-    if(session.eliminatedAt[1]===session.match.gen && session.outcome===null)toast('Você foi eliminado · a disputa continua.');
+    if(session.eliminatedAt[1]===session.match.gen){
+      game.humanEliminated=true;world.painting=false;setPlay(false);
+      if(session.outcome===null)toast('Você foi eliminado · Nova partida disponível.');
+    }
     world.matchStarted=true;dirty=true;return true;
   }
-  $('hl-play').onclick=()=>{if(game.ended){reset(options);return;}world.matchStarted=true;setPlay(!world.playing);};
-  $('hl-step').onclick=()=>{setPlay(false);step();syncPlayButton();hud();};
+  $('hl-play').onclick=()=>{
+    if(game.ended||game.stopped||game.humanEliminated){reset(options);return;}
+    world.matchStarted=true;setPlay(!world.playing);
+  };
+  $('hl-clear').onclick=()=>{
+    if(!world.matchStarted||game.ended||game.stopped||game.humanEliminated)return;
+    game.stopped=true;world.painting=false;elapsed=0;setPlay(false);hud();
+    toast('Partida interrompida · Nova partida disponível.');
+  };
+  $('hl-step').onclick=()=>{
+    if(!world.matchStarted||world.playing||game.ended||game.stopped||game.humanEliminated)return;
+    step();syncPlayButton();hud();
+  };
   $('hl-speed').value=String(40);world.speed=40;$('hl-speed-val').textContent='40/s';
   $('hl-speed').oninput=()=>{world.speed=Number($('hl-speed').value);$('hl-speed-val').textContent=world.speed+'/s';};
   const visible=()=>!$('mx-settings').open&&!$('mx-atlas-host').querySelector('dialog[open]')&&!document.hidden;

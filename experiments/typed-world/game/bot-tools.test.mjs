@@ -8,6 +8,9 @@ import {gameEconomies} from './match.mjs';
 import {createGameBots} from './bots.mjs';
 import {observedPatternKey,regionEconomy} from './bot-tools.mjs';
 import {insolventScene,recoveryTrial} from './tool-recovery.mjs';
+import {concurrentRecovery} from './concurrent-tool-recovery.mjs';
+import {createFieldToolPlanner} from './bot-tools.mjs';
+import {circularSites} from '../../../src/mixed/field-tools.js';
 
 const graph=buildSphere(32);
 function world(options={}){
@@ -112,4 +115,44 @@ test('observed shape deduplication ignores translation and orientation while pre
   assert.equal(observedPatternKey(card),observedPatternKey(rotated));
   assert.equal(observedPatternKey(card),observedPatternKey({...card,offsets:transformOffsets(card.offsets,'flip')}));
   assert.notEqual(observedPatternKey(card),observedPatternKey({...card,resolver:'guard'}));
+});
+
+
+test('remote actions by another treasury do not starve emergency cleaning',()=>{
+  const graph=buildSphere(48);
+  for(const seed of [1,43,211]){
+    const result=concurrentRecovery({graph,seed});
+    assert(result.stats.eraseOrders>0,`seed ${seed}: no brush strokes`);
+    assert(result.reserve>3000);assert.equal(result.cells,66);assert.equal(result.mature,66);
+    assert.equal(result.births,0);assert(result.farmPreserved);assert(result.maximumWork<=1);
+    assert(result.firstErase<=290);
+  }
+});
+
+test('five scheduled tool users share their budget on F128 under remote interventions',()=>{
+  const result=concurrentRecovery({graph:buildSphere(128),seats:5,budget:4,ticks:256});
+  assert(result.stats.eraseOrders>0);assert(result.reserve>1000);assert(result.farmPreserved);
+  assert.equal(result.births,0);assert.equal(result.cells,66);assert(result.maximumWork<=4);
+});
+
+test('field forecast dependencies invalidate nearby actions, own spending and configuration changes',()=>{
+  const {match,scene}=insolventScene({graph:buildSphere(48)});
+  const stats=Array.from({length:2},()=>({eraseTrials:0,eraseHolds:0,eraseWork:0,trials:0,holds:0,work:0}));
+  const planner=createFieldToolPlanner(match,{stats,horizon:16,lookahead:48});
+  const bot={owner:1,pick:()=>0};
+  assert(planner.work(bot));assert.equal(stats[1].eraseTrials,1);
+  // A point outside both the infestation halo and the remote farm.
+  const excluded=new Set([...circularSites(match.graph,scene.anchor,64),...circularSites(match.graph,scene.remote,20)]);
+  let remote=0;while(excluded.has(remote))remote++;
+  planner.invalidate({kind:'stamp',owner:2,ids:[remote]});
+  assert.equal(stats[1].eraseInvalidated??0,0);
+  const young=[...match.cells].find(([,c])=>c.owner===1&&c.age<12)[0];
+  planner.invalidate({kind:'stamp',owner:2,ids:[young]});
+  assert.equal(stats[1].eraseInvalidated,1);
+  match.step();planner.work(bot);
+  planner.invalidate({kind:'stamp',owner:1,ids:[remote]});
+  assert.equal(stats[1].eraseInvalidated,2);
+  match.step();planner.work(bot);
+  planner.invalidate({kind:'settings',owner:0,ids:[]});
+  assert.equal(stats[1].eraseInvalidated,3);
 });

@@ -65,6 +65,18 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
 
   function instance(cells, players, gen, lastIgnitions=[], domain=null, outside=null,observe=false,limits=normalizeToolSettings(toolSettings),actionRevision=0) {
     const {adj,deg}=graph;
+    // Subscribers belong to this instance; forecasts never notify the live bot.
+    const actionListeners=new Set();
+    function subscribeActions(listener){
+      if(typeof listener!=='function')throw TypeError('Expected an action listener');
+      actionListeners.add(listener);return ()=>actionListeners.delete(listener);
+    }
+    function changed(kind,owner,ids=[]){
+      actionRevision++;
+      if(!actionListeners.size)return;
+      const event=Object.freeze({kind,owner,ids:Object.freeze([...ids]),gen,revision:actionRevision});
+      for(const listener of actionListeners)listener(event);
+    }
     const stampPrice=resolver=>economy.stampCost+(resolver==='guard'?economy.guardStampExtra:0);
     function canStamp(owner, rule, resolver, ids, ballot='support',sense='native') {
       if (!Number.isInteger(owner) || owner<1 || owner>=players.length) return false;
@@ -90,13 +102,13 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       p.reserve=Math.max(0,p.reserve-ids.length*stampPrice(resolver));
       p.lastFieldAt=gen;
       for(const site of ids) cells.set(site,cell(genotype(owner,rule,resolver,ballot,sense),1));
-      actionRevision++;
+      changed('stamp',owner,ids);
       return true;
     }
     function setToolSettings(values){
       const next=normalizeToolSettings(values,limits);
-      if(Object.keys(next).some(key=>next[key]!==limits[key]))actionRevision++;
-      limits=next;return limits;
+      const differs=Object.keys(next).some(key=>next[key]!==limits[key]);
+      limits=next;if(differs)changed('settings',0);return limits;
     }
     function erasePreview(owner,center,radius){
       if(!Number.isInteger(owner)||owner<1||owner>=players.length||players[owner].out ||
@@ -112,7 +124,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
         if(!c.wave)p.conventional--;
         if(c.age>=economy.stableAfter)p.mature--;
       }
-      p.toolErased+=ids.length;p.eraseActions++;actionRevision++;
+      p.toolErased+=ids.length;p.eraseActions++;changed('erase',owner,ids);
       // No event revenue, salvage, combat credit or immediate resurrection.
       // The usual match settlement decides elimination on its next step.
       return ids.length;
@@ -353,7 +365,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       }
       return instance(snapshot,accounts,gen,[],cut,remote,false,limits,actionRevision);
     }
-    return {graph,economy,arbitration:policy,eligibility,friendlyFire,existence,passage,players,stampPrice,stamp,canStamp,erase,erasePreview,setToolSettings,step,fork,get cells(){return cells;},get gen(){return gen;},
+    return {graph,economy,arbitration:policy,eligibility,friendlyFire,existence,passage,players,stampPrice,stamp,canStamp,erase,erasePreview,setToolSettings,subscribeActions,step,fork,get cells(){return cells;},get gen(){return gen;},
       get toolSettings(){return limits;},get actionRevision(){return actionRevision;},
       get lastIgnitions(){return lastIgnitions;}};
   }

@@ -82,7 +82,7 @@ function nearbyActivity(match,owner,center,radius){
   });
 }
 
-export function createFieldToolPlanner(match,{stats,horizon,lookahead,cadence=1,onDecision,beforeOrder,onOrder,onLearn,onMutation}={}){
+export function createFieldToolPlanner(match,{stats,horizon,lookahead,cadence=1,onDecision,beforeOrder,onOrder,onLearn}={}){
   const states=new Map();
   function stateFor(bot){
     if(!states.has(bot.owner))states.set(bot.owner,{task:null,follow:null,nextErase:0,nextCapture:48,scan:null,track:null,seen:new Set(),learned:[],captureSerial:0,
@@ -100,6 +100,14 @@ export function createFieldToolPlanner(match,{stats,horizon,lookahead,cadence=1,
     const drain=Math.max(0,state.spend-state.income),runway=2*horizon*drain;
     return p.lastBirths>0&&p.reserve<4*match.economy.stampCost+runway;
   }
+  function dependencies(owner,region){
+    // A brush can track activity inside 2r + horizon; retain a further causal
+    // halo and the treasuries of every participant inside it.
+    const scope=new Set(circularSites(match.graph,region.center,2*region.radius+2*horizon+2));
+    const owners=new Set([owner]);
+    for(const id of scope){const c=match.cells.get(id);if(c)owners.add(c.owner);}
+    return {scope,owners};
+  }
   function beginErase(bot,state){
     state.nextErase=match.gen+Math.max(2,Math.ceil(horizon/2));
     const sample=sampleSites(match,state,bot.owner),sites=sample.young;
@@ -112,7 +120,7 @@ export function createFieldToolPlanner(match,{stats,horizon,lookahead,cadence=1,
     const hold=localFork(match,region.center,region.radius,horizon),play=hold.fork();
     const removed=play.erase(bot.owner,region.center,region.radius);if(!removed)return false;
     state.task={kind:'erase',owner:bot.owner,hold,play,region,t:0,turns:horizon,stage:'forecast',at:match.gen,
-      followCenter:region.center,revision:match.actionRevision};
+      followCenter:region.center,revision:match.actionRevision,dependencies:dependencies(bot.owner,region)};
     stats[bot.owner].eraseTrials++;stats[bot.owner].trials++;
     return true;
   }
@@ -168,12 +176,13 @@ export function createFieldToolPlanner(match,{stats,horizon,lookahead,cadence=1,
     const o={gen:match.gen,forecastAt:j.at,owner,key:'tool/eraser',role:'erase',tool:'eraser',target:0,
       ids:current.ids,site:current.center,radius:current.radius,expected:j.pay,flow:j.flow,revalidated:true};
     beforeOrder?.(o);
+    // This forecast has completed; its own committed stroke is not a cancellation.
+    state.task=null;state.follow=null;
     const removed=match.erase(owner,current.center,current.radius);
-    state.task=null;if(!removed)return;
+    if(!removed)return;
     state.track=current.center;state.nextErase=match.gen+cadence;
     stats[owner].eraseOrders++;stats[owner].erasedCells+=removed;
-    onMutation?.(bot);
-    state.follow={...j,hold:null,play:null,region:current,until:j.until??match.gen+horizon};
+    state.follow={...j,hold:null,play:null,region:current,dependencies:dependencies(owner,current),until:j.until??match.gen+horizon};
     onOrder?.({...o,removed});
   }
   function advanceErase(bot,state,j){
@@ -221,12 +230,18 @@ export function createFieldToolPlanner(match,{stats,horizon,lookahead,cadence=1,
     else advanceCapture(bot,state,state.task);
     return true;
   }
-  function invalidate(){
-    for(const state of states.values()){
+  function invalidate(action){
+    for(const [owner,state] of states){
+      const j=state.task?.kind==='erase'?state.task:state.follow;
+      if(!j)continue;
+      const d=j.dependencies;
+      const affected=!action||action.kind==='settings'||!d||d.owners.has(action.owner)||
+        action.ids.some(id=>d.scope.has(id));
+      if(!affected)continue;
+      stats[owner].eraseInvalidated=(stats[owner].eraseInvalidated??0)+1;
       state.follow=null;
-      if(state.task?.kind==='erase'){
-        state.task=null;state.nextErase=Math.min(state.nextErase,match.gen+1);
-      }
+      if(state.task?.kind==='erase')state.task=null;
+      state.nextErase=Math.min(state.nextErase,match.gen+1);
     }
   }
   return {work,invalidate,learned:bot=>stateFor(bot).learned};
