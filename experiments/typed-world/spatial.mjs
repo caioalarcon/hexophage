@@ -70,7 +70,8 @@ export function illuminated(graph,cells,owner,spatial,domain=null){
 }
 export function sameNeighborhood(graph,before,after,id){
   for(let k=0;k<graph.deg[id];k++){
-    const n=graph.adj[6*id+k];if(before.get(n)?.type!==after.get(n)?.type)return false;
+    const n=graph.adj[6*id+k],a=before.get(n)?.type,b=after.get(n)?.type;
+    if((a?.physical??a)!==(b?.physical??b))return false;
   }
   return true;
 }

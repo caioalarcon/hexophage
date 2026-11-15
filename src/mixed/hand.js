@@ -31,6 +31,8 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
     preview.setAttribute('aria-label','Prévia de '+c.name+' na orientação atual');
     $('mx-ballot').value=m.ballot;
     $('mx-resolver').value=m.resolver;
+    $('mx-ballot').disabled=$('mx-resolver').disabled=!!getMatch()?.progression;
+    $('mx-resolver').title=getMatch()?.progression?'Interação definida no plano de construção':'Interação do próximo carimbo';
     for(const [key,node] of buttons)node.setAttribute('aria-pressed',String(key===slotKey(c)));
     update();onChoose(c);
   }
@@ -40,18 +42,20 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
     for(const btn of buttons.values()){
       const c=btn.card, cost=match.stampQuote?match.stampQuote(c.rule,modifier(c).resolver,c.offsets.length,{contract:c.contract}).total:c.offsets.length*match.stampPrice(modifier(c).resolver);
       const withinLimit=c.offsets.length<=(match.toolSettings?.maxStampCells??Infinity);
-      const affordable=withinLimit&&wallet+1e-9>=cost;
+      const progression=match.progression,node=progression?.plan.nodes.find(n=>n.id===c.contract);
+      const permitted=!progression||progression.legalCards(1).some(card=>card.contract===c.contract);
+      const affordable=withinLimit&&wallet+1e-9>=cost&&permitted;
       if(btn.dataset.afford!==String(affordable))btn.dataset.afford=String(affordable);
       const progress=btn.querySelector('.mx-card-energy'),available=Math.max(0,Math.min(wallet,cost));
       progress.style.setProperty('--charge',String(cost?available/cost:1));
       progress.setAttribute('aria-valuemax',String(cost));
       progress.setAttribute('aria-valuenow',String(available));
-      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':affordable?(match.spatial?.enabled?'Custo disponível no campo; escolha uma região com luz e energia local':'Pronto para usar'):'Faltam ◈ '+fmt.format(cost-available));
+      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':!permitted?'Precisa da fonte de construção e dos materiais':affordable?(match.spatial?.enabled?'Custo disponível no campo; escolha uma região com luz e energia local':'Pronto para usar'):'Faltam ◈ '+fmt.format(cost-available));
       if(btn.dataset.price!==String(cost)||btn.dataset.withinLimit!==String(withinLimit)){
         btn.dataset.price=String(cost);
         btn.dataset.withinLimit=String(withinLimit);
-        btn.querySelector('.mx-card-cost').textContent='◈'+fmt.format(cost);
-        btn.title=c.name+' · '+rules[c.rule].label+' · ◈ '+fmt.format(cost)+(!withinLimit?' · acima do limite configurado':'');btn.setAttribute('aria-label',btn.title);
+        btn.querySelector('.mx-card-cost').textContent='◈'+fmt.format(cost)+(node?' · '+(node.parent?'↳ '+(progression.plan.nodes.find(n=>n.id===node.parent)?.name??node.parent):'Base'):'');
+        btn.title=c.name+' · '+rules[c.rule].label+' · ◈ '+fmt.format(cost)+(node?' · '+node.cost.map((v,i)=>progression.resources[i].symbol+' '+v).join(' · '):'')+(!withinLimit?' · acima do limite configurado':'');btn.setAttribute('aria-label',btn.title);
       }
     }
     if(selected){

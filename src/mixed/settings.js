@@ -5,6 +5,7 @@ import {gameEconomies} from '../../experiments/typed-world/game/match.mjs';
 import {normalizeToolSettings} from './field-tools.js';
 import {saveToolSettings} from './tool-controls.js';
 import {normalizeOpening} from '../../experiments/typed-world/game/opening.mjs';
+import {createProgressionPanel} from './progression-panel.js';
 
 const tariffs={stampCost:'Plantio por célula',birthCost:'Custo por nascimento',eraseCost:'Custo por substituição',
   stableEnergy:'Renda por madura',stableAfter:'Idade de maturação',productionScale:'Escala de saturação',
@@ -13,15 +14,17 @@ const tariffs={stampCost:'Plantio por célula',birthCost:'Custo por nascimento',
 
 export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{},getSelected=()=>null}={}){
   const dialog=$('mx-settings'),inputs=new Map();
+  const planPanel=createProgressionPanel(getSelected);
   let draftBase=null;
   function baseLabel(){const c=normalizeOpening(draftBase);$('mx-base-name').textContent='Base: '+c.name+' · '+c.offsets.length+' células';}
   $('mx-experiment').onchange=()=>{
     const local=$('mx-experiment').value!=='classic';$('mx-spatial-settings').hidden=!local;
+    planPanel.show($('mx-experiment').value==='resources');
     $('mx-economy').disabled=local;
     if(local&&$('mx-economy').value!=='stability'){$('mx-economy').value='stability';setRates(gameEconomies.stability);}
     for(const key of ['productionScale','birthEnergy','deathEnergy','salvage','protectedMature'])if(inputs.has(key))inputs.get(key).disabled=local;
   };
-  $('mx-use-base').onclick=()=>{const c=getSelected();if(c){draftBase=normalizeOpening(c);baseLabel();}};
+  $('mx-use-base').onclick=()=>{const c=getSelected();if(c){draftBase=normalizeOpening(c);planPanel.setBase(c);baseLabel();}};
   for(const f of [16,24,32,48,64,96,128,160,320])
     $('mx-size').add(new Option('F'+f+' · '+(10*f*f+2).toLocaleString('pt-BR'),String(f)));
   for(const [key,name] of Object.entries(tariffs)){
@@ -50,8 +53,9 @@ export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{},ge
   }
   $('mx-config').onclick=()=>{
     const o=getOptions();
-    draftBase=o.initialCard??null;baseLabel();
-    $('mx-experiment').value=o.spatial?.enabled?'local':'classic';$('mx-experiment').onchange();
+    draftBase=getMatch().progression?.cards().find(c=>c.contract===getMatch().progression.plan.base)??o.initialCard??null;baseLabel();
+    planPanel.load(o.progression?.plan??getMatch().progression?.plan,draftBase);
+    $('mx-experiment').value=o.progression?.enabled?'resources':o.spatial?.enabled?'local':'classic';$('mx-experiment').onchange();
     const spatial=getMatch().spatial??{};
     for(const [id,key,def] of [['mx-vision-radius','visionRadius',6],['mx-cell-capacity','cellCapacity',256],['mx-stamp-energy','stampEnergy',32],['mx-newborn-energy','newbornEnergy',2],['mx-birth-radius','birthRadius',1]])$(id).value=String(spatial[key]??def);
     $('mx-cell-types').value=JSON.stringify(spatial.types??{},null,2);
@@ -84,7 +88,10 @@ export function bindSettings(getOptions,getMatch,apply,{onToolsChanged=()=>{},ge
       const spatial=$('mx-experiment').value==='classic'?{enabled:false}:{enabled:true,visionRadius:$('mx-vision-radius').valueAsNumber,
         cellCapacity:$('mx-cell-capacity').valueAsNumber,stampEnergy:$('mx-stamp-energy').valueAsNumber,newbornEnergy:$('mx-newborn-energy').valueAsNumber,birthRadius:$('mx-birth-radius').valueAsNumber,
         stableAfter:economy.stableAfter,stableEnergy:economy.stableEnergy,types:JSON.parse($('mx-cell-types').value||'{}')};
-      apply({...getOptions(),spatial,initialCard:draftBase,toolSettings,botInterval:$('mx-bot-interval').valueAsNumber,botBudget:$('mx-bot-budget').valueAsNumber,F:+$('mx-size').value,seed:+$('mx-seed').value,bank:$('mx-bank').value===''?getOptions().bank:+$('mx-bank').value,
+      const progression=$('mx-experiment').value==='resources'?{enabled:true,plan:planPanel.value()}:{enabled:false};
+      const base=progression.enabled?progression.plan.nodes.find(n=>n.id===progression.plan.base):null;
+      const initialCard=base?normalizeOpening({...base,key:base.cardKey??'custom/'+base.id}):draftBase;
+      apply({...getOptions(),spatial,progression,initialCard,toolSettings,botInterval:$('mx-bot-interval').valueAsNumber,botBudget:$('mx-bot-budget').valueAsNumber,F:+$('mx-size').value,seed:+$('mx-seed').value,bank:$('mx-bank').value===''?getOptions().bank:+$('mx-bank').value,
         policy:$('mx-economy').value,existence:$('mx-existence').value,arbitration,friendlyFire:$('mx-friendly').checked,economy});
       saveToolSettings(toolSettings);
       dialog.close();

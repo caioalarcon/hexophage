@@ -152,6 +152,29 @@
 #hexlab.mixed #mx-spatial-settings textarea{box-sizing:border-box;width:100%;min-width:0;resize:vertical;background:#0d1b29;color:#c8eadc;border:1px solid #425770;border-radius:4px;padding:7px;font-size:11px}
 #hexlab.mixed #mx-spatial-settings small{font-size:10px;line-height:1.4;color:var(--mx-soft);overflow-wrap:anywhere}
 #hexlab.mixed #mx-base-name{font-size:12px;color:#d2eee0}
+#hexlab.mixed #mx-materials{padding:8px;border:1px solid #485d7e;border-radius:5px;background:#152438;font-size:11px;line-height:1.4}
+#hexlab.mixed #mx-materials[hidden],#hexlab.mixed #mx-progression-settings[hidden]{display:none}
+#hexlab.mixed #mx-resource-stores{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#hexlab.mixed #mx-resource-stores>div{border-left:2px solid var(--resource);padding-left:5px;min-width:0}
+#hexlab.mixed #mx-resource-stores small{font-size:9px;display:block;color:var(--resource)}
+#hexlab.mixed #mx-resource-stores b{font-size:15px}
+#hexlab.mixed #mx-materials p{color:#f2dba4;margin:7px 0}
+#hexlab.mixed #mx-materials output{display:block;color:#c4d1dd;margin:5px 0}
+#hexlab.mixed #mx-progression-settings p{font-size:12px;line-height:1.45;margin:0}
+#hexlab.mixed #mx-plan-budget{color:var(--mx-mint);font-size:11px;line-height:1.5}
+#hexlab.mixed #mx-plan-rows{display:grid;gap:4px;max-height:210px;overflow:auto}
+#hexlab.mixed #mx-plan-rows button{display:grid;text-align:left;gap:3px;padding:7px;background:#192d40;border:1px solid #3c5368;border-radius:4px}
+#hexlab.mixed #mx-plan-rows button[aria-pressed=true]{border-color:var(--mx-mint);background:#214239}
+#hexlab.mixed #mx-plan-rows strong{font-size:12px;color:#e0ece9}
+#hexlab.mixed #mx-plan-rows small{font-size:10px;color:#b8c8d2;line-height:1.4}
+#hexlab.mixed #mx-plan-shape{font-size:10px;color:var(--mx-soft)}
+#hexlab.mixed #mx-plan-error{color:#ffb597}
+#hexlab.mixed #mx-plan-json{width:100%;box-sizing:border-box;background:#0d1b29;color:#c8eadc;font-size:10px;margin:7px 0;border:1px solid #425770;padding:7px;resize:vertical}
+#hexlab.mixed #mx-progression-settings button{font-size:11px;white-space:normal}
+#hexlab.mixed[data-experiment=resources] #mx-hand{grid-auto-rows:48px}
+#hexlab.mixed[data-experiment=resources] .mx-card b{white-space:normal;overflow-wrap:anywhere;align-self:center;line-height:1.15}
+@media(orientation:portrait){#hexlab.mixed #mx-materials{grid-column:1/-1;padding:5px}#hexlab.mixed #mx-resource-stores{grid-template-columns:repeat(4,minmax(0,1fr))}#hexlab.mixed #mx-resource-stores b{font-size:12px}#hexlab.mixed #mx-materials p,#hexlab.mixed #mx-materials output{font-size:10px;margin:3px 0}#hexlab.mixed #mx-deposit-info{display:none}}
+@media(orientation:portrait){#hexlab.mixed[data-experiment=resources] #mx-frontier{display:none}#hexlab.mixed[data-experiment=resources] #mx-permission{display:none}#hexlab.mixed[data-experiment=resources] #mx-objective{margin-bottom:0}}
 @media(orientation:portrait){#hexlab.mixed #mx-frontier{grid-column:1/-1;padding:5px}#hexlab.mixed #mx-frontier p{display:none}#hexlab.mixed #mx-frontier output{display:inline-block;margin:0 5px;font-size:10px}}
 @media(orientation:portrait){
  #hexlab.mixed .mx-tools{padding:3px 0;gap:3px}
