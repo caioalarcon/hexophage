@@ -236,11 +236,11 @@ test('the discovered map remains buildable after losing live vision when cells e
   const outer=[...explored].filter(site=>!m.cells.has(site)).reverse();
   let donor=null,target=null;
   for(const site of outer){
-    const d=graphBall(graph,[site],m.spatial.visionRadius);
-    const remembered=outer.find(id=>!d.has(id)&&!m.cells.has(id)&&id!==site);
-    if(remembered!==undefined){
-      const neighbor=[...graphBall(graph,[site],1)].find(id=>id!==site&&!m.cells.has(id));
-      if(neighbor!==undefined&&m.canStamp(1,'callahan','contact',[site,neighbor])){
+    const neighbor=[...graphBall(graph,[site],1)].find(id=>id!==site&&!m.cells.has(id));
+    if(neighbor!==undefined){
+      const d=graphBall(graph,[site,neighbor],m.spatial.visionRadius);
+      const remembered=outer.find(id=>!d.has(id)&&!m.cells.has(id)&&id!==site);
+      if(remembered!==undefined&&m.canStamp(1,'callahan','contact',[site,neighbor])){
         donor=[site,neighbor];target=remembered;break;
       }
     }
