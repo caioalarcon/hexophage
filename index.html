@@ -10646,7 +10646,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return m[commit ? "stamp" : "canStamp"](owner, c.rule, c.resolver ?? "contact", ids, c.ballot ?? "support", c.sense ?? "native", metadata(c));
   }
   function observedSites(view, owner) {
-    const visible = view.visibility(owner).visible;
+    const visible = view.visibility(owner).explored;
     return [...visible].filter((id) => view.graph.deg[id] === 6 && !view.cells.has(id));
   }
   function localCells(view, owner) {
@@ -10843,7 +10843,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         stat.eraseHolds += Number(j.tool === "eraser");
         return;
       }
-      if (match.gen - bot.lastBuy < interval || j.ids.some((id) => !match.canSee(owner, id))) {
+      if (match.gen - bot.lastBuy < interval || j.ids.some((id) => !match.canBuild(owner, id))) {
         stat.invalidated++;
         return;
       }
