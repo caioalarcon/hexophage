@@ -101,7 +101,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab .hl-inspect label {cursor:pointer;}
 #hexlab input[type=checkbox] {accent-color:#2ac69b;}
 @media(max-width:720px){#hexlab .hl-shell{grid-template-columns:1fr} #hexlab .hl-right{display:flex;} #hexlab .hl-worldbox{min-height:380px}}
-/* Battle royale layer */
+/* Match controls layer */
 #hexlab .br-controls{display:flex;flex-wrap:wrap;gap:9px;align-items:end;padding:11px 13px;background:#16283a;border-bottom:1px solid #37516a}
 #hexlab .br-controls label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#b8cee5}
 #hexlab .br-controls input{width:100px;border:1px solid #39536e;border-radius:6px;padding:7px;color:#e9f7ff;background:#0d1e2d;font:inherit}
@@ -945,6 +945,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab.mixed #mx-factory-reset{flex:none;min-width:23px;padding:0 4px;min-height:23px}
 #hexlab.mixed #mx-undo[hidden]{display:none!important}
 #hexlab.mixed #mx-spatial-settings input[type=checkbox]{width:auto;min-width:14px}
+
+#hexlab.mixed #mx-factory-context{margin:0 0 4px}
+#hexlab.mixed #mx-frontier output[title],#hexlab.mixed #mx-permission[title]{cursor:help}
 .hxa{box-sizing:border-box;color-scheme:dark;width:min(990px,95vw);max-width:none;max-height:min(90dvh,810px);margin:auto;padding:0;color:#e6efea;background:#122128;border:1px solid #486268;border-radius:12px;box-shadow:0 24px 90px #03090dcc;overflow:auto;font:14px/1.35 system-ui,sans-serif}
 .hxa::backdrop{background:#031017c4;backdrop-filter:blur(3px)}
 .hxa *{box-sizing:border-box}.hxa [hidden]{display:none!important}
@@ -9341,7 +9344,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const snapshot = /* @__PURE__ */ new Map(), accounts = players.map((p, id) => p && (id === owner ? { ...p } : account(0)));
         const remote = players.map((p) => p && { field: 0, mature: 0, conventional: 0, energy: 0 });
         for (const [id, c] of cells2) {
-          if (c.owner !== owner && !view.visible.has(id)) continue;
+          if (c.owner !== owner && !canSee(owner, id)) continue;
           if (c.owner !== owner) {
             const p = accounts[c.owner];
             p.field++;
@@ -9656,7 +9659,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     plan = defaultProgressionPlan(),
     seed = 1,
     stock = 32,
-    initialResources = [48, 32, 40, 24],
+    initialResources = [96, 72, 80, 64],
     harvestAfter = 12,
     harvestRate = 0.2,
     depositRate = 0.4,
@@ -11804,7 +11807,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   var slotKey = (card2) => card2.slotKey ?? card2.key;
   function createHand(getMatch, { onInspect = () => {
   }, onChoose = () => {
-  } } = {}) {
+  }, getSourceSite = () => null } = {}) {
     const hand = $("mx-hand"), preview = $("mx-preview"), mods = /* @__PURE__ */ new Map(), buttons = /* @__PURE__ */ new Map();
     let selected;
     const modifier = (c) => {
@@ -11847,14 +11850,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const c = btn.card, cost = match.stampQuote ? match.stampQuote(c.rule, modifier(c).resolver, c.offsets.length, { contract: c.contract }).total : c.offsets.length * match.stampPrice(modifier(c).resolver);
         const withinLimit = c.offsets.length <= (match.toolSettings?.maxStampCells ?? Infinity);
         const progression = match.progression, node = progression?.plan.nodes.find((n) => n.id === c.contract);
-        const permitted = !progression || progression.legalCards(1).some((card2) => card2.contract === c.contract);
-        const affordable = withinLimit && wallet + 1e-9 >= cost && permitted;
+        const sourceSite = getSourceSite(), source = progression?.sourceAt(sourceSite, 1);
+        const required = node?.parent ?? progression?.plan.base;
+        const permitted = !progression || !!source && required === source.contract && node.cost.every((v, i) => progression.inventory(1)[i] + 1e-9 >= v);
+        const ids = world.hover && progression ? stampTargets(world.hover, modifier(c).shape) : null;
+        const quote = ids && progression ? progression.getQuote(1, c.contract, ids, sourceSite) : null;
+        const affordable = withinLimit && wallet + 1e-9 >= cost && permitted && (!quote || quote.ok);
         if (btn.dataset.afford !== String(affordable)) btn.dataset.afford = String(affordable);
         const progress = btn.querySelector(".mx-card-energy"), available = Math.max(0, Math.min(wallet, cost));
         progress.style.setProperty("--charge", String(cost ? available / cost : 1));
         progress.setAttribute("aria-valuemax", String(cost));
         progress.setAttribute("aria-valuenow", String(available));
-        progress.setAttribute("aria-valuetext", !withinLimit ? "Acima do limite de células por carimbo" : !permitted ? "Precisa da fonte de construção e dos materiais" : affordable ? match.spatial?.enabled ? "Custo disponível no campo; escolha uma região com luz e energia local" : "Pronto para usar" : "Faltam ◈ " + fmt4.format(cost - available));
+        progress.setAttribute("aria-valuetext", !withinLimit ? "Acima do limite de células por carimbo" : quote?.reason ?? (!permitted ? "Selecione uma fonte da receita e confira os materiais" : affordable ? progression ? "Escolha um local disponível" : "Pronto para usar" : "Faltam ◈ " + fmt4.format(cost - available)));
         if (btn.dataset.price !== String(cost) || btn.dataset.withinLimit !== String(withinLimit)) {
           btn.dataset.price = String(cost);
           btn.dataset.withinLimit = String(withinLimit);
@@ -14986,7 +14993,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function startMixedGame() {
     mount();
     let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null, activeSource = null, lastUndo = null, pendingHazard = null;
-    const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }), onChoose: () => tools?.select("stamp") });
+    const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }), onChoose: () => tools?.select("stamp"), getSourceSite: () => activeSource?.site ?? null });
     const fillDeck = (cards2) => {
       if (session?.match.progression) {
         hand.fill(activeSource ? session.match.progression.childrenFor(activeSource.contract) : []);
@@ -15038,9 +15045,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-flow").textContent = (scoreboard.flow > 0 ? "+" : "") + number2.format(scoreboard.flow);
       if (m.spatial?.enabled) {
         const view = m.visibility(1);
-        $("mx-vision").textContent = "Luz: " + view.visible.size.toLocaleString("pt-BR") + " · Explorado: " + view.explored.size.toLocaleString("pt-BR");
+        $("mx-vision").textContent = "◉ " + view.visible.size.toLocaleString("pt-BR") + " · ◌ " + view.explored.size.toLocaleString("pt-BR");
+        $("mx-vision").title = "◉ região iluminada · ◌ território explorado disponível para construir";
         const targets = targetIds(world.hover), cell = world.hover?.id === void 0 ? null : m.cells.get(world.hover.id);
-        $("mx-local-energy").textContent = targets ? "Energia perto do carimbo: ◈ " + number2.format(m.localReserve(1, targets)) : cell?.owner === 1 ? "Célula: ◈ " + number2.format(cell.energy) + " · Estável por " + cell.stableAge + " G" : "Energia guardada nas células · ◈ " + number2.format(p.reserve);
+        $("mx-local-energy").textContent = targets ? "◈ " + number2.format(m.localReserve(1, targets)) : cell?.owner === 1 ? "◈ " + number2.format(cell.energy) + " · G" + cell.stableAge : "◈ " + number2.format(p.reserve);
+        $("mx-local-energy").title = "Energia celular disponível para construir no território explorado";
       }
       if (m.progression) {
         if (activeSource && !m.progression.sourceAt(activeSource.site, 1)) {
@@ -15233,12 +15242,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const before = session.match.fork();
       const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native", metadata2(c));
       if (ok) {
+        setPlay(false);
         lastUndo = { match: before, alive: session.alive.slice(), eliminatedAt: session.eliminatedAt.slice(), generation: before.gen, field: before.players[1].conventional };
         $("mx-undo").hidden = false;
         dirty = true;
         syncField(session.match);
         hud();
-        toast(c.name + " · " + resolverNames[m.resolver]);
+        toast(c.name + " · colocado · pausa para inspeção");
       }
       return ok;
     }
