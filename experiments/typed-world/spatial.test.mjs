@@ -9,7 +9,7 @@ const graph=buildSphere(24),site=graph.farthest;
 const farm=footprint(graph,'hex-b2s245/farm-4-12',site);
 const remoteSite=Array.from({length:graph.n},(_,i)=>i).find(i=>!graphBall(graph,farm,18).has(i)&&footprint(graph,'hex-b2s245/farm-4-12',i));
 function world(overrides={}){
-  return createTypedWorld(graph,{wallets:[640,640],seed:8,...overrides,spatial:{enabled:true,...overrides.spatial}});
+  return createTypedWorld(graph,{wallets:[640,640],seed:8,...overrides,spatial:{enabled:true,safeStampGap:0,...overrides.spatial}});
 }
 function start(overrides={}){
   const m=world(overrides);assert(m.bootstrapStamp(1,'hex-b2s245','contact',farm));return m;
@@ -262,4 +262,13 @@ test('open-map vision shows remote cells without giving construction rights in u
   assert.equal(m.canSee(1,dark),true);
   assert.equal(m.canBuild(1,dark),false);
   assert.equal(m.stampRejection(1,'callahan','contact',[dark]),'darkness');
+});
+
+test('safe spacing blocks accidental adjacent stamping while zero restores free cellular experimentation',()=>{
+  const guarded=start({spatial:{safeStampGap:2}}),free=start({spatial:{safeStampGap:0}});
+  const adjacent=[...guarded.visibility(1).explored].find(site=>!guarded.cells.has(site)&&graphBall(graph,[site],1).size&&
+    [...graphBall(graph,[site],1)].some(neighbor=>guarded.cells.get(neighbor)?.owner===1));
+  assert(Number.isInteger(adjacent));
+  assert.equal(guarded.stampRejection(1,'callahan','contact',[adjacent]),'near-own');
+  assert.equal(free.stampRejection(1,'callahan','contact',[adjacent]),null);
 });

@@ -11,7 +11,7 @@ import {createGameMatch} from './match.mjs';
 const farm=atlasCards.find(c=>c.key==='hex-b2s245/farm-4-12');
 const userCard={...farm,key:'my-investigation/shape-001',name:'User seed',custom:true,source:'user',group:'my-shapes'};
 function observationTrial(graph,large){
-  const scene=blastScene(graph),m=createTypedWorld(graph,{wallets:[1600,1600],spatial:{enabled:true},
+  const scene=blastScene(graph),m=createTypedWorld(graph,{wallets:[1600,1600],spatial:{enabled:true,safeStampGap:0},
     arbitration:'ballot',eligibility:'contest',existence:'majority',passage:'literal'});
   assert(m.bootstrapStamp(1,farm.rule,'contact',scene.targetFarm));
   assert(m.bootstrapStamp(2,farm.rule,'contact',large?scene.largeFarm:scene.smallFarm));
@@ -48,7 +48,7 @@ test('spatial choices ignore hidden armies, hidden spending and hidden action no
 });
 
 test('spatial bots expand through current light with a single bounded work budget',()=>{
-  const g=createGameMatch({F:16,seed:7,players:3,bank:1600,spatial:{enabled:true}}),m=g.match,orders=[];
+  const g=createGameMatch({F:16,seed:7,players:3,bank:1600,spatial:{enabled:true,safeStampGap:0}}),m=g.match,orders=[];
   const explored=m.visibility(2).explored.size;
   const bots=createGameBots(m,{seed:7,budget:4,horizon:16,cards:[farm],fieldTools:false,beforeOrder:o=>{
     assert(o.ids.every(id=>m.canSee(o.owner,id)));
