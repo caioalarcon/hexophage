@@ -38,7 +38,7 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
     const match=getMatch();if(!match)return;
     const wallet=match.players[1].reserve;
     for(const btn of buttons.values()){
-      const c=btn.card, cost=c.offsets.length*match.stampPrice(modifier(c).resolver);
+      const c=btn.card, cost=match.stampQuote?match.stampQuote(c.rule,modifier(c).resolver,c.offsets.length,{contract:c.contract}).total:c.offsets.length*match.stampPrice(modifier(c).resolver);
       const withinLimit=c.offsets.length<=(match.toolSettings?.maxStampCells??Infinity);
       const affordable=withinLimit&&wallet+1e-9>=cost;
       if(btn.dataset.afford!==String(affordable))btn.dataset.afford=String(affordable);
@@ -46,7 +46,7 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
       progress.style.setProperty('--charge',String(cost?available/cost:1));
       progress.setAttribute('aria-valuemax',String(cost));
       progress.setAttribute('aria-valuenow',String(available));
-      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':affordable?'Pronto para usar':'Faltam ◈ '+fmt.format(cost-available));
+      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':affordable?(match.spatial?.enabled?'Custo disponível no campo; escolha uma região com luz e energia local':'Pronto para usar'):'Faltam ◈ '+fmt.format(cost-available));
       if(btn.dataset.price!==String(cost)||btn.dataset.withinLimit!==String(withinLimit)){
         btn.dataset.price=String(cost);
         btn.dataset.withinLimit=String(withinLimit);
@@ -55,7 +55,7 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
       }
     }
     if(selected){
-      const cost=selected.offsets.length*match.stampPrice(modifier(selected).resolver);
+      const cost=match.stampQuote?match.stampQuote(selected.rule,modifier(selected).resolver,selected.offsets.length,{contract:selected.contract}).total:selected.offsets.length*match.stampPrice(modifier(selected).resolver);
       $('mx-price').textContent='◈ '+fmt.format(cost);
     }
   }

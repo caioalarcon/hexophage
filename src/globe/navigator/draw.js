@@ -25,7 +25,7 @@ function drawMiniGlobe(time) {
     return;
   navigatorView.lastDraw = time;
   const wire = globeWireMesh(globeContext());
-  const worked = drawGlobeGPU(wire);
+  const worked = !world.fog && drawGlobeGPU(wire);
   gpuCanvas.style.display = worked ? 'block' : 'none';
   fallbackMini.style.display = 'block';
   if (worked) drawMiniBackdrop();

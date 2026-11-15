@@ -66,6 +66,15 @@ function drawAtlas() {
   c.drawImage(a.base, 0, 0);
   c.save();
   atlasContext(c, a);
+  if(world.fog){
+    c.fillStyle='#060d16';c.fillRect(a.x0,a.y0,a.x1-a.x0,a.y1-a.y0);
+    for(const [sites,color] of [[world.fog.explored,'#142331'],[world.fog.visible,'#24473c']]){
+      const path=new Path2D();
+      for(const id of sites)atlasMark(path,id,a);
+      c.fillStyle=color;c.fill(path);
+      if(sites===world.fog.visible&&atlasMetrics.pitch>4){c.strokeStyle='#71ac8f40';c.lineWidth=.6;c.stroke(path);}
+    }
+  }
   const g = a.g,
     paths = new Array(8),
     counts = new Uint16Array(8),
@@ -172,6 +181,14 @@ function drawAtlas() {
     c.save();
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.drawImage(bitmap.canvas, 0, 0);
+    c.restore();
+  }
+  if(world.fog&&world.rememberedCells?.size){
+    const ghosts=Array.from({length:8},()=>new Path2D());
+    for(const [site,other] of world.rememberedCells)
+      if(!world.fog.visible.has(site))atlasMark(ghosts[other.owner],site,a);
+    c.save();c.globalAlpha=.22;
+    for(let owner=1;owner<=7;owner++){c.fillStyle=game.colors[owner];c.fill(ghosts[owner]);}
     c.restore();
   }
   const preview = world.hover?.id !== undefined && (!world.drag || world.painting) && placementPreview(world.hover);

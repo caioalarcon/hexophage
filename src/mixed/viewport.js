@@ -29,6 +29,13 @@ export function bindMixedViewport(){
 // once per displayed frame, including when many generations were simulated.
 export function syncField(match){
   world.gen=match.gen;
+  world.fog=match.spatial?.enabled&&!match.spatial.fullMap?match.visibility(1):null;
+  world.rememberedCells??=new Map();
+  if(world.fog){
+    for(const id of world.fog.visible)world.rememberedCells.delete(id);
+    for(const [id,c] of match.cells)if(c.owner!==1&&world.fog.visible.has(id))
+      world.rememberedCells.set(id,{owner:c.owner,seenAt:match.gen});
+  }else world.rememberedCells.clear();
   for(let i=0;i<world.activeCount;i++){
     const id=world.active[i];world.cells[id]=0;world.owners[id]=0;
   }
@@ -36,6 +43,7 @@ export function syncField(match){
   world.activeCount=0;
   for(const group of world.ownerCells)group.length=0;
   for(const [id,c] of match.cells){
+    if(world.fog&&c.owner!==1&&!world.fog.visible.has(id))continue;
     world.cells[id]=1;world.owners[id]=c.owner;
     world.active[world.activeCount++]=id;world.ownerCells[c.owner].push(id);
   }
@@ -45,6 +53,7 @@ export function syncField(match){
 
 export function loadViewport(session,storage){
   newWorld(session.graph.f,session.graph,storage);
+  world.rememberedCells=new Map();
   world.rule='mixed';world.physics=null;
   syncField(session.match);
   centerOnPlayer(session.starts[1]);

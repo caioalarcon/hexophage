@@ -883,6 +883,17 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 #hexlab.mixed #mx-erase-value{min-width:18px;text-align:right;color:#ffad9a}
 #hexlab.mixed[data-field-tool=erase] #hl-world,#hexlab.mixed[data-field-tool=pick] #hl-world{cursor:crosshair}
 #hexlab.mixed #mx-tools-apply{font-size:11px;padding:6px}
+#hexlab.mixed #mx-frontier{padding:8px;border:1px solid #467c69;border-radius:5px;background:#102a25;font-size:11px;line-height:1.4}
+#hexlab.mixed #mx-frontier[hidden],#hexlab.mixed #mx-spatial-settings[hidden]{display:none}
+#hexlab.mixed #mx-frontier strong{color:var(--mx-mint)}
+#hexlab.mixed #mx-frontier p{margin:5px 0;color:#c2d8cc}
+#hexlab.mixed #mx-frontier output{display:block;margin:4px 0;color:#bbcec9}
+#hexlab.mixed #mx-home{font-size:10px;padding:4px 7px}
+#hexlab.mixed #mx-spatial-settings p{font-size:12px;line-height:1.4;margin:0}
+#hexlab.mixed #mx-spatial-settings textarea{box-sizing:border-box;width:100%;min-width:0;resize:vertical;background:#0d1b29;color:#c8eadc;border:1px solid #425770;border-radius:4px;padding:7px;font-size:11px}
+#hexlab.mixed #mx-spatial-settings small{font-size:10px;line-height:1.4;color:var(--mx-soft);overflow-wrap:anywhere}
+#hexlab.mixed #mx-base-name{font-size:12px;color:#d2eee0}
+@media(orientation:portrait){#hexlab.mixed #mx-frontier{grid-column:1/-1;padding:5px}#hexlab.mixed #mx-frontier p{display:none}#hexlab.mixed #mx-frontier output{display:inline-block;margin:0 5px;font-size:10px}}
 @media(orientation:portrait){
  #hexlab.mixed .mx-tools{padding:3px 0;gap:3px}
  #hexlab.mixed .mx-tools-row{gap:5px}
@@ -893,6 +904,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab.mixed .mx-interaction select,#hexlab.mixed .mx-vote select{height:23px}
  #hexlab.mixed .mx-vote{grid-template-rows:auto 23px}
 }
+
+#hexlab.mixed #mx-spatial-settings input[type=checkbox]{width:auto;min-width:14px}
 .hxa{box-sizing:border-box;color-scheme:dark;width:min(990px,95vw);max-width:none;max-height:min(90dvh,810px);margin:auto;padding:0;color:#e6efea;background:#122128;border:1px solid #486268;border-radius:12px;box-shadow:0 24px 90px #03090dcc;overflow:auto;font:14px/1.35 system-ui,sans-serif}
 .hxa::backdrop{background:#031017c4;backdrop-filter:blur(3px)}
 .hxa *{box-sizing:border-box}.hxa [hidden]{display:none!important}
@@ -1189,10 +1202,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <template id="mx-panel-template">
  <section class="mx-console">
   <div class="mx-mode"><label for="hl-rulechoice">Autômato da partida</label><span id="mx-mode-slot"></span></div>
-  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Configurar partida" title="Configurar partida">⚙</button></div>
+  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Preparar partida" title="Preparar partida">⚙</button><button id="mx-undo" type="button" aria-label="Desfazer último carimbo" title="Desfazer último carimbo (Ctrl+Z)" hidden>↶</button></div>
   <div class="mx-metrics"><div><small>RESERVA</small><strong id="mx-cash"></strong></div><div><small>CAMPO</small><strong id="mx-field"></strong></div><div><small title="Média recente da renda menos nascimentos e cortes">FLUXO / G</small><strong id="mx-flow"></strong></div></div>
   <div class="mx-speed" id="mx-speed-slot"></div>
   <div class="mx-rail-links"><button id="mx-profile-button" type="button" title="Ajustes econômicos da partida"></button><button id="mx-globe" type="button">Globo</button></div>
+  <section id="mx-frontier" hidden aria-label="Economia celular e exploração"><strong>Fronteira celular</strong><p id="mx-frontier-help" hidden>Explore o mundo para liberar terrenos. Fontes vivas transportam energia e dão alcance às estruturas.</p><output id="mx-vision"></output><output id="mx-local-energy"></output><button id="mx-home" type="button">Voltar à base</button></section>
   <details id="mx-league" open><summary>Classificação</summary><ol id="mx-score"></ol></details>
   <details id="mx-conflicts"><summary>Disputas em campo</summary><div id="mx-event">Avance para observar.</div><button id="mx-locate" type="button" hidden>Ver no mapa</button></details>
  </section>
@@ -1231,6 +1245,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  <dialog id="mx-settings" aria-labelledby="mx-settings-title">
   <header><h2 id="mx-settings-title">Partida e bots</h2><button type="button" id="mx-settings-close" aria-label="Fechar configurações">×</button></header>
   <form id="mx-setup">
+   <fieldset><legend>Experimento</legend><label class="mx-wide">Regras econômicas e território<select id="mx-experiment"><option value="classic">Economia compartilhada · atual</option><option value="local">Economia por célula + escuridão</option></select></label></fieldset>
+   <fieldset id="mx-spatial-settings" hidden><legend>Base e iluminação</legend>
+   <label class="mx-wide"><input id="mx-map-full" type="checkbox"> Mapa visível inteiro; construção só em áreas exploradas</label>
+   <label class="mx-wide">Distância segura entre carimbos<select id="mx-safe-gap">
+     <option value="0">Livre: permitir interações</option><option value="1">1 célula</option><option value="2">2 células</option>
+     <option value="3">3 células</option><option value="4">4 células</option>
+   </select></label><label class="mx-wide">Energia para construir<select id="mx-funding-mode">
+     <option value="territory">Células do território</option><option value="local">Somente células próximas</option>
+   </select></label><p class="mx-wide">A base começa em campo. Cada célula guarda energia. Novas células recebem combustível dos pais próximos. A luz acompanha as células vivas.</p><output class="mx-wide" id="mx-base-name"></output><button type="button" id="mx-use-base" class="mx-wide">Usar o carimbo selecionado como base</button><label>Raio de luz (passos)<input type="number" id="mx-vision-radius" min="1" max="24" step="1" value="6"></label><label>Energia máxima por célula<input type="number" id="mx-cell-capacity" min="1" max="10000" value="256" step="any"></label><label>Combustível por célula carimbada<input type="number" id="mx-stamp-energy" min="0" max="10000" value="32" step="any"></label><label>Combustível por nascimento natural<input type="number" id="mx-newborn-energy" min="0" max="10000" value="2" step="any"></label><label>Alcance do financiamento natural<input type="number" id="mx-birth-radius" min="1" max="6" value="1" step="1"></label><label class="mx-wide">Economias e visão por tipo (JSON)<textarea id="mx-cell-types" rows="4" spellcheck="false" aria-label="Economia e iluminação por tipo de célula">{}</textarea></label><small class="mx-wide">Exemplo: {"callahan/phase":{"visionRadius":8,"stableEnergy":0.5}}. A base passa por 64 gerações de ensaio para verificar sobrevivência e produção.</small></fieldset>
    <fieldset><legend>Partida</legend><label>Esfera<select id="mx-size"></select></label><label>Semente<input type="number" id="mx-seed" min="0" max="4294967295" step="1" required></label><label>Reserva inicial<input type="number" id="mx-bank" min="0" step="any" placeholder="Do perfil"></label></fieldset>
    <fieldset><legend>Bots</legend><label>Intervalo de compra (G)<input type="number" id="mx-bot-interval" min="1" step="1" required></label><label>Passos de pesquisa por G<input type="number" id="mx-bot-budget" min="0" step="1" required></label></fieldset>
    <fieldset><legend>Ferramentas</legend><label>Raio máximo da borracha<input type="number" id="mx-erase-max" min="1" step="1" required></label><label>Máximo de células por carimbo<input type="number" id="mx-stamp-max" min="1" step="1" required></label><button type="button" id="mx-tools-apply" class="mx-wide">Aplicar ferramentas nesta partida</button></fieldset>
@@ -1878,18 +1901,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const measured2 = /* @__PURE__ */ new Map();
     let job;
     return {
-      result: (stamp) => measured2.get(stamp),
-      run(stamp, threshold, allowance) {
-        if (measured2.has(stamp)) return { visits: 0, done: true };
-        if (job?.stamp !== stamp) {
-          const ages = new Map(stamp.offsets.map(([q, r]) => [patternSite(q, r), 1]));
-          job = { stamp, ages, start: centroid(ages), turns: 0, births: 0, mature: 0, midCore: 0, reach: stamp.radius, history: [] };
+      result: (stamp2) => measured2.get(stamp2),
+      run(stamp2, threshold, allowance) {
+        if (measured2.has(stamp2)) return { visits: 0, done: true };
+        if (job?.stamp !== stamp2) {
+          const ages = new Map(stamp2.offsets.map(([q, r]) => [patternSite(q, r), 1]));
+          job = { stamp: stamp2, ages, start: centroid(ages), turns: 0, births: 0, mature: 0, midCore: 0, reach: stamp2.radius, history: [] };
         }
         let visits = 0;
         while (job.turns < horizon) {
           const cost = Math.max(1, 13 * job.ages.size);
           if (cost > 2400) {
-            measured2.set(stamp, null);
+            measured2.set(stamp2, null);
             job = null;
             return { visits, done: true };
           }
@@ -1915,8 +1938,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const end = centroid(job.ages);
         let lateCore = 0;
         for (const age of job.ages.values()) if (age >= persistentAge) lateCore++;
-        measured2.set(stamp, {
-          initial: stamp.offsets.length,
+        measured2.set(stamp2, {
+          initial: stamp2.offsets.length,
           live: job.ages.size,
           turns: horizon,
           births: job.births / 8,
@@ -2388,7 +2411,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       return { own: move.own - base.own, rival: move.rival - base.rival };
     }
     const recent = new Float64Array(8 * 7);
-    const operating3 = audit ? [new Float64Array(8 * 7), new Float64Array(8 * 7)] : null;
+    const operating4 = audit ? [new Float64Array(8 * 7), new Float64Array(8 * 7)] : null;
     const trial = {
       nodes: graph.n,
       get generations() {
@@ -2408,9 +2431,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           for (const p of action.players) {
             const slot = turns % 8 * 7 + p.id;
             recent[slot] = p.lastFlow - control.players[p.id - 1].lastFlow;
-            if (operating3 && (p.id === owner || p.id === rival)) {
-              operating3[0][slot] = p.operatingFlow;
-              operating3[1][slot] = control.players[p.id - 1].operatingFlow;
+            if (operating4 && (p.id === owner || p.id === rival)) {
+              operating4[0][slot] = p.operatingFlow;
+              operating4[1][slot] = control.players[p.id - 1].operatingFlow;
             }
           }
           turns++;
@@ -2456,8 +2479,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
             const side = (id) => ({
               action: endpoint(action, id),
               hold: endpoint(control, id),
-              tailAction: tail(operating3[0], id),
-              tailHold: tail(operating3[1], id),
+              tailAction: tail(operating4[0], id),
+              tailHold: tail(operating4[1], id),
               actionOperating: action.operating[id],
               holdOperating: control.operating[id],
               outsideBirths: outside.births[id],
@@ -2535,8 +2558,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     metrics.forecastLedgers = 0;
     metrics.calibratedForecasts = 0;
     function adjustment(t, result, side) {
-      const prop = side + "Flow", id = t.player.id, stamp = t.action.stamp.id;
-      const broad = memory.lookup(id, "yield/error/" + t.spot.kind + "/" + side, stamp);
+      const prop = side + "Flow", id = t.player.id, stamp2 = t.action.stamp.id;
+      const broad = memory.lookup(id, "yield/error/" + t.spot.kind + "/" + side, stamp2);
       if (!broad.count) return { shadow: 0, applied: 0 };
       let bias = broad.mean * broad.count / (broad.count + 6);
       const [context, pose] = keyFor(t, side);
@@ -2545,8 +2568,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         bias = (3 * bias + local.count * local.mean) / (local.count + 3);
       }
       const fit = memory.lookup(id, "fit/" + context, pose);
-      const operating3 = result[side + "Cash"] + (side === "own" ? result.cost : 0);
-      const limit = Math.max(Math.abs(result[prop]), Math.abs(operating3) / result.turns);
+      const operating4 = result[side + "Cash"] + (side === "own" ? result.cost : 0);
+      const limit = Math.max(Math.abs(result[prop]), Math.abs(operating4) / result.turns);
       const shadow = Math.min(limit, Math.max(-limit, bias));
       return { shadow, applied: fit.count >= 2 && fit.mean >= 0.5 ? shadow : 0 };
     }
@@ -2739,22 +2762,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     return { kin, strangers, young, mature };
   }
-  function scoutEmpty(world2, player, random2) {
+  function scoutEmpty(world2, player, random3) {
     const { graph } = world2;
     let target = player.seed, best = -Infinity;
     for (let i = 0; i < 8; i++) {
-      const site = i === 0 ? player.seed : Math.floor(random2() * graph.n);
+      const site = i === 0 ? player.seed : Math.floor(random3() * graph.n);
       if (graph.deg[site] !== 6) continue;
       const { kin, strangers } = localCounts(world2, site, player.id);
-      const score = -8 * (kin + strangers) - 10 * strangers + Math.min(20, graph.distance[site]) / 20 + random2() * 0.1;
+      const score = -8 * (kin + strangers) - 10 * strangers + Math.min(20, graph.distance[site]) / 20 + random3() * 0.1;
       if (score > best) {
         best = score;
         target = site;
       }
     }
-    return { kind: "empty", target, direction: Math.floor(random2() * 6) };
+    return { kind: "empty", target, direction: Math.floor(random3() * 6) };
   }
-  function scoutRival(world2, game2, hunter, random2) {
+  function scoutRival(world2, game2, hunter, random3) {
     const { graph, ownerCells } = world2;
     const rivals = game2.players.filter((p) => p !== hunter && !p.out && ownerCells[p.id].length);
     const bestFlow = Math.max(1, ...rivals.map((p) => Math.max(0, p.flowAverage ?? 0)));
@@ -2762,11 +2785,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (const rival of rivals) {
       const cells2 = ownerCells[rival.id], recent = game2.recentBirthSites?.[rival.id];
       for (let i = 0; i < 3; i++) {
-        let site = i === 0 && recent?.length ? recent[Math.floor(random2() * recent.length)] : -1;
-        if (site < 0 || world2.owners[site] !== rival.id) site = cells2[Math.floor(random2() * cells2.length)];
+        let site = i === 0 && recent?.length ? recent[Math.floor(random3() * recent.length)] : -1;
+        if (site < 0 || world2.owners[site] !== rival.id) site = cells2[Math.floor(random3() * cells2.length)];
         if (graph.deg[site] !== 6) continue;
         const local = localCounts(world2, site, rival.id);
-        const start = Math.floor(random2() * 6);
+        const start = Math.floor(random3() * 6);
         let facing = -1;
         for (let k = 0; k < 6; k++) {
           const d = (k + start) % 6;
@@ -2777,7 +2800,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         }
         if (facing < 0) continue;
         const income = game2.economy.policy === "activity" ? local.young : local.mature;
-        const score = random2() * 3 + 2 * Math.max(0, rival.flowAverage ?? 0) / bestFlow + income / 3 + local.kin / 8;
+        const score = random3() * 3 + 2 * Math.max(0, rival.flowAverage ?? 0) / bestFlow + income / 3 + local.kin / 8;
         if (score > high) {
           high = score;
           spot = { kind: "rival", target: site, direction: facing, rivalId: rival.id };
@@ -2852,23 +2875,23 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       word += encode2(g.adj[site * 6 + (i + spot.direction) % g.deg[site]]);
     return spot.kind + "/" + word;
   }
-  function sampleFront(world2, cells2, random2) {
-    let target = cells2[Math.floor(random2() * cells2.length)];
+  function sampleFront(world2, cells2, random3) {
+    let target = cells2[Math.floor(random3() * cells2.length)];
     for (let i = 0; i < 6; i++) {
-      const candidate = cells2[Math.floor(random2() * cells2.length)];
+      const candidate = cells2[Math.floor(random3() * cells2.length)];
       if (world2.cellAges[candidate] < world2.cellAges[target]) target = candidate;
     }
     return target;
   }
-  function selectSpot(world2, game2, player, random2) {
+  function selectSpot(world2, game2, player, random3) {
     const rivals = game2.players.filter((p) => !p.out && p !== player && world2.ownerCells[p.id].length);
     const own = world2.ownerCells[player.id];
-    const direction = Math.floor(random2() * 6);
-    if (rivals.length && player.stamps && random2() < 0.55) {
-      const rival = rivals[Math.floor(random2() * rivals.length)];
+    const direction = Math.floor(random3() * 6);
+    if (rivals.length && player.stamps && random3() < 0.55) {
+      const rival = rivals[Math.floor(random3() * rivals.length)];
       const sites = game2.recentBirthSites?.[rival.id];
-      if (sites && random2() < 0.75) {
-        const start = Math.floor(random2() * sites.length);
+      if (sites && random3() < 0.75) {
+        const start = Math.floor(random3() * sites.length);
         for (let i = 0; i < sites.length; i++) {
           const target = sites[(start + i) % sites.length];
           if (target < 0 || world2.owners[target] !== rival.id || world2.cellAges[target] > 8) continue;
@@ -2882,16 +2905,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           }
         }
       }
-      return { kind: "rival", target: sampleFront(world2, world2.ownerCells[rival.id], random2), direction };
+      return { kind: "rival", target: sampleFront(world2, world2.ownerCells[rival.id], random3), direction };
     }
-    if (own.length && random2() < 0.7)
-      return { kind: "own", target: sampleFront(world2, own, random2), direction };
+    if (own.length && random3() < 0.7)
+      return { kind: "own", target: sampleFront(world2, own, random3), direction };
     return { kind: "empty", target: player.seed, direction };
   }
-  function placement(world2, spot, stamp, turn, distance) {
+  function placement(world2, spot, stamp2, turn, distance) {
     const pose = walk(world2.graph, spot.target, spot.direction, distance);
     if (!pose) return null;
-    const ids = patchForStamp(world2, pose.site, (pose.direction + turn) % 6, stamp.offsets);
+    const ids = patchForStamp(world2, pose.site, (pose.direction + turn) % 6, stamp2.offsets);
     return ids && { ids, center: pose.site, heading: pose.direction };
   }
   var disks = /* @__PURE__ */ new Map();
@@ -3016,25 +3039,25 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function normalized(value, scale) {
     return value / (Math.abs(value) + Math.max(1, scale));
   }
-  function actionKey(kind, stamp, turn, gap) {
-    return kind === "rival" || kind === "own" ? stamp.id + "@" + turn + "/" + gap : stamp.id;
+  function actionKey(kind, stamp2, turn, gap) {
+    return kind === "rival" || kind === "own" ? stamp2.id + "@" + turn + "/" + gap : stamp2.id;
   }
-  function sampleAction(catalog2, player, spot, context, memory, random2, price) {
+  function sampleAction(catalog2, player, spot, context, memory, random3, price) {
     let best, highest = -Infinity;
     for (let i = 0; i < 12; i++) {
-      const stamp = catalog2[Math.floor(random2() * catalog2.length)];
-      if (!stamp || stamp.offsets.length * price > player.reserve + 1e-9) continue;
-      const turn = Math.floor(random2() * 6);
-      const gap = 2 + Math.floor(random2() * 3);
-      const key2 = actionKey(spot.kind, stamp, turn, gap);
-      const broad = memory.lookup(player.id, spot.kind, stamp.id);
+      const stamp2 = catalog2[Math.floor(random3() * catalog2.length)];
+      if (!stamp2 || stamp2.offsets.length * price > player.reserve + 1e-9) continue;
+      const turn = Math.floor(random3() * 6);
+      const gap = 2 + Math.floor(random3() * 3);
+      const key2 = actionKey(spot.kind, stamp2, turn, gap);
+      const broad = memory.lookup(player.id, spot.kind, stamp2.id);
       const local = spot.kind === "empty" ? broad : memory.lookup(player.id, context, key2);
-      const observed = memory.lookup(player.id, "field/" + spot.kind, stamp.id);
+      const observed = memory.lookup(player.id, "field/" + spot.kind, stamp2.id);
       const evidence = local.count ? local.mean : broad.mean * 0.65;
-      const priority = evidence + 0.22 * observed.mean + 0.32 / Math.sqrt(1 + broad.count) + random2() * 0.5;
+      const priority = evidence + 0.22 * observed.mean + 0.32 / Math.sqrt(1 + broad.count) + random3() * 0.5;
       if (priority > highest) {
         highest = priority;
-        best = { stamp, turn, gap, key: key2, experience: broad.count, learnedPose: local.count > 0 && local.mean > 0 };
+        best = { stamp: stamp2, turn, gap, key: key2, experience: broad.count, learnedPose: local.count > 0 && local.mean > 0 };
       }
     }
     return best;
@@ -3051,9 +3074,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   function createThinkingStrategy(world2, game2, commitStamp2, options = {}) {
     const catalog2 = stampCatalog(game2.gameplay.patterns).filter((p) => p.radius + 3 <= 20);
     const kit = catalog2.filter((p) => Object.hasOwn(game2.gameplay.kit, p.id));
-    const byId = new Map(catalog2.map((stamp) => [stamp.id, stamp]));
-    const rankInvestments = () => rankEconomicPatterns(catalog2, game2.profile.id, game2.economy).filter((stamp) => {
-      const prior = estimateEconomicReturn(game2.profile.id, stamp, game2.economy);
+    const byId = new Map(catalog2.map((stamp2) => [stamp2.id, stamp2]));
+    const rankInvestments = () => rankEconomicPatterns(catalog2, game2.profile.id, game2.economy).filter((stamp2) => {
+      const prior = estimateEconomicReturn(game2.profile.id, stamp2, game2.economy);
       return prior?.feasible && prior.flow > 0;
     });
     let economicCandidates = rankInvestments();
@@ -3063,11 +3086,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     let screen = createSeedScreen(world2.physics);
     const seed = options.seed ?? 1;
     const brains = game2.players.map((p) => {
-      const random2 = randomStream(seed ^ Math.imul(p.id, 2654435769));
+      const random3 = randomStream(seed ^ Math.imul(p.id, 2654435769));
       return {
-        random: random2,
-        payback: 12e4 + random2() * 24e4,
-        rivalWeight: 1 + 0.5 * random2(),
+        random: random3,
+        payback: 12e4 + random3() * 24e4,
+        rivalWeight: 1 + 0.5 * random3(),
         ready: null,
         field: [],
         recover: false,
@@ -3113,37 +3136,37 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const feedback = createForecastFeedback(world2, game2, memory, metrics, options.onOutcome);
     const capacity = 8192;
     let credits = capacity, last = world2.gen - 1, earliest = 0, cursor = 1, pending2, survey;
-    function affordable(stamp, player) {
-      return stamp.offsets.length * game2.economy.stampCost <= player.reserve + 1e-9;
+    function affordable(stamp2, player) {
+      return stamp2.offsets.length * game2.economy.stampCost <= player.reserve + 1e-9;
     }
-    function realizedFlow(stamp, player) {
-      const mature = memory.lookup(player.id, "yield/mature", stamp.id);
-      const births = memory.lookup(player.id, "yield/births", stamp.id);
+    function realizedFlow(stamp2, player) {
+      const mature = memory.lookup(player.id, "yield/mature", stamp2.id);
+      const births = memory.lookup(player.id, "yield/births", stamp2.id);
       return mature.count && births.count ? marginalSeedFlow(births.mean, mature.mean, player, game2.economy) : null;
     }
-    function learnSeed(player, brain2, stamp) {
-      brain2.surveyed.add(stamp);
-      const measure2 = screen.result(stamp);
+    function learnSeed(player, brain2, stamp2) {
+      brain2.surveyed.add(stamp2);
+      const measure2 = screen.result(stamp2);
       if (!measure2) return;
       const flow2 = expectedSeedFlow(measure2, player, game2.economy);
-      const cost = stamp.offsets.length * game2.economy.stampCost;
+      const cost = stamp2.offsets.length * game2.economy.stampCost;
       const value = Number.isFinite(flow2) ? normalized(flow2 * measure2.turns, cost) : -1;
-      memory.observe(player.id, "yield/survey", stamp.id, value);
+      memory.observe(player.id, "yield/survey", stamp2.id, value);
     }
     function selectInvestment(player, brain2) {
       let best, highest = 0;
-      const consider = (stamp) => {
-        if (!affordable(stamp, player) || (brain2.rejected.get(stamp) ?? 0) > world2.gen) return;
-        const measure2 = screen.result(stamp);
-        const flow2 = realizedFlow(stamp, player) ?? expectedSeedFlow(measure2, player, game2.economy);
-        const cost = stamp.offsets.length * game2.economy.stampCost;
+      const consider = (stamp2) => {
+        if (!affordable(stamp2, player) || (brain2.rejected.get(stamp2) ?? 0) > world2.gen) return;
+        const measure2 = screen.result(stamp2);
+        const flow2 = realizedFlow(stamp2, player) ?? expectedSeedFlow(measure2, player, game2.economy);
+        const cost = stamp2.offsets.length * game2.economy.stampCost;
         const rate = flow2 / Math.max(1, cost);
         if (rate > Math.max(highest, 1 / brain2.payback)) {
-          best = stamp;
+          best = stamp2;
           highest = rate;
         }
       };
-      for (const stamp of brain2.surveyed) if (screen.result(stamp)) consider(stamp);
+      for (const stamp2 of brain2.surveyed) if (screen.result(stamp2)) consider(stamp2);
       if (best && (survey || brain2.surveyed.size === catalog2.length || ++brain2.investmentTurns % 2 !== 0))
         return { stamp: best, investment: true };
       if (!brain2.prior) {
@@ -3158,7 +3181,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           ...evidence.map((row) => byId.get(row.action)).filter(Boolean)
         ])];
       }
-      const unseen = (stamp) => !brain2.surveyed.has(stamp) && affordable(stamp, player);
+      const unseen = (stamp2) => !brain2.surveyed.has(stamp2) && affordable(stamp2, player);
       let next = brain2.prior.find(unseen);
       if (next) metrics.inheritedProbes++;
       else {
@@ -3236,8 +3259,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const price = game2.economy.stampCost;
         let pool = vacuumOpening ? catalog2.filter((p) => p.radius <= 2) : kit.length && brain2.random() < 0.55 ? kit : catalog2;
         if (spot.kind === "rival" && brain2.random() < 0.6) {
-          const mobile = [...brain2.surveyed].filter((stamp2) => {
-            const drift = brain2.surveyed.has(stamp2) && screen.result(stamp2)?.drift;
+          const mobile = [...brain2.surveyed].filter((stamp3) => {
+            const drift = brain2.surveyed.has(stamp3) && screen.result(stamp3)?.drift;
             return drift && Math.max(Math.abs(drift[0]), Math.abs(drift[1]), Math.abs(drift[0] + drift[1])) >= 1.5;
           });
           if (mobile.length) pool = mobile;
@@ -3251,24 +3274,24 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           experience: memory.lookup(player.id, "empty", pick.stamp.id).count
         } : sampleAction(pool.length ? pool : catalog2, player, spot, context, memory, brain2.random, price);
         if (!action) continue;
-        const { stamp } = action;
+        const { stamp: stamp2 } = action;
         if (spot.kind === "rival" && !action.learnedPose) action.gap = 1 + Math.floor(brain2.random() * 3);
         if (spot.kind === "rival" && !action.learnedPose && brain2.random() < 0.8) {
-          action.turn = aimAtTarget(brain2.surveyed.has(stamp) ? screen.result(stamp) : null, action.turn);
+          action.turn = aimAtTarget(brain2.surveyed.has(stamp2) ? screen.result(stamp2) : null, action.turn);
         }
-        if (spot.kind === "rival") action.key = actionKey(spot.kind, stamp, action.turn, action.gap);
+        if (spot.kind === "rival") action.key = actionKey(spot.kind, stamp2, action.turn, action.gap);
         const { turn } = action;
-        let distance = stamp.radius + action.gap;
-        if (pick.nearby && spot.kind === "own") distance = stamp.radius + 4 + Math.floor(brain2.random() * 6);
+        let distance = stamp2.radius + action.gap;
+        if (pick.nearby && spot.kind === "own") distance = stamp2.radius + 4 + Math.floor(brain2.random() * 6);
         if (spot.kind === "empty") distance = pick.investment ? 0 : Math.floor(brain2.random() * 9);
-        const position = placement(world2, spot, stamp, turn, distance);
+        const position = placement(world2, spot, stamp2, turn, distance);
         if (!position) continue;
-        const measure2 = pick.investment && screen.result(stamp);
+        const measure2 = pick.investment && screen.result(stamp2);
         const halo = measure2 ? Math.max(3, measure2.reach + 2) : 0;
         const radius2 = vacuumOpening ? 5 : Math.min(20, Math.max(
           5,
           halo,
-          stamp.radius + (pick.investment ? 9 : 5),
+          stamp2.radius + (pick.investment ? 9 : 5),
           spot.kind === "empty" ? 0 : distance + 3
         ));
         const horizon2 = vacuumOpening ? 2 : options.horizon ?? (pick.investment ? 18 : spot.kind === "rival" ? 64 : 24);
@@ -3298,8 +3321,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const site = { kind: "site", target: position.center, direction: turn };
         const saved = spot.kind === "rival" ? witness(world2, position, radius2, game2.economy.stableAfter, horizon2) : null;
         if (round) {
-          if (round.slot === 0 && pick.investment) round.crop = stamp;
-          if (round.slot === 1 && spot.kind === "rival") round.raider = stamp;
+          if (round.slot === 0 && pick.investment) round.crop = stamp2;
+          if (round.slot === 1 && spot.kind === "rival") round.raider = stamp2;
           round.slot++;
         }
         return {
@@ -3493,13 +3516,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return;
       }
       if (survey) {
-        const { player, brain: brain2, stamp } = survey;
-        const step2 = screen.run(stamp, game2.economy.stableAfter, Math.min(2400, credits));
+        const { player, brain: brain2, stamp: stamp2 } = survey;
+        const step2 = screen.run(stamp2, game2.economy.stableAfter, Math.min(2400, credits));
         metrics.visits += step2.visits;
         metrics.screenVisits += step2.visits;
         credits -= step2.visits;
         if (step2.done) {
-          learnSeed(player, brain2, stamp);
+          learnSeed(player, brain2, stamp2);
           metrics.studies++;
           survey = null;
         }
@@ -8407,6 +8430,190 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     };
   }
 
+  // experiments/typed-world/spatial.mjs
+  var spatialDefaults = Object.freeze({
+    enabled: false,
+    visionRadius: 12,
+    constructionFunding: "territory",
+    fullMap: false,
+    safeStampGap: 2,
+    cellCapacity: 256,
+    stableAfter: 12,
+    stableEnergy: 1,
+    stampEnergy: 32,
+    newbornEnergy: 2,
+    birthRadius: 1,
+    inheritanceRadius: 2,
+    types: Object.freeze({})
+  });
+  var numeric = ["visionRadius", "cellCapacity", "stableAfter", "stableEnergy", "stampEnergy", "newbornEnergy", "birthRadius", "inheritanceRadius"];
+  function validate(values) {
+    for (const key2 of numeric) if (values[key2] !== void 0 && (!Number.isFinite(values[key2]) || values[key2] < 0))
+      throw RangeError("Expected finite nonnegative spatial trait: " + key2);
+    for (const key2 of ["visionRadius", "stableAfter", "birthRadius", "inheritanceRadius"]) if (values[key2] !== void 0 && !Number.isSafeInteger(values[key2]))
+      throw RangeError("Expected integer spatial trait: " + key2);
+    if (values.visionRadius > 24 || values.birthRadius > 6 || values.inheritanceRadius > 6) throw RangeError("Spatial radius exceeds the experiment limit.");
+    if (values.cellCapacity !== void 0 && values.newbornEnergy !== void 0 && values.newbornEnergy > values.cellCapacity)
+      throw RangeError("Newborn energy must fit the cell.");
+    if (values.cellCapacity !== void 0 && values.stampEnergy !== void 0 && values.stampEnergy > values.cellCapacity)
+      throw RangeError("Stamp energy must fit the cell.");
+  }
+  function normalizeSpatial(value = {}) {
+    if (value === true) value = { enabled: true };
+    if (value === false || value === null) value = {};
+    if (typeof value !== "object" || Array.isArray(value)) throw TypeError("Expected spatial settings.");
+    const settings = { ...spatialDefaults, ...value };
+    if (typeof settings.enabled !== "boolean") throw TypeError("Expected spatial enabled boolean.");
+    if (!["local", "territory"].includes(settings.constructionFunding)) throw RangeError("Invalid construction funding mode.");
+    if (typeof settings.fullMap !== "boolean") throw TypeError("fullMap must be a boolean.");
+    if (!Number.isSafeInteger(settings.safeStampGap) || settings.safeStampGap < 0 || settings.safeStampGap > 6) throw RangeError("safeStampGap must be an integer 0..6.");
+    validate(settings);
+    const types = {};
+    for (const [key2, traits] of Object.entries(settings.types ?? {})) {
+      if (!traits || typeof traits !== "object" || Array.isArray(traits)) throw TypeError("Expected spatial type traits.");
+      if (Object.keys(traits).some((k) => !numeric.includes(k))) throw RangeError("Unknown spatial type trait.");
+      validate({ ...settings, ...traits });
+      types[key2] = Object.freeze({ ...traits });
+    }
+    settings.types = Object.freeze(types);
+    return Object.freeze(settings);
+  }
+  function typeTraits(spatial, type) {
+    const explicit = spatial.types[type.rule + "/" + type.resolver + "/" + (type.contract ?? "")] ?? spatial.types[type.rule + "/" + type.resolver] ?? spatial.types[type.rule] ?? {};
+    return {
+      ...spatial,
+      ...explicit,
+      visionRadius: type.wave ? 0 : explicit.visionRadius ?? spatial.visionRadius,
+      stableEnergy: type.wave ? 0 : explicit.stableEnergy ?? spatial.stableEnergy
+    };
+  }
+  function graphBall(graph, sites, radius2, domain = null) {
+    const reached = /* @__PURE__ */ new Set(), queue = [];
+    for (const site of sites) if (Number.isSafeInteger(site) && site >= 0 && site < graph.n && (!domain || domain.has(site)) && !reached.has(site)) {
+      reached.add(site);
+      queue.push([site, radius2]);
+    }
+    for (let i = 0; i < queue.length; i++) {
+      const [site, left] = queue[i];
+      if (!left) continue;
+      for (let k = 0; k < graph.deg[site]; k++) {
+        const next = graph.adj[site * 6 + k];
+        if (reached.has(next) || domain && !domain.has(next)) continue;
+        reached.add(next);
+        queue.push([next, left - 1]);
+      }
+    }
+    return reached;
+  }
+  function illuminated(graph, cells2, owner, spatial, domain = null) {
+    const remaining = /* @__PURE__ */ new Map(), queue = [];
+    for (const [site, c] of cells2) {
+      if (c.owner !== owner || c.wave) continue;
+      const radius2 = typeTraits(spatial, c.type).visionRadius;
+      if ((remaining.get(site) ?? -1) >= radius2) continue;
+      remaining.set(site, radius2);
+      queue.push([site, radius2]);
+    }
+    for (let i = 0; i < queue.length; i++) {
+      const [site, left] = queue[i];
+      if (!left || remaining.get(site) > left) continue;
+      for (let k = 0; k < graph.deg[site]; k++) {
+        const next = graph.adj[site * 6 + k];
+        if (domain && !domain.has(next) || (remaining.get(next) ?? -1) >= left - 1) continue;
+        remaining.set(next, left - 1);
+        queue.push([next, left - 1]);
+      }
+    }
+    return new Set(remaining.keys());
+  }
+  function sameNeighborhood(graph, before, after, id) {
+    for (let k = 0; k < graph.deg[id]; k++) {
+      const n = graph.adj[6 * id + k];
+      if (before.get(n)?.type !== after.get(n)?.type) return false;
+    }
+    return true;
+  }
+
+  // experiments/typed-world/spatial-funding.mjs
+  var EPS = 1e-9;
+  function fundLocalRequests(input, available, unitCost) {
+    if (!Number.isFinite(unitCost) || unitCost < 0) throw RangeError("Invalid local construction cost.");
+    const requests = Array.from(input, (r) => ({ id: r.id, donors: [...new Set(r.donors)].sort((a, b) => a - b) })).sort((a, b) => a.donors.length - b.donors.length || a.id - b.id);
+    if (unitCost === 0 || requests.length === 0) return /* @__PURE__ */ new Map();
+    const donors = [...new Set(requests.flatMap((r) => r.donors))].sort((a, b) => a - b);
+    const supply = new Map(donors.map((id) => [id, available.get(id) ?? 0]));
+    for (const amount of supply.values()) if (!Number.isFinite(amount) || amount < 0) throw RangeError("Invalid donor balance.");
+    const total = unitCost * requests.length;
+    if ([...supply.values()].reduce((sum, n) => sum + n, 0) + EPS < total) return null;
+    const remaining = new Map(supply), debits = /* @__PURE__ */ new Map();
+    let feasible = true;
+    for (const request of requests) {
+      let needed = unitCost;
+      for (const donor of request.donors) {
+        const debit = Math.min(remaining.get(donor), needed);
+        remaining.set(donor, remaining.get(donor) - debit);
+        if (debit) debits.set(donor, (debits.get(donor) ?? 0) + debit);
+        needed -= debit;
+        if (needed <= EPS) break;
+      }
+      if (needed > EPS) {
+        feasible = false;
+        break;
+      }
+    }
+    if (feasible) return debits;
+    const donorIndex = new Map(donors.map((id, i) => [id, i + 1]));
+    const source = 0, firstTarget = donors.length + 1, sink = firstTarget + requests.length;
+    const edges = Array.from({ length: sink + 1 }, () => []), sourceEdges = /* @__PURE__ */ new Map();
+    function add(from, to, capacity) {
+      const forward = { to, capacity, reverse: edges[to].length };
+      const backward = { to: from, capacity: 0, reverse: edges[from].length };
+      edges[from].push(forward);
+      edges[to].push(backward);
+      return forward;
+    }
+    for (const donor of donors) sourceEdges.set(donor, add(source, donorIndex.get(donor), supply.get(donor)));
+    requests.forEach((request, i) => {
+      const target = firstTarget + i;
+      for (const donor of request.donors) add(donorIndex.get(donor), target, unitCost);
+      add(target, sink, unitCost);
+    });
+    const level = new Int32Array(edges.length), cursor = new Int32Array(edges.length);
+    function layers() {
+      level.fill(-1);
+      level[source] = 0;
+      const queue = [source];
+      for (let i = 0; i < queue.length; i++) for (const edge of edges[queue[i]]) if (edge.capacity > EPS && level[edge.to] === -1) {
+        level[edge.to] = level[queue[i]] + 1;
+        queue.push(edge.to);
+      }
+      return level[sink] !== -1;
+    }
+    function push(from, limit) {
+      if (from === sink) return limit;
+      while (cursor[from] < edges[from].length) {
+        const edge = edges[from][cursor[from]];
+        if (edge.capacity > EPS && level[edge.to] === level[from] + 1) {
+          const sent = push(edge.to, Math.min(limit, edge.capacity));
+          if (sent > EPS) {
+            edge.capacity -= sent;
+            edges[edge.to][edge.reverse].capacity += sent;
+            return sent;
+          }
+        }
+        cursor[from]++;
+      }
+      return 0;
+    }
+    let flow2 = 0;
+    while (flow2 + EPS < total && layers()) {
+      cursor.fill(0);
+      for (let sent; (sent = push(source, total - flow2)) > EPS; ) flow2 += sent;
+    }
+    if (flow2 + EPS < total) return null;
+    return new Map(donors.map((id) => [id, Math.max(0, supply.get(id) - sourceEdges.get(id).capacity)]).filter(([, n]) => n > 0));
+  }
+
   // experiments/typed-world/engine.mjs
   var defaultEconomy = Object.freeze({
     stampCost: 8,
@@ -8464,10 +8671,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       toolErased: 0,
       eraseActions: 0,
       lastFieldAt: 0,
-      out: false
+      out: false,
+      energyLost: 0,
+      energyOverflow: 0
     };
   }
-  var EPS = 1e-9;
+  var EPS2 = 1e-9;
   var robustnessCache = /* @__PURE__ */ new WeakMap();
   function robustTables(tables) {
     if (!robustnessCache.has(tables)) {
@@ -8485,6 +8694,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     wallets = [1e4, 1e4],
     seed = 1,
     economy: overrides = {},
+    spatial: spatialOptions = {},
     arbitration = "legacy",
     eligibility = "legacy",
     friendlyFire = false,
@@ -8499,14 +8709,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (!["legacy", "contest"].includes(eligibility) || typeof friendlyFire !== "boolean" || !existenceModes.includes(existence) || !passageModes.includes(passage))
       throw RangeError("Invalid claim eligibility");
     const economy = Object.freeze({ ...defaultEconomy, ...overrides });
+    const spatial = normalizeSpatial(spatialOptions);
     if (!wallets.length || wallets.some((v) => !Number.isFinite(v) || v < 0) || Object.values(economy).some((v) => !Number.isFinite(v) || v < 0) || !Number.isSafeInteger(economy.protectedMature))
       throw new RangeError("Expected finite, nonnegative wallets and tariffs");
     if (economy.phasePriority !== 0 && economy.phasePriority !== 1)
       throw new RangeError("phasePriority must be 0 or 1");
     const rules2 = new Map(Object.entries(ruleProfiles).filter(([, p]) => p.physics && !p.physics.birthsFromVacuum));
     const types = /* @__PURE__ */ new Map();
-    function genotype(owner, rule, resolver, ballot = "support", sense = "native", wave = false) {
-      const key2 = owner + "/" + rule + "/" + resolver + "/" + ballot + "/" + sense + "/" + Number(wave);
+    function genotype(owner, rule, resolver, ballot = "support", sense = "native", wave = false, contract = "") {
+      const key2 = owner + "/" + rule + "/" + resolver + "/" + ballot + "/" + sense + "/" + Number(wave) + "/" + contract;
       if (!types.has(key2)) types.set(key2, Object.freeze({
         owner,
         rule,
@@ -8514,12 +8725,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         ballot,
         sense,
         wave,
+        ...contract ? { contract } : {},
         tables: rules2.get(rule).physics.tables,
         robust: robustTables(rules2.get(rule).physics.tables)
       }));
       return types.get(key2);
     }
-    const cell = (type, age) => Object.freeze({
+    const cell = (type, age, energy = 0, stableAge = 1) => Object.freeze({
       owner: type.owner,
       rule: type.rule,
       resolver: type.resolver,
@@ -8527,10 +8739,51 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       sense: type.sense,
       wave: type.wave,
       age,
-      type
+      type,
+      ...type.contract ? { contract: type.contract } : {},
+      ...spatial.enabled ? { energy, stableAge } : {}
     });
-    function instance(cells2, players, gen, lastIgnitions = [], domain = null, outside = null, observe = false, limits2 = normalizeToolSettings(toolSettings), actionRevision = 0) {
+    const isMature = (c) => spatial.enabled ? !c.wave && c.stableAge >= typeTraits(spatial, c.type).stableAfter : c.age >= economy.stableAfter;
+    function instance(cells2, players, gen, lastIgnitions = [], domain = null, outside = null, observe = false, limits2 = normalizeToolSettings(toolSettings), actionRevision = 0, exploration = null) {
       const { adj, deg } = graph;
+      const explored = players.map((p, i) => p ? new Set(exploration?.[i] ?? []) : null), vision = /* @__PURE__ */ new Map();
+      function visibility(owner) {
+        if (!players[owner]) return { visible: /* @__PURE__ */ new Set(), explored: /* @__PURE__ */ new Set() };
+        if (!spatial.enabled) return { visible: null, explored: null };
+        if (!vision.has(owner)) {
+          const visible = illuminated(graph, cells2, owner, spatial, domain);
+          for (const id of visible) explored[owner].add(id);
+          vision.set(owner, { visible, explored: explored[owner] });
+        }
+        return vision.get(owner);
+      }
+      const canSee = (owner, id) => !spatial.enabled || spatial.fullMap || visibility(owner).visible?.has(id) === true;
+      const canBuild = (owner, id) => !spatial.enabled || visibility(owner).explored?.has(id) === true;
+      function refreshVision() {
+        if (!spatial.enabled) return;
+        vision.clear();
+        for (let owner = 1; owner < players.length; owner++) visibility(owner);
+      }
+      function syncEnergy() {
+        if (!spatial.enabled) return;
+        for (let owner = 1; owner < players.length; owner++) if (players[owner].stamps)
+          players[owner].reserve = outside?.[owner]?.energy ?? 0;
+        for (const c of cells2.values()) players[c.owner].reserve += c.energy;
+      }
+      function patchEnergy(site, energy) {
+        const c = cells2.get(site);
+        cells2.set(site, cell(c.type, c.age, Math.max(0, energy), c.stableAge));
+      }
+      function resetNearbyMaturity(ids) {
+        if (!spatial.enabled) return;
+        for (const site of graphBall(graph, ids, 1, domain)) {
+          const c = cells2.get(site);
+          if (c) {
+            if (isMature(c) && typeTraits(spatial, c.type).stableAfter > 1) players[c.owner].mature--;
+            cells2.set(site, cell(c.type, c.age, c.energy, 1));
+          }
+        }
+      }
       const actionListeners = /* @__PURE__ */ new Set();
       function subscribeActions(listener) {
         if (typeof listener !== "function") throw TypeError("Expected an action listener");
@@ -8538,39 +8791,124 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return () => actionListeners.delete(listener);
       }
       function changed(kind, owner, ids = []) {
+        refreshVision();
         actionRevision++;
         if (!actionListeners.size) return;
         const event = Object.freeze({ kind, owner, ids: Object.freeze([...ids]), gen, revision: actionRevision });
         for (const listener of actionListeners) listener(event);
       }
       const stampPrice = (resolver) => economy.stampCost + (resolver === "guard" ? economy.guardStampExtra : 0);
-      function canStamp(owner, rule, resolver, ids, ballot = "support", sense = "native") {
-        if (!Number.isInteger(owner) || owner < 1 || owner >= players.length) return false;
-        const p = players[owner];
-        if (!p || p.out || !rules2.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !senses.includes(sense) || !ids?.length || ids.length > limits2.maxStampCells || new Set(ids).size !== ids.length || p.reserve + EPS < ids.length * stampPrice(resolver)) return false;
-        for (const id of ids) {
-          if (!Number.isSafeInteger(id) || id < 0 || id >= graph.n || domain && !domain.has(id) || cells2.has(id)) return false;
-          for (let k = 0; k < deg[id]; k++) {
-            const neighbor = cells2.get(adj[id * 6 + k]);
-            if (neighbor && neighbor.owner !== owner) return false;
+      function stampQuote(rule, resolver, ids, metadata2 = {}) {
+        const traits = typeTraits(spatial, { rule, resolver, contract: metadata2.contract ?? "", wave: false });
+        const count2 = typeof ids === "number" ? ids : ids?.length ?? 0;
+        const cost = count2 * stampPrice(resolver), fuel = spatial.enabled ? count2 * traits.stampEnergy : 0;
+        return { cost, fuel, total: cost + fuel, perCell: stampPrice(resolver) + (spatial.enabled ? traits.stampEnergy : 0), traits };
+      }
+      function donorsNear(owner, id, range, variable = false) {
+        const donors = [], queue = [[id, 0]], seen = /* @__PURE__ */ new Set([id]);
+        for (let i = 0; i < queue.length; i++) {
+          const [site, distance] = queue[i], c = cells2.get(site);
+          if (c?.owner === owner && (!variable || !c.wave && typeTraits(spatial, c.type).visionRadius >= distance)) donors.push(site);
+          if (distance >= range) continue;
+          for (let k = 0; k < deg[site]; k++) {
+            const next = adj[6 * site + k];
+            if (seen.has(next) || domain && !domain.has(next)) continue;
+            seen.add(next);
+            queue.push([next, distance + 1]);
           }
         }
-        return true;
+        return donors.sort((a, b) => a - b);
       }
-      function stamp(owner, rule, resolver, ids, ballot = "support", sense = "native") {
-        if (!canStamp(owner, rule, resolver, ids, ballot, sense)) return false;
+      const maxVision = Math.max(spatial.visionRadius, ...Object.values(spatial.types).map((t) => t.visionRadius ?? 0));
+      function localReserve(owner, ids) {
+        if (!spatial.enabled) return players[owner]?.reserve ?? 0;
+        const donors = /* @__PURE__ */ new Set();
+        for (const id of ids ?? []) for (const site of donorsNear(owner, id, maxVision, true)) donors.add(site);
+        return [...donors].reduce((sum, id) => sum + (cells2.get(id)?.energy ?? 0), 0);
+      }
+      function stampFunding(owner, ids, price, deposit) {
+        const requests = Array.from(ids, (id) => ({ id, donors: donorsNear(owner, id, maxVision, true) }));
+        const balances = /* @__PURE__ */ new Map();
+        for (const request of requests) for (const donor of request.donors) if (!balances.has(donor)) balances.set(donor, cells2.get(donor).energy);
+        const local = fundLocalRequests(requests, balances, price + deposit);
+        if (local || spatial.constructionFunding === "local") return local;
+        const total = ids.length * (price + deposit);
+        const donors = [...cells2].filter(([, c]) => c.owner === owner && !c.wave && c.energy > EPS2).sort(([a], [b]) => a - b);
+        let remaining = total;
+        const remote = /* @__PURE__ */ new Map();
+        for (const [site, c] of donors) {
+          const taken = Math.min(c.energy, remaining);
+          if (taken > EPS2) {
+            remote.set(site, taken);
+            remaining -= taken;
+          }
+          if (remaining <= EPS2) break;
+        }
+        return remaining <= EPS2 ? remote : null;
+      }
+      function stampRejection(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}, bootstrap = false) {
+        if (!Number.isInteger(owner) || owner < 1 || owner >= players.length) return "owner";
         const p = players[owner];
+        if (!p || p.out || !rules2.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !senses.includes(sense) || !ids?.length || ids.length > limits2.maxStampCells || new Set(ids).size !== ids.length || !metadata2 || typeof metadata2 !== "object" || metadata2.contract !== void 0 && (typeof metadata2.contract !== "string" || metadata2.contract.length > 128)) return "invalid";
+        for (const id of ids) {
+          if (!Number.isSafeInteger(id) || id < 0 || id >= graph.n || domain && !domain.has(id)) return "invalid";
+          if (spatial.enabled && !bootstrap && !canBuild(owner, id)) return "darkness";
+          if (cells2.has(id)) return "occupied";
+          for (let k = 0; k < deg[id]; k++) {
+            const neighbor = cells2.get(adj[id * 6 + k]);
+            if (neighbor && neighbor.owner !== owner) return "enemy";
+          }
+        }
+        if (spatial.enabled && !bootstrap && spatial.safeStampGap > 0) {
+          for (const site of graphBall(graph, ids, spatial.safeStampGap, domain))
+            if (cells2.get(site)?.owner === owner) return "near-own";
+        }
+        if (spatial.enabled && !bootstrap) {
+          const type = genotype(owner, rule, resolver, ballot, sense, false, metadata2.contract ?? ""), traits = typeTraits(spatial, type);
+          if (!stampFunding(owner, ids, stampPrice(resolver), traits.stampEnergy)) return "local-energy";
+        } else if (p.reserve + EPS2 < ids.length * stampPrice(resolver)) return "energy";
+        return null;
+      }
+      function canStamp(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}) {
+        return stampRejection(owner, rule, resolver, ids, ballot, sense, metadata2) === null;
+      }
+      function placeStamp(owner, rule, resolver, ids, ballot, sense, metadata2, bootstrap) {
+        if (stampRejection(owner, rule, resolver, ids, ballot, sense, metadata2, bootstrap)) return false;
+        const p = players[owner];
+        const type = genotype(owner, rule, resolver, ballot, sense, false, metadata2.contract ?? ""), traits = typeTraits(spatial, type);
+        let deposit = 0;
+        if (spatial.enabled) {
+          if (bootstrap) {
+            const available = p.reserve - ids.length * stampPrice(resolver);
+            deposit = Math.min(traits.cellCapacity, available / ids.length);
+            p.energyLost += Math.max(0, available - deposit * ids.length);
+          } else {
+            deposit = traits.stampEnergy;
+            const plan = stampFunding(owner, ids, stampPrice(resolver), deposit);
+            for (const [site, spent] of plan) patchEnergy(site, cells2.get(site).energy - spent);
+          }
+        }
         p.field += ids.length;
         p.conventional += ids.length;
         p.stamps++;
         p.stampedCells += ids.length;
-        if (economy.stableAfter <= 1) p.mature += ids.length;
+        if ((spatial.enabled ? traits.stableAfter : economy.stableAfter) <= 1) p.mature += ids.length;
         p.stampSpent += ids.length * stampPrice(resolver);
-        p.reserve = Math.max(0, p.reserve - ids.length * stampPrice(resolver));
+        if (!spatial.enabled) p.reserve = Math.max(0, p.reserve - ids.length * stampPrice(resolver));
         p.lastFieldAt = gen;
-        for (const site of ids) cells2.set(site, cell(genotype(owner, rule, resolver, ballot, sense), 1));
+        for (const site of ids) cells2.set(site, cell(type, 1, deposit, 1));
+        resetNearbyMaturity(ids);
+        syncEnergy();
         changed("stamp", owner, ids);
         return true;
+      }
+      function stamp2(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}) {
+        return placeStamp(owner, rule, resolver, ids, ballot, sense, metadata2, false);
+      }
+      function bootstrapStamp(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}) {
+        if (!spatial.enabled) return stamp2(owner, rule, resolver, ids, ballot, sense, metadata2);
+        if (gen !== 0 || !players[owner] || players[owner].stamps !== 0 || [...cells2.values()].some((c) => c.owner === owner)) return false;
+        return placeStamp(owner, rule, resolver, ids, ballot, sense, metadata2, true);
       }
       function setToolSettings(values) {
         const next = normalizeToolSettings(values, limits2);
@@ -8591,9 +8929,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           const c = cells2.get(site);
           cells2.delete(site);
           p.field--;
+          if (spatial.enabled) p.energyLost += c.energy;
           if (!c.wave) p.conventional--;
-          if (c.age >= economy.stableAfter) p.mature--;
+          if (isMature(c)) p.mature--;
         }
+        resetNearbyMaturity(ids);
+        syncEnergy();
         p.toolErased += ids.length;
         p.eraseActions++;
         changed("erase", owner, ids);
@@ -8608,6 +8949,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const salt = mix2(seed ^ mix2(gen + 1));
         const rank = (id) => mix2(id ^ salt);
         const next = /* @__PURE__ */ new Map(), candidates = /* @__PURE__ */ new Set(), mature = new Uint32Array(players.length);
+        const balances = spatial.enabled ? new Map([...cells2].map(([id, c]) => [id, c.energy])) : null;
+        const newbornStores = /* @__PURE__ */ new Map();
         const fuses = [], spent = /* @__PURE__ */ new Set(), ignitionClaims = /* @__PURE__ */ new Map();
         for (const [id, c] of cells2) {
           priorField[c.owner]++;
@@ -8616,15 +8959,24 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
             const n = adj[id * 6 + k];
             if (!domain || domain.has(n)) candidates.add(n);
           }
-          if (c.age >= economy.stableAfter) mature[c.owner]++;
+          if (isMature(c)) mature[c.owner]++;
           if (!c.wave && c.resolver === "antimatter") fuses.push(id);
         }
-        for (let id = 1; id < players.length; id++) {
+        for (let id = 1; !spatial.enabled && id < players.length; id++) {
           const p = players[id], n = mature[id] + (outside?.[id].mature ?? 0);
           const income = economy.stableEnergy * (economy.productionScale ? n / (1 + n / economy.productionScale) : n);
           p.reserve += income;
           p.income += income;
           p.matureIncome += income;
+        }
+        if (spatial.enabled) for (const [id, c] of cells2) {
+          const traits = typeTraits(spatial, c.type), p = players[c.owner];
+          if (c.wave || c.stableAge < traits.stableAfter) continue;
+          const income = Math.min(traits.stableEnergy, Math.max(0, traits.cellCapacity - balances.get(id)));
+          balances.set(id, balances.get(id) + income);
+          p.income += income;
+          p.matureIncome += income;
+          p.energyOverflow += traits.stableEnergy - income;
         }
         lastIgnitions = [];
         const visited = /* @__PURE__ */ new Set();
@@ -8653,7 +9005,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           const flanks = [1, -1].map((d) => adj[6 * site + (deg[site] + direction + d) % deg[site]]);
           const flank = rank(flanks[0]) > rank(flanks[1]) ? flanks[0] : flanks[1];
           const sites = domain && !domain.has(flank) ? [site, target] : [site, target, flank];
-          const wave = genotype(t.owner, "hex-b2s245", "antimatter", t.ballot, t.sense, true);
+          const wave = genotype(t.owner, "hex-b2s245", "antimatter", t.ballot, t.sense, true, t.contract ?? "");
           for (const id of group) spent.add(id);
           for (const id of sites) {
             if (!ignitionClaims.has(id)) ignitionClaims.set(id, []);
@@ -8745,8 +9097,52 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
             const friendly = incumbent && !enemy && !(kind === "ignition" && spent.has(id));
             const fee = enemy || friendly ? economy.eraseCost * (guarded ? economy.guardMultiplier : 1) : 0;
             const cost = birth + fee;
+            if (spatial.enabled) {
+              const traits = typeTraits(spatial, type), donors = donorsNear(type.owner, id, traits.birthRadius);
+              const available = donors.reduce((sum, site) => sum + balances.get(site), 0), required = cost + traits.newbornEnergy;
+              p.requested++;
+              p.requestedCost += cost;
+              if (available + EPS2 < required) {
+                p.refused++;
+                p.unfundedCost += cost;
+                continue;
+              }
+              let remaining = required;
+              let active = donors.filter((site) => balances.get(site) > EPS2);
+              while (remaining > EPS2 && active.length) {
+                const portion = remaining / active.length;
+                let paid = 0;
+                for (const site of active) {
+                  const debit = Math.min(portion, balances.get(site));
+                  balances.set(site, balances.get(site) - debit);
+                  paid += debit;
+                }
+                remaining -= paid;
+                active = active.filter((site) => balances.get(site) > EPS2);
+              }
+              p.births++;
+              births[type.owner]++;
+              p.birthSpent += birth;
+              if (type.wave) p.waveBirths++;
+              if (enemy) {
+                p.eraseSpent += fee;
+                p.erased++;
+                players[incumbent.owner].lost++;
+                if (type.wave) p.waveErased++;
+              }
+              if (friendly) {
+                p.friendlyEraseSpent += fee;
+                p.friendlyErased++;
+                p.ownLost++;
+              }
+              next.set(id, cell(type, 1, traits.newbornEnergy));
+              newbornStores.set(id, traits.newbornEnergy);
+              winner = claim;
+              if (birthEvent) birthEvent({ gen: gen + 1, site: id, ...describe(claim, rank) });
+              break;
+            }
             const pile = resources[type.owner], short3 = Math.max(0, cost - p.reserve);
-            const needed = short3 <= EPS ? 0 : economy.salvage ? Math.ceil((short3 - EPS) / economy.salvage) : Infinity;
+            const needed = short3 <= EPS2 ? 0 : economy.salvage ? Math.ceil((short3 - EPS2) / economy.salvage) : Infinity;
             p.requested++;
             p.requestedCost += cost;
             if (needed && type.wave && !sortedCollateral.has(p)) {
@@ -8813,6 +9209,32 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           }
         }
         for (const id of seized) next.delete(id);
+        if (spatial.enabled) {
+          for (const [id, c] of next) {
+            const old = cells2.get(id), survivor = !newbornStores.has(id) && old?.type === c.type;
+            const energy = survivor ? balances.get(id) : newbornStores.get(id) ?? 0;
+            const stableAge = survivor && sameNeighborhood(graph, cells2, next, id) ? old.stableAge + 1 : 1;
+            next.set(id, cell(c.type, c.age, energy, stableAge));
+          }
+          for (const [id, c] of [...cells2].sort(([a], [b]) => a - b)) {
+            if (next.get(id)?.type === c.type && !newbornStores.has(id)) continue;
+            let remaining = balances.get(id);
+            let heirs = [...graphBall(graph, [id], typeTraits(spatial, c.type).inheritanceRadius, domain)].filter((site) => next.get(site)?.type === c.type);
+            while (remaining > EPS2 && heirs.length) {
+              const portion = remaining / heirs.length;
+              let moved = 0;
+              for (const site of heirs) {
+                const heir = next.get(site), capacity = typeTraits(spatial, heir.type).cellCapacity;
+                const received = Math.min(portion, Math.max(0, capacity - heir.energy));
+                moved += received;
+                next.set(site, cell(heir.type, heir.age, heir.energy + received, heir.stableAge));
+              }
+              remaining -= moved;
+              heirs = heirs.filter((site) => next.get(site).energy + EPS2 < typeTraits(spatial, next.get(site).type).cellCapacity);
+            }
+            players[c.owner].energyLost += Math.max(0, remaining);
+          }
+        }
         if (decisions) for (const [site, d] of decisions) {
           const votes2 = [...d.votes].map(([type, v]) => ({ owner: type.owner, rule: type.rule, resolver: type.resolver, ballot: type.ballot, sense: type.sense, ...v }));
           const old = cells2.get(site), winner = next.get(site);
@@ -8841,12 +9263,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         for (const c of next.values()) {
           players[c.owner].field++;
           if (!c.wave) players[c.owner].conventional++;
-          if (c.age >= economy.stableAfter) players[c.owner].mature++;
+          if (isMature(c)) players[c.owner].mature++;
         }
         for (let id = 1; id < players.length; id++) {
           const p = players[id];
           const deaths = priorField[id] + births[id] - (p.field - (outside?.[id].field ?? 0)) - sales[id];
-          const born = births[id] * economy.birthEnergy, dead = deaths * economy.deathEnergy;
+          const born = spatial.enabled ? 0 : births[id] * economy.birthEnergy, dead = spatial.enabled ? 0 : deaths * economy.deathEnergy;
           p.deaths += deaths;
           p.birthIncome += born;
           p.deathIncome += dead;
@@ -8855,27 +9277,61 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           p.lastBirths = births[id];
           p.lastDeaths = deaths;
           if (p.field) p.lastFieldAt = gen;
-          else if (p.reserve + EPS < economy.stampCost) p.out = true;
+          else if (p.reserve + EPS2 < economy.stampCost) p.out = true;
+        }
+        syncEnergy();
+        refreshVision();
+        if (spatial.enabled) {
+          for (let owner = 1; owner < players.length; owner++) if (!players[owner].field && players[owner].stamps) players[owner].out = true;
         }
       }
       function fork(sites) {
         const accounts = players.map((p) => p && { ...p });
-        if (!sites) return instance(new Map(cells2), accounts, gen, lastIgnitions.map((e) => ({ ...e, sites: [...e.sites] })), domain, outside, false, limits2, actionRevision);
+        if (!sites) return instance(new Map(cells2), accounts, gen, lastIgnitions.map((e) => ({ ...e, sites: [...e.sites] })), domain, outside?.map((p) => p && { ...p }), false, limits2, actionRevision, explored);
         const cut = new Set(domain ? [...sites].filter((id) => domain.has(id)) : sites), snapshot = /* @__PURE__ */ new Map();
-        const remote = players.map((p) => p && { field: p.field, mature: p.mature, conventional: p.conventional });
+        const remote = players.map((p) => p && { field: p.field, mature: p.mature, conventional: p.conventional, energy: spatial.enabled ? p.reserve : 0 });
         for (const id of cut) {
           const c = cells2.get(id);
           if (!c) continue;
           snapshot.set(id, c);
           remote[c.owner].field--;
-          if (c.age >= economy.stableAfter) remote[c.owner].mature--;
+          if (isMature(c)) remote[c.owner].mature--;
           if (!c.wave) remote[c.owner].conventional--;
+          if (spatial.enabled) remote[c.owner].energy -= c.energy;
         }
-        return instance(snapshot, accounts, gen, [], cut, remote, false, limits2, actionRevision);
+        return instance(snapshot, accounts, gen, [], cut, remote, false, limits2, actionRevision, explored);
+      }
+      function forkObserved(owner, sites) {
+        if (!spatial.enabled) return fork(sites);
+        const view = visibility(owner), cut = sites ? new Set(domain ? [...sites].filter((id) => domain.has(id)) : sites) : domain;
+        const snapshot = /* @__PURE__ */ new Map(), accounts = players.map((p, id) => p && (id === owner ? { ...p } : account(0)));
+        const remote = players.map((p) => p && { field: 0, mature: 0, conventional: 0, energy: 0 });
+        for (const [id, c] of cells2) {
+          if (c.owner !== owner && !canSee(owner, id)) continue;
+          if (c.owner !== owner) {
+            const p = accounts[c.owner];
+            p.field++;
+            if (!c.wave) p.conventional++;
+            if (isMature(c)) p.mature++;
+            p.reserve += c.energy;
+            p.stamps = 1;
+          }
+          if (!cut || cut.has(id)) snapshot.set(id, c);
+          else {
+            const r = remote[c.owner];
+            r.field++;
+            if (!c.wave) r.conventional++;
+            if (isMature(c)) r.mature++;
+            r.energy += c.energy;
+          }
+        }
+        const knowledge = explored.map((v, id) => v && (id === owner ? new Set(v) : /* @__PURE__ */ new Set()));
+        return instance(snapshot, accounts, gen, [], cut, remote, false, limits2, actionRevision, knowledge);
       }
       return {
         graph,
         economy,
+        spatial,
         arbitration: policy,
         eligibility,
         friendlyFire,
@@ -8883,14 +9339,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         passage,
         players,
         stampPrice,
-        stamp,
+        stampQuote,
+        stamp: stamp2,
         canStamp,
+        stampRejection,
+        bootstrapStamp,
+        visibility,
+        canSee,
+        canBuild,
+        localReserve,
         erase,
         erasePreview,
         setToolSettings,
         subscribeActions,
         step: step2,
         fork,
+        forkObserved,
         get cells() {
           return cells2;
         },
@@ -8910,11 +9374,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     return instance(/* @__PURE__ */ new Map(), [null, ...wallets.map(account)], 0, [], null, null, true);
   }
-  function observedCell({ owner, rule, resolver, ballot, sense, wave, age }) {
-    return { owner, rule, resolver, ballot, sense, wave, age };
+  function observedCell({ owner, rule, resolver, ballot, sense, wave, age, contract, energy, stableAge }) {
+    return { owner, rule, resolver, ballot, sense, wave, age, ...contract ? { contract } : {}, ...energy === void 0 ? {} : { energy, stableAge } };
   }
-  function describe({ type: { owner, rule, resolver, ballot, sense, wave }, support, age, robustness, parent, kind }, rank) {
-    return { owner, rule, resolver, ballot, sense, wave, support, age, robustness, parent, geometry: rank(parent), kind };
+  function describe({ type: { owner, rule, resolver, ballot, sense, wave, contract }, support, age, robustness, parent, kind }, rank) {
+    return { owner, rule, resolver, ballot, sense, wave, support, age, robustness, parent, geometry: rank(parent), kind, ...contract ? { contract } : {} };
   }
 
   // experiments/typed-world/general/scene.mjs
@@ -8952,6 +9416,53 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       for (let i = 0; i < graph.n; i++) far[i] = Math.min(far[i], d[i]);
     }
     return sites;
+  }
+
+  // experiments/typed-world/game/opening.mjs
+  function normalizeOpening(value) {
+    const fallback = cards.get("hex-b2s245/scan-cf5664");
+    const c = value ?? { ...fallback, key: "hex-b2s245/scan-cf5664", rule: fallback.source };
+    const raw = c.offsets;
+    if (!Array.isArray(raw) || !raw.length || raw.length > 1024 || raw.some((p) => !Array.isArray(p) || p.length !== 2 || p.some((v) => !Number.isSafeInteger(v) || Math.abs(v) > 128)) || new Set(raw.map((p) => p.join(","))).size !== raw.length) throw RangeError("A base precisa de 1–1.024 células distintas, com coordenadas inteiras entre −128 e 128.");
+    return {
+      key: String(c.key ?? "custom-base"),
+      name: String(c.name ?? "Minha base"),
+      rule: c.rule ?? c.source,
+      offsets: raw.map((p) => [...p]),
+      resolver: c.resolver ?? "contact",
+      ballot: c.ballot ?? "support",
+      sense: c.sense ?? "native",
+      ...c.contract ? { contract: c.contract } : {}
+    };
+  }
+  function locateOpening(match, owner, card2, preferred, rotation) {
+    const span = Math.max(...card2.offsets.map(([q, r]) => Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r))));
+    if (match.players[owner].reserve + 1e-9 < card2.offsets.length * match.stampPrice(card2.resolver)) return null;
+    for (const site of graphBall(match.graph, [preferred], Math.min(24, Math.max(6, span)))) {
+      const ids = patchForStamp({ graph: match.graph }, site, rotation, card2.offsets);
+      if (ids && match.stampRejection(owner, card2.rule, card2.resolver, ids, card2.ballot, card2.sense, { contract: card2.contract }, true) === null) return { site, ids };
+    }
+    return null;
+  }
+  function measureOpening(graph, card2, site, rotation, options = {}) {
+    const ids = patchForStamp({ graph }, site, rotation, card2.offsets);
+    if (!ids) return { ok: false, reason: "A base atravessa uma deformação da malha. Escolha outro desenho ou semente." };
+    const test = createTypedWorld(graph, { ...options, wallets: [options.bank ?? 640] });
+    const plant = test.bootstrapStamp ?? test.stamp;
+    if (!plant(1, card2.rule, card2.resolver, ids, card2.ballot, card2.sense, { contract: card2.contract }))
+      return { ok: false, reason: "A reserva inicial precisa pagar a base e sua carga de energia." };
+    const begin = test.players[1].income;
+    for (let i = 0; i < 64; i++) test.step();
+    const p = test.players[1], income = p.income - begin;
+    return {
+      ok: p.conventional > 0 && income > 0,
+      ids,
+      income,
+      cells: p.conventional,
+      reserve: p.reserve,
+      generations: 64,
+      reason: income <= 0 ? "A base precisa produzir energia durante o ensaio de 64 gerações. Use o Atlas para preparar uma semente geradora." : p.conventional <= 0 ? "A base perdeu todas as células durante o ensaio de 64 gerações." : null
+    };
   }
 
   // experiments/typed-world/game/match.mjs
@@ -8997,6 +9508,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       friendlyFire,
       economy = {},
       toolSettings,
+      spatial,
+      initialCard,
       unseededOwners = [],
       graph = buildSphere(F)
     } = { ...defaultGameOptions, ...options };
@@ -9004,7 +9517,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (!Number.isInteger(players) || players < 2 || players > graph.n) throw RangeError("A partida precisa de pelo menos dois jogadores e espaço na esfera.");
     if (!Array.isArray(unseededOwners) || unseededOwners.some((owner) => !Number.isInteger(owner) || owner < 1 || owner > players))
       throw RangeError("A abertura vazia precisa indicar jogadores da partida.");
-    const match = createTypedWorld(graph, {
+    let match = createTypedWorld(graph, {
       seed,
       wallets: Array(players).fill(bank),
       economy: { ...gameEconomies[policy], ...economy },
@@ -9012,23 +9525,35 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       eligibility,
       existence,
       passage,
-      friendlyFire
+      friendlyFire,
+      spatial
     });
     const sites = spreadSites(graph, players), starts = [null], opening = [null], alive = [false];
+    const local = match.spatial.enabled, base = local ? normalizeOpening(initialCard) : null;
+    let baseTrial = null;
     const farm = policy === "stability" ? "hex-b2s245/farm-4-12" : "bays/osc2";
     const [rule] = farm.split("/");
     for (let owner = 1; owner <= players; owner++) {
-      const site = sites[((seed >>> 0) + owner - 1) % players], rotation = ((seed >>> 0) + owner) % 6;
-      starts.push(site);
-      alive.push(true);
-      if (unseededOwners.includes(owner)) {
+      const preferred = sites[((seed >>> 0) + owner - 1) % players], rotation = ((seed >>> 0) + owner) % 6;
+      if (!local && unseededOwners.includes(owner)) {
+        starts.push(preferred);
+        alive.push(true);
         opening.push(null);
         continue;
       }
-      const ids = footprint(graph, farm, site, rotation);
-      if (!ids || !match.stamp(owner, rule, "contact", ids))
+      const located = local ? locateOpening(match, owner, base, preferred, rotation) : { site: preferred, ids: footprint(graph, farm, preferred, rotation) };
+      if (!located) throw RangeError("A base precisa caber no setor inicial da esfera e no capital de abertura. Aumente a esfera ou ajuste o desenho.");
+      const { site, ids } = located;
+      starts.push(site);
+      alive.push(true);
+      if (local && owner === 1) {
+        baseTrial = measureOpening(graph, base, site, rotation, { bank, seed, economy: match.economy, spatial, arbitration, eligibility, existence, passage, friendlyFire });
+        if (!baseTrial.ok) throw RangeError(baseTrial.reason);
+      }
+      const placed = ids && (local ? match.bootstrapStamp(owner, base.rule, base.resolver, ids, base.ballot, base.sense, { contract: base.contract }) : match.stamp(owner, rule, "contact", ids));
+      if (!placed)
         throw RangeError("A reserva e o espaço devem comportar a colônia inicial de cada jogador.");
-      opening.push({ owner, key: farm, site, ids, rotation, rule, resolver: "contact", ballot: "support", sense: "native" });
+      opening.push(local ? { ...base, owner, site, ids, rotation } : { owner, key: farm, site, ids, rotation, rule, resolver: "contact", ballot: "support", sense: "native" });
     }
     if (toolSettings) match.setToolSettings(toolSettings);
     const eliminatedAt = alive.map(() => null);
@@ -9053,7 +9578,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (survivors <= 1) outcome = survivors ? survivor : 0;
       return true;
     }
-    return { match, graph, starts, opening, alive, eliminatedAt, step: step2, get outcome() {
+    function restore(previous2, previousAlive = alive, previousEliminated = eliminatedAt) {
+      if (!previous2 || previous2.graph !== graph) throw RangeError("O estado anterior precisa pertencer à mesma esfera.");
+      match = previous2;
+      alive.splice(0, alive.length, ...previousAlive);
+      eliminatedAt.splice(0, eliminatedAt.length, ...previousEliminated);
+      outcome = null;
+    }
+    return { get match() {
+      return match;
+    }, graph, starts, opening, alive, eliminatedAt, baseTrial, step: step2, restore, get outcome() {
       return outcome;
     } };
   }
@@ -9228,7 +9762,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   // experiments/typed-world/game/bot-tools.mjs
   var operating = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
   var matureIncome = (n, e) => e.stableEnergy * (e.productionScale ? n / (1 + n / e.productionScale) : n);
-  var EPS2 = 1e-8;
+  var EPS3 = 1e-8;
   function observedPatternKey(card2) {
     let shape = card2.offsets, canonical;
     for (let flipped = 0; flipped < 2; flipped++) {
@@ -9285,9 +9819,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (const center of candidates) for (const radius2 of radii) {
       const p = regionEconomy(match, owner, center, radius2);
       if (!p.ids.length || !p.young || p.conventional >= match.players[owner].conventional) continue;
-      if (!best || p.drain > best.drain + EPS2 || Math.abs(p.drain - best.drain) < EPS2 && p.ids.length < best.ids.length) best = p;
+      if (!best || p.drain > best.drain + EPS3 || Math.abs(p.drain - best.drain) < EPS3 && p.ids.length < best.ids.length) best = p;
     }
-    return best?.drain > EPS2 ? best : null;
+    return best?.drain > EPS3 ? best : null;
   }
   function localFork(match, center, radius2, horizon2) {
     return match.cells.size <= 2048 ? match.fork() : match.fork(new Set(circularSites(match.graph, center, radius2 + horizon2 + 2)));
@@ -9405,7 +9939,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       state.task = null;
       j.card.sample = { births: j.births / j.t, deaths: j.deaths / j.t, bands: [...j.counts].sort((a, b) => a[0] - b[0]).flatMap(([age, count2]) => [age, age, count2]), window: j.t, horizon: j.t, finalCells: j.frame.size };
       const q = rankCards([j.card], e, { mature: match.players[bot.owner].mature })[0];
-      if (q.flow <= EPS2 || !j.frame.size) return;
+      if (q.flow <= EPS3 || !j.frame.size) return;
       state.learned.push(j.card);
       stats[bot.owner].captures++;
       onLearn?.(bot, j.card);
@@ -9446,7 +9980,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       play2.step();
       stats[owner].work++;
       stats[owner].eraseWork++;
-      if (!play2.players[owner].conventional || play2.players[owner].out || play2.players[owner].reserve + EPS2 < hold.players[owner].reserve)
+      if (!play2.players[owner].conventional || play2.players[owner].out || play2.players[owner].reserve + EPS3 < hold.players[owner].reserve)
         return rejectErase(bot, state, j, "current-return");
       const o = {
         gen: match.gen,
@@ -9500,7 +10034,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       j.pay = j.play.players[bot.owner].reserve - j.hold.players[bot.owner].reserve + lookahead * j.flow;
       const p = j.play.players[bot.owner];
       if (!p.conventional || p.out) return rejectErase(bot, state, j, "extinction");
-      if (j.pay <= EPS2) return rejectErase(bot, state, j, "return");
+      if (j.pay <= EPS3) return rejectErase(bot, state, j, "return");
       onDecision?.({
         gen: match.gen,
         owner: bot.owner,
@@ -9556,6 +10090,288 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return { work, invalidate, learned: (bot) => stateFor(bot).learned };
   }
 
+  // experiments/typed-world/game/spatial-bots.mjs
+  var EPS4 = 1e-8;
+  var operating2 = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
+  var metadata = (c) => c.contract ? { contract: c.contract } : void 0;
+  function random(seed) {
+    let x = seed >>> 0;
+    return (n) => {
+      x = Math.imul(x, 1664525) + 1013904223 >>> 0;
+      return Math.floor(x / 4294967296 * n);
+    };
+  }
+  function makeStats() {
+    return {
+      orders: 0,
+      raids: 0,
+      trials: 0,
+      raidTrials: 0,
+      raidHolds: 0,
+      raidInvalid: 0,
+      rescueTrials: 0,
+      rescueOrders: 0,
+      delayed: 0,
+      holds: 0,
+      invalidated: 0,
+      eraseTrials: 0,
+      eraseInvalidated: 0,
+      eraseHolds: 0,
+      eraseOrders: 0,
+      erasedCells: 0,
+      eraseWork: 0,
+      captureTrials: 0,
+      captures: 0,
+      capturedOrders: 0,
+      captureWork: 0,
+      first: null,
+      last: null,
+      studied: /* @__PURE__ */ new Set(),
+      bought: /* @__PURE__ */ new Set(),
+      expected: 0,
+      work: 0,
+      exploreOrders: 0,
+      visibleEnemyTrials: 0,
+      unseenActions: 0
+    };
+  }
+  function stamp(m, owner, c, ids, commit = false) {
+    return m[commit ? "stamp" : "canStamp"](owner, c.rule, c.resolver ?? "contact", ids, c.ballot ?? "support", c.sense ?? "native", metadata(c));
+  }
+  function observedSites(view, owner) {
+    const visible = view.visibility(owner).visible;
+    return [...visible].filter((id) => view.graph.deg[id] === 6 && !view.cells.has(id));
+  }
+  function localCells(view, owner) {
+    const own = [], enemies = [];
+    for (const [site, c] of view.cells) {
+      if (c.owner === owner) own.push([site, c]);
+      else if (view.canSee(owner, site)) enemies.push([site, c]);
+    }
+    return { own, enemies };
+  }
+  function sameObservationAction(match, owner, action) {
+    return !action || action.kind === "settings" || action.owner === owner || action.ids?.some((id) => match.canSee(owner, id));
+  }
+  function createSpatialGameBots(match, {
+    seed = 1,
+    owners = match.players.slice(2).map((_, i) => i + 2),
+    cards: cards2 = atlasCards,
+    budget = 4,
+    horizon: horizon2 = 16,
+    lookahead = 48,
+    interval = 12,
+    onOrder,
+    beforeOrder,
+    onDecision,
+    fieldTools = true
+  } = {}) {
+    if (!match.spatial?.enabled || typeof match.forkObserved !== "function") throw TypeError("Spatial bots need the observation API.");
+    if (!Number.isSafeInteger(budget) || budget < 0 || !Number.isSafeInteger(horizon2) || horizon2 < 4 || !Number.isFinite(lookahead) || lookahead < 0 || !Number.isSafeInteger(interval) || interval < 1) throw RangeError("Invalid bot timing.");
+    if (new Set(owners).size !== owners.length || owners.some((owner) => !match.players[owner])) throw RangeError("Invalid bot owners.");
+    const stats = Array.from({ length: match.players.length }, makeStats);
+    const bots = owners.map((owner) => ({ owner, pick: random(seed ^ Math.imul(owner, 2654435769)), decision: 0, next: 1, lastBuy: -Infinity, job: null, memory: /* @__PURE__ */ new Map() }));
+    const unsubscribe = match.subscribeActions((action) => {
+      for (const bot of bots) if (bot.job && sameObservationAction(match, bot.owner, action)) {
+        stats[bot.owner].invalidated++;
+        bot.job = null;
+      }
+    });
+    function candidateCards(view, bot) {
+      const available = view.progression?.legalCards(bot.owner) ?? cards2;
+      const small = available.filter((c) => c.offsets?.length && c.offsets.length <= view.toolSettings.maxStampCells);
+      const priced = rankCards(small, { ...view.economy, productionScale: 0 }, { reserve: view.players[bot.owner].reserve });
+      const affordable = priced.filter((q) => q.feasible && view.stampQuote(
+        q.card.rule,
+        q.card.resolver ?? "contact",
+        q.card.offsets.length,
+        metadata(q.card)
+      ).total <= view.players[bot.owner].reserve + EPS4);
+      if (!affordable.length) return [];
+      const producers = affordable.filter((q) => q.flow > 0).sort((a, b) => a.card.offsets.length - b.card.offsets.length || (a.births ?? Infinity) - (b.births ?? Infinity) || b.flow - a.flow);
+      const head = affordable.slice(0, 12).map((q) => q.card).sort((a, b) => (bot.memory.get(b.key) ?? 0) - (bot.memory.get(a.key) ?? 0));
+      const selected = [];
+      if (bot.decision % 4 === 0) selected.push(affordable[bot.pick(affordable.length)].card);
+      if (producers.length) selected.push(producers[0].card);
+      for (let i = 0; i < Math.min(5, head.length); i++) selected.push(head[(i + bot.decision) % head.length]);
+      return [...new Set(selected)];
+    }
+    function placement2(view, bot, card2, candidates) {
+      const { owner, pick } = bot, explored = view.visibility(owner).explored;
+      let best = null;
+      for (let n = 0; n < Math.min(28, candidates.length); n++) {
+        const center = candidates[pick(candidates.length)], rotation = pick(6);
+        const ids = patchForStamp({ graph: view.graph }, center, rotation, card2.offsets);
+        if (!ids || !stamp(view, owner, card2, ids)) continue;
+        let frontier = 0, nearEnemy = 0, nearOwn = 0;
+        for (const id of circularSites(view.graph, center, Math.min(8, view.spatial.visionRadius ?? 6))) {
+          if (!explored.has(id)) frontier++;
+          const c = view.cells.get(id);
+          if (c?.owner === owner) nearOwn++;
+          else if (c) nearEnemy++;
+        }
+        const score = frontier + (bot.decision % 3 === 0 ? nearEnemy * 3 : 0) - nearOwn * 0.15 + pick(10) * 0.01;
+        if (!best || score > best.score) best = { card: card2, ids, center, rotation, score, frontier, nearEnemy };
+      }
+      return best;
+    }
+    function propose(bot) {
+      const { owner } = bot;
+      const view = match.forkObserved(owner), candidates = observedSites(view, owner);
+      if (!candidates.length || view.players[owner].out) return;
+      bot.decision++;
+      const options = candidateCards(view, bot);
+      let proposed;
+      for (const card3 of options) {
+        const p = placement2(view, bot, card3, candidates);
+        if (p) {
+          proposed = p;
+          break;
+        }
+      }
+      const { own, enemies } = localCells(view, owner);
+      const cleaning = fieldTools && bot.decision % 5 === 0 && own.some(([, c]) => (c.stableAge ?? c.age) < view.economy.stableAfter);
+      if (cleaning) {
+        const young = own.filter(([, c]) => (c.stableAge ?? c.age) < view.economy.stableAfter);
+        const [center2] = young[bot.pick(young.length)], radius2 = Math.min(2, view.toolSettings.maxEraseRadius);
+        const ids = view.erasePreview(owner, center2, radius2);
+        if (ids.length && ids.length < own.length) proposed = { center: center2, ids, radius: radius2, tool: "eraser" };
+      }
+      if (!proposed) return;
+      const { center, card: card2 } = proposed;
+      const extent = Math.max(8, horizon2 + Math.ceil(Math.sqrt(proposed.ids.length)) + 2);
+      const scope3 = new Set(circularSites(view.graph, center, extent));
+      for (const id of proposed.ids) scope3.add(id);
+      const hold = view.fork(scope3), play2 = hold.fork();
+      if (proposed.tool === "eraser") {
+        if (!play2.erase(owner, center, proposed.radius)) return;
+        stats[owner].eraseTrials++;
+      } else {
+        if (!stamp(play2, owner, card2, proposed.ids, true)) return;
+        stats[owner].studied.add(card2.rule);
+      }
+      const foeIds = [...new Set(enemies.map(([, c]) => c.owner))];
+      const role = proposed.tool === "eraser" ? "erase" : proposed.nearEnemy && bot.decision % 3 === 0 ? "raid" : proposed.frontier ? "explore" : "farm";
+      const stat = stats[owner];
+      stat.trials++;
+      stat.raidTrials += Number(role === "raid");
+      stat.visibleEnemyTrials += Number(foeIds.length > 0);
+      const anchors = own.filter(([site, c]) => scope3.has(site) && (c.stableAge ?? c.age) >= view.economy.stableAfter).map(([id]) => id);
+      bot.job = { ...proposed, owner, hold, play: play2, scope: scope3, role, foeIds, anchors, t: 0, at: match.gen, base: 0 };
+    }
+    function finish(bot, j) {
+      const { owner, play: play2, hold, role, card: card2 } = j, stat = stats[owner];
+      const p = play2.players[owner], h = hold.players[owner];
+      const flow2 = (operating2(p) - operating2(h) - j.base) / 4;
+      const cash = p.reserve - h.reserve;
+      const light = play2.visibility(owner).explored, oldLight = hold.visibility(owner).explored;
+      let revealed = 0;
+      for (const id of light) if (!oldLight.has(id)) revealed++;
+      const scouting = Math.min(96, revealed) * 0.35;
+      let anchorLoss = 0;
+      for (const id of j.anchors) if (hold.cells.get(id)?.owner === owner && play2.cells.get(id)?.owner !== owner) anchorLoss++;
+      let harm = 0;
+      for (const id of j.foeIds) harm += Math.max(0, hold.players[id].reserve - play2.players[id].reserve) + Math.max(0, hold.players[id].conventional - play2.players[id].conventional) * match.economy.stampCost;
+      const cost = j.tool === "eraser" ? 0 : j.ids.length * match.stampPrice(card2.resolver ?? "contact");
+      const pay = cash + lookahead * flow2 + scouting + (role === "raid" ? harm : 0) - anchorLoss * match.economy.stampCost;
+      const survived = j.tool === "eraser" || harm > EPS4 || [...play2.cells].some(([id, c]) => {
+        const before = hold.cells.get(id);
+        return c.owner === owner && (!before || before.owner !== owner || before.type !== c.type || before.age !== c.age);
+      });
+      const rejection = p.out || !p.conventional ? "extinction" : !survived ? "ephemeral" : pay <= EPS4 ? "return" : null;
+      onDecision?.({ gen: match.gen, owner, key: card2?.key ?? "tool/eraser", ids: j.ids, tool: j.tool ?? "stamp", role, pay, cost, flow: flow2, modeledCash: cash, revealed, rejection });
+      if (card2) {
+        const confidence = Math.max(-1, Math.min(1, pay / Math.max(1, cost)));
+        bot.memory.set(card2.key, 0.7 * (bot.memory.get(card2.key) ?? 0) + 0.3 * confidence);
+      }
+      if (rejection) {
+        stat.holds++;
+        stat.raidHolds += Number(role === "raid");
+        stat.eraseHolds += Number(j.tool === "eraser");
+        return;
+      }
+      if (match.gen - bot.lastBuy < interval || j.ids.some((id) => !match.canSee(owner, id))) {
+        stat.invalidated++;
+        return;
+      }
+      const o = {
+        gen: match.gen,
+        forecastAt: j.at,
+        owner,
+        key: card2?.key ?? "tool/eraser",
+        rule: card2?.rule,
+        resolver: card2?.resolver ?? "contact",
+        ballot: card2?.ballot ?? "support",
+        sense: card2?.sense ?? "native",
+        contract: card2?.contract,
+        tool: j.tool ?? "stamp",
+        ids: j.ids,
+        site: j.center,
+        radius: j.radius,
+        rotation: j.rotation,
+        role,
+        target: role === "raid" ? j.foeIds[0] ?? 0 : 0,
+        expected: pay,
+        revealed
+      };
+      if (j.tool !== "eraser" && !stamp(match, owner, card2, j.ids)) {
+        stat.invalidated++;
+        return;
+      }
+      beforeOrder?.(o);
+      if (j.tool === "eraser") {
+        const removed = match.erase(owner, j.center, j.radius);
+        if (!removed) return;
+        stat.eraseOrders++;
+        stat.erasedCells += removed;
+        o.removed = removed;
+      } else {
+        if (!stamp(match, owner, card2, j.ids, true)) return;
+        stat.orders++;
+        stat.raids += Number(role === "raid");
+        stat.exploreOrders += Number(role === "explore");
+        stat.bought.add(card2.rule);
+      }
+      bot.lastBuy = match.gen;
+      stat.first ?? (stat.first = match.gen);
+      stat.last = match.gen;
+      stat.expected += pay;
+      onOrder?.(o);
+    }
+    function advance2(bot) {
+      const j = bot.job;
+      if (!j) return;
+      if (j.t === horizon2 - 4) j.base = operating2(j.play.players[bot.owner]) - operating2(j.hold.players[bot.owner]);
+      j.hold.step();
+      j.play.step();
+      j.t++;
+      stats[bot.owner].work++;
+      if (j.tool === "eraser") stats[bot.owner].eraseWork++;
+      if (j.t >= horizon2) {
+        bot.job = null;
+        finish(bot, j);
+      }
+    }
+    let cursor = 0, last = -1;
+    function turn() {
+      if (last === match.gen || !bots.length) return;
+      last = match.gen;
+      for (let n = 0; n < budget; n++) {
+        const bot = bots[cursor++ % bots.length];
+        if (match.players[bot.owner].out) {
+          bot.job = null;
+          continue;
+        }
+        if (!bot.job && match.gen >= bot.next) {
+          bot.next = match.gen + Math.max(2, Math.ceil(interval / 3));
+          propose(bot);
+        }
+        if (bot.job) advance2(bot);
+      }
+    }
+    return { turn, stats, destroy: unsubscribe };
+  }
+
   // experiments/typed-world/game/bots.mjs
   var ballots2 = ["support", "age", "geometry", "robustness"];
   function targetPose(m, site) {
@@ -9566,14 +10382,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }).join("|");
   }
   var raidResolvers = ["phase", "contact", "antimatter", "phase"];
-  function random(seed) {
+  function random2(seed) {
     let x = seed >>> 0;
     return (limit) => {
       x = Math.imul(x, 1664525) + 1013904223 >>> 0;
       return Math.floor(x / 4294967296 * limit);
     };
   }
-  var operating2 = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
+  var operating3 = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
   function chooseTarget(match, other, pick) {
     let candidate, highest = -Infinity, n = 0;
     function consider(site, c) {
@@ -9610,6 +10426,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     recoveryOwners = owners,
     fieldTools = true
   } = {}) {
+    if (match.spatial?.enabled) return createSpatialGameBots(match, { seed, owners, onOrder, beforeOrder, onDecision, cards: cards2, budget, horizon: horizon2, lookahead, interval, fieldTools });
     if (!Number.isSafeInteger(budget) || budget < 0 || !Number.isSafeInteger(horizon2) || horizon2 < 4 || !Number.isSafeInteger(phaseWindow) || phaseWindow < 0 || !Number.isFinite(lookahead) || lookahead < 0 || !Number.isSafeInteger(interval) || interval < 1) throw RangeError("Invalid bot timing.");
     if (new Set(owners).size !== owners.length || owners.some((owner) => !match.players[owner])) throw RangeError("Invalid bot owners.");
     const ranked = rankCards(cards2, match.economy).map((x) => x.card);
@@ -9621,7 +10438,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const families = [...byRule.keys()], recoverySeats = new Set(recoveryOwners);
     const captains = owners.map((owner) => ({
       owner,
-      pick: random(seed ^ Math.imul(owner, 2654435769)),
+      pick: random2(seed ^ Math.imul(owner, 2654435769)),
       decision: 0,
       learned: [],
       pricedAt: -Infinity,
@@ -9807,7 +10624,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const j = bot.job;
       if (!j) return;
       const { owner, other, play: play2, hold, item, raid } = j, stat = stats[owner];
-      const net2 = (id) => operating2(play2.players[id]) - operating2(hold.players[id]);
+      const net2 = (id) => operating3(play2.players[id]) - operating3(hold.players[id]);
       if (j.t === j.turns - 4) {
         j.ownBase = net2(owner);
         j.enemyBase = net2(other);
@@ -10503,7 +11320,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (!match) return;
       const wallet = match.players[1].reserve;
       for (const btn of buttons.values()) {
-        const c = btn.card, cost = c.offsets.length * match.stampPrice(modifier(c).resolver);
+        const c = btn.card, cost = match.stampQuote ? match.stampQuote(c.rule, modifier(c).resolver, c.offsets.length, { contract: c.contract }).total : c.offsets.length * match.stampPrice(modifier(c).resolver);
         const withinLimit = c.offsets.length <= (match.toolSettings?.maxStampCells ?? Infinity);
         const affordable = withinLimit && wallet + 1e-9 >= cost;
         if (btn.dataset.afford !== String(affordable)) btn.dataset.afford = String(affordable);
@@ -10511,7 +11328,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         progress.style.setProperty("--charge", String(cost ? available / cost : 1));
         progress.setAttribute("aria-valuemax", String(cost));
         progress.setAttribute("aria-valuenow", String(available));
-        progress.setAttribute("aria-valuetext", !withinLimit ? "Acima do limite de células por carimbo" : affordable ? "Pronto para usar" : "Faltam ◈ " + fmt4.format(cost - available));
+        progress.setAttribute("aria-valuetext", !withinLimit ? "Acima do limite de células por carimbo" : affordable ? match.spatial?.enabled ? "Custo disponível no campo; escolha uma região com luz e energia local" : "Pronto para usar" : "Faltam ◈ " + fmt4.format(cost - available));
         if (btn.dataset.price !== String(cost) || btn.dataset.withinLimit !== String(withinLimit)) {
           btn.dataset.price = String(cost);
           btn.dataset.withinLimit = String(withinLimit);
@@ -10521,7 +11338,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         }
       }
       if (selected) {
-        const cost = selected.offsets.length * match.stampPrice(modifier(selected).resolver);
+        const cost = match.stampQuote ? match.stampQuote(selected.rule, modifier(selected).resolver, selected.offsets.length, { contract: selected.contract }).total : selected.offsets.length * match.stampPrice(modifier(selected).resolver);
         $("mx-price").textContent = "◈ " + fmt4.format(cost);
       }
     }
@@ -12023,6 +12840,21 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     c.drawImage(a.base, 0, 0);
     c.save();
     atlasContext(c, a);
+    if (world.fog) {
+      c.fillStyle = "#060d16";
+      c.fillRect(a.x0, a.y0, a.x1 - a.x0, a.y1 - a.y0);
+      for (const [sites, color] of [[world.fog.explored, "#142331"], [world.fog.visible, "#24473c"]]) {
+        const path = new Path2D();
+        for (const id of sites) atlasMark(path, id, a);
+        c.fillStyle = color;
+        c.fill(path);
+        if (sites === world.fog.visible && atlasMetrics.pitch > 4) {
+          c.strokeStyle = "#71ac8f40";
+          c.lineWidth = 0.6;
+          c.stroke(path);
+        }
+      }
+    }
     const g = a.g, paths = new Array(8), counts = new Uint16Array(8), margin = 2 / g.f;
     const soft = atlasMetrics.pitch * a.dpr < 2.05, clipLat = Math.min(Math.PI / 2, a.h / (2 * a.s)), clipLon = Math.min(Math.PI, a.w / (2 * a.s));
     let bitmap = null;
@@ -12103,6 +12935,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       c.drawImage(bitmap.canvas, 0, 0);
       c.restore();
     }
+    if (world.fog && world.rememberedCells?.size) {
+      const ghosts = Array.from({ length: 8 }, () => new Path2D());
+      for (const [site, other] of world.rememberedCells)
+        if (!world.fog.visible.has(site)) atlasMark(ghosts[other.owner], site, a);
+      c.save();
+      c.globalAlpha = 0.22;
+      for (let owner = 1; owner <= 7; owner++) {
+        c.fillStyle = game.colors[owner];
+        c.fill(ghosts[owner]);
+      }
+      c.restore();
+    }
     const preview = world.hover?.id !== void 0 && (!world.drag || world.painting) && placementPreview(world.hover);
     if (preview?.tool) {
       const active = new Path2D(), area = new Path2D();
@@ -12162,6 +13006,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     c.translate(a.cx, a.cy);
     c.scale(world.zoom, world.zoom);
     const vis = world.chart.map;
+    if (world.fog) {
+      const unknown = new Path2D(), remembered = new Path2D(), lit = new Path2D();
+      for (const item of vis.values()) {
+        const path = world.fog.visible.has(item.id) ? lit : world.fog.explored.has(item.id) ? remembered : unknown;
+        hexPath(path, DX * (item.q + item.r / 2), DY * item.r, R * 1.035);
+      }
+      c.fillStyle = "#060d16";
+      c.fill(unknown);
+      c.fillStyle = "#142331";
+      c.fill(remembered);
+      c.fillStyle = "#21483d55";
+      c.fill(lit);
+      c.strokeStyle = "#62ae9240";
+      c.lineWidth = 0.55 / world.zoom;
+      c.stroke(lit);
+    }
     const paths = Array.from({ length: 8 }, () => new Path2D());
     let count2 = 0;
     for (const item of vis.values()) {
@@ -12180,6 +13040,21 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         c.lineWidth = 0.55 / world.zoom;
         c.stroke(paths[id]);
       }
+    }
+    if (world.fog && world.rememberedCells?.size) {
+      const ghosts = Array.from({ length: 8 }, () => new Path2D());
+      for (const item of vis.values()) {
+        const other = world.rememberedCells.get(item.id);
+        if (other && !world.fog.visible.has(item.id))
+          hexPath(ghosts[other.owner], DX * (item.q + item.r / 2), DY * item.r, R * 0.72);
+      }
+      c.save();
+      c.globalAlpha = 0.24;
+      for (let owner = 1; owner <= 7; owner++) {
+        c.fillStyle = game.colors[owner];
+        c.fill(ghosts[owner]);
+      }
+      c.restore();
     }
     const preview = world.hover && (!world.drag || world.painting) && placementPreview(world.hover);
     if (preview?.tool) {
@@ -12470,6 +13345,61 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // src/globe/navigator/canvas.js
+  function drawFog(c, v) {
+    const g = world.graph, corner = new Float64Array(3);
+    c.fillStyle = "#060d16";
+    c.fillRect(0, 0, v.w, v.h);
+    for (const [sites, color] of [[world.fog.explored, "#152832"], [world.fog.visible, "#2a5749"]]) {
+      c.beginPath();
+      for (const id of sites) {
+        const coords = g.coords, j = id * 3;
+        if (coords[j] * v.look[0] + coords[j + 1] * v.look[1] + coords[j + 2] * v.look[2] < 0.03) continue;
+        const points = [];
+        for (let k = 0; k < g.deg[id]; k++) {
+          sphereCorner(g, id, k, corner);
+          const z = corner[0] * v.look[0] + corner[1] * v.look[1] + corner[2] * v.look[2];
+          if (z < 0.02) {
+            points.length = 0;
+            break;
+          }
+          const scale = v.inside ? v.focal / z : v.radius;
+          points.push([
+            v.cx + scale * (corner[0] * v.right[0] + corner[1] * v.right[1] + corner[2] * v.right[2]),
+            v.cy - scale * (corner[0] * v.up[0] + corner[1] * v.up[1] + corner[2] * v.up[2])
+          ]);
+        }
+        if (!points.length) continue;
+        c.moveTo(...points[0]);
+        for (const p of points.slice(1)) c.lineTo(...p);
+        c.closePath();
+      }
+      c.fillStyle = color;
+      c.fill();
+    }
+  }
+  function drawRemembered(c, v) {
+    if (!world.fog || !world.rememberedCells?.size) return;
+    const g = world.graph, paths = /* @__PURE__ */ new Map();
+    for (const [id, ghost] of world.rememberedCells) {
+      if (world.fog.visible.has(id)) continue;
+      const j = id * 3, xyz = g.coords, z = xyz[j] * v.look[0] + xyz[j + 1] * v.look[1] + xyz[j + 2] * v.look[2];
+      if (z < 0.03) continue;
+      const scale = v.inside ? v.focal / z : v.radius;
+      const x = v.cx + scale * (xyz[j] * v.right[0] + xyz[j + 1] * v.right[1] + xyz[j + 2] * v.right[2]);
+      const y = v.cy - scale * (xyz[j] * v.up[0] + xyz[j + 1] * v.up[1] + xyz[j + 2] * v.up[2]);
+      if (!paths.has(ghost.owner)) paths.set(ghost.owner, new Path2D());
+      const glyph = paths.get(ghost.owner);
+      glyph.moveTo(x + 1.6, y);
+      glyph.arc(x, y, 1.6, 0, Math.PI * 2);
+    }
+    c.save();
+    c.globalAlpha = 0.26;
+    for (const [owner, path] of paths) {
+      c.fillStyle = game.colors[owner];
+      c.fill(path);
+    }
+    c.restore();
+  }
   function drawMiniBackdrop() {
     const canvas = fallbackMini, rect = globeTarget.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
     const w = Math.max(1, Math.round(rect.width * dpr)), h = Math.max(1, Math.round(rect.height * dpr));
@@ -12519,7 +13449,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     ctx2.strokeStyle = "#638c9a44";
     ctx2.lineWidth = 0.65;
     const lines = wire?.wireLines;
-    if (lines) {
+    if (lines && !world.fog) {
       ctx2.beginPath();
       const focal = v.inside ? v.focal : v.radius;
       for (let k = 0; k < lines.length; k += 6) {
@@ -12531,6 +13461,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       ctx2.stroke();
     }
+    if (world.fog) drawFog(ctx2, v);
+    drawRemembered(ctx2, v);
     drawGlobePopulation2D(ctx2, v, Math.min(devicePixelRatio || 1, 2));
     ctx2.restore();
     if (v.inside) return;
@@ -12553,7 +13485,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       return;
     navigatorView.lastDraw = time;
     const wire = globeWireMesh(globeContext());
-    const worked = drawGlobeGPU(wire);
+    const worked = !world.fog && drawGlobeGPU(wire);
     gpuCanvas.style.display = worked ? "block" : "none";
     fallbackMini.style.display = "block";
     if (worked) drawMiniBackdrop();
@@ -12572,7 +13504,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     });
   }
   function syncField(match) {
+    var _a;
     world.gen = match.gen;
+    world.fog = match.spatial?.enabled && !match.spatial.fullMap ? match.visibility(1) : null;
+    (_a = world).rememberedCells ?? (_a.rememberedCells = /* @__PURE__ */ new Map());
+    if (world.fog) {
+      for (const id of world.fog.visible) world.rememberedCells.delete(id);
+      for (const [id, c] of match.cells) if (c.owner !== 1 && world.fog.visible.has(id))
+        world.rememberedCells.set(id, { owner: c.owner, seenAt: match.gen });
+    } else world.rememberedCells.clear();
     for (let i = 0; i < world.activeCount; i++) {
       const id = world.active[i];
       world.cells[id] = 0;
@@ -12582,6 +13522,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     world.activeCount = 0;
     for (const group of world.ownerCells) group.length = 0;
     for (const [id, c] of match.cells) {
+      if (world.fog && c.owner !== 1 && !world.fog.visible.has(id)) continue;
       world.cells[id] = 1;
       world.owners[id] = c.owner;
       world.active[world.activeCount++] = id;
@@ -12592,6 +13533,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function loadViewport(session, storage3) {
     newWorld(session.graph.f, session.graph, storage3);
+    world.rememberedCells = /* @__PURE__ */ new Map();
     world.rule = "mixed";
     world.physics = null;
     syncField(session.match);
@@ -12756,6 +13698,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     const siteAt = (anchor) => anchor?.id ?? (anchor && world.chart?.map.get(key(anchor.q, anchor.r))?.id);
     function capture(match, center) {
+      if (match.spatial?.enabled) {
+        const cells2 = new Map([...match.cells].filter(([site, c]) => c.owner === 1 || match.canSee(1, site)));
+        match = { ...match, cells: cells2 };
+      }
       const nearest = nearestPatternSite(match, center);
       if (nearest === null) return { ok: false, reason: "empty" };
       let orientation;
@@ -12856,8 +13802,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     protectedMature: "Maduras protegidas"
   };
   function bindSettings(getOptions, getMatch, apply, { onToolsChanged = () => {
-  } } = {}) {
+  }, getSelected = () => null } = {}) {
     const dialog = $("mx-settings"), inputs = /* @__PURE__ */ new Map();
+    let draftBase = null;
+    function baseLabel() {
+      const c = normalizeOpening(draftBase);
+      $("mx-base-name").textContent = "Base: " + c.name + " · " + c.offsets.length + " células";
+    }
+    $("mx-experiment").onchange = () => {
+      const local = $("mx-experiment").value !== "classic";
+      $("mx-spatial-settings").hidden = !local;
+      $("mx-economy").disabled = local;
+      if (local && $("mx-economy").value !== "stability") {
+        $("mx-economy").value = "stability";
+        setRates(gameEconomies.stability);
+      }
+      for (const key2 of ["productionScale", "birthEnergy", "deathEnergy", "salvage", "protectedMature"]) if (inputs.has(key2)) inputs.get(key2).disabled = local;
+    };
+    $("mx-use-base").onclick = () => {
+      const c = getSelected();
+      if (c) {
+        draftBase = normalizeOpening(c);
+        baseLabel();
+      }
+    };
     for (const f of [16, 24, 32, 48, 64, 96, 128, 160, 320])
       $("mx-size").add(new Option("F" + f + " · " + (10 * f * f + 2).toLocaleString("pt-BR"), String(f)));
     for (const [key2, name] of Object.entries(tariffs)) {
@@ -12895,12 +13863,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     $("mx-config").onclick = () => {
       const o = getOptions();
+      draftBase = o.initialCard ?? null;
+      baseLabel();
+      $("mx-experiment").value = o.spatial?.enabled ? "local" : "classic";
+      $("mx-experiment").onchange();
+      const spatial = getMatch().spatial ?? {};
+      for (const [id, key2, def] of [["mx-vision-radius", "visionRadius", 12], ["mx-cell-capacity", "cellCapacity", 256], ["mx-stamp-energy", "stampEnergy", 32], ["mx-newborn-energy", "newbornEnergy", 2], ["mx-birth-radius", "birthRadius", 1]]) $(id).value = String(spatial[key2] ?? def);
+      $("mx-cell-types").value = JSON.stringify(spatial.types ?? {}, null, 2);
+      $("mx-map-full").checked = spatial.fullMap ?? false;
+      $("mx-funding-mode").value = spatial.constructionFunding ?? "territory";
+      $("mx-safe-gap").value = String(spatial.safeStampGap ?? 2);
       $("mx-bot-interval").value = o.botInterval;
       $("mx-bot-budget").value = o.botBudget;
       $("mx-size").value = o.F;
       $("mx-seed").value = o.seed;
       $("mx-bank").value = o.bank;
-      $("mx-economy").value = o.policy;
+      $("mx-economy").value = o.spatial?.enabled ? "stability" : o.policy;
       $("mx-existence").value = o.existence;
       $("mx-identity").value = o.arbitration.mode ?? o.arbitration;
       $("mx-axis").value = o.arbitration.by ?? "resolver";
@@ -12937,8 +13915,24 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const mode = $("mx-identity").value, by = $("mx-axis").value;
         const arbitration = presets.includes(mode) ? { mode, by, order: mode === "matrix" ? by === "rule" ? ruleIds : resolvers : $("mx-order").value.split(",").map((x) => x.trim()), ...mode === "matrix" ? { matrix: matrix.bits } : {} } : mode;
         const toolSettings = readTools();
+        const spatial = $("mx-experiment").value === "classic" ? { enabled: false } : {
+          enabled: true,
+          fullMap: $("mx-map-full").checked,
+          constructionFunding: $("mx-funding-mode").value,
+          safeStampGap: Number($("mx-safe-gap").value),
+          visionRadius: $("mx-vision-radius").valueAsNumber,
+          cellCapacity: $("mx-cell-capacity").valueAsNumber,
+          stampEnergy: $("mx-stamp-energy").valueAsNumber,
+          newbornEnergy: $("mx-newborn-energy").valueAsNumber,
+          birthRadius: $("mx-birth-radius").valueAsNumber,
+          stableAfter: economy.stableAfter,
+          stableEnergy: economy.stableEnergy,
+          types: JSON.parse($("mx-cell-types").value || "{}")
+        };
         apply({
           ...getOptions(),
+          spatial,
+          initialCard: draftBase,
           toolSettings,
           botInterval: $("mx-bot-interval").valueAsNumber,
           botBudget: $("mx-bot-budget").valueAsNumber,
@@ -13127,7 +14121,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       button2.onclick = () => {
         const session = getSession();
         const look = world.chart ? pointOnSphere(session.graph, world.center) : atlasCamera.look;
-        const site = nearestColony(session.graph, session.match.cells, id, look);
+        const visible = session.match.spatial?.enabled ? new Map([...session.match.cells].filter(([site2, c]) => c.owner === 1 || session.match.canSee(1, site2))) : session.match.cells;
+        const site = nearestColony(session.graph, visible, id, look);
         if (site !== null) {
           centerOnPlayer(site);
           world.needsDraw = world.needsGrid = true;
@@ -13147,8 +14142,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const session = getSession(), m = session.match;
       const ids = m.players.slice(1).map((_, i) => i + 1).sort((a, b) => Number(session.alive[b]) - Number(session.alive[a]) || m.players[b].conventional - m.players[a].conventional || m.players[b].reserve - m.players[a].reserve);
       for (const [index, id] of ids.entries()) {
-        const row = rows2.get(id) ?? addRow(id), p = m.players[id], open = expanded === id;
-        row.summary.textContent = session.alive[id] ? p.conventional.toLocaleString("pt-BR") + " · ◈ " + number.format(p.reserve) : "Eliminado";
+        const row = rows2.get(id) ?? addRow(id), p = m.players[id], hidden = !!m.spatial?.enabled && id !== 1, open = expanded === id;
+        let seen = 0;
+        if (hidden) {
+          for (const [site, c] of m.cells) if (c.owner === id && m.canSee(1, site)) seen++;
+        }
+        row.summary.textContent = session.alive[id] ? "▣" + p.conventional.toLocaleString("pt-BR") + " ◈" + number.format(p.reserve) + " Δ" + signed3(ledger[id]?.flow ?? 0) + (hidden && seen ? " · " + seen + " vistos" : "") : "Eliminado";
+        row.summary.title = "Indicadores públicos: células, energia armazenada e fluxo médio por geração.";
+        row.toggle.disabled = false;
+        row.button.disabled = hidden && !seen;
         row.toggle.setAttribute("aria-expanded", String(open));
         row.toggle.textContent = open ? "▾" : "▸";
         row.toggle.setAttribute("aria-label", (open ? "Fechar" : "Abrir") + " estatísticas de " + game.names[id]);
@@ -13194,8 +14196,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function startMixedGame() {
     mount();
-    let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null;
+    let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null, lastUndo = null, pendingHazard = null;
     const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }), onChoose: () => tools?.select("stamp") });
+    const fillDeck = (cards2) => {
+      if (!session?.match.spatial?.enabled) {
+        hand.fill(cards2);
+        return;
+      }
+      const base = session.opening[1], known = cards2.find((c) => c.key === base.key), opening = known ?? { ...base, source: base.rule, custom: true, slotKey: base.key };
+      hand.fill([opening, ...cards2.filter((c) => c.key !== base.key)].slice(0, Math.max(54, cards2.length)));
+    };
     const scoreboard = createScoreboard(() => session);
     tools = createFieldTools({
       getMatch: () => session?.match,
@@ -13211,6 +14221,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-cash").textContent = "◈ " + number2.format(p.reserve);
       $("mx-field").textContent = p.conventional.toLocaleString("pt-BR");
       $("mx-flow").textContent = (scoreboard.flow > 0 ? "+" : "") + number2.format(scoreboard.flow);
+      if (m.spatial?.enabled) {
+        const view = m.visibility(1);
+        $("mx-vision").textContent = "◉ " + view.visible.size.toLocaleString("pt-BR") + " · ◌ " + view.explored.size.toLocaleString("pt-BR");
+        const targets = targetIds(world.hover), cell = world.hover?.id === void 0 ? null : m.cells.get(world.hover.id);
+        $("mx-local-energy").textContent = targets ? "◈ " + number2.format(m.localReserve(1, targets)) : cell?.owner === 1 ? "◈ " + number2.format(cell.energy) + " · G" + cell.stableAge : "◈ " + number2.format(p.reserve);
+        $("mx-local-energy").title = "Energia armazenada nas células; construções em território explorado podem receber energia do restante do território.";
+      }
       if ($("mx-conflicts").open && event) {
         const votes2 = event.policy === "support" ? event.weightYes + " / " + event.weightNo : event.yes + " / " + event.no;
         const owner = event.winner ? game.names[event.winner.owner] : "";
@@ -13240,9 +14257,15 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       lastOrders = [];
       elapsed = 0;
       event = null;
+      lastUndo = null;
+      pendingHazard = null;
+      $("mx-undo").hidden = true;
       $("mx-event").textContent = "Avance para observar.";
       $("mx-locate").hidden = true;
       $("mx-profile-button").textContent = "Economia · " + { stability: "Maduras", birth: "Nascimentos", death: "Mortes", activity: "Atividade" }[options.policy];
+      $("mx-frontier").hidden = !session.match.spatial?.enabled;
+      $("mx-cash").previousElementSibling.textContent = session.match.spatial?.enabled ? "ENERGIA EM CAMPO" : "RESERVA";
+      if (session.match.spatial?.enabled) $("mx-profile-button").textContent = "Economia · Celular";
       loadViewport(session, storage3);
       world.speed = Number($("hl-speed").value);
       syncPlayButton();
@@ -13252,10 +14275,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (atlas) atlas.refresh();
       dirty = true;
       hud();
-      toast("Partida pronta · " + (options.players - 1) + " bots");
+      toast(session.match.spatial?.enabled ? "Base pronta · construa na área explorada" : "Partida pronta · " + (options.players - 1) + " bots");
     }
     const query = new URLSearchParams(location.search), requestedSeed = query.get("seed");
     const initial = { ...defaultGameOptions, botInterval: 12, botBudget: 4, toolSettings: loadToolSettings() };
+    if (query.get("experiment") === "local") initial.spatial = { enabled: true };
     if (Object.hasOwn(gameEconomies, query.get("economy"))) initial.policy = query.get("economy");
     if (requestedSeed !== null && /^\d{1,10}$/.test(requestedSeed) && Number(requestedSeed) <= 4294967295) initial.seed = Number(requestedSeed);
     if (["16", "24", "32", "48", "64", "96", "128", "160", "320"].includes(query.get("f"))) initial.F = Number(query.get("f"));
@@ -13268,11 +14292,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     bindSettings(() => options, () => session.match, (next) => {
       if (next.F !== session.graph.f && next.F >= 64) requestSphere(next.F, (graph, buffers) => reset2(next, graph, buffers));
       else reset2(next);
-    }, { onToolsChanged: (toolSettings) => {
-      options = { ...options, toolSettings };
-      tools.refresh();
-      hand.update();
-    } });
+    }, {
+      onToolsChanged: (toolSettings) => {
+        options = { ...options, toolSettings };
+        tools.refresh();
+        hand.update();
+      },
+      getSelected: () => hand.selected ? { ...hand.selected, offsets: hand.current.shape, resolver: hand.current.resolver, ballot: hand.current.ballot } : null
+    });
     const targetIds = (anchor) => anchor && hand.current ? stampTargets(anchor, hand.current.shape) : null;
     function preview(anchor) {
       if (tools.mode !== "stamp") return tools.preview(anchor);
@@ -13280,20 +14307,86 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const ids = targetIds(anchor), { resolver, ballot } = hand.current, c = hand.selected;
       return ids ? { ids, ready: session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native") } : null;
     }
+    function forecastHazard(before, c, ids, resolver, ballot, contract) {
+      if (!before.spatial?.enabled) return null;
+      const changed = before.fork(), control = before.fork(), meta = contract ? { contract } : {};
+      if (!changed.stamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native", meta)) return null;
+      const deadline = performance.now() + 160;
+      for (let t = 0; t < 192; t++) {
+        if (performance.now() > deadline) return "evolução longa com risco ainda incerto";
+        control.step();
+        changed.step();
+        const baseline = control.players[1].conventional, now = changed.players[1].conventional;
+        if (changed.cells.size > 3e3 || now > Math.max(baseline + 80, baseline * 2 + ids.length * 4))
+          return "crescimento rápido próximo às suas estruturas";
+        if (baseline >= 10 && now < baseline * 0.45) return "perda acelerada das suas células";
+      }
+      return null;
+    }
+    function undoStamp() {
+      if (!lastUndo) return;
+      const snapshot = lastUndo;
+      lastUndo = null;
+      pendingHazard = null;
+      setPlay(false);
+      session.restore(snapshot.match, snapshot.alive, snapshot.eliminatedAt);
+      controllers?.destroy();
+      controllers = createGameBots(session.match, { seed: options.seed, interval: options.botInterval, budget: options.botBudget, onOrder: (o) => {
+        lastOrders.push(o);
+        if (lastOrders.length > 40) lastOrders.shift();
+      } });
+      game.ended = false;
+      game.winner = 0;
+      game.stopped = false;
+      game.humanEliminated = false;
+      world.matchStarted = true;
+      world.painting = false;
+      lastOrders = [];
+      elapsed = 0;
+      event = null;
+      $("mx-undo").hidden = true;
+      scoreboard.reset();
+      syncField(session.match);
+      hud();
+      dirty = true;
+      syncPlayButton();
+      toast("Último carimbo desfeito; partida restaurada.");
+    }
+    $("mx-undo").onclick = undoStamp;
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && lastUndo && !e.target.closest?.('input,textarea,select,[contenteditable="true"]')) {
+        e.preventDefault();
+        undoStamp();
+      }
+    });
     function place(anchor) {
       if (tools.mode !== "stamp") return tools.apply(anchor);
       const proposed = preview(anchor), c = hand.selected, p = session.match.players[1], m = hand.current;
       if (!proposed?.ready) {
-        const cost = c && m ? c.offsets.length * session.match.stampPrice(m.resolver) : 0;
-        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
+        const cost = c && m ? session.match.stampQuote(c.rule, m.resolver, c.offsets.length).total : 0;
+        const reason = c && m ? session.match.stampRejection(1, c.rule, m.resolver, targetIds(anchor), m.ballot, c.sense ?? "native") : null;
+        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "O carimbo precisa caber em território já explorado." : reason === "near-own" ? "Afaste o carimbo de suas células, ou escolha o modo livre na preparação." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
+      const before = session.match.fork();
+      const risk = forecastHazard(before, c, proposed.ids, m.resolver, m.ballot, null);
+      const key2 = c.key + ":" + m.resolver + ":" + proposed.ids.join(",");
+      if (risk && (!pendingHazard || pendingHazard.key !== key2 || performance.now() > pendingHazard.until)) {
+        pendingHazard = { key: key2, until: performance.now() + 1e4 };
+        setPlay(false);
+        toast("Possível infestação: " + risk + ". Clique novamente para confirmar.");
+        return false;
+      }
+      pendingHazard = null;
       const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native");
       if (ok) {
+        setPlay(false);
+        lastUndo = { match: before, alive: session.alive.slice(), eliminatedAt: session.eliminatedAt.slice(), generation: before.gen, field: before.players[1].conventional };
+        $("mx-undo").hidden = false;
         dirty = true;
         syncField(session.match);
         hud();
-        toast(c.name + " · " + resolverNames[m.resolver]);
+        toast(c.name + " · colocado · pausa para inspeção");
       }
       return ok;
     }
@@ -13301,8 +14394,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       return tools.mode === "erase" ? "paint" : "stamp";
     } });
     const observe = { onExistence: (e) => {
-      if (e.yes && e.no) event = e;
+      if (e.yes && e.no && (!session.match.spatial?.enabled || session.match.canSee(1, e.site))) event = e;
     } };
+    $("mx-home").onclick = () => {
+      centerOnPlayer(session.starts[1]);
+      world.needsDraw = world.needsGrid = true;
+    };
     $("mx-globe").onclick = () => openFullGlobe(true);
     $("mx-locate").onclick = () => {
       if (event) {
@@ -13325,6 +14422,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         game.winner = session.outcome;
         setPlay(false);
         toast(session.outcome === 1 ? "Você venceu!" : session.outcome ? game.names[session.outcome] + " venceu." : "Empate.");
+      }
+      if (lastUndo && !lastUndo.alerted && session.match.gen - lastUndo.generation < 256 && session.match.players[1].conventional > Math.max(500, lastUndo.field * 6)) {
+        lastUndo.alerted = true;
+        setPlay(false);
+        toast("Infestação acelerada · partida pausada. Use ↶ para desfazer.");
       }
       if (session.eliminatedAt[1] === session.match.gen) {
         game.humanEliminated = true;
@@ -13359,9 +14461,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       syncPlayButton();
       hud();
     };
-    $("hl-speed").value = String(40);
-    world.speed = 40;
-    $("hl-speed-val").textContent = "40/s";
+    const initialSpeed = initial.spatial?.enabled ? 12 : 40;
+    $("hl-speed").value = String(initialSpeed);
+    world.speed = initialSpeed;
+    $("hl-speed-val").textContent = initialSpeed + "/s";
     $("hl-speed").oninput = () => {
       world.speed = Number($("hl-speed").value);
       $("hl-speed-val").textContent = world.speed + "/s";
@@ -13414,7 +14517,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         getEconomy: () => session.match.economy,
         getToolSettings: () => session.match.toolSettings,
         onSelect: hand.choose,
-        onDeck: hand.fill
+        onDeck: fillDeck
       });
       $("mx-atlas").onclick = () => atlas.open(hand.selected);
       requestAnimationFrame(frame2);

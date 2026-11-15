@@ -24,6 +24,17 @@ function drawFlat() {
   c.translate(a.cx, a.cy);
   c.scale(world.zoom, world.zoom);
   const vis = world.chart.map;
+  if(world.fog){
+    const unknown=new Path2D(),remembered=new Path2D(),lit=new Path2D();
+    for(const item of vis.values()){
+      const path=world.fog.visible.has(item.id)?lit:world.fog.explored.has(item.id)?remembered:unknown;
+      hexPath(path,DX*(item.q+item.r/2),DY*item.r,R*1.035);
+    }
+    c.fillStyle='#060d16';c.fill(unknown);
+    c.fillStyle='#142331';c.fill(remembered);
+    c.fillStyle='#21483d55';c.fill(lit);
+    c.strokeStyle='#62ae9240';c.lineWidth=.55/world.zoom;c.stroke(lit);
+  }
   // Owner-aware rendering, using only cells in the local chart.
   const paths = Array.from({ length: 8 }, () => new Path2D());
   let count = 0;
@@ -47,6 +58,17 @@ function drawFlat() {
       c.lineWidth = 0.55 / world.zoom;
       c.stroke(paths[id]);
     }
+  }
+  if(world.fog&&world.rememberedCells?.size){
+    const ghosts=Array.from({length:8},()=>new Path2D());
+    for(const item of vis.values()){
+      const other=world.rememberedCells.get(item.id);
+      if(other&&!world.fog.visible.has(item.id))
+        hexPath(ghosts[other.owner],DX*(item.q+item.r/2),DY*item.r,R*.72);
+    }
+    c.save();c.globalAlpha=.24;
+    for(let owner=1;owner<=7;owner++){c.fillStyle=game.colors[owner];c.fill(ghosts[owner]);}
+    c.restore();
   }
   const preview = world.hover && (!world.drag || world.painting) && placementPreview(world.hover);
   if(preview?.tool){

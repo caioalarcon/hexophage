@@ -104,6 +104,18 @@ npm run test:browser
 
 The browser differential suite replays the same inputs against the working build and the original production commit `18baed7` in the same Chromium process. It compares simulation state, controls, ranking, canvases and screenshots on desktop and portrait viewports, with Canvas, WebGL, a real Web Worker and the fallback. Keep the original commit available in the checkout. Set `CHROMIUM_PATH` to use an existing Chromium executable.
 
+## Experimental local economy and darkness
+
+Open `index.html?experiment=local` (or select **Partida e bots → Experimento → Economia por célula + escuridão**). The original mixed match remains available in the selector.
+
+Every player starts with the same player-chosen productive seed. The initial pattern is checked in the actual automaton for 64 generations. **Usar o carimbo selecionado como base** accepts Atlas drawings and captured custom shapes. The default seed is an example, not a recognized building class.
+
+Energy belongs to cells: mature quiet neighbourhoods earn it, new cells receive local fuel, moving descendants inherit nearby residual energy, and manual construction withdraws from cells illuminating each proposed site. The HUD sums those stores; it cannot transfer funds between distant colonies. Initial stamped fuel and natural-birth fuel are separate settings. Each rule/interaction type can override capacity, generation, fuel and sight in the settings JSON.
+
+Only currently illuminated sites accept manual stamps, including every cell of the footprint. Explored darkness remembers territory. Human rendering, opponent navigation and spatial bot observations share the visibility boundary. The first card is the chosen opening, so expansion starts from a known producer. The game starts paused at 12 generations per second in this experiment.
+
+[Mechanics, measured outcomes and reproduction commands](experiments/local-economy/README.md). The study includes paired outbreaks, original CA pattern evolution, moving scouts, and seeded bot matches.
+
 ## Development and promotion
 
 Push changes to `dev`. CI rebuilds the HTML, checks for a stale distribution, runs both test suites, and attaches the tested HTML to the workflow run. The branch preview serves the committed HTML and follows future pushes. The private development deployment is a separately published snapshot for playtesting.
