@@ -14,6 +14,9 @@ const {chromium}=require('playwright');
     assert.equal(await page.locator('#mx-plan-free').count(),1);
     assert.equal(await page.locator('#mx-map-full').count(),1);
     await page.click('#mx-settings-close');
+    for(let i=0;i<12&&!await page.evaluate(()=>!!__hexophageMixed.world.chart);i++)
+      await page.locator('#hl-zplus').click();
+    assert(await page.evaluate(()=>!!__hexophageMixed.world.chart),'zoom should open a local hex chart');
     assert(!(await page.locator('#mx-frontier-help').isVisible()),'tutorial paragraphs should not occupy the match HUD');
     assert(await page.locator('#mx-score [data-player="2"] .mx-player-toggle').isEnabled(),'opponent economic statistics stay available');
     assert.match(await page.locator('#mx-score [data-player="2"]').innerText(),/◈/);
