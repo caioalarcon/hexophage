@@ -30,7 +30,7 @@ function stamp(m,owner,c,ids,commit=false){
   return m[commit?'stamp':'canStamp'](owner,c.rule,c.resolver??'contact',ids,c.ballot??'support',c.sense??'native',metadata(c));
 }
 function observedSites(view,owner){
-  const visible=view.visibility(owner).visible;
+  const visible=view.visibility(owner).explored;
   return [...visible].filter(id=>view.graph.deg[id]===6&&!view.cells.has(id));
 }
 function localCells(view,owner){
@@ -193,7 +193,7 @@ export function createSpatialGameBots(match,{seed=1,owners=match.players.slice(2
       ...(match.progression?{contract:card?.contract,resourceValue,unlockValue,research,researchBudget}:{}),rejection});
     if(card){const key=memoryKey(card),confidence=Math.max(-1,Math.min(1,pay/Math.max(1,cost)));bot.memory.set(key,.7*(bot.memory.get(key)??0)+.3*confidence);}
     if(rejection){stat.holds++;stat.raidHolds+=Number(role==='raid');stat.eraseHolds+=Number(j.tool==='eraser');return;}
-    if(match.gen-bot.lastBuy<interval||j.ids.some(id=>!match.canSee(owner,id))){stat.invalidated++;return;}
+    if(match.gen-bot.lastBuy<interval||j.ids.some(id=>!match.canBuild(owner,id))){stat.invalidated++;return;}
     const o={gen:match.gen,forecastAt:j.at,owner,key:card?.key??'tool/eraser',rule:card?.rule,resolver:card?.resolver??'contact',
       ballot:card?.ballot??'support',sense:card?.sense??'native',contract:card?.contract,tool:j.tool??'stamp',
       ids:j.ids,site:j.center,radius:j.radius,rotation:j.rotation,role,target:role==='raid'?j.foeIds[0]??0:0,expected:pay,revealed,

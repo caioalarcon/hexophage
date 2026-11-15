@@ -50,3 +50,24 @@ jobs:
         with:
           name: hexophage-dev
           path: index.html
+
+  frontier-endurance:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/experiment/resources-progression'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Simulate complete multi-faction matches over 4096 generations
+        run: |
+          node experiments/frontier-resources/long-game.mjs 4096 7,41,109 6 32 > frontier-long-results.json
+          node -e 'const r=require("./frontier-long-results.json"); for(const v of r.rows)console.log("LONG SUMMARY",JSON.stringify({seed:v.seed,generations:v.actualGenerations,orders:v.botOrders.length,raids:v.raids,gliders:v.botGliders,contacts:v.firstContacts,winner:v.winner,illegal:v.illegal}));'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontier-4096-seeds
+          path: frontier-long-results.json
