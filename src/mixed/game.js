@@ -154,8 +154,16 @@ export function startMixedGame(){
         'Faltam ◈ '+number.format(cost-p.reserve)+' para este carimbo.':!targetIds(anchor)?'O carimbo não cabe nesta região da malha.':'Posição ocupada ou junto de uma colônia adversária.');
       return false;
     }
+    const before=session.match.fork();
+    const risk=forecastHazard(before,c,proposed.ids,m.resolver,m.ballot,null);
+    const key=c.key+':'+m.resolver+':'+proposed.ids.join(',');
+    if(risk && (!pendingHazard||pendingHazard.key!==key||performance.now()>pendingHazard.until)){
+      pendingHazard={key,until:performance.now()+10000};
+      setPlay(false);toast('Possível infestação: '+risk+'. Clique novamente para confirmar.');return false;
+    }
+    pendingHazard=null;
     const ok=session.match.stamp(1,c.rule,m.resolver,proposed.ids,m.ballot,c.sense??'native');
-    if(ok){dirty=true;syncField(session.match);hud();toast(c.name+' · '+resolverNames[m.resolver]);}
+    if(ok){lastUndo={match:before,alive:session.alive.slice(),eliminatedAt:session.eliminatedAt.slice(),generation:before.gen,field:before.players[1].conventional};$('mx-undo').hidden=false;dirty=true;syncField(session.match);hud();toast(c.name+' · '+resolverNames[m.resolver]);}
     return ok;
   }
   usePlacement({preview,place,get gesture(){return tools.mode==='erase'?'paint':'stamp';}});
@@ -170,12 +178,12 @@ export function startMixedGame(){
     if(world.painting&&tools.mode==='erase'&&world.hover)tools.apply(world.hover,{quiet:true});
     scoreboard.recordGeneration();
     if(session.outcome===null)controllers.turn();
-    if(lastUndo&&!lastUndo.alerted&&session.match.gen-lastUndo.generation<256&&session.match.players[1].conventional>Math.max(500,lastUndo.field*6)){
-      lastUndo.alerted=true;setPlay(false);toast('Infestação acelerada · partida pausada. Use ↶ para desfazer.');
-    }
     else {
       game.ended=true;game.winner=session.outcome;setPlay(false);
       toast(session.outcome===1?'Você venceu!':session.outcome?game.names[session.outcome]+' venceu.':'Empate.');
+    }
+    if(lastUndo&&!lastUndo.alerted&&session.match.gen-lastUndo.generation<256&&session.match.players[1].conventional>Math.max(500,lastUndo.field*6)){
+      lastUndo.alerted=true;setPlay(false);toast('Infestação acelerada · partida pausada. Use ↶ para desfazer.');
     }
     if(session.eliminatedAt[1]===session.match.gen){
       game.humanEliminated=true;world.painting=false;setPlay(false);
