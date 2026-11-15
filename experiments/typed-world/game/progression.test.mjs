@@ -17,7 +17,7 @@ function siteFor(match,owner,card,metadata,near){
 }
 function fixture(options={}){
   const plan=normalizeProgressionPlan(options.plan??defaultProgressionPlan());
-  const match=createTypedWorld(graph,{wallets:[640,640],spatial:{enabled:true,types:progressionSpatialTypes(plan)}});
+  const match=createTypedWorld(graph,{wallets:[640,640],spatial:{enabled:true,safeStampGap:0,types:progressionSpatialTypes(plan)}});
   const progression=attachProgression(match,{plan,harvestAfter:3,...options});
   const ids=siteFor(null);
   assert(progression.bootstrap(1,plan.base,ids));
