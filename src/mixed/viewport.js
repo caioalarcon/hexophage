@@ -29,22 +29,32 @@ export function bindMixedViewport(){
 // once per displayed frame, including when many generations were simulated.
 export function syncField(match){
   world.gen=match.gen;
-  world.fog=match.spatial?.enabled?match.visibility(1):null;
+  world.fog=match.spatial?.enabled&&!match.spatial.fullMap?match.visibility(1):null;
+  world.rememberedCells??=new Map();world.rememberedResources??=new Map();
   world.resourceDeposits=new Map();
   if(match.progression){
-    // Inspect only the player's lit cells. The renderers never receive the
-    // unseen terrain layer or remembered deposits outside current sight.
+    // Keep the last observed terrain until it is revisited, like AoE's explored map.
     const deposits=world.fog?[...world.fog.visible].map(id=>match.progression.resourceAt(id,1)).filter(Boolean):
       match.progression.visibleDeposits(1);
+    if(world.fog)for(const id of world.fog.visible)world.rememberedResources.delete(id);
     for(const deposit of deposits){
       if(world.fog&&!world.fog.visible.has(deposit.site))continue;
       const resource=match.progression.resources[deposit.kind],remaining=Math.max(0,deposit.remaining);
       if(!resource)continue;
       const level=Math.round(4*Math.min(1,remaining/32)),depleted=remaining<=0;
       const color=depleted?'#91a0a6':resource.color,alpha=Math.round(255*(depleted ? .065 : .16+.28*level/4));
-      world.resourceDeposits.set(deposit.site,{kind:deposit.kind,remaining,color:resource.color,
-        fill:color+alpha.toString(16).padStart(2,'0'),edge:color+(depleted?'24':'80'),depleted});
+      const mark={kind:deposit.kind,remaining,color:resource.color,
+        fill:color+alpha.toString(16).padStart(2,'0'),edge:color+(depleted?'24':'80'),depleted};
+      world.resourceDeposits.set(deposit.site,mark);
+      if(world.fog)world.rememberedResources.set(deposit.site,mark);
     }
+  }
+  if(world.fog)for(const [id,mark] of world.rememberedResources)if(!world.fog.visible.has(id)&&world.fog.explored.has(id))
+    world.resourceDeposits.set(id,{...mark,remembered:true,fill:mark.color+'25',edge:mark.color+'35'});
+  if(!world.fog){world.rememberedCells.clear();world.rememberedResources.clear();}
+  else{
+    for(const id of world.fog.visible)world.rememberedCells.delete(id);
+    for(const [id,c] of match.cells)if(c.owner!==1&&world.fog.visible.has(id))world.rememberedCells.set(id,{owner:c.owner,seenAt:match.gen});
   }
   for(let i=0;i<world.activeCount;i++){
     const id=world.active[i];world.cells[id]=0;world.owners[id]=0;
@@ -63,6 +73,7 @@ export function syncField(match){
 
 export function loadViewport(session,storage){
   newWorld(session.graph.f,session.graph,storage);
+  world.rememberedCells=new Map();world.rememberedResources=new Map();world.selectedFactory=null;
   world.rule='mixed';world.physics=null;
   syncField(session.match);
   centerOnPlayer(session.starts[1]);

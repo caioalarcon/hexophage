@@ -41,11 +41,15 @@ function drawFlat() {
     const ground=new Map();
     for(const item of vis.values()){
       const deposit=world.resourceDeposits.get(item.id);
-      if(!deposit||world.fog&&!world.fog.visible.has(item.id))continue;
+      if(!deposit)continue;
       if(!ground.has(deposit.fill))ground.set(deposit.fill,new Path2D());
-      hexPath(ground.get(deposit.fill),DX*(item.q+item.r/2),DY*item.r,R*1.025);
+      const x=DX*(item.q+item.r/2),y=DY*item.r,half=R*.42;
+      const glyph=ground.get(deposit.fill);
+      glyph.moveTo(x,y-half);glyph.lineTo(x+half*.8,y);glyph.lineTo(x,y+half);glyph.lineTo(x-half*.8,y);glyph.closePath();
     }
-    for(const [color,path] of ground){c.fillStyle=color;c.fill(path);}
+    for(const [color,path] of ground){
+      c.fillStyle=color;c.fill(path);c.strokeStyle='#d9e7e766';c.lineWidth=.5/world.zoom;c.stroke(path);
+    }
   }
   // Owner-aware rendering, using only cells in the local chart.
   const paths = Array.from({ length: 8 }, () => new Path2D());
@@ -69,6 +73,24 @@ function drawFlat() {
       c.strokeStyle = id === 7 ? '#a6b2c4' : '#ffffff70';
       c.lineWidth = 0.55 / world.zoom;
       c.stroke(paths[id]);
+    }
+  }
+  if(world.fog&&world.rememberedCells?.size){
+    const ghostPaths=Array.from({length:8},()=>new Path2D());
+    for(const item of vis.values()){
+      const ghost=world.rememberedCells.get(item.id);
+      if(!ghost||world.fog.visible.has(item.id))continue;
+      hexPath(ghostPaths[ghost.owner],DX*(item.q+item.r/2),DY*item.r,R*.72);
+    }
+    c.save();c.globalAlpha=.26;
+    for(let id=1;id<=7;id++){c.fillStyle=game.colors[id];c.fill(ghostPaths[id]);}
+    c.restore();
+  }
+  if(world.selectedFactory!==null&&world.selectedFactory!==undefined){
+    const selected=[...vis.values()].find(item=>item.id===world.selectedFactory);
+    if(selected){
+      c.beginPath();hexPath(c,DX*(selected.q+selected.r/2),DY*selected.r,R*1.1);
+      c.strokeStyle='#f5dc7d';c.lineWidth=2/world.zoom;c.stroke();
     }
   }
   const preview = world.hover && (!world.drag || world.painting) && placementPreview(world.hover);

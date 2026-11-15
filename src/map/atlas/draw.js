@@ -79,7 +79,6 @@ function drawAtlas() {
   if(world.resourceDeposits?.size){
     const ground=new Map();
     for(const [id,deposit] of world.resourceDeposits){
-      if(world.fog&&!world.fog.visible.has(id))continue;
       if(!ground.has(deposit.fill))ground.set(deposit.fill,new Path2D());
       atlasMark(ground.get(deposit.fill),id,a);
       if(world.cells[id]&&atlasMetrics.pitch>9){
@@ -199,6 +198,18 @@ function drawAtlas() {
   }
   // A thin ground seam remains readable under occupied resource hexagons.
   for(const [color,path] of groundEdges){c.strokeStyle=color;c.lineWidth=.8;c.stroke(path);}
+  if(world.fog&&world.rememberedCells?.size){
+    const ghosts=Array.from({length:8},()=>new Path2D());
+    for(const [site,ghost] of world.rememberedCells)
+      if(!world.fog.visible.has(site))atlasMark(ghosts[ghost.owner],site,a);
+    c.save();c.globalAlpha=.22;
+    for(let id=1;id<=7;id++){c.fillStyle=game.colors[id];c.fill(ghosts[id]);}
+    c.restore();
+  }
+  if(world.selectedFactory!==null&&world.selectedFactory!==undefined){
+    const selection=new Path2D();atlasMark(selection,world.selectedFactory,a);
+    c.save();c.strokeStyle='#f5dc7d';c.lineWidth=1.8;c.stroke(selection);c.restore();
+  }
   const preview = world.hover?.id !== undefined && (!world.drag || world.painting) && placementPreview(world.hover);
   if(preview?.tool){
     const active=new Path2D(),area=new Path2D();
