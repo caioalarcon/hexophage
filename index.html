@@ -8519,6 +8519,86 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return true;
   }
 
+  // experiments/typed-world/spatial-funding.mjs
+  var EPS = 1e-9;
+  function fundLocalRequests(input, available, unitCost) {
+    if (!Number.isFinite(unitCost) || unitCost < 0) throw RangeError("Invalid local construction cost.");
+    const requests = Array.from(input, (r) => ({ id: r.id, donors: [...new Set(r.donors)].sort((a, b) => a - b) })).sort((a, b) => a.donors.length - b.donors.length || a.id - b.id);
+    if (unitCost === 0 || requests.length === 0) return /* @__PURE__ */ new Map();
+    const donors = [...new Set(requests.flatMap((r) => r.donors))].sort((a, b) => a - b);
+    const supply = new Map(donors.map((id) => [id, available.get(id) ?? 0]));
+    for (const amount of supply.values()) if (!Number.isFinite(amount) || amount < 0) throw RangeError("Invalid donor balance.");
+    const total = unitCost * requests.length;
+    if ([...supply.values()].reduce((sum, n) => sum + n, 0) + EPS < total) return null;
+    const remaining = new Map(supply), debits = /* @__PURE__ */ new Map();
+    let feasible = true;
+    for (const request of requests) {
+      let needed = unitCost;
+      for (const donor of request.donors) {
+        const debit = Math.min(remaining.get(donor), needed);
+        remaining.set(donor, remaining.get(donor) - debit);
+        if (debit) debits.set(donor, (debits.get(donor) ?? 0) + debit);
+        needed -= debit;
+        if (needed <= EPS) break;
+      }
+      if (needed > EPS) {
+        feasible = false;
+        break;
+      }
+    }
+    if (feasible) return debits;
+    const donorIndex = new Map(donors.map((id, i) => [id, i + 1]));
+    const source = 0, firstTarget = donors.length + 1, sink = firstTarget + requests.length;
+    const edges = Array.from({ length: sink + 1 }, () => []), sourceEdges = /* @__PURE__ */ new Map();
+    function add(from, to, capacity) {
+      const forward = { to, capacity, reverse: edges[to].length };
+      const backward = { to: from, capacity: 0, reverse: edges[from].length };
+      edges[from].push(forward);
+      edges[to].push(backward);
+      return forward;
+    }
+    for (const donor of donors) sourceEdges.set(donor, add(source, donorIndex.get(donor), supply.get(donor)));
+    requests.forEach((request, i) => {
+      const target = firstTarget + i;
+      for (const donor of request.donors) add(donorIndex.get(donor), target, unitCost);
+      add(target, sink, unitCost);
+    });
+    const level = new Int32Array(edges.length), cursor = new Int32Array(edges.length);
+    function layers() {
+      level.fill(-1);
+      level[source] = 0;
+      const queue = [source];
+      for (let i = 0; i < queue.length; i++) for (const edge of edges[queue[i]]) if (edge.capacity > EPS && level[edge.to] === -1) {
+        level[edge.to] = level[queue[i]] + 1;
+        queue.push(edge.to);
+      }
+      return level[sink] !== -1;
+    }
+    function push(from, limit) {
+      if (from === sink) return limit;
+      while (cursor[from] < edges[from].length) {
+        const edge = edges[from][cursor[from]];
+        if (edge.capacity > EPS && level[edge.to] === level[from] + 1) {
+          const sent = push(edge.to, Math.min(limit, edge.capacity));
+          if (sent > EPS) {
+            edge.capacity -= sent;
+            edges[edge.to][edge.reverse].capacity += sent;
+            return sent;
+          }
+        }
+        cursor[from]++;
+      }
+      return 0;
+    }
+    let flow2 = 0;
+    while (flow2 + EPS < total && layers()) {
+      cursor.fill(0);
+      for (let sent; (sent = push(source, total - flow2)) > EPS; ) flow2 += sent;
+    }
+    if (flow2 + EPS < total) return null;
+    return new Map(donors.map((id) => [id, Math.max(0, supply.get(id) - sourceEdges.get(id).capacity)]).filter(([, n]) => n > 0));
+  }
+
   // experiments/typed-world/engine.mjs
   var defaultEconomy = Object.freeze({
     stampCost: 8,
@@ -8581,7 +8661,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       energyOverflow: 0
     };
   }
-  var EPS = 1e-9;
+  var EPS2 = 1e-9;
   var robustnessCache = /* @__PURE__ */ new WeakMap();
   function robustTables(tables) {
     if (!robustnessCache.has(tables)) {
@@ -8731,20 +8811,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return [...donors].reduce((sum, id) => sum + (cells2.get(id)?.energy ?? 0), 0);
       }
       function stampFunding(owner, ids, price, deposit) {
-        const balances = /* @__PURE__ */ new Map(), debits = /* @__PURE__ */ new Map();
-        const requests = ids.map((id) => ({ id, donors: donorsNear(owner, id, maxVision, true) })).sort((a, b) => a.donors.length - b.donors.length || a.id - b.id);
-        for (const { donors } of requests) {
-          let needed = price + deposit;
-          for (const site of donors) {
-            const have = balances.get(site) ?? cells2.get(site).energy, spent = Math.min(have, needed);
-            balances.set(site, have - spent);
-            debits.set(site, (debits.get(site) ?? 0) + spent);
-            needed -= spent;
-            if (needed <= EPS) break;
-          }
-          if (needed > EPS) return null;
-        }
-        return debits;
+        const requests = Array.from(ids, (id) => ({ id, donors: donorsNear(owner, id, maxVision, true) }));
+        const balances = /* @__PURE__ */ new Map();
+        for (const request of requests) for (const donor of request.donors) if (!balances.has(donor)) balances.set(donor, cells2.get(donor).energy);
+        return fundLocalRequests(requests, balances, price + deposit);
       }
       function stampRejection(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}, bootstrap = false) {
         if (!Number.isInteger(owner) || owner < 1 || owner >= players.length) return "owner";
@@ -8762,7 +8832,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if (spatial.enabled && !bootstrap) {
           const type = genotype(owner, rule, resolver, ballot, sense, false, metadata2.contract ?? ""), traits = typeTraits(spatial, type);
           if (!stampFunding(owner, ids, stampPrice(resolver), traits.stampEnergy)) return "local-energy";
-        } else if (p.reserve + EPS < ids.length * stampPrice(resolver)) return "energy";
+        } else if (p.reserve + EPS2 < ids.length * stampPrice(resolver)) return "energy";
         return null;
       }
       function canStamp(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}) {
@@ -8998,14 +9068,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
               const available = donors.reduce((sum, site) => sum + balances.get(site), 0), required = cost + traits.newbornEnergy;
               p.requested++;
               p.requestedCost += cost;
-              if (available + EPS < required) {
+              if (available + EPS2 < required) {
                 p.refused++;
                 p.unfundedCost += cost;
                 continue;
               }
               let remaining = required;
-              let active = donors.filter((site) => balances.get(site) > EPS);
-              while (remaining > EPS && active.length) {
+              let active = donors.filter((site) => balances.get(site) > EPS2);
+              while (remaining > EPS2 && active.length) {
                 const portion = remaining / active.length;
                 let paid = 0;
                 for (const site of active) {
@@ -9014,7 +9084,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
                   paid += debit;
                 }
                 remaining -= paid;
-                active = active.filter((site) => balances.get(site) > EPS);
+                active = active.filter((site) => balances.get(site) > EPS2);
               }
               p.births++;
               births[type.owner]++;
@@ -9038,7 +9108,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
               break;
             }
             const pile = resources[type.owner], short3 = Math.max(0, cost - p.reserve);
-            const needed = short3 <= EPS ? 0 : economy.salvage ? Math.ceil((short3 - EPS) / economy.salvage) : Infinity;
+            const needed = short3 <= EPS2 ? 0 : economy.salvage ? Math.ceil((short3 - EPS2) / economy.salvage) : Infinity;
             p.requested++;
             p.requestedCost += cost;
             if (needed && type.wave && !sortedCollateral.has(p)) {
@@ -9116,7 +9186,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
             if (next.get(id)?.type === c.type && !newbornStores.has(id)) continue;
             let remaining = balances.get(id);
             let heirs = [...graphBall(graph, [id], typeTraits(spatial, c.type).inheritanceRadius, domain)].filter((site) => next.get(site)?.type === c.type);
-            while (remaining > EPS && heirs.length) {
+            while (remaining > EPS2 && heirs.length) {
               const portion = remaining / heirs.length;
               let moved = 0;
               for (const site of heirs) {
@@ -9126,7 +9196,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
                 next.set(site, cell(heir.type, heir.age, heir.energy + received, heir.stableAge));
               }
               remaining -= moved;
-              heirs = heirs.filter((site) => next.get(site).energy + EPS < typeTraits(spatial, next.get(site).type).cellCapacity);
+              heirs = heirs.filter((site) => next.get(site).energy + EPS2 < typeTraits(spatial, next.get(site).type).cellCapacity);
             }
             players[c.owner].energyLost += Math.max(0, remaining);
           }
@@ -9173,7 +9243,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           p.lastBirths = births[id];
           p.lastDeaths = deaths;
           if (p.field) p.lastFieldAt = gen;
-          else if (p.reserve + EPS < economy.stampCost) p.out = true;
+          else if (p.reserve + EPS2 < economy.stampCost) p.out = true;
         }
         syncEnergy();
         refreshVision();
@@ -9635,7 +9705,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   // experiments/typed-world/game/bot-tools.mjs
   var operating = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
   var matureIncome = (n, e) => e.stableEnergy * (e.productionScale ? n / (1 + n / e.productionScale) : n);
-  var EPS2 = 1e-8;
+  var EPS3 = 1e-8;
   function observedPatternKey(card2) {
     let shape = card2.offsets, canonical;
     for (let flipped = 0; flipped < 2; flipped++) {
@@ -9692,9 +9762,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     for (const center of candidates) for (const radius2 of radii) {
       const p = regionEconomy(match, owner, center, radius2);
       if (!p.ids.length || !p.young || p.conventional >= match.players[owner].conventional) continue;
-      if (!best || p.drain > best.drain + EPS2 || Math.abs(p.drain - best.drain) < EPS2 && p.ids.length < best.ids.length) best = p;
+      if (!best || p.drain > best.drain + EPS3 || Math.abs(p.drain - best.drain) < EPS3 && p.ids.length < best.ids.length) best = p;
     }
-    return best?.drain > EPS2 ? best : null;
+    return best?.drain > EPS3 ? best : null;
   }
   function localFork(match, center, radius2, horizon2) {
     return match.cells.size <= 2048 ? match.fork() : match.fork(new Set(circularSites(match.graph, center, radius2 + horizon2 + 2)));
@@ -9812,7 +9882,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       state.task = null;
       j.card.sample = { births: j.births / j.t, deaths: j.deaths / j.t, bands: [...j.counts].sort((a, b) => a[0] - b[0]).flatMap(([age, count2]) => [age, age, count2]), window: j.t, horizon: j.t, finalCells: j.frame.size };
       const q = rankCards([j.card], e, { mature: match.players[bot.owner].mature })[0];
-      if (q.flow <= EPS2 || !j.frame.size) return;
+      if (q.flow <= EPS3 || !j.frame.size) return;
       state.learned.push(j.card);
       stats[bot.owner].captures++;
       onLearn?.(bot, j.card);
@@ -9853,7 +9923,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       play2.step();
       stats[owner].work++;
       stats[owner].eraseWork++;
-      if (!play2.players[owner].conventional || play2.players[owner].out || play2.players[owner].reserve + EPS2 < hold.players[owner].reserve)
+      if (!play2.players[owner].conventional || play2.players[owner].out || play2.players[owner].reserve + EPS3 < hold.players[owner].reserve)
         return rejectErase(bot, state, j, "current-return");
       const o = {
         gen: match.gen,
@@ -9907,7 +9977,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       j.pay = j.play.players[bot.owner].reserve - j.hold.players[bot.owner].reserve + lookahead * j.flow;
       const p = j.play.players[bot.owner];
       if (!p.conventional || p.out) return rejectErase(bot, state, j, "extinction");
-      if (j.pay <= EPS2) return rejectErase(bot, state, j, "return");
+      if (j.pay <= EPS3) return rejectErase(bot, state, j, "return");
       onDecision?.({
         gen: match.gen,
         owner: bot.owner,
@@ -9964,7 +10034,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
 
   // experiments/typed-world/game/spatial-bots.mjs
-  var EPS3 = 1e-8;
+  var EPS4 = 1e-8;
   var operating2 = (p) => p.income - p.birthSpent - p.eraseSpent - p.friendlyEraseSpent;
   var metadata = (c) => c.contract ? { contract: c.contract } : void 0;
   function random(seed) {
@@ -10059,7 +10129,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         q.card.resolver ?? "contact",
         q.card.offsets.length,
         metadata(q.card)
-      ).total <= view.players[bot.owner].reserve + EPS3);
+      ).total <= view.players[bot.owner].reserve + EPS4);
       if (!affordable.length) return [];
       const producers = affordable.filter((q) => q.flow > 0).sort((a, b) => a.card.offsets.length - b.card.offsets.length || (a.births ?? Infinity) - (b.births ?? Infinity) || b.flow - a.flow);
       const head = affordable.slice(0, 12).map((q) => q.card).sort((a, b) => (bot.memory.get(b.key) ?? 0) - (bot.memory.get(a.key) ?? 0));
@@ -10147,11 +10217,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       for (const id of j.foeIds) harm += Math.max(0, hold.players[id].reserve - play2.players[id].reserve) + Math.max(0, hold.players[id].conventional - play2.players[id].conventional) * match.economy.stampCost;
       const cost = j.tool === "eraser" ? 0 : j.ids.length * match.stampPrice(card2.resolver ?? "contact");
       const pay = cash + lookahead * flow2 + scouting + (role === "raid" ? harm : 0) - anchorLoss * match.economy.stampCost;
-      const survived = j.tool === "eraser" || harm > EPS3 || [...play2.cells].some(([id, c]) => {
+      const survived = j.tool === "eraser" || harm > EPS4 || [...play2.cells].some(([id, c]) => {
         const before = hold.cells.get(id);
         return c.owner === owner && (!before || before.owner !== owner || before.type !== c.type || before.age !== c.age);
       });
-      const rejection = p.out || !p.conventional ? "extinction" : !survived ? "ephemeral" : pay <= EPS3 ? "return" : null;
+      const rejection = p.out || !p.conventional ? "extinction" : !survived ? "ephemeral" : pay <= EPS4 ? "return" : null;
       onDecision?.({ gen: match.gen, owner, key: card2?.key ?? "tool/eraser", ids: j.ids, tool: j.tool ?? "stamp", role, pay, cost, flow: flow2, modeledCash: cash, revealed, rejection });
       if (card2) {
         const confidence = Math.max(-1, Math.min(1, pay / Math.max(1, cost)));

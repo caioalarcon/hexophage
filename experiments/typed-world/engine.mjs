@@ -5,6 +5,7 @@ import {ballots,configureArbitration,material,rankProposals,resolvers} from './a
 import {existenceModes,passageModes,senses,sensorMask,voteOnExistence} from './existence.mjs';
 import {circularSites,normalizeToolSettings} from '../../src/mixed/field-tools.js';
 import {normalizeSpatial,typeTraits,graphBall,illuminated,sameNeighborhood} from './spatial.mjs';
+import {fundLocalRequests} from './spatial-funding.mjs';
 
 export {resolvers};
 export {existenceModes,passageModes,senses};
@@ -145,19 +146,10 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       return [...donors].reduce((sum,id)=>sum+(cells.get(id)?.energy??0),0);
     }
     function stampFunding(owner,ids,price,deposit){
-      const balances=new Map(),debits=new Map();
-      const requests=ids.map(id=>({id,donors:donorsNear(owner,id,maxVision,true)}))
-        .sort((a,b)=>a.donors.length-b.donors.length||a.id-b.id);
-      for(const {donors} of requests){
-        let needed=price+deposit;
-        for(const site of donors){
-          const have=balances.get(site)??cells.get(site).energy,spent=Math.min(have,needed);
-          balances.set(site,have-spent);debits.set(site,(debits.get(site)??0)+spent);needed-=spent;
-          if(needed<=EPS)break;
-        }
-        if(needed>EPS)return null;
-      }
-      return debits;
+      const requests=Array.from(ids,id=>({id,donors:donorsNear(owner,id,maxVision,true)}));
+      const balances=new Map();
+      for(const request of requests)for(const donor of request.donors)if(!balances.has(donor))balances.set(donor,cells.get(donor).energy);
+      return fundLocalRequests(requests,balances,price+deposit);
     }
     function stampRejection(owner, rule, resolver, ids, ballot='support',sense='native',metadata={},bootstrap=false) {
       if (!Number.isInteger(owner) || owner<1 || owner>=players.length) return 'owner';

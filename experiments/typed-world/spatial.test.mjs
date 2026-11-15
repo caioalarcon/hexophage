@@ -187,3 +187,45 @@ test('phase cells illuminate independently and antimatter waves never create vis
   assert.equal(wave.visibility(1).visible.size,0);
   wave.step();assert.equal(wave.players[1].income,0);
 });
+
+test('overlapping illumination reallocates local funds when an early greedy choice would block a legal stamp',()=>{
+  const g=buildSphere(8),m=createTypedWorld(g,{wallets:[6],economy:{stampCost:1},
+    spatial:{enabled:true,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
+  assert(m.bootstrapStamp(1,'hex-b2s245','contact',[46,47,96]));
+  const targets=[60,81,82],before=new Map(m.cells);
+  // 60 can receive from 46 or 47. Both 81 and 82 need 46 or 96. Taking
+  // 47 for 60 leaves exactly enough for the other two cells.
+  assert.equal(m.localReserve(1,targets),3);
+  assert(m.canStamp(1,'hex-b2s245','contact',targets));
+  assert.deepEqual(m.cells,before,'a quotation does not reserve or debit energy');
+  assert(m.stamp(1,'hex-b2s245','contact',targets));
+  assert.equal(m.players[1].reserve,0);
+  assert.equal(m.players[1].stampSpent,6);
+  assert(targets.every(site=>m.cells.has(site)));
+});
+
+test('local funding accepts typed footprints and rejects deficient neighborhoods atomically',()=>{
+  const g=buildSphere(8),m=createTypedWorld(g,{wallets:[5],economy:{stampCost:1},
+    spatial:{enabled:true,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
+  assert(m.bootstrapStamp(1,'hex-b2s245','contact',[46,47,96]));
+  const before=new Map(m.cells),balance=m.players[1].reserve;
+  assert.equal(m.stamp(1,'hex-b2s245','contact',Uint32Array.from([60,81,82])),false);
+  assert.deepEqual(m.cells,before);assert.equal(m.players[1].reserve,balance);
+  const funded=createTypedWorld(g,{wallets:[6],economy:{stampCost:1},
+    spatial:{enabled:true,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
+  assert(funded.bootstrapStamp(1,'hex-b2s245','contact',[46,47,96]));
+  assert(funded.stamp(1,'hex-b2s245','contact',Uint32Array.from([60,81,82])));
+});
+
+test('local funding agrees with every three-donor assignment graph and conserves fractional supply',async()=>{
+  const {fundLocalRequests}=await import('./spatial-funding.mjs');
+  const assignments=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+  for(let mask=0;mask<512;mask++){
+    const requests=Array.from({length:3},(_,i)=>({id:i+10,donors:[0,1,2].filter(j=>mask&(1<<(i*3+j)))}));
+    const possible=assignments.some(a=>a.every((donor,i)=>requests[i].donors.includes(donor)));
+    const supply=new Map([[0,.5],[1,.5],[2,.5]]),debits=fundLocalRequests(requests,supply,.5);
+    assert.equal(debits!==null,possible,'assignment graph '+mask);
+    assert.deepEqual([...supply.values()],[.5,.5,.5]);
+    if(debits){assert.equal([...debits.values()].reduce((a,b)=>a+b,0),1.5);assert([...debits.values()].every(n=>n<=.5));}
+  }
+});
