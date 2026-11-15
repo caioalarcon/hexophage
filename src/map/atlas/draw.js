@@ -183,6 +183,14 @@ function drawAtlas() {
     c.drawImage(bitmap.canvas, 0, 0);
     c.restore();
   }
+  if(world.fog&&world.rememberedCells?.size){
+    const ghosts=Array.from({length:8},()=>new Path2D());
+    for(const [site,other] of world.rememberedCells)
+      if(!world.fog.visible.has(site))atlasMark(ghosts[other.owner],site,a);
+    c.save();c.globalAlpha=.22;
+    for(let owner=1;owner<=7;owner++){c.fillStyle=game.colors[owner];c.fill(ghosts[owner]);}
+    c.restore();
+  }
   const preview = world.hover?.id !== undefined && (!world.drag || world.painting) && placementPreview(world.hover);
   if(preview?.tool){
     const active=new Path2D(),area=new Path2D();

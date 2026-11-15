@@ -59,6 +59,17 @@ function drawFlat() {
       c.stroke(paths[id]);
     }
   }
+  if(world.fog&&world.rememberedCells?.size){
+    const ghosts=Array.from({length:8},()=>new Path2D());
+    for(const item of vis.values()){
+      const other=world.rememberedCells.get(item.id);
+      if(other&&!world.fog.visible.has(item.id))
+        hexPath(ghosts[other.owner],DX*(item.q+item.r/2),DY*item.r,R*.72);
+    }
+    c.save();c.globalAlpha=.24;
+    for(let owner=1;owner<=7;owner++){c.fillStyle=game.colors[owner];c.fill(ghosts[owner]);}
+    c.restore();
+  }
   const preview = world.hover && (!world.drag || world.painting) && placementPreview(world.hover);
   if(preview?.tool){
     const picked=new Set(preview.ids??[]),footprint=new Set(preview.footprint??[]);

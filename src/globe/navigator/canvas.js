@@ -2,6 +2,7 @@ import { globeContext } from '../camera/view.js';
 import { drawGlobePopulation2D } from '../canvas/population.js';
 import { fallbackMini, globeTarget } from './surface.js';
 import {world} from '../../browser/world-state.js';
+import {game} from '../../browser/game.js';
 import {sphereCorner} from '../../world/sphere.js';
 
 function drawFog(c,v){
@@ -26,6 +27,24 @@ function drawFog(c,v){
     }
     c.fillStyle=color;c.fill();
   }
+}
+
+function drawRemembered(c,v){
+  if(!world.fog||!world.rememberedCells?.size)return;
+  const g=world.graph,paths=new Map();
+  for(const [id,ghost] of world.rememberedCells){
+    if(world.fog.visible.has(id))continue;
+    const j=id*3,xyz=g.coords,z=xyz[j]*v.look[0]+xyz[j+1]*v.look[1]+xyz[j+2]*v.look[2];
+    if(z<.03)continue;
+    const scale=v.inside?v.focal/z:v.radius;
+    const x=v.cx+scale*(xyz[j]*v.right[0]+xyz[j+1]*v.right[1]+xyz[j+2]*v.right[2]);
+    const y=v.cy-scale*(xyz[j]*v.up[0]+xyz[j+1]*v.up[1]+xyz[j+2]*v.up[2]);
+    if(!paths.has(ghost.owner))paths.set(ghost.owner,new Path2D());
+    const glyph=paths.get(ghost.owner);glyph.moveTo(x+1.6,y);glyph.arc(x,y,1.6,0,Math.PI*2);
+  }
+  c.save();c.globalAlpha=.26;
+  for(const [owner,path] of paths){c.fillStyle=game.colors[owner];c.fill(path);}
+  c.restore();
 }
 
 function drawMiniBackdrop() {
@@ -101,6 +120,7 @@ function drawMiniFallback(wire) {
     ctx.stroke();
   }
   if(world.fog)drawFog(ctx,v);
+  drawRemembered(ctx,v);
   drawGlobePopulation2D(ctx, v, Math.min(devicePixelRatio || 1, 2));
   ctx.restore();
   if (v.inside) return;

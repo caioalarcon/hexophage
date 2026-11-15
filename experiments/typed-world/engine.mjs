@@ -82,7 +82,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       }
       return vision.get(owner);
     }
-    const canSee=(owner,id)=>!spatial.enabled||visibility(owner).visible?.has(id)===true;
+    const canSee=(owner,id)=>!spatial.enabled||spatial.fullMap||visibility(owner).visible?.has(id)===true;
     const canBuild=(owner,id)=>!spatial.enabled||visibility(owner).explored?.has(id)===true;
     function refreshVision(){
       if(!spatial.enabled)return;
@@ -552,7 +552,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       const snapshot=new Map(),accounts=players.map((p,id)=>p&&(id===owner?{...p}:account(0)));
       const remote=players.map(p=>p&&{field:0,mature:0,conventional:0,energy:0});
       for(const [id,c] of cells){
-        if(c.owner!==owner&&!view.visible.has(id))continue;
+        if(c.owner!==owner&&!canSee(owner,id))continue;
         if(c.owner!==owner){const p=accounts[c.owner];p.field++;if(!c.wave)p.conventional++;if(isMature(c))p.mature++;p.reserve+=c.energy;p.stamps=1;}
         if(!cut||cut.has(id))snapshot.set(id,c);
         else {const r=remote[c.owner];r.field++;if(!c.wave)r.conventional++;if(isMature(c))r.mature++;r.energy+=c.energy;}
