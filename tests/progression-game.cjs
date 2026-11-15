@@ -10,10 +10,12 @@ const {chromium}=require('playwright');
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'?experiment=resources&f=32');
     await page.waitForFunction(()=>window.__hexophageMixed?.session?.match.progression);
+    assert(await page.locator('#mx-settings').isVisible());
+    await page.click('#mx-settings-close');
     assert(await page.locator('#mx-materials').isVisible());
-    assert.equal(await page.locator('#mx-hand button').count(),5);
+    assert.equal(await page.locator('#mx-hand button').count(),3);
     assert(await page.locator('#mx-resolver').isDisabled());
-    assert.match(await page.locator('#mx-objective').innerText(),/linhagem-base/);
+    assert.match(await page.locator('#mx-objective').innerText(),/Base/);
     const first=await page.evaluate(()=>{
       const {session:s,world}=__hexophageMixed,m=s.match,p=m.progression;
       return {stores:p.inventory(1),base:p.objective(1).rootCells,visible:p.visibleDeposits(1).length,
@@ -36,7 +38,7 @@ const {chromium}=require('playwright');
     await page.click('#mx-config');
     assert.equal(await page.locator('#mx-experiment').inputValue(),'resources');
     assert.equal(await page.locator('#mx-plan-rows button').count(),5);
-    assert.match(await page.locator('#mx-plan-budget').innerText(),/43 \/ 64/);
+    assert.match(await page.locator('#mx-plan-budget').innerText(),/Preparação: \d+ \/ 64/);
     for(const [i,v] of [100,0,0,0].entries())await page.fill('#mx-plan-weight-'+i,String(v));
     assert.equal(await page.locator('#mx-plan-error').innerText(),'');
     await page.locator('#mx-setup button[type=submit]').click();

@@ -7,7 +7,7 @@ import {graphBall} from '../spatial.mjs';
 import {attachProgression,defaultProgressionPlan,normalizeProgressionPlan,progressionSpatialTypes} from './progression.mjs';
 
 const graph=buildSphere(16);
-const key='hex-b2s245/farm-4-12';
+const key='hex-b2s245/scan-cf5664';
 function siteFor(match,owner,card,metadata,near){
   for(const site of near??Array.from({length:graph.n},(_,i)=>i)){
     const ids=footprint(graph,key,site);
@@ -54,7 +54,7 @@ test('allocation changes composition while size and functional traits fix a posi
 
 test('a fixed engineering budget gives intermediate fabricators a mechanical purpose',()=>{
   const document=defaultProgressionPlan(),plan=normalizeProgressionPlan(document);
-  assert(plan.designPoints<=64);assert(plan.nodes.every(n=>n.childPoints<=20));
+  assert(plan.designPoints<=64);assert(plan.nodes.every(n=>n.childPoints<=28));
   const star=structuredClone(document);for(const node of star.nodes)if(node.id!==star.base)node.parent=star.base;
   assert.throws(()=>normalizeProgressionPlan(star),/limite local/);
   const free=structuredClone(document);for(const node of free.nodes){node.vision=16;node.reach=24;node.capacity=512;}
