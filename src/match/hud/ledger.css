@@ -1,4 +1,4 @@
-/* Battle royale layer */
+/* Match controls layer */
 #hexlab .br-controls{display:flex;flex-wrap:wrap;gap:9px;align-items:end;padding:11px 13px;background:#16283a;border-bottom:1px solid #37516a}
 #hexlab .br-controls label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#b8cee5}
 #hexlab .br-controls input{width:100px;border:1px solid #39536e;border-radius:6px;padding:7px;color:#e9f7ff;background:#0d1e2d;font:inherit}
