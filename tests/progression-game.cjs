@@ -44,6 +44,7 @@ const {chromium}=require('playwright');
     await page.locator('#mx-setup button[type=submit]').click();
     assert.deepEqual(await page.evaluate(()=>__hexophageMixed.session.match.progression.plan.nodes[0].weights),[100,0,0,0]);
     // An explicit user drawing, with no catalogue key, can be the root.
+    const originalBaseSize=await page.evaluate(()=>__hexophageMixed.session.match.progression.plan.nodes.find(n=>n.id===__hexophageMixed.session.match.progression.plan.base).size);
     await page.click('#mx-config');
     await page.locator('#mx-plan-json').evaluate(node=>{
       const plan=JSON.parse(node.value),base=plan.nodes.find(n=>n.id===plan.base),shape=base.offsets;
@@ -53,7 +54,7 @@ const {chromium}=require('playwright');
     });
     await page.click('#mx-plan-import');assert.equal(await page.locator('#mx-plan-error').innerText(),'');
     await page.locator('#mx-setup button[type=submit]').click();
-    assert(await page.evaluate(()=>__hexophageMixed.session.opening[1].ids.length===8&&__hexophageMixed.session.baseTrial.income>0));
+    assert(await page.evaluate(expected=>__hexophageMixed.session.opening[1].ids.length===expected&&__hexophageMixed.session.baseTrial.income>0,originalBaseSize*2),'a custom double-root must really replace the opening');
     // Match settlement enforces the chosen base-lineage objective.
     const outcome=await page.evaluate(()=>{
       const s=__hexophageMixed.session,m=s.match,p=m.progression;
