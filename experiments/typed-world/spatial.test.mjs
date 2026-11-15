@@ -190,7 +190,7 @@ test('phase cells illuminate independently and antimatter waves never create vis
 
 test('overlapping illumination reallocates local funds when an early greedy choice would block a legal stamp',()=>{
   const g=buildSphere(8),m=createTypedWorld(g,{wallets:[6],economy:{stampCost:1},
-    spatial:{enabled:true,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
+    spatial:{enabled:true,safeStampGap:0,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
   assert(m.bootstrapStamp(1,'hex-b2s245','contact',[46,47,96]));
   const targets=[60,81,82],before=new Map(m.cells);
   // 60 can receive from 46 or 47. Both 81 and 82 need 46 or 96. Taking
@@ -206,13 +206,13 @@ test('overlapping illumination reallocates local funds when an early greedy choi
 
 test('local funding accepts typed footprints and rejects deficient neighborhoods atomically',()=>{
   const g=buildSphere(8),m=createTypedWorld(g,{wallets:[5],economy:{stampCost:1},
-    spatial:{enabled:true,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
+    spatial:{enabled:true,safeStampGap:0,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
   assert(m.bootstrapStamp(1,'hex-b2s245','contact',[46,47,96]));
   const before=new Map(m.cells),balance=m.players[1].reserve;
   assert.equal(m.stamp(1,'hex-b2s245','contact',Uint32Array.from([60,81,82])),false);
   assert.deepEqual(m.cells,before);assert.equal(m.players[1].reserve,balance);
   const funded=createTypedWorld(g,{wallets:[6],economy:{stampCost:1},
-    spatial:{enabled:true,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
+    spatial:{enabled:true,safeStampGap:0,visionRadius:2,cellCapacity:1,newbornEnergy:0,stampEnergy:0}});
   assert(funded.bootstrapStamp(1,'hex-b2s245','contact',[46,47,96]));
   assert(funded.stamp(1,'hex-b2s245','contact',Uint32Array.from([60,81,82])));
 });
