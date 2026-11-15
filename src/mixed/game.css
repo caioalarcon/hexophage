@@ -186,3 +186,21 @@
  #hexlab.mixed .mx-interaction select,#hexlab.mixed .mx-vote select{height:23px}
  #hexlab.mixed .mx-vote{grid-template-rows:auto 23px}
 }
+
+/* Play HUD: symbols and tooltips replace paragraphs during a match. */
+#hexlab.mixed #mx-frontier-help,#hexlab.mixed #mx-deposit-info:empty,#hexlab.mixed #mx-permission:empty{display:none!important}
+#hexlab.mixed #mx-frontier{padding:5px 7px;line-height:1.2;background:transparent;border-color:#31445b}
+#hexlab.mixed #mx-frontier strong{font-size:10px;font-weight:600}
+#hexlab.mixed #mx-frontier output{display:inline-block;margin:2px 5px 1px 0;font-size:11px;white-space:nowrap}
+#hexlab.mixed #mx-materials{padding:5px 7px;background:transparent;line-height:1.2}
+#hexlab.mixed #mx-resource-stores{grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+#hexlab.mixed #mx-resource-stores>div{padding-left:4px}
+#hexlab.mixed #mx-resource-stores small{font-size:10px}
+#hexlab.mixed #mx-resource-stores b{font-size:12px}
+#hexlab.mixed #mx-materials p,#hexlab.mixed #mx-materials output{margin:2px 0;font-size:10px}
+#hexlab.mixed #mx-factory-context{display:flex;align-items:center;justify-content:space-between;border:1px solid #3a665b;background:#1b3535;padding:4px 6px;border-radius:4px;gap:6px;font-size:11px}
+#hexlab.mixed #mx-factory-context[hidden]{display:none}
+#hexlab.mixed #mx-factory-name{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
+#hexlab.mixed #mx-factory-reset{flex:none;min-width:23px;padding:0 4px;min-height:23px}
+#hexlab.mixed #mx-undo[hidden]{display:none!important}
+#hexlab.mixed #mx-spatial-settings input[type=checkbox]{width:auto;min-width:14px}
