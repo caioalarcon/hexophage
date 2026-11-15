@@ -2,12 +2,13 @@ import {world} from '../browser/world-state.js';
 import {$} from '../layout/elements.js';
 import {drawDeckIcon} from '../deck/card-icon.js';
 import {transformOffsets} from '../patterns/editor/axial-transform.js';
+import {stampTargets} from '../patterns/placement/footprint.js';
 import {rules} from '../../experiments/typed-world/catalog.mjs';
 
 const fmt=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2});
 const slotKey=card=>card.slotKey??card.key;
 
-export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
+export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{},getSourceSite=()=>null}={}){
   const hand=$('mx-hand'),preview=$('mx-preview'),mods=new Map(),buttons=new Map();
   let selected;
   const modifier=c=>{
@@ -43,14 +44,19 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
       const c=btn.card, cost=match.stampQuote?match.stampQuote(c.rule,modifier(c).resolver,c.offsets.length,{contract:c.contract}).total:c.offsets.length*match.stampPrice(modifier(c).resolver);
       const withinLimit=c.offsets.length<=(match.toolSettings?.maxStampCells??Infinity);
       const progression=match.progression,node=progression?.plan.nodes.find(n=>n.id===c.contract);
-      const permitted=!progression||progression.legalCards(1).some(card=>card.contract===c.contract);
-      const affordable=withinLimit&&wallet+1e-9>=cost&&permitted;
+      const sourceSite=getSourceSite(),source=progression?.sourceAt(sourceSite,1);
+      const required=node?.parent??progression?.plan.base;
+      const permitted=!progression||!!source&&required===source.contract&&
+        node.cost.every((v,i)=>progression.inventory(1)[i]+1e-9>=v);
+      const ids=world.hover&&progression?stampTargets(world.hover,modifier(c).shape):null;
+      const quote=ids&&progression?progression.getQuote(1,c.contract,ids,sourceSite):null;
+      const affordable=withinLimit&&wallet+1e-9>=cost&&permitted&&(!quote||quote.ok);
       if(btn.dataset.afford!==String(affordable))btn.dataset.afford=String(affordable);
       const progress=btn.querySelector('.mx-card-energy'),available=Math.max(0,Math.min(wallet,cost));
       progress.style.setProperty('--charge',String(cost?available/cost:1));
       progress.setAttribute('aria-valuemax',String(cost));
       progress.setAttribute('aria-valuenow',String(available));
-      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':!permitted?'Precisa da fonte de construção e dos materiais':affordable?(match.spatial?.enabled?'Custo disponível no campo; escolha uma região com luz e energia local':'Pronto para usar'):'Faltam ◈ '+fmt.format(cost-available));
+      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':quote?.reason??(!permitted?'Selecione uma fonte da receita e confira os materiais':affordable?'Escolha um local disponível':'Faltam ◈ '+fmt.format(cost-available)));
       if(btn.dataset.price!==String(cost)||btn.dataset.withinLimit!==String(withinLimit)){
         btn.dataset.price=String(cost);
         btn.dataset.withinLimit=String(withinLimit);

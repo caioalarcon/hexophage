@@ -39,7 +39,7 @@ function mount(){
 export function startMixedGame(){
   mount();
   let session,controllers,atlas,tools,options,dirty=true,lastUI=-Infinity,elapsed=0,previous=0,lastOrders=[],event=null,activeSource=null,lastUndo=null,pendingHazard=null;
-  const hand=createHand(()=>session?.match,{onInspect:card=>atlas.open(card,{replace:true}),onChoose:()=>tools?.select('stamp')});
+  const hand=createHand(()=>session?.match,{onInspect:card=>atlas.open(card,{replace:true}),onChoose:()=>tools?.select('stamp'),getSourceSite:()=>activeSource?.site??null});
   const fillDeck=cards=>{
     if(session?.match.progression){
       hand.fill(activeSource?session.match.progression.childrenFor(activeSource.contract):[]);
@@ -77,10 +77,12 @@ export function startMixedGame(){
     $('mx-field').textContent=p.conventional.toLocaleString('pt-BR');
     $('mx-flow').textContent=(scoreboard.flow>0?'+':'')+number.format(scoreboard.flow);
     if(m.spatial?.enabled){
-      const view=m.visibility(1);$('mx-vision').textContent='Luz: '+view.visible.size.toLocaleString('pt-BR')+' · Explorado: '+view.explored.size.toLocaleString('pt-BR');
+      const view=m.visibility(1);$('mx-vision').textContent='◉ '+view.visible.size.toLocaleString('pt-BR')+' · ◌ '+view.explored.size.toLocaleString('pt-BR');
+      $('mx-vision').title='◉ região iluminada · ◌ território explorado disponível para construir';
       const targets=targetIds(world.hover),cell=world.hover?.id===undefined?null:m.cells.get(world.hover.id);
-      $('mx-local-energy').textContent=targets?'Energia perto do carimbo: ◈ '+number.format(m.localReserve(1,targets)):
-        cell?.owner===1?'Célula: ◈ '+number.format(cell.energy)+' · Estável por '+cell.stableAge+' G':'Energia guardada nas células · ◈ '+number.format(p.reserve);
+      $('mx-local-energy').textContent=targets?'◈ '+number.format(m.localReserve(1,targets)):
+        cell?.owner===1?'◈ '+number.format(cell.energy)+' · G'+cell.stableAge:'◈ '+number.format(p.reserve);
+      $('mx-local-energy').title='Energia celular disponível para construir no território explorado';
     }
     if(m.progression){
       if(activeSource && !m.progression.sourceAt(activeSource.site,1)){
@@ -215,8 +217,8 @@ export function startMixedGame(){
     const before=session.match.fork();
     const ok=session.match.stamp(1,c.rule,m.resolver,proposed.ids,m.ballot,c.sense??'native',metadata(c));
     if(ok){
-      lastUndo={match:before,alive:session.alive.slice(),eliminatedAt:session.eliminatedAt.slice(),generation:before.gen,field:before.players[1].conventional};
-      $('mx-undo').hidden=false;dirty=true;syncField(session.match);hud();toast(c.name+' · '+resolverNames[m.resolver]);
+      setPlay(false);lastUndo={match:before,alive:session.alive.slice(),eliminatedAt:session.eliminatedAt.slice(),generation:before.gen,field:before.players[1].conventional};
+      $('mx-undo').hidden=false;dirty=true;syncField(session.match);hud();toast(c.name+' · colocado · pausa para inspeção');
     }
     return ok;
   }

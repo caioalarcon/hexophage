@@ -129,7 +129,7 @@ function makeTerrain(graph,seed,stock){
 /** Install before seeding. The wrapper enforces contracts for humans, bots and
  * forecasts. All mutation goes through the same paid engine stamp. */
 export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,stock=32,
-  initialResources=[48,32,40,24],harvestAfter=12,harvestRate=.2,depositRate=.4,snapshot=null}={}){
+  initialResources=[96,72,80,64],harvestAfter=12,harvestRate=.2,depositRate=.4,snapshot=null}={}){
   if(match.progression)throw Error('Progressão já instalada.');
   plan=normalizeProgressionPlan(plan);
   if(!Number.isFinite(stock)||stock<=0||!Number.isFinite(harvestRate)||harvestRate<=0||!Number.isFinite(depositRate)||depositRate<=0)

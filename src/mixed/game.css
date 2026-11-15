@@ -204,3 +204,6 @@
 #hexlab.mixed #mx-factory-reset{flex:none;min-width:23px;padding:0 4px;min-height:23px}
 #hexlab.mixed #mx-undo[hidden]{display:none!important}
 #hexlab.mixed #mx-spatial-settings input[type=checkbox]{width:auto;min-width:14px}
+
+#hexlab.mixed #mx-factory-context{margin:0 0 4px}
+#hexlab.mixed #mx-frontier output[title],#hexlab.mixed #mx-permission[title]{cursor:help}
