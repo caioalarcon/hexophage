@@ -83,6 +83,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       return vision.get(owner);
     }
     const canSee=(owner,id)=>!spatial.enabled||visibility(owner).visible?.has(id)===true;
+    const canBuild=(owner,id)=>!spatial.enabled||visibility(owner).explored?.has(id)===true;
     function refreshVision(){
       if(!spatial.enabled)return;
       vision.clear();for(let owner=1;owner<players.length;owner++)visibility(owner);
@@ -149,7 +150,20 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       const requests=Array.from(ids,id=>({id,donors:donorsNear(owner,id,maxVision,true)}));
       const balances=new Map();
       for(const request of requests)for(const donor of request.donors)if(!balances.has(donor))balances.set(donor,cells.get(donor).energy);
-      return fundLocalRequests(requests,balances,price+deposit);
+      const local=fundLocalRequests(requests,balances,price+deposit);
+      if(local||spatial.constructionFunding==='local')return local;
+      // A discovered territory can be resupplied from the surviving cellular
+      // treasury. Natural births still use strictly local parental fuel.
+      const total=ids.length*(price+deposit);
+      const donors=[...cells].filter(([,c])=>c.owner===owner&&!c.wave&&c.energy>EPS)
+        .sort(([a],[b])=>a-b);
+      let remaining=total;const remote=new Map();
+      for(const [site,c] of donors){
+        const taken=Math.min(c.energy,remaining);
+        if(taken>EPS){remote.set(site,taken);remaining-=taken;}
+        if(remaining<=EPS)break;
+      }
+      return remaining<=EPS?remote:null;
     }
     function stampRejection(owner, rule, resolver, ids, ballot='support',sense='native',metadata={},bootstrap=false) {
       if (!Number.isInteger(owner) || owner<1 || owner>=players.length) return 'owner';
@@ -160,7 +174,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
           metadata.contract!==undefined&&(typeof metadata.contract!=='string'||metadata.contract.length>128)) return 'invalid';
       for (const id of ids) {
         if (!Number.isSafeInteger(id) || id<0 || id>=graph.n || (domain && !domain.has(id)))return 'invalid';
-        if(spatial.enabled&&!bootstrap&&!canSee(owner,id))return 'darkness';
+        if(spatial.enabled&&!bootstrap&&!canBuild(owner,id))return 'darkness';
         if(cells.has(id))return 'occupied';
         for (let k=0;k<deg[id];k++) {
           const neighbor=cells.get(adj[id*6+k]);
@@ -547,7 +561,7 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
       return instance(snapshot,accounts,gen,[],cut,remote,false,limits,actionRevision,knowledge);
     }
     return {graph,economy,spatial,arbitration:policy,eligibility,friendlyFire,existence,passage,players,stampPrice,stampQuote,stamp,canStamp,stampRejection,bootstrapStamp,
-      visibility,canSee,localReserve,erase,erasePreview,setToolSettings,subscribeActions,step,fork,forkObserved,get cells(){return cells;},get gen(){return gen;},
+      visibility,canSee,canBuild,localReserve,erase,erasePreview,setToolSettings,subscribeActions,step,fork,forkObserved,get cells(){return cells;},get gen(){return gen;},
       get toolSettings(){return limits;},get actionRevision(){return actionRevision;},
       get lastIgnitions(){return lastIgnitions;}};
   }

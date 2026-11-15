@@ -35,12 +35,12 @@ test('spatial bootstrap is a one-time gen-zero setup and carimbo requires curren
   m.step();assert.equal(m.bootstrapStamp(2,'callahan','contact',[0]),false);
 });
 
-test('fog keeps explored memory while losing current build permission after erasure',()=>{
+test('fog keeps explored memory when light is lost',()=>{
   const m=start(),lit=[...m.visibility(1).visible].find(i=>!m.cells.has(i));
   for(const id of farm)assert.equal(m.erase(1,id,0),1);
   assert.equal(m.visibility(1).visible.size,0);
   assert(m.visibility(1).explored.has(lit));
-  assert.equal(m.stampRejection(1,'callahan','contact',[lit]),'darkness');
+  assert.equal(m.stampRejection(1,'callahan','contact',[lit]),'local-energy');
   conserved(m);
 });
 
@@ -228,4 +228,30 @@ test('local funding agrees with every three-donor assignment graph and conserves
     assert.deepEqual([...supply.values()],[.5,.5,.5]);
     if(debits){assert.equal([...debits.values()].reduce((a,b)=>a+b,0),1.5);assert([...debits.values()].every(n=>n<=.5));}
   }
+});
+
+test('the discovered map remains buildable after losing live vision when cells elsewhere can fund it',()=>{
+  const m=start();
+  const explored=new Set(m.visibility(1).explored);
+  const outer=[...explored].filter(site=>!m.cells.has(site)).reverse();
+  let donor=null,target=null;
+  for(const site of outer){
+    const d=graphBall(graph,[site],m.spatial.visionRadius);
+    const remembered=outer.find(id=>!d.has(id)&&!m.cells.has(id)&&id!==site);
+    if(remembered!==undefined){
+      const neighbor=[...graphBall(graph,[site],1)].find(id=>id!==site&&!m.cells.has(id));
+      if(neighbor!==undefined&&m.canStamp(1,'callahan','contact',[site,neighbor])){
+        donor=[site,neighbor];target=remembered;break;
+      }
+    }
+  }
+  assert(donor&&target!==null,'the tested opening needs a distant visible site');
+  assert(m.stamp(1,'callahan','contact',donor));
+  for(const id of farm)assert.equal(m.erase(1,id,0),1);
+  assert(m.visibility(1).explored.has(target));
+  assert.equal(m.canSee(1,target),false);
+  assert.equal(m.canBuild(1,target),true);
+  assert.equal(m.stampRejection(1,'callahan','contact',[target]),null);
+  assert(m.stamp(1,'callahan','contact',[target]));
+  conserved(m);
 });
