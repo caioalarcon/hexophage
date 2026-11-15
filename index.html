@@ -8529,7 +8529,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   // experiments/typed-world/spatial.mjs
   var spatialDefaults = Object.freeze({
     enabled: false,
-    visionRadius: 6,
+    visionRadius: 12,
+    constructionFunding: "territory",
     cellCapacity: 256,
     stableAfter: 12,
     stableEnergy: 1,
@@ -8557,6 +8558,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (typeof value !== "object" || Array.isArray(value)) throw TypeError("Expected spatial settings.");
     const settings = { ...spatialDefaults, ...value };
     if (typeof settings.enabled !== "boolean") throw TypeError("Expected spatial enabled boolean.");
+    if (!["local", "territory"].includes(settings.constructionFunding)) throw RangeError("Invalid construction funding mode.");
     validate(settings);
     const types = {};
     for (const [key2, traits] of Object.entries(settings.types ?? {})) {
@@ -8771,6 +8773,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return vision.get(owner);
       }
       const canSee = (owner, id) => !spatial.enabled || visibility(owner).visible?.has(id) === true;
+      const canBuild = (owner, id) => !spatial.enabled || visibility(owner).explored?.has(id) === true;
       function refreshVision() {
         if (!spatial.enabled) return;
         vision.clear();
@@ -8842,7 +8845,20 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const requests = Array.from(ids, (id) => ({ id, donors: donorsNear(owner, id, maxVision, true) }));
         const balances = /* @__PURE__ */ new Map();
         for (const request of requests) for (const donor of request.donors) if (!balances.has(donor)) balances.set(donor, cells2.get(donor).energy);
-        return fundLocalRequests(requests, balances, price + deposit);
+        const local = fundLocalRequests(requests, balances, price + deposit);
+        if (local || spatial.constructionFunding === "local") return local;
+        const total = ids.length * (price + deposit), donors = [...cells2].filter(([, c]) => c.owner === owner && !c.wave && c.energy > EPS2).sort(([a], [b]) => a - b);
+        let remaining = total;
+        const remote = /* @__PURE__ */ new Map();
+        for (const [site, c] of donors) {
+          const taken = Math.min(c.energy, remaining);
+          if (taken > EPS2) {
+            remote.set(site, taken);
+            remaining -= taken;
+          }
+          if (remaining <= EPS2) break;
+        }
+        return remaining <= EPS2 ? remote : null;
       }
       function stampRejection(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}, bootstrap = false) {
         if (!Number.isInteger(owner) || owner < 1 || owner >= players.length) return "owner";
@@ -8850,7 +8866,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         if (!p || p.out || !rules2.has(rule) || !resolvers.includes(resolver) || !ballots.includes(ballot) || !senses.includes(sense) || !ids?.length || ids.length > limits2.maxStampCells || new Set(ids).size !== ids.length || !metadata2 || typeof metadata2 !== "object" || metadata2.contract !== void 0 && (typeof metadata2.contract !== "string" || metadata2.contract.length > 128)) return "invalid";
         for (const id of ids) {
           if (!Number.isSafeInteger(id) || id < 0 || id >= graph.n || domain && !domain.has(id)) return "invalid";
-          if (spatial.enabled && !bootstrap && !canSee(owner, id)) return "darkness";
+          if (spatial.enabled && !bootstrap && !canBuild(owner, id)) return "darkness";
           if (cells2.has(id)) return "occupied";
           for (let k = 0; k < deg[id]; k++) {
             const neighbor = cells2.get(adj[id * 6 + k]);
@@ -9343,6 +9359,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         bootstrapStamp,
         visibility,
         canSee,
+        canBuild,
         localReserve,
         erase,
         erasePreview,
@@ -9416,8 +9433,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 
   // experiments/typed-world/game/opening.mjs
   function normalizeOpening(value) {
-    const fallback = cards.get("hex-b2s245/farm-4-12");
-    const c = value ?? { ...fallback, key: "hex-b2s245/farm-4-12", rule: fallback.source };
+    const fallback = cards.get("hex-b2s245/scan-cf5664");
+    const c = value ?? { ...fallback, key: "hex-b2s245/scan-cf5664", rule: fallback.source };
     const raw = c.offsets;
     if (!Array.isArray(raw) || !raw.length || raw.length > 1024 || raw.some((p) => !Array.isArray(p) || p.length !== 2 || p.some((v) => !Number.isSafeInteger(v) || Math.abs(v) > 128)) || new Set(raw.map((p) => p.join(","))).size !== raw.length) throw RangeError("A base precisa de 1–1.024 células distintas, com coordenadas inteiras entre −128 e 128.");
     return {
@@ -9905,7 +9922,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       throw RangeError("A abertura vazia precisa indicar jogadores da partida.");
     const plan = progression?.enabled ? normalizeProgressionPlan(progression.plan ?? defaultProgressionPlan(initialCard)) : null;
     const spatial = plan ? { ...spatialInput, enabled: true, types: { ...spatialInput?.types, ...progressionSpatialTypes(plan) } } : spatialInput;
-    const match = createTypedWorld(graph, {
+    let match = createTypedWorld(graph, {
       seed,
       wallets: Array(players).fill(bank),
       economy: { ...gameEconomies[policy], ...economy },
@@ -9974,7 +9991,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (survivors <= 1) outcome = survivors ? survivor : 0;
       return true;
     }
-    return { match, graph, starts, opening, alive, eliminatedAt, baseTrial, step: step2, get outcome() {
+    function restore(previous2, previousAlive = alive, previousEliminated = eliminatedAt) {
+      if (!previous2 || previous2.graph !== graph) throw RangeError("O estado anterior precisa pertencer à mesma esfera.");
+      match = previous2;
+      alive.splice(0, alive.length, ...previousAlive);
+      eliminatedAt.splice(0, eliminatedAt.length, ...previousEliminated);
+      outcome = null;
+    }
+    return { get match() {
+      return match;
+    }, graph, starts, opening, alive, eliminatedAt, baseTrial, step: step2, restore, get outcome() {
       return outcome;
     } };
   }
@@ -14775,15 +14801,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     function update() {
       const session = getSession(), m = session.match;
-      const ids = m.players.slice(1).map((_, i) => i + 1).sort((a, b) => m.spatial?.enabled ? a - b : Number(session.alive[b]) - Number(session.alive[a]) || m.players[b].conventional - m.players[a].conventional || m.players[b].reserve - m.players[a].reserve);
+      const ids = m.players.slice(1).map((_, i) => i + 1).sort((a, b) => Number(session.alive[b]) - Number(session.alive[a]) || m.players[b].conventional - m.players[a].conventional || m.players[b].reserve - m.players[a].reserve);
       for (const [index, id] of ids.entries()) {
-        const row = rows2.get(id) ?? addRow(id), p = m.players[id], hidden = !!m.spatial?.enabled && id !== 1, open = expanded === id && !hidden;
+        const row = rows2.get(id) ?? addRow(id), p = m.players[id], hidden = !!m.spatial?.enabled && id !== 1, open = expanded === id;
         let seen = 0;
         if (hidden) {
           for (const [site, c] of m.cells) if (c.owner === id && m.canSee(1, site)) seen++;
         }
-        row.summary.textContent = hidden ? seen ? seen + " à vista" : "Sem contato" : session.alive[id] ? p.conventional.toLocaleString("pt-BR") + " · ◈ " + number.format(p.reserve) : "Eliminado";
-        row.toggle.disabled = hidden;
+        row.summary.textContent = session.alive[id] ? "▣" + p.conventional.toLocaleString("pt-BR") + " ◈" + number.format(p.reserve) + " Δ" + signed3(ledger[id]?.flow ?? 0) + (hidden && seen ? " · " + seen + " vistos" : "") : "Eliminado";
+        row.summary.title = "Indicadores públicos: células, energia armazenada e fluxo médio por geração.";
+        row.toggle.disabled = false;
         row.button.disabled = hidden && !seen;
         row.toggle.setAttribute("aria-expanded", String(open));
         row.toggle.textContent = open ? "▾" : "▸";
