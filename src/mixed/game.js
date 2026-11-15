@@ -148,7 +148,7 @@ export function startMixedGame(){
       const cost=c&&m?session.match.stampQuote(c.rule,m.resolver,c.offsets.length).total:0;
       const reason=c&&m?session.match.stampRejection(1,c.rule,m.resolver,targetIds(anchor),m.ballot,c.sense??'native'):null;
       toast(game.stopped?'Partida interrompida.':game.ended?'Partida encerrada.':!session.alive[1]?'Sua colônia foi eliminada.':reason==='darkness'?
-        'O carimbo precisa caber em território já explorado.':reason==='local-energy'?
+        'O carimbo precisa caber em território já explorado.':reason==='near-own'?'Afaste o carimbo de suas células, ou escolha o modo livre na preparação.':reason==='local-energy'?
         'As células próximas precisam de mais energia para construir e abastecer este carimbo.':c?.offsets.length>session.match.toolSettings.maxStampCells?
         'Carimbo acima do limite de '+session.match.toolSettings.maxStampCells+' células.':p.reserve<cost?
         'Faltam ◈ '+number.format(cost-p.reserve)+' para este carimbo.':!targetIds(anchor)?'O carimbo não cabe nesta região da malha.':'Posição ocupada ou junto de uma colônia adversária.');

@@ -181,6 +181,12 @@ export function createTypedWorld(graph, {wallets=[10000,10000], seed=1, economy:
           if (neighbor && neighbor.owner!==owner) return 'enemy';
         }
       }
+      // Default construction spacing protects independently designed cellular machines.
+      // Zero restores free combinatorial construction, including deliberate collisions.
+      if(spatial.enabled&&!bootstrap&&spatial.safeStampGap>0){
+        for(const site of graphBall(graph,ids,spatial.safeStampGap,domain))
+          if(cells.get(site)?.owner===owner)return 'near-own';
+      }
       if(spatial.enabled&&!bootstrap){
         const type=genotype(owner,rule,resolver,ballot,sense,false,metadata.contract??''),traits=typeTraits(spatial,type);
         if(!stampFunding(owner,ids,stampPrice(resolver),traits.stampEnergy))return 'local-energy';
