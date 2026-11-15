@@ -9643,6 +9643,30 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       node("pulse", "Circuito experimental", pulse2, "battery", { vision: 6, reach: 8, capacity: 256 })
     ] };
   }
+  function automaticOpponentPlans(players, seed = 1) {
+    const plans = {};
+    for (let owner = 2; owner <= players; owner++) {
+      const draft = defaultProgressionPlan(), prefix = "bot" + owner + "_";
+      const rotation = ((seed >>> 0) + owner) % 4, weights = [40, 20, 20, 20];
+      for (const node of draft.nodes) {
+        node.id = prefix + node.id;
+        if (node.parent) node.parent = prefix + node.parent;
+        node.weights = weights.map((_, i) => weights[(i + rotation) % 4]);
+        if (node.id === prefix + "base") node.vision = [8, 10, 12, 14][((seed >>> 0) + owner) % 4];
+        if (node.id === prefix + "scout" && owner % 2 === 0) {
+          const ship = cards.get("andreen/bagley-sym-glider");
+          if (ship) {
+            node.cardKey = "andreen/bagley-sym-glider";
+            node.rule = ship.source;
+            node.offsets = ship.offsets.map((o) => o.slice());
+          }
+        }
+      }
+      draft.base = prefix + "base";
+      plans[owner] = normalizeProgressionPlan(draft);
+    }
+    return Object.freeze(plans);
+  }
   function makeTerrain(graph, seed, stock) {
     const kind = new Uint8Array(graph.n), amount = new Float64Array(graph.n);
     const count2 = Math.max(12, Math.ceil(graph.n / 150));
@@ -9657,6 +9681,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function attachProgression(match, {
     plan = defaultProgressionPlan(),
+    opponentPlans = {},
     seed = 1,
     stock = 32,
     initialResources = [96, 72, 80, 64],
@@ -9667,11 +9692,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   } = {}) {
     if (match.progression) throw Error("Progressão já instalada.");
     plan = normalizeProgressionPlan(plan);
+    opponentPlans = Object.fromEntries(Object.entries(opponentPlans).map(([owner, d]) => [owner, normalizeProgressionPlan(d)]));
     if (!Number.isFinite(stock) || stock <= 0 || !Number.isFinite(harvestRate) || harvestRate <= 0 || !Number.isFinite(depositRate) || depositRate <= 0)
       throw RangeError("Depósitos e taxas devem ser positivos e finitos.");
     integer(harvestAfter, 1, 4096, "Maturação inválida.");
     initialResources = vector(initialResources, "Inventário inicial inválido.");
-    const graph = match.graph, byId = new Map(plan.nodes.map((n) => [n.id, n]));
+    const graph = match.graph;
+    const planFor = (owner) => opponentPlans[owner] ?? plan;
+    const allNodes = [...plan.nodes, ...Object.values(opponentPlans).flatMap((p) => p.nodes)];
+    const byId = new Map(allNodes.map((n) => [n.id, n]));
+    if (allNodes.length !== byId.size) throw RangeError("Contratos de jogadores diferentes têm identificadores repetidos.");
     const terrain = snapshot ? { kind: Uint8Array.from(snapshot.kind), amount: Float64Array.from(snapshot.amount) } : makeTerrain(graph, seed, stock);
     const inventory = snapshot ? copyRows(snapshot.inventory) : match.players.map((p) => p && initialResources.slice());
     const harvested = snapshot ? copyRows(snapshot.harvested) : match.players.map((p) => p && [0, 0, 0, 0]);
@@ -9710,13 +9740,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         custom: !node.cardKey
       };
     }
-    function contractForCard(c) {
-      if (c?.contract && byId.has(c.contract)) return c.contract;
+    function contractForCard(c, owner = 1) {
+      if (c?.contract && planFor(owner).nodes.some((n) => n.id === c.contract)) return c.contract;
       const geometry = c?.offsets && c.offsets.map((p) => p.join(",")).join(";");
-      return plan.nodes.find((n) => n.rule === (c?.rule ?? c?.source) && n.resolver === (c?.resolver ?? "contact") && n.offsets.map((p) => p.join(",")).join(";") === geometry)?.id ?? null;
+      return planFor(owner).nodes.find((n) => n.rule === (c?.rule ?? c?.source) && n.resolver === (c?.resolver ?? "contact") && n.offsets.map((p) => p.join(",")).join(";") === geometry)?.id ?? null;
     }
     function source(node, owner, ids, sourceSite = null) {
-      const parent = byId.get(node.parent ?? plan.base), sources = living(owner, parent.id);
+      const parent = byId.get(node.parent ?? planFor(owner).base), sources = living(owner, parent.id);
       if (sources.length < parent.minimumBuilders) return { ok: false, code: "parent", reason: "A linhagem " + parent.name + " precisa de " + parent.minimumBuilders + " células vivas.", parent: parent.id };
       const sourceIds = new Set(sources.map(([site]) => site));
       if (sourceSite !== null) {
@@ -9742,7 +9772,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     function getQuote(owner, id, ids, sourceSite = null) {
       const node = byId.get(id);
       if (!ownerValid(owner) || observedOwner !== null && owner !== observedOwner) return { ok: false, code: "owner", reason: "Jogador inválido." };
-      if (!node) return { ok: false, code: "contract", reason: "Inclua este carimbo no plano antes da partida." };
+      if (!node || !planFor(owner).nodes.some((n) => n.id === id)) return { ok: false, code: "contract", reason: "Este carimbo pertence a outro plano. Escolha o seu." };
       const energy = match.stampQuote?.(node.rule, node.resolver, node.size, { contract: id });
       const quote = { contract: id, cost: node.cost.slice(), available: inventory[owner].slice(), energyCost: energy?.total ?? node.size * match.stampPrice(node.resolver) };
       if (!Array.isArray(ids) || ids.length !== node.size || new Set(ids).size !== ids.length || ids.some((site) => !Number.isSafeInteger(site) || site < 0 || site >= graph.n))
@@ -9783,7 +9813,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     function bootstrap(owner, id, ids) {
       const node = byId.get(id);
-      if (!raw.bootstrap || match.gen !== 0 || bootstrapped.has(owner) || id !== plan.base || !node || !ownerValid(owner) || ids?.length !== node.size) return false;
+      if (!raw.bootstrap || match.gen !== 0 || bootstrapped.has(owner) || id !== planFor(owner).base || !node || !ownerValid(owner) || ids?.length !== node.size) return false;
       const result = raw.bootstrap(owner, node.rule, node.resolver, ids, node.ballot, node.sense, { contract: id });
       if (!result) return false;
       bootstrapped.add(owner);
@@ -9851,7 +9881,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         observedOwner: owner
       };
     }
-    const forkOptions = { plan, seed, stock, initialResources, harvestAfter, harvestRate, depositRate };
+    const forkOptions = { plan, opponentPlans, seed, stock, initialResources, harvestAfter, harvestRate, depositRate };
     if (raw.fork) match.fork = (...args) => attachProgression(raw.fork(...args), { ...forkOptions, snapshot: takeSnapshot(observedOwner) }).match;
     if (raw.forkObserved) match.forkObserved = (owner, ...args) => attachProgression(raw.forkObserved(owner, ...args), { ...forkOptions, snapshot: takeSnapshot(owner) }).match;
     match.canStamp = canStamp;
@@ -9865,6 +9895,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const api = {
       match,
       plan,
+      planFor,
       resources: resourceKinds,
       contractForCard,
       getQuote,
@@ -9880,12 +9911,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const node = byId.get(c.contract);
         return node ? { site, contract: node.id, name: node.name, reach: node.reach } : null;
       },
-      childrenFor: (contract) => plan.nodes.filter((n) => n.parent === contract || n.id === contract && contract === plan.base).map(card2),
-      legalCards: (owner) => !ownerValid(owner) ? [] : plan.nodes.filter((n) => {
-        const parent = byId.get(n.parent ?? plan.base);
+      childrenFor: (contract, owner = 1) => planFor(owner).nodes.filter((n) => n.parent === contract || n.id === contract && contract === planFor(owner).base).map(card2),
+      legalCards: (owner) => !ownerValid(owner) ? [] : planFor(owner).nodes.filter((n) => {
+        const parent = byId.get(n.parent ?? planFor(owner).base);
         return living(owner, parent.id).length >= parent.minimumBuilders && n.cost.every((v, k) => inventory[owner][k] + EPS3 >= v);
       }).map(card2),
-      cards: () => plan.nodes.map(card2),
+      cards: (owner = 1) => planFor(owner).nodes.map(card2),
       resourceAt: (site, owner = null) => Number.isSafeInteger(site) && site >= 0 && site < graph.n && (owner === null || visible(owner, site)) && terrain.kind[site] ? { site, kind: terrain.kind[site] - 1, resource: resourceKinds[terrain.kind[site] - 1], remaining: terrain.amount[site] } : null,
       visibleDeposits: (owner) => {
         const found = [];
@@ -9893,8 +9924,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return found;
       },
       objective: (owner) => {
-        const rootCells = living(owner, plan.base).length;
-        return { started: bootstrapped.has(owner), base: plan.base, rootCells, defeated: bootstrapped.has(owner) && rootCells === 0 };
+        const root = planFor(owner).base, rootCells = living(owner, root).length;
+        return { started: bootstrapped.has(owner), base: root, rootCells, defeated: bootstrapped.has(owner) && rootCells === 0 };
       },
       terrainTotals: () => {
         const totals = [0, 0, 0, 0];
@@ -9961,7 +9992,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (!Array.isArray(unseededOwners) || unseededOwners.some((owner) => !Number.isInteger(owner) || owner < 1 || owner > players))
       throw RangeError("A abertura vazia precisa indicar jogadores da partida.");
     const plan = progression?.enabled ? normalizeProgressionPlan(progression.plan ?? defaultProgressionPlan(initialCard)) : null;
-    const spatial = plan ? { ...spatialInput, enabled: true, types: { ...spatialInput?.types, ...progressionSpatialTypes(plan) } } : spatialInput;
+    const opponents = plan ? progression?.opponentPlans ?? automaticOpponentPlans(players, seed) : {};
+    const planFor = (owner) => opponents[owner] ?? plan;
+    const types = plan ? Object.assign({}, progressionSpatialTypes(plan), ...Object.values(opponents).map(progressionSpatialTypes)) : null;
+    const spatial = plan ? { ...spatialInput, enabled: true, types: { ...spatialInput?.types, ...types } } : spatialInput;
     let match = createTypedWorld(graph, {
       seed,
       wallets: Array(players).fill(bank),
@@ -9974,9 +10008,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       spatial
     });
     const sites = spreadSites(graph, players), starts = [null], opening = [null], alive = [false];
-    const local = match.spatial.enabled, root = plan?.nodes.find((n) => n.id === plan.base);
-    const base = local ? normalizeOpening(root ? { ...root, key: root.cardKey ?? "custom/" + root.id, contract: root.id } : initialCard) : null;
-    if (plan) attachProgression(match, { ...progression, plan, seed });
+    const local = match.spatial.enabled;
+    const baseFor = (owner) => {
+      const blueprint = planFor(owner), root = blueprint?.nodes.find((n) => n.id === blueprint.base);
+      return local ? normalizeOpening(root ? { ...root, key: root.cardKey ?? "custom/" + root.id, contract: root.id } : initialCard) : null;
+    };
+    if (plan) attachProgression(match, { ...progression, plan, opponentPlans: opponents, seed });
     let baseTrial = null;
     const farm = policy === "stability" ? "hex-b2s245/farm-4-12" : "bays/osc2";
     const [rule] = farm.split("/");
@@ -9988,6 +10025,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         opening.push(null);
         continue;
       }
+      const base = baseFor(owner);
       const located = local ? locateOpening(match, owner, base, preferred, rotation) : { site: preferred, ids: footprint(graph, farm, preferred, rotation) };
       if (!located) throw RangeError("A base precisa caber no setor inicial da esfera e no capital de abertura. Aumente a esfera ou ajuste o desenho.");
       const { site, ids } = located;
@@ -10559,7 +10597,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (!m.progression) return 0;
     const counts = /* @__PURE__ */ new Map();
     for (const c of m.cells.values()) if (c.owner === owner && !c.wave && c.contract) counts.set(c.contract, (counts.get(c.contract) ?? 0) + 1);
-    return m.progression.plan.nodes.reduce((score, node) => score + ((counts.get(node.id) ?? 0) >= node.minimumBuilders ? node.childPoints : 0), 0);
+    return m.progression.planFor(owner).nodes.reduce((score, node) => score + ((counts.get(node.id) ?? 0) >= node.minimumBuilders ? node.childPoints : 0), 0);
   }
   function random(seed) {
     let x = seed >>> 0;
@@ -10674,7 +10712,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (view.progression && bot.decision % 2 === 0) {
         const present = new Set([...view.cells.values()].filter((c) => c.owner === bot.owner).map((c) => c.contract));
         const newCapability = affordable.filter((q) => !present.has(q.card.contract) && !bot.researched.has(q.card.contract)).sort((a, b) => {
-          const node = (c) => view.progression.plan.nodes.find((n) => n.id === c.contract);
+          const node = (c) => view.progression.planFor(bot.owner).nodes.find((n) => n.id === c.contract);
           return (node(b.card)?.childPoints ?? 0) - (node(a.card)?.childPoints ?? 0) || a.card.offsets.length - b.card.offsets.length;
         });
         if (newCapability.length) selected.push(newCapability[0].card);
@@ -10775,7 +10813,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         return c.owner === owner && (!before || before.owner !== owner || before.type !== c.type || before.age !== c.age);
       });
       const researchBudget = Math.max(0, 0.15 * match.players[owner].income - bot.researchSpent);
-      const recipe = card2?.contract && match.progression?.plan.nodes.find((n) => n.id === card2.contract);
+      const recipe = card2?.contract && match.progression?.planFor(owner).nodes.find((n) => n.id === card2.contract);
       const allocated = recipe ? match.stampQuote(card2.rule, card2.resolver ?? "contact", card2.offsets.length, metadata(card2)).total + 2.5 * sum(recipe.cost) : 0;
       const researchCharge = Math.max(0, -pay, allocated);
       const research = !!j.novel && anchorLoss === 0 && survived && pay <= EPS5 && researchCharge <= researchBudget && p.reserve >= Math.max(64, hold.players[owner].reserve * 0.2);
