@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hexophage — Battle Royale de Autômatos Celulares</title>
+<title>Hexophage</title>
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
@@ -927,6 +927,24 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
  #hexlab.mixed .mx-interaction select,#hexlab.mixed .mx-vote select{height:23px}
  #hexlab.mixed .mx-vote{grid-template-rows:auto 23px}
 }
+
+/* Play HUD: symbols and tooltips replace paragraphs during a match. */
+#hexlab.mixed #mx-frontier-help,#hexlab.mixed #mx-deposit-info:empty,#hexlab.mixed #mx-permission:empty{display:none!important}
+#hexlab.mixed #mx-frontier{padding:5px 7px;line-height:1.2;background:transparent;border-color:#31445b}
+#hexlab.mixed #mx-frontier strong{font-size:10px;font-weight:600}
+#hexlab.mixed #mx-frontier output{display:inline-block;margin:2px 5px 1px 0;font-size:11px;white-space:nowrap}
+#hexlab.mixed #mx-materials{padding:5px 7px;background:transparent;line-height:1.2}
+#hexlab.mixed #mx-resource-stores{grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+#hexlab.mixed #mx-resource-stores>div{padding-left:4px}
+#hexlab.mixed #mx-resource-stores small{font-size:10px}
+#hexlab.mixed #mx-resource-stores b{font-size:12px}
+#hexlab.mixed #mx-materials p,#hexlab.mixed #mx-materials output{margin:2px 0;font-size:10px}
+#hexlab.mixed #mx-factory-context{display:flex;align-items:center;justify-content:space-between;border:1px solid #3a665b;background:#1b3535;padding:4px 6px;border-radius:4px;gap:6px;font-size:11px}
+#hexlab.mixed #mx-factory-context[hidden]{display:none}
+#hexlab.mixed #mx-factory-name{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
+#hexlab.mixed #mx-factory-reset{flex:none;min-width:23px;padding:0 4px;min-height:23px}
+#hexlab.mixed #mx-undo[hidden]{display:none!important}
+#hexlab.mixed #mx-spatial-settings input[type=checkbox]{width:auto;min-width:14px}
 .hxa{box-sizing:border-box;color-scheme:dark;width:min(990px,95vw);max-width:none;max-height:min(90dvh,810px);margin:auto;padding:0;color:#e6efea;background:#122128;border:1px solid #486268;border-radius:12px;box-shadow:0 24px 90px #03090dcc;overflow:auto;font:14px/1.35 system-ui,sans-serif}
 .hxa::backdrop{background:#031017c4;backdrop-filter:blur(3px)}
 .hxa *{box-sizing:border-box}.hxa [hidden]{display:none!important}
@@ -1223,17 +1241,18 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
 <template id="mx-panel-template">
  <section class="mx-console">
   <div class="mx-mode"><label for="hl-rulechoice">Autômato da partida</label><span id="mx-mode-slot"></span></div>
-  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Configurar partida" title="Configurar partida">⚙</button></div>
+  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Preparação e configurações" title="Preparação e configurações">⚙</button><button id="mx-undo" type="button" title="Desfazer último carimbo · Ctrl+Z" aria-label="Desfazer último carimbo" hidden>↶</button></div>
   <div class="mx-metrics"><div><small>RESERVA</small><strong id="mx-cash"></strong></div><div><small>CAMPO</small><strong id="mx-field"></strong></div><div><small title="Média recente da renda menos nascimentos e cortes">FLUXO / G</small><strong id="mx-flow"></strong></div></div>
   <div class="mx-speed" id="mx-speed-slot"></div>
   <div class="mx-rail-links"><button id="mx-profile-button" type="button" title="Ajustes econômicos da partida"></button><button id="mx-globe" type="button">Globo</button></div>
-  <section id="mx-frontier" hidden aria-label="Economia celular e exploração"><strong>Fronteira celular</strong><p id="mx-frontier-help">Expanda a luz com células próprias. Carimbe dentro dela e abasteça a construção com energia próxima.</p><output id="mx-vision"></output><output id="mx-local-energy"></output><button id="mx-home" type="button">Voltar à base</button></section>
-  <section id="mx-materials" hidden aria-label="Materiais e objetivo"><div id="mx-resource-stores"></div><p id="mx-objective"></p><output id="mx-permission"></output><output id="mx-deposit-info"></output></section>
+  <section id="mx-frontier" hidden aria-label="Economia celular e exploração"><strong>Fronteira celular</strong><p id="mx-frontier-help" hidden>Explore para construir. Mantenha fontes vivas para fabricar.</p><output id="mx-vision"></output><output id="mx-local-energy"></output><button id="mx-home" type="button">Voltar à base</button></section>
+  <section id="mx-materials" hidden aria-label="Materiais e objetivo"><div id="mx-resource-stores"></div><p id="mx-objective"></p><output id="mx-permission" title="Condição do carimbo sob o cursor"></output><output id="mx-deposit-info" title="Depósito de terreno sob o cursor"></output></section>
   <details id="mx-league" open><summary>Classificação</summary><ol id="mx-score"></ol></details>
   <details id="mx-conflicts"><summary>Disputas em campo</summary><div id="mx-event">Avance para observar.</div><button id="mx-locate" type="button" hidden>Ver no mapa</button></details>
  </section>
  <aside class="mx-arsenal" aria-label="Carimbos da partida">
-  <header><h2>Carimbos <small id="mx-count"></small></h2><button id="mx-atlas" type="button">Atlas ↗</button></header>
+  <header><h2 id="mx-deck-title">Carimbos <small id="mx-count"></small></h2><button id="mx-atlas" type="button">Atlas ↗</button></header>
+  <div id="mx-factory-context" hidden><span id="mx-factory-name" title="Clique em uma célula sua para ver o que esta estrutura pode fabricar">Base</span><button id="mx-factory-reset" type="button" title="Selecionar a estrutura inicial">⌂</button></div>
   <div class="mx-tools" aria-label="Modificadores do carimbo">
    <div class="mx-current"><strong id="mx-selected"></strong><span id="mx-price"></span></div>
    <div class="mx-tools-row">
@@ -1268,8 +1287,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   <header><h2 id="mx-settings-title">Partida e bots</h2><button type="button" id="mx-settings-close" aria-label="Fechar configurações">×</button></header>
   <form id="mx-setup">
    <fieldset><legend>Experimento</legend><label class="mx-wide">Regras econômicas e território<select id="mx-experiment"><option value="classic">Economia compartilhada · atual</option><option value="local">Economia por célula + escuridão</option><option value="resources">Recursos finitos + plano de construção</option></select></label></fieldset>
-   <fieldset id="mx-progression-settings" hidden><legend>Seu plano de construção</legend><p class="mx-wide">Escolha quem constrói quem. As formas evoluem pelo autômato e suas descendentes mantêm as permissões. Para fabricar, mantenha a linhagem de origem viva e próxima.</p><output id="mx-plan-budget" class="mx-wide"></output><div id="mx-plan-rows" class="mx-wide" aria-label="Carimbos planejados"></div><label class="mx-wide">Nome<input type="text" id="mx-plan-name" maxlength="100"></label><label class="mx-wide">Construído por<select id="mx-plan-parent"></select></label><output id="mx-plan-shape" class="mx-wide"></output><label>Raio de iluminação<input type="number" id="mx-plan-vision" min="1" max="16" step="1"></label><label>Raio de construção<input type="number" id="mx-plan-reach" min="1" max="24" step="1"></label><label>Energia máxima por célula<input type="number" id="mx-plan-capacity" min="8" max="512" step="1"></label><p class="mx-wide">Distribua 100 pontos de custo entre os quatro materiais. O custo mínimo acompanha tamanho, alcance, capacidade e profundidade.</p><label>Substrato · corpo<input type="number" id="mx-plan-weight-0" min="0" max="100" step="1"></label><label>Condutor · alcance<input type="number" id="mx-plan-weight-1" min="0" max="100" step="1"></label><label>Acumulador · capacidade<input type="number" id="mx-plan-weight-2" min="0" max="100" step="1"></label><label>Catalisador · dependência<input type="number" id="mx-plan-weight-3" min="0" max="100" step="1"></label><button type="button" id="mx-plan-add" class="mx-wide">Adicionar carimbo selecionado como dependente</button><button type="button" id="mx-plan-replace" class="mx-wide">Usar a forma selecionada nesta etapa</button><button type="button" id="mx-plan-remove">Remover etapa</button><button type="button" id="mx-plan-reset">Plano de exemplo</button><p id="mx-plan-error" role="alert" class="mx-wide"></p><details class="mx-wide"><summary>Editar ou copiar plano em JSON</summary><textarea id="mx-plan-json" rows="12" spellcheck="false" aria-label="Plano de construção em JSON"></textarea><button type="button" id="mx-plan-import">Aplicar JSON ao plano</button></details></fieldset>
-   <fieldset id="mx-spatial-settings" hidden><legend>Base e iluminação</legend><p class="mx-wide">A base começa em campo. Cada célula guarda energia. Novas células recebem combustível dos pais próximos. A luz acompanha as células vivas.</p><output class="mx-wide" id="mx-base-name"></output><button type="button" id="mx-use-base" class="mx-wide">Usar o carimbo selecionado como base</button><label>Raio de luz (passos)<input type="number" id="mx-vision-radius" min="1" max="24" step="1" value="6"></label><label>Energia máxima por célula<input type="number" id="mx-cell-capacity" min="1" max="10000" value="256" step="any"></label><label>Combustível por célula carimbada<input type="number" id="mx-stamp-energy" min="0" max="10000" value="32" step="any"></label><label>Combustível por nascimento natural<input type="number" id="mx-newborn-energy" min="0" max="10000" value="2" step="any"></label><label>Alcance do financiamento natural<input type="number" id="mx-birth-radius" min="1" max="6" value="1" step="1"></label><label class="mx-wide">Economias e visão por tipo (JSON)<textarea id="mx-cell-types" rows="4" spellcheck="false" aria-label="Economia e iluminação por tipo de célula">{}</textarea></label><small class="mx-wide">Exemplo: {"callahan/phase":{"visionRadius":8,"stableEnergy":0.5}}. A base passa por 64 gerações de ensaio para verificar sobrevivência e produção.</small></fieldset>
+   <fieldset id="mx-progression-settings" hidden><legend>Seu plano de construção</legend><p class="mx-wide">Escolha quem constrói quem. As formas evoluem pelo autômato e suas descendentes mantêm as permissões. Para fabricar, mantenha a linhagem de origem viva e próxima.</p><output id="mx-plan-budget" class="mx-wide"></output><div id="mx-plan-rows" class="mx-wide" aria-label="Carimbos planejados"></div><label class="mx-wide">Nome<input type="text" id="mx-plan-name" maxlength="100"></label><label class="mx-wide">Construído por<select id="mx-plan-parent"></select></label><output id="mx-plan-shape" class="mx-wide"></output><label>Raio de iluminação<input type="number" id="mx-plan-vision" min="1" max="16" step="1"></label><label>Raio de construção<input type="number" id="mx-plan-reach" min="1" max="24" step="1"></label><label>Energia máxima por célula<input type="number" id="mx-plan-capacity" min="8" max="512" step="1"></label><p class="mx-wide">Distribua 100 pontos de custo entre os quatro materiais. O custo mínimo acompanha tamanho, alcance, capacidade e profundidade.</p><label>Substrato · corpo<input type="number" id="mx-plan-weight-0" min="0" max="100" step="1"></label><label>Condutor · alcance<input type="number" id="mx-plan-weight-1" min="0" max="100" step="1"></label><label>Acumulador · capacidade<input type="number" id="mx-plan-weight-2" min="0" max="100" step="1"></label><label>Catalisador · dependência<input type="number" id="mx-plan-weight-3" min="0" max="100" step="1"></label><button type="button" id="mx-plan-add" class="mx-wide">Adicionar carimbo selecionado como dependente</button><button type="button" id="mx-plan-replace" class="mx-wide">Usar a forma selecionada nesta etapa</button><button type="button" id="mx-plan-remove">Remover etapa</button><button type="button" id="mx-plan-reset" title="Plano de estratégia inspirado em Age of Empires; todos os desenhos são editáveis">Estratégia celular</button><button type="button" id="mx-plan-free" title="Reiniciar com apenas a base escolhida">Plano livre</button><p id="mx-plan-error" role="alert" class="mx-wide"></p><details class="mx-wide"><summary>Editar ou copiar plano em JSON</summary><textarea id="mx-plan-json" rows="12" spellcheck="false" aria-label="Plano de construção em JSON"></textarea><button type="button" id="mx-plan-import">Aplicar JSON ao plano</button></details></fieldset>
+   <fieldset id="mx-spatial-settings" hidden><legend>Base e iluminação</legend><label class="mx-wide"><input id="mx-map-full" type="checkbox"> Mapa visível inteiro; construção em território explorado</label><p class="mx-wide">A base começa em campo. A visão acompanha as células. As áreas visitadas ficam disponíveis para construção.</p><output class="mx-wide" id="mx-base-name"></output><button type="button" id="mx-use-base" class="mx-wide">Usar o carimbo selecionado como base</button><label>Raio de luz (passos)<input type="number" id="mx-vision-radius" min="1" max="24" step="1" value="6"></label><label>Energia máxima por célula<input type="number" id="mx-cell-capacity" min="1" max="10000" value="256" step="any"></label><label>Combustível por célula carimbada<input type="number" id="mx-stamp-energy" min="0" max="10000" value="32" step="any"></label><label>Combustível por nascimento natural<input type="number" id="mx-newborn-energy" min="0" max="10000" value="2" step="any"></label><label>Alcance do financiamento natural<input type="number" id="mx-birth-radius" min="1" max="6" value="1" step="1"></label><label class="mx-wide">Economias e visão por tipo (JSON)<textarea id="mx-cell-types" rows="4" spellcheck="false" aria-label="Economia e iluminação por tipo de célula">{}</textarea></label><small class="mx-wide">Exemplo: {"callahan/phase":{"visionRadius":8,"stableEnergy":0.5}}. A base passa por 64 gerações de ensaio para verificar sobrevivência e produção.</small></fieldset>
    <fieldset><legend>Partida</legend><label>Esfera<select id="mx-size"></select></label><label>Semente<input type="number" id="mx-seed" min="0" max="4294967295" step="1" required></label><label>Reserva inicial<input type="number" id="mx-bank" min="0" step="any" placeholder="Do perfil"></label></fieldset>
    <fieldset><legend>Bots</legend><label>Intervalo de compra (G)<input type="number" id="mx-bot-interval" min="1" step="1" required></label><label>Passos de pesquisa por G<input type="number" id="mx-bot-budget" min="0" step="1" required></label></fieldset>
    <fieldset><legend>Ferramentas</legend><label>Raio máximo da borracha<input type="number" id="mx-erase-max" min="1" step="1" required></label><label>Máximo de células por carimbo<input type="number" id="mx-stamp-max" min="1" step="1" required></label><button type="button" id="mx-tools-apply" class="mx-wide">Aplicar ferramentas nesta partida</button></fieldset>
@@ -8531,6 +8550,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     enabled: false,
     visionRadius: 12,
     constructionFunding: "territory",
+    fullMap: false,
     cellCapacity: 256,
     stableAfter: 12,
     stableEnergy: 1,
@@ -8559,6 +8579,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     const settings = { ...spatialDefaults, ...value };
     if (typeof settings.enabled !== "boolean") throw TypeError("Expected spatial enabled boolean.");
     if (!["local", "territory"].includes(settings.constructionFunding)) throw RangeError("Invalid construction funding mode.");
+    if (typeof settings.fullMap !== "boolean") throw TypeError("fullMap must be a boolean.");
     validate(settings);
     const types = {};
     for (const [key2, traits] of Object.entries(settings.types ?? {})) {
@@ -8772,7 +8793,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         }
         return vision.get(owner);
       }
-      const canSee = (owner, id) => !spatial.enabled || visibility(owner).visible?.has(id) === true;
+      const canSee = (owner, id) => !spatial.enabled || spatial.fullMap || visibility(owner).visible?.has(id) === true;
       const canBuild = (owner, id) => !spatial.enabled || visibility(owner).explored?.has(id) === true;
       function refreshVision() {
         if (!spatial.enabled) return;
@@ -9485,7 +9506,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     Object.freeze({ id: "accumulator", name: "Acumulador", symbol: "A", color: "#e2bd62", use: "Carga: capacidade de energia em cada célula." }),
     Object.freeze({ id: "catalyst", name: "Catalisador", symbol: "K", color: "#bf8ee6", use: "Circuito: contrato e profundidade da cadeia de fabricação." })
   ]);
-  var progressionDesignLimits = Object.freeze({ totalPoints: 64, childPoints: 20 });
+  var progressionDesignLimits = Object.freeze({ totalPoints: 64, childPoints: 28 });
   var EPS3 = 1e-9;
   var knownResolvers = ["contact", "phase", "guard", "antimatter"];
   var knownBallots = ["support", "age", "geometry", "robustness"];
@@ -9588,7 +9609,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     return Object.fromEntries(normalized2.nodes.map((n) => [n.rule + "/" + n.resolver + "/" + n.id, { visionRadius: n.vision, cellCapacity: n.capacity, stampEnergy: Math.min(32, n.capacity) }]));
   }
   function defaultProgressionPlan(initialCard, availableCards = []) {
-    const fallback = { cardKey: "hex-b2s245/farm-4-12", ...cards.get("hex-b2s245/farm-4-12") };
+    const fallback = { cardKey: "hex-b2s245/scan-cf5664", ...cards.get("hex-b2s245/scan-cf5664") };
     const base = { ...fallback, ...initialCard ?? {} };
     base.rule = initialCard?.rule ?? initialCard?.source ?? fallback.source;
     if (initialCard) base.cardKey = initialCard.cardKey ?? initialCard.key ?? null;
@@ -9612,10 +9633,10 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       ...traits
     });
     return { version: 1, base: "base", nodes: [
-      node("base", "Base escolhida", base, null),
-      node("relay", "Posto de fabricação", fallback, "base", { vision: 8, reach: 12, capacity: 128 }),
-      node("scout", "Exploração", scout, "relay", { vision: 10, reach: 8, capacity: 128 }),
-      node("battery", "Acumulação", fallback, "base", { vision: 4, reach: 6, capacity: 512 }),
+      node("base", "Centro celular", base, null, { vision: 10, reach: 10 }),
+      node("relay", "Oficina celular", fallback, "base", { vision: 12, reach: 12, capacity: 128 }),
+      node("scout", "Batedor · glider", scout, "relay", { vision: 16, reach: 8, capacity: 128 }),
+      node("battery", "Torre de alcance", fallback, "base", { vision: 16, reach: 10, capacity: 256 }),
       node("pulse", "Circuito experimental", pulse2, "battery", { vision: 6, reach: 8, capacity: 256 })
     ] };
   }
@@ -9691,10 +9712,19 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const geometry = c?.offsets && c.offsets.map((p) => p.join(",")).join(";");
       return plan.nodes.find((n) => n.rule === (c?.rule ?? c?.source) && n.resolver === (c?.resolver ?? "contact") && n.offsets.map((p) => p.join(",")).join(";") === geometry)?.id ?? null;
     }
-    function source(node, owner, ids) {
+    function source(node, owner, ids, sourceSite = null) {
       const parent = byId.get(node.parent ?? plan.base), sources = living(owner, parent.id);
       if (sources.length < parent.minimumBuilders) return { ok: false, code: "parent", reason: "A linhagem " + parent.name + " precisa de " + parent.minimumBuilders + " células vivas.", parent: parent.id };
       const sourceIds = new Set(sources.map(([site]) => site));
+      if (sourceSite !== null) {
+        if (!Number.isSafeInteger(sourceSite) || !sourceIds.has(sourceSite))
+          return { ok: false, code: "source", reason: "Fonte selecionada indisponível.", parent: parent.id };
+        const disk3 = graphBall(graph, [sourceSite], parent.reach);
+        if (ids.some((site) => !disk3.has(site))) return { ok: false, code: "range", reason: "Fora do alcance desta estrutura.", parent: parent.id };
+        const count2 = [...disk3].filter((site) => sourceIds.has(site)).length;
+        if (count2 < parent.minimumBuilders) return { ok: false, code: "parent", reason: "Estrutura com poucas células vivas.", parent: parent.id };
+        return { ok: true, parent: parent.id, source: sourceSite, builders: count2 };
+      }
       const near = graphBall(graph, [ids[0]], parent.reach);
       for (const candidate of near) {
         if (!sourceIds.has(candidate)) continue;
@@ -9706,7 +9736,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       return { ok: false, code: "range", reason: "O carimbo inteiro precisa do alcance de uma fonte " + parent.name + ".", parent: parent.id };
     }
-    function getQuote(owner, id, ids) {
+    function getQuote(owner, id, ids, sourceSite = null) {
       const node = byId.get(id);
       if (!ownerValid(owner) || observedOwner !== null && owner !== observedOwner) return { ok: false, code: "owner", reason: "Jogador inválido." };
       if (!node) return { ok: false, code: "contract", reason: "Inclua este carimbo no plano antes da partida." };
@@ -9714,12 +9744,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const quote = { contract: id, cost: node.cost.slice(), available: inventory[owner].slice(), energyCost: energy?.total ?? node.size * match.stampPrice(node.resolver) };
       if (!Array.isArray(ids) || ids.length !== node.size || new Set(ids).size !== ids.length || ids.some((site) => !Number.isSafeInteger(site) || site < 0 || site >= graph.n))
         return { ...quote, ok: false, code: "footprint", reason: "O carimbo precisa corresponder à quantidade de células da receita." };
-      const permission = source(node, owner, ids);
+      const permission = source(node, owner, ids, sourceSite);
       if (!permission.ok) return { ...quote, ...permission };
       const missing = node.cost.map((cost, k) => Math.max(0, cost - inventory[owner][k]));
       if (missing.some((n) => n > EPS3)) return { ...quote, ...permission, ok: false, code: "resources", missing, reason: "Faltam recursos: " + missing.map((n, k) => n > EPS3 ? resourceKinds[k].symbol + " " + Math.ceil(n) : "").filter(Boolean).join(" · ") };
       if (!raw.canStamp(owner, node.rule, node.resolver, ids, node.ballot, node.sense, { contract: id }))
-        return { ...quote, ...permission, ok: false, code: "field", reason: "A posição precisa de luz, energia local e espaço livre." };
+        return { ...quote, ...permission, ok: false, code: "field", reason: "Verifique área explorada, energia e espaço livre." };
       return { ...quote, ...permission, ok: true, code: "ready", reason: "Fabricação disponível." };
     }
     function matches(node, rule, resolver, ballot, sense) {
@@ -9727,7 +9757,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     }
     function canStamp(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}) {
       const id = metadata2?.contract, node = byId.get(id);
-      return !!matches(node, rule, resolver, ballot, sense) && getQuote(owner, id, ids).ok;
+      return !!matches(node, rule, resolver, ballot, sense) && getQuote(owner, id, ids, metadata2?.sourceSite ?? null).ok;
     }
     function stamp2(owner, rule, resolver, ids, ballot = "support", sense = "native", metadata2 = {}) {
       if (!canStamp(owner, rule, resolver, ids, ballot, sense, metadata2)) return false;
@@ -9841,6 +9871,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       bootstrap,
       inventory: (owner) => ownerValid(owner) && (observedOwner === null || owner === observedOwner) ? inventory[owner].slice() : [0, 0, 0, 0],
       stats: (owner) => ownerValid(owner) && (observedOwner === null || owner === observedOwner) ? { initial: initial[owner].slice(), harvested: harvested[owner].slice(), spent: spent[owner].slice(), inventory: inventory[owner].slice() } : null,
+      sourceAt: (site, owner) => {
+        const c = match.cells.get(site);
+        if (!ownerValid(owner) || c?.owner !== owner || c.wave || !c.contract) return null;
+        const node = byId.get(c.contract);
+        return node ? { site, contract: node.id, name: node.name, reach: node.reach } : null;
+      },
+      childrenFor: (contract) => plan.nodes.filter((n) => n.parent === contract || n.id === contract && contract === plan.base).map(card2),
       legalCards: (owner) => !ownerValid(owner) ? [] : plan.nodes.filter((n) => {
         const parent = byId.get(n.parent ?? plan.base);
         return living(owner, parent.id).length >= parent.minimumBuilders && n.cost.every((v, k) => inventory[owner][k] + EPS3 >= v);
@@ -11868,6 +11905,14 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       }
       const keep = selected && cards2.find((c) => slotKey(c) === slotKey(selected));
       if (keep || cards2.length) choose2(keep ?? cards2[0]);
+      else {
+        selected = null;
+        world.cachedStampOffsets = [];
+        world.stampCount = 0;
+        $("mx-selected").textContent = "";
+        $("mx-price").textContent = "";
+        world.needsDraw = true;
+      }
     }
     for (const [id, type] of [["hl-stampccw", "ccw"], ["hl-stampcw", "cw"], ["hl-stampflip", "flip"]]) {
       $("mx-transform").append($(id));
@@ -13348,7 +13393,6 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     if (world.resourceDeposits?.size) {
       const ground = /* @__PURE__ */ new Map();
       for (const [id, deposit] of world.resourceDeposits) {
-        if (world.fog && !world.fog.visible.has(id)) continue;
         if (!ground.has(deposit.fill)) ground.set(deposit.fill, new Path2D());
         atlasMark(ground.get(deposit.fill), id, a);
         if (world.cells[id] && atlasMetrics.pitch > 9) {
@@ -13446,6 +13490,27 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       c.lineWidth = 0.8;
       c.stroke(path);
     }
+    if (world.fog && world.rememberedCells?.size) {
+      const ghosts = Array.from({ length: 8 }, () => new Path2D());
+      for (const [site, ghost] of world.rememberedCells)
+        if (!world.fog.visible.has(site)) atlasMark(ghosts[ghost.owner], site, a);
+      c.save();
+      c.globalAlpha = 0.22;
+      for (let id = 1; id <= 7; id++) {
+        c.fillStyle = game.colors[id];
+        c.fill(ghosts[id]);
+      }
+      c.restore();
+    }
+    if (world.selectedFactory !== null && world.selectedFactory !== void 0) {
+      const selection = new Path2D();
+      atlasMark(selection, world.selectedFactory, a);
+      c.save();
+      c.strokeStyle = "#f5dc7d";
+      c.lineWidth = 1.8;
+      c.stroke(selection);
+      c.restore();
+    }
     const preview = world.hover?.id !== void 0 && (!world.drag || world.painting) && placementPreview(world.hover);
     if (preview?.tool) {
       const active = new Path2D(), area = new Path2D();
@@ -13525,13 +13590,22 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const ground = /* @__PURE__ */ new Map();
       for (const item of vis.values()) {
         const deposit = world.resourceDeposits.get(item.id);
-        if (!deposit || world.fog && !world.fog.visible.has(item.id)) continue;
+        if (!deposit) continue;
         if (!ground.has(deposit.fill)) ground.set(deposit.fill, new Path2D());
-        hexPath(ground.get(deposit.fill), DX * (item.q + item.r / 2), DY * item.r, R * 1.025);
+        const x = DX * (item.q + item.r / 2), y = DY * item.r, half = R * 0.42;
+        const glyph = ground.get(deposit.fill);
+        glyph.moveTo(x, y - half);
+        glyph.lineTo(x + half * 0.8, y);
+        glyph.lineTo(x, y + half);
+        glyph.lineTo(x - half * 0.8, y);
+        glyph.closePath();
       }
       for (const [color, path] of ground) {
         c.fillStyle = color;
         c.fill(path);
+        c.strokeStyle = "#d9e7e766";
+        c.lineWidth = 0.5 / world.zoom;
+        c.stroke(path);
       }
     }
     const paths = Array.from({ length: 8 }, () => new Path2D());
@@ -13551,6 +13625,31 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         c.strokeStyle = id === 7 ? "#a6b2c4" : "#ffffff70";
         c.lineWidth = 0.55 / world.zoom;
         c.stroke(paths[id]);
+      }
+    }
+    if (world.fog && world.rememberedCells?.size) {
+      const ghostPaths = Array.from({ length: 8 }, () => new Path2D());
+      for (const item of vis.values()) {
+        const ghost = world.rememberedCells.get(item.id);
+        if (!ghost || world.fog.visible.has(item.id)) continue;
+        hexPath(ghostPaths[ghost.owner], DX * (item.q + item.r / 2), DY * item.r, R * 0.72);
+      }
+      c.save();
+      c.globalAlpha = 0.26;
+      for (let id = 1; id <= 7; id++) {
+        c.fillStyle = game.colors[id];
+        c.fill(ghostPaths[id]);
+      }
+      c.restore();
+    }
+    if (world.selectedFactory !== null && world.selectedFactory !== void 0) {
+      const selected = [...vis.values()].find((item) => item.id === world.selectedFactory);
+      if (selected) {
+        c.beginPath();
+        hexPath(c, DX * (selected.q + selected.r / 2), DY * selected.r, R * 1.1);
+        c.strokeStyle = "#f5dc7d";
+        c.lineWidth = 2 / world.zoom;
+        c.stroke();
       }
     }
     const preview = world.hover && (!world.drag || world.painting) && placementPreview(world.hover);
@@ -14011,26 +14110,43 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
     });
   }
   function syncField(match) {
+    var _a, _b;
     world.gen = match.gen;
-    world.fog = match.spatial?.enabled ? match.visibility(1) : null;
+    world.fog = match.spatial?.enabled && !match.spatial.fullMap ? match.visibility(1) : null;
+    (_a = world).rememberedCells ?? (_a.rememberedCells = /* @__PURE__ */ new Map());
+    (_b = world).rememberedResources ?? (_b.rememberedResources = /* @__PURE__ */ new Map());
     world.resourceDeposits = /* @__PURE__ */ new Map();
     if (match.progression) {
       const deposits = world.fog ? [...world.fog.visible].map((id) => match.progression.resourceAt(id, 1)).filter(Boolean) : match.progression.visibleDeposits(1);
+      if (world.fog) for (const id of world.fog.visible) world.rememberedResources.delete(id);
       for (const deposit of deposits) {
         if (world.fog && !world.fog.visible.has(deposit.site)) continue;
         const resource = match.progression.resources[deposit.kind], remaining = Math.max(0, deposit.remaining);
         if (!resource) continue;
         const level = Math.round(4 * Math.min(1, remaining / 32)), depleted = remaining <= 0;
         const color = depleted ? "#91a0a6" : resource.color, alpha = Math.round(255 * (depleted ? 0.065 : 0.16 + 0.28 * level / 4));
-        world.resourceDeposits.set(deposit.site, {
+        const mark = {
           kind: deposit.kind,
           remaining,
           color: resource.color,
           fill: color + alpha.toString(16).padStart(2, "0"),
           edge: color + (depleted ? "24" : "80"),
           depleted
-        });
+        };
+        world.resourceDeposits.set(deposit.site, mark);
+        if (world.fog) world.rememberedResources.set(deposit.site, mark);
       }
+    }
+    if (world.fog) {
+      for (const [id, mark] of world.rememberedResources) if (!world.fog.visible.has(id) && world.fog.explored.has(id))
+        world.resourceDeposits.set(id, { ...mark, remembered: true, fill: mark.color + "25", edge: mark.color + "35" });
+    }
+    if (!world.fog) {
+      world.rememberedCells.clear();
+      world.rememberedResources.clear();
+    } else {
+      for (const id of world.fog.visible) world.rememberedCells.delete(id);
+      for (const [id, c] of match.cells) if (c.owner !== 1 && world.fog.visible.has(id)) world.rememberedCells.set(id, { owner: c.owner, seenAt: match.gen });
     }
     for (let i = 0; i < world.activeCount; i++) {
       const id = world.active[i];
@@ -14052,6 +14168,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function loadViewport(session, storage3) {
     newWorld(session.graph.f, session.graph, storage3);
+    world.rememberedCells = /* @__PURE__ */ new Map();
+    world.rememberedResources = /* @__PURE__ */ new Map();
+    world.selectedFactory = null;
     world.rule = "mixed";
     world.physics = null;
     syncField(session.match);
@@ -14415,6 +14534,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       selected = draft.base;
       render2();
     };
+    $("mx-plan-free").onclick = () => {
+      const template2 = defaultProgressionPlan(initialCard);
+      draft = { version: 1, base: template2.base, nodes: template2.nodes.slice(0, 1) };
+      selected = draft.base;
+      render2();
+    };
     $("mx-plan-import").onclick = () => {
       try {
         const value = normalizeProgressionPlan(JSON.parse($("mx-plan-json").value));
@@ -14531,8 +14656,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       $("mx-experiment").value = o.progression?.enabled ? "resources" : o.spatial?.enabled ? "local" : "classic";
       $("mx-experiment").onchange();
       const spatial = getMatch().spatial ?? {};
-      for (const [id, key2, def] of [["mx-vision-radius", "visionRadius", 6], ["mx-cell-capacity", "cellCapacity", 256], ["mx-stamp-energy", "stampEnergy", 32], ["mx-newborn-energy", "newbornEnergy", 2], ["mx-birth-radius", "birthRadius", 1]]) $(id).value = String(spatial[key2] ?? def);
+      for (const [id, key2, def] of [["mx-vision-radius", "visionRadius", 12], ["mx-cell-capacity", "cellCapacity", 256], ["mx-stamp-energy", "stampEnergy", 32], ["mx-newborn-energy", "newbornEnergy", 2], ["mx-birth-radius", "birthRadius", 1]]) $(id).value = String(spatial[key2] ?? def);
       $("mx-cell-types").value = JSON.stringify(spatial.types ?? {}, null, 2);
+      $("mx-map-full").checked = spatial.fullMap ?? false;
       $("mx-bot-interval").value = o.botInterval;
       $("mx-bot-budget").value = o.botBudget;
       $("mx-size").value = o.F;
@@ -14577,6 +14703,8 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         const toolSettings = readTools();
         const spatial = $("mx-experiment").value === "classic" ? { enabled: false } : {
           enabled: true,
+          fullMap: $("mx-map-full").checked,
+          constructionFunding: getMatch().spatial?.constructionFunding ?? "territory",
           visionRadius: $("mx-vision-radius").valueAsNumber,
           cellCapacity: $("mx-cell-capacity").valueAsNumber,
           stampEnergy: $("mx-stamp-energy").valueAsNumber,
@@ -14857,11 +14985,11 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
   }
   function startMixedGame() {
     mount();
-    let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null;
+    let session, controllers, atlas, tools, options, dirty = true, lastUI = -Infinity, elapsed = 0, previous2 = 0, lastOrders = [], event = null, activeSource = null, lastUndo = null, pendingHazard = null;
     const hand = createHand(() => session?.match, { onInspect: (card2) => atlas.open(card2, { replace: true }), onChoose: () => tools?.select("stamp") });
     const fillDeck = (cards2) => {
       if (session?.match.progression) {
-        hand.fill(session.match.progression.cards());
+        hand.fill(activeSource ? session.match.progression.childrenFor(activeSource.contract) : []);
         return;
       }
       if (!session?.match.spatial?.enabled) {
@@ -14871,6 +14999,28 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       const base = session.opening[1], known = cards2.find((c) => c.key === base.key), opening = known ?? { ...base, source: base.rule, custom: true, slotKey: base.key };
       hand.fill([opening, ...cards2.filter((c) => c.key !== base.key)].slice(0, Math.max(54, cards2.length)));
     };
+    function selectFactory(site, quiet = false) {
+      const progression = session?.match.progression, source = progression?.sourceAt(site, 1);
+      if (!source) return false;
+      activeSource = source;
+      world.selectedFactory = site;
+      const available = progression.childrenFor(source.contract);
+      $("mx-factory-context").hidden = false;
+      $("mx-factory-name").textContent = source.name;
+      $("mx-factory-name").title = source.name + " · raio de fabricação " + source.reach;
+      $("mx-deck-title").firstChild.textContent = "Fabricar ";
+      hand.fill(available);
+      world.needsDraw = true;
+      if (!quiet) toast(source.name + " · " + available.length + " receitas");
+      return true;
+    }
+    function selectBase(quiet = true) {
+      const p = session?.match.progression;
+      if (!p) return;
+      const site = [...session.match.cells].find(([, c]) => c.owner === 1 && !c.wave && c.contract === p.plan.base)?.[0];
+      if (site !== void 0) selectFactory(site, quiet);
+    }
+    $("mx-factory-reset").onclick = () => selectBase();
     const scoreboard = createScoreboard(() => session);
     tools = createFieldTools({
       getMatch: () => session?.match,
@@ -14893,17 +15043,29 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
         $("mx-local-energy").textContent = targets ? "Energia perto do carimbo: ◈ " + number2.format(m.localReserve(1, targets)) : cell?.owner === 1 ? "Célula: ◈ " + number2.format(cell.energy) + " · Estável por " + cell.stableAge + " G" : "Energia guardada nas células · ◈ " + number2.format(p.reserve);
       }
       if (m.progression) {
+        if (activeSource && !m.progression.sourceAt(activeSource.site, 1)) {
+          activeSource = null;
+          world.selectedFactory = null;
+          selectBase(true);
+        }
         const progression = m.progression, inventory = progression.inventory(1), objective = progression.objective(1);
         for (let i = 0; i < 4; i++) $("mx-resource-" + i).textContent = number2.format(inventory[i]);
-        $("mx-objective").textContent = "Preserve sua linhagem-base · " + objective.rootCells + " células";
+        $("mx-objective").textContent = "Base " + objective.rootCells + "c";
+        $("mx-objective").title = "Condição de vitória: preserve ao menos uma célula da sua linhagem-base.";
         const contract = progression.contractForCard(hand.selected), node = progression.plan.nodes.find((n) => n.id === contract), ids = targetIds(world.hover);
         if (node) {
           const parent = progression.plan.nodes.find((n) => n.id === (node.parent ?? progression.plan.base));
-          $("mx-permission").textContent = ids ? progression.getQuote(1, contract, ids).reason : "Construído por " + parent.name + " · " + node.cost.map((v, i) => progression.resources[i].symbol + " " + v).join(" · ");
-        } else $("mx-permission").textContent = "Adicione este carimbo ao plano na preparação da próxima partida.";
+          const quote = ids ? progression.getQuote(1, contract, ids, activeSource?.site ?? null) : null;
+          $("mx-permission").textContent = quote ? quote.ok ? "✓" : "×" : "↳" + parent.name;
+          $("mx-permission").title = quote?.reason ?? "Construído por " + parent.name + " · " + node.cost.map((v, i) => progression.resources[i].symbol + " " + v).join(" · ");
+        } else {
+          $("mx-permission").textContent = "";
+          $("mx-permission").title = "Selecione uma estrutura sua para fabricar.";
+        }
         const site = world.hover?.id ?? (world.hover && world.chart?.map.get(world.hover.q + "," + world.hover.r)?.id);
         const deposit = progression.resourceAt(site, 1);
-        $("mx-deposit-info").textContent = deposit ? deposit.resource.name + " no terreno: " + number2.format(deposit.remaining) : "Colete mantendo células estáveis sobre ou ao lado dos depósitos.";
+        $("mx-deposit-info").textContent = deposit ? deposit.resource.symbol + " " + number2.format(deposit.remaining) : "";
+        $("mx-deposit-info").title = deposit ? deposit.resource.name + " · depósito do terreno · " + number2.format(deposit.remaining) : "Depósitos são minerais do terreno. Células estáveis adjacentes os coletam.";
       }
       if ($("mx-conflicts").open && event) {
         const votes2 = event.policy === "support" ? event.weightYes + " / " + event.weightNo : event.yes + " / " + event.no;
@@ -14934,6 +15096,13 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       lastOrders = [];
       elapsed = 0;
       event = null;
+      activeSource = null;
+      lastUndo = null;
+      pendingHazard = null;
+      world.selectedFactory = null;
+      $("mx-undo").hidden = true;
+      $("mx-factory-context").hidden = !session.match.progression;
+      $("mx-deck-title").firstChild.textContent = "Carimbos ";
       $("mx-event").textContent = "Avance para observar.";
       $("mx-locate").hidden = true;
       $("mx-profile-button").textContent = "Economia · " + { stability: "Maduras", birth: "Nascimentos", death: "Mortes", activity: "Atividade" }[options.policy];
@@ -14950,14 +15119,16 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
           const item = document.createElement("div"), name = document.createElement("small"), amount = document.createElement("b");
           item.style.setProperty("--resource", r.color);
           item.title = r.use;
-          name.textContent = r.name;
+          name.textContent = r.symbol;
           amount.id = "mx-resource-" + i;
+          item.title = r.name + " · " + r.use;
           item.append(name, amount);
           stores.append(item);
         }
-        $("mx-frontier-help").textContent = "Construa fontes vivas, colete depósitos e avance pela área iluminada.";
-      } else $("mx-frontier-help").textContent = "Expanda a luz com células próprias. Carimbe dentro dela e abasteça a construção com energia próxima.";
+        $("mx-frontier-help").textContent = "Clique nas suas estruturas para fabricar os carimbos liberados.";
+      } else $("mx-frontier-help").textContent = "Território explorado libera terreno para construir.";
       loadViewport(session, storage3);
+      if (session.match.progression) selectBase(true);
       world.speed = Number($("hl-speed").value);
       syncPlayButton();
       tools.refresh();
@@ -14966,7 +15137,7 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (atlas) atlas.refresh();
       dirty = true;
       hud();
-      toast(session.match.spatial?.enabled ? "Base pronta · expanda pela área iluminada" : "Partida pronta · " + (options.players - 1) + " bots");
+      toast(session.match.spatial?.enabled ? "Base pronta · explore e selecione estruturas" : "Partida pronta · " + (options.players - 1) + " bots");
     }
     const query = new URLSearchParams(location.search), requestedSeed = query.get("seed");
     const initial = { ...defaultGameOptions, botInterval: 12, botBudget: 4, toolSettings: loadToolSettings() };
@@ -14995,31 +15166,75 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       },
       getSelected: () => hand.selected ? { ...hand.selected, offsets: hand.current.shape, resolver: hand.current.resolver, ballot: hand.current.ballot } : null
     });
+    const siteAt = (anchor) => anchor?.id ?? (anchor && world.chart?.map.get(key(anchor.q, anchor.r))?.id);
     const targetIds = (anchor) => anchor && hand.current ? stampTargets(anchor, hand.current.shape) : null;
+    const metadata2 = (c) => {
+      const contract = session.match.progression?.contractForCard(c);
+      return contract ? { contract, ...activeSource ? { sourceSite: activeSource.site } : {} } : {};
+    };
     function preview(anchor) {
       if (tools.mode !== "stamp") return tools.preview(anchor);
       if (!session.alive[1] || game.ended || game.stopped || !hand.selected) return null;
       const ids = targetIds(anchor), { resolver, ballot } = hand.current, c = hand.selected;
-      const contract = session.match.progression?.contractForCard(c);
-      return ids ? { ids, ready: session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native", contract ? { contract } : {}) } : null;
+      return ids ? { ids, ready: session.match.canStamp(1, c.rule, resolver, ids, ballot, c.sense ?? "native", metadata2(c)) } : null;
     }
+    function undoStamp() {
+      if (!lastUndo) return;
+      const snapshot = lastUndo;
+      lastUndo = null;
+      pendingHazard = null;
+      setPlay(false);
+      session.restore(snapshot.match, snapshot.alive, snapshot.eliminatedAt);
+      controllers?.destroy();
+      controllers = createGameBots(session.match, { seed: options.seed, interval: options.botInterval, budget: options.botBudget, onOrder: (o) => {
+        lastOrders.push(o);
+        if (lastOrders.length > 40) lastOrders.shift();
+      } });
+      game.ended = false;
+      game.winner = 0;
+      game.stopped = false;
+      game.humanEliminated = false;
+      elapsed = 0;
+      $("mx-undo").hidden = true;
+      scoreboard.reset();
+      if (activeSource && !session.match.progression?.sourceAt(activeSource.site, 1)) selectBase(true);
+      syncField(session.match);
+      hud();
+      dirty = true;
+      syncPlayButton();
+      toast("Carimbo desfeito.");
+    }
+    $("mx-undo").onclick = undoStamp;
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && lastUndo && !e.target.closest?.('input,textarea,select,[contenteditable="true"]')) {
+        e.preventDefault();
+        undoStamp();
+      }
+    });
     function place(anchor) {
       if (tools.mode !== "stamp") return tools.apply(anchor);
+      const clicked = siteAt(anchor);
+      if (session.match.progression && clicked !== void 0 && selectFactory(clicked, true)) {
+        hud();
+        return true;
+      }
       const proposed = preview(anchor), c = hand.selected, p = session.match.players[1], m = hand.current;
       if (!proposed?.ready) {
-        const contract2 = session.match.progression?.contractForCard(c);
-        const cost = c && m ? session.match.stampQuote(c.rule, m.resolver, c.offsets.length, { contract: contract2 }).total : 0;
-        const reason = c && m ? session.match.stampRejection(1, c.rule, m.resolver, targetIds(anchor), m.ballot, c.sense ?? "native") : null;
+        const meta = metadata2(c), contract = meta.contract;
+        const cost = c && m ? session.match.stampQuote(c.rule, m.resolver, c.offsets.length, { contract }).total : 0;
+        const reason = c && m ? session.match.stampRejection(1, c.rule, m.resolver, targetIds(anchor), m.ballot, c.sense ?? "native", meta) : null;
         if (session.match.progression && !game.stopped && !game.ended && session.alive[1]) {
-          toast(session.match.progression.getQuote(1, contract2, targetIds(anchor)).reason);
+          toast(session.match.progression.getQuote(1, contract, targetIds(anchor), activeSource?.site ?? null).reason);
           return false;
         }
-        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "Todo o carimbo precisa caber na luz atual. Expanda a iluminação primeiro." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
+        toast(game.stopped ? "Partida interrompida." : game.ended ? "Partida encerrada." : !session.alive[1] ? "Sua colônia foi eliminada." : reason === "darkness" ? "O carimbo precisa caber em território já explorado." : reason === "local-energy" ? "As células próximas precisam de mais energia para construir e abastecer este carimbo." : c?.offsets.length > session.match.toolSettings.maxStampCells ? "Carimbo acima do limite de " + session.match.toolSettings.maxStampCells + " células." : p.reserve < cost ? "Faltam ◈ " + number2.format(cost - p.reserve) + " para este carimbo." : !targetIds(anchor) ? "O carimbo não cabe nesta região da malha." : "Posição ocupada ou junto de uma colônia adversária.");
         return false;
       }
-      const contract = session.match.progression?.contractForCard(c);
-      const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native", contract ? { contract } : {});
+      const before = session.match.fork();
+      const ok = session.match.stamp(1, c.rule, m.resolver, proposed.ids, m.ballot, c.sense ?? "native", metadata2(c));
       if (ok) {
+        lastUndo = { match: before, alive: session.alive.slice(), eliminatedAt: session.eliminatedAt.slice(), generation: before.gen, field: before.players[1].conventional };
+        $("mx-undo").hidden = false;
         dirty = true;
         syncField(session.match);
         hud();
@@ -15054,7 +15269,12 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       if (world.painting && tools.mode === "erase" && world.hover) tools.apply(world.hover, { quiet: true });
       scoreboard.recordGeneration();
       if (session.outcome === null) controllers.turn();
-      else {
+      if (lastUndo && !lastUndo.alerted && session.match.gen - lastUndo.generation < 256 && session.match.players[1].conventional > Math.max(500, lastUndo.field * 6)) {
+        lastUndo.alerted = true;
+        setPlay(false);
+        toast("Crescimento explosivo · pausado. Use ↶ para desfazer.");
+      }
+      if (session.outcome !== null) {
         game.ended = true;
         game.winner = session.outcome;
         setPlay(false);
@@ -15153,6 +15373,9 @@ body { margin: 0; background:#0b0f17; color:#e8edf6; font-family:system-ui,-appl
       });
       $("mx-atlas").onclick = () => atlas.open(hand.selected);
       requestAnimationFrame(frame2);
+      if (initial.progression?.enabled) queueMicrotask(() => {
+        $("mx-config").click();
+      });
     }
     if (initial.F >= 64) requestSphere(initial.F, (graph, buffers) => boot(graph, buffers));
     else boot();
