@@ -83,6 +83,11 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{}}={}){
     }
     const keep=selected&&cards.find(c=>slotKey(c)===slotKey(selected));
     if(keep||cards.length)choose(keep??cards[0]);
+    else{
+      selected=null;world.cachedStampOffsets=[];world.stampCount=0;
+      $('mx-selected').textContent='';$('mx-price').textContent='';
+      world.needsDraw=true;
+    }
   }
   for(const [id,type] of [['hl-stampccw','ccw'],['hl-stampcw','cw'],['hl-stampflip','flip']]){
     $('mx-transform').append($(id));$(id).onclick=()=>{
