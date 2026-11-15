@@ -3,7 +3,7 @@ import {footprint} from '../catalog.mjs';
 import {createTypedWorld} from '../engine.mjs';
 import {spreadSites} from '../general/scene.mjs';
 import {normalizeOpening,measureOpening,locateOpening} from './opening.mjs';
-import {attachProgression,defaultProgressionPlan,normalizeProgressionPlan,progressionSpatialTypes} from './progression.mjs';
+import {attachProgression,automaticOpponentPlans,defaultProgressionPlan,normalizeProgressionPlan,progressionSpatialTypes} from './progression.mjs';
 
 // Event income can only be spent in a later generation. Each preset has the
 // same opening capital, birth/stamp prices and destruction tariff.
@@ -27,19 +27,26 @@ export function createGameMatch(options={}) {
   if(!Array.isArray(unseededOwners)||unseededOwners.some(owner=>!Number.isInteger(owner)||owner<1||owner>players))
     throw RangeError('A abertura vazia precisa indicar jogadores da partida.');
   const plan=progression?.enabled?normalizeProgressionPlan(progression.plan??defaultProgressionPlan(initialCard)):null;
-  const spatial=plan?{...spatialInput,enabled:true,types:{...spatialInput?.types,...progressionSpatialTypes(plan)}}:spatialInput;
+  const opponents=plan?(progression?.opponentPlans??automaticOpponentPlans(players,seed)):{};
+  const planFor=owner=>opponents[owner]??plan;
+  const types=plan?Object.assign({},progressionSpatialTypes(plan),...Object.values(opponents).map(progressionSpatialTypes)):null;
+  const spatial=plan?{...spatialInput,enabled:true,types:{...spatialInput?.types,...types}}:spatialInput;
   let match=createTypedWorld(graph,{seed,wallets:Array(players).fill(bank),
     economy:{...gameEconomies[policy],...economy},arbitration,eligibility,existence,passage,friendlyFire,spatial});
   const sites=spreadSites(graph,players), starts=[null], opening=[null], alive=[false];
-  const local=match.spatial.enabled,root=plan?.nodes.find(n=>n.id===plan.base);
-  const base=local?normalizeOpening(root?{...root,key:root.cardKey??'custom/'+root.id,contract:root.id}:initialCard):null;
-  if(plan)attachProgression(match,{...progression,plan,seed});
+  const local=match.spatial.enabled;
+  const baseFor=owner=>{
+    const blueprint=planFor(owner),root=blueprint?.nodes.find(n=>n.id===blueprint.base);
+    return local?normalizeOpening(root?{...root,key:root.cardKey??'custom/'+root.id,contract:root.id}:initialCard):null;
+  };
+  if(plan)attachProgression(match,{...progression,plan,opponentPlans:opponents,seed});
   let baseTrial=null;
   const farm=policy==='stability'?'hex-b2s245/farm-4-12':'bays/osc2';
   const [rule]=farm.split('/');
   for(let owner=1;owner<=players;owner++){
     const preferred=sites[((seed>>>0)+owner-1)%players],rotation=((seed>>>0)+owner)%6;
     if(!local&&unseededOwners.includes(owner)){starts.push(preferred);alive.push(true);opening.push(null);continue;}
+    const base=baseFor(owner);
     const located=local?locateOpening(match,owner,base,preferred,rotation):{site:preferred,ids:footprint(graph,farm,preferred,rotation)};
     if(!located)throw RangeError('A base precisa caber no setor inicial da esfera e no capital de abertura. Aumente a esfera ou ajuste o desenho.');
     const {site,ids}=located;starts.push(site);alive.push(true);

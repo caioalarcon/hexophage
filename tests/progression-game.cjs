@@ -58,7 +58,7 @@ const {chromium}=require('playwright');
     // Match settlement enforces the chosen base-lineage objective.
     const outcome=await page.evaluate(()=>{
       const s=__hexophageMixed.session,m=s.match,p=m.progression;
-      for(const [id,c] of [...m.cells])if(c.owner===2&&c.contract===p.plan.base)m.erase(2,id,0);
+      for(const [id,c] of [...m.cells])if(c.owner===2&&c.contract===p.planFor(2).base)m.erase(2,id,0);
       s.step();return {alive:s.alive[2],out:m.players[2].out,defeated:p.objective(2).defeated};
     });
     assert.deepEqual(outcome,{alive:false,out:true,defeated:true});

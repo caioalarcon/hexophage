@@ -115,6 +115,28 @@ export function defaultProgressionPlan(initialCard,availableCards=[]){
   ]};
 }
 
+/** Deterministic editable rival plans, separate from the human's design. */
+export function automaticOpponentPlans(players,seed=1){
+  const plans={};
+  for(let owner=2;owner<=players;owner++){
+    const draft=defaultProgressionPlan(),prefix='bot'+owner+'_';
+    const rotation=((seed>>>0)+owner)%4,weights=[40,20,20,20];
+    for(const node of draft.nodes){
+      node.id=prefix+node.id;
+      if(node.parent)node.parent=prefix+node.parent;
+      node.weights=weights.map((_,i)=>weights[(i+rotation)%4]);
+      if(node.id===prefix+'base')node.vision=[8,10,12,14][((seed>>>0)+owner)%4];
+      if(node.id===prefix+'scout'&&owner%2===0){
+        const ship=catalogue.get('andreen/bagley-sym-glider');
+        if(ship){node.cardKey='andreen/bagley-sym-glider';node.rule=ship.source;node.offsets=ship.offsets.map(o=>o.slice());}
+      }
+    }
+    draft.base=prefix+'base';
+    plans[owner]=normalizeProgressionPlan(draft);
+  }
+  return Object.freeze(plans);
+}
+
 function makeTerrain(graph,seed,stock){
   const kind=new Uint8Array(graph.n),amount=new Float64Array(graph.n);
   // Compact geodesic patches. Deposit generation is independent of live cells.
@@ -128,14 +150,20 @@ function makeTerrain(graph,seed,stock){
 
 /** Install before seeding. The wrapper enforces contracts for humans, bots and
  * forecasts. All mutation goes through the same paid engine stamp. */
-export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,stock=32,
+export function attachProgression(match,{plan=defaultProgressionPlan(),opponentPlans={},seed=1,stock=32,
   initialResources=[96,72,80,64],harvestAfter=12,harvestRate=.2,depositRate=.4,snapshot=null}={}){
   if(match.progression)throw Error('Progressão já instalada.');
   plan=normalizeProgressionPlan(plan);
+  opponentPlans=Object.fromEntries(Object.entries(opponentPlans).map(([owner,d])=>[owner,normalizeProgressionPlan(d)]));
   if(!Number.isFinite(stock)||stock<=0||!Number.isFinite(harvestRate)||harvestRate<=0||!Number.isFinite(depositRate)||depositRate<=0)
     throw RangeError('Depósitos e taxas devem ser positivos e finitos.');
   integer(harvestAfter,1,4096,'Maturação inválida.');initialResources=vector(initialResources,'Inventário inicial inválido.');
-  const graph=match.graph,byId=new Map(plan.nodes.map(n=>[n.id,n]));
+  const graph=match.graph;
+  const planFor=owner=>opponentPlans[owner]??plan;
+  const allNodes=[...plan.nodes,...Object.values(opponentPlans).flatMap(p=>p.nodes)];
+  const byId=new Map(allNodes.map(n=>[n.id,n]));
+  if(allNodes.length!==byId.size)throw RangeError('Contratos de jogadores diferentes têm identificadores repetidos.');
+
   const terrain=snapshot?{kind:Uint8Array.from(snapshot.kind),amount:Float64Array.from(snapshot.amount)}:makeTerrain(graph,seed,stock);
   const inventory=snapshot?copyRows(snapshot.inventory):match.players.map(p=>p&&initialResources.slice());
   const harvested=snapshot?copyRows(snapshot.harvested):match.players.map(p=>p&&[0,0,0,0]);
@@ -151,14 +179,14 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
   function visible(owner,site){return typeof match.canSee!=='function'||match.canSee(owner,site);}
   function card(node){return {key:node.cardKey??'custom/'+node.id,slotKey:'contract/'+node.id,name:node.name,rule:node.rule,source:node.rule,
     offsets:node.offsets.map(p=>p.slice()),resolver:node.resolver,ballot:node.ballot,sense:node.sense,contract:node.id,custom:!node.cardKey};}
-  function contractForCard(c){
-    if(c?.contract&&byId.has(c.contract))return c.contract;
+  function contractForCard(c,owner=1){
+    if(c?.contract&&planFor(owner).nodes.some(n=>n.id===c.contract))return c.contract;
     const geometry=c?.offsets&&c.offsets.map(p=>p.join(',')).join(';');
-    return plan.nodes.find(n=>n.rule===(c?.rule??c?.source)&&n.resolver===(c?.resolver??'contact')&&
+    return planFor(owner).nodes.find(n=>n.rule===(c?.rule??c?.source)&&n.resolver===(c?.resolver??'contact')&&
       n.offsets.map(p=>p.join(',')).join(';')===geometry)?.id??null;
   }
   function source(node,owner,ids,sourceSite=null){
-    const parent=byId.get(node.parent??plan.base),sources=living(owner,parent.id);
+    const parent=byId.get(node.parent??planFor(owner).base),sources=living(owner,parent.id);
     if(sources.length<parent.minimumBuilders)return {ok:false,code:'parent',reason:'A linhagem '+parent.name+' precisa de '+parent.minimumBuilders+' células vivas.',parent:parent.id};
     const sourceIds=new Set(sources.map(([site])=>site));
     if(sourceSite!==null){
@@ -185,7 +213,7 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
   function getQuote(owner,id,ids,sourceSite=null){
     const node=byId.get(id);
     if(!ownerValid(owner)||observedOwner!==null&&owner!==observedOwner)return {ok:false,code:'owner',reason:'Jogador inválido.'};
-    if(!node)return {ok:false,code:'contract',reason:'Inclua este carimbo no plano antes da partida.'};
+    if(!node||!planFor(owner).nodes.some(n=>n.id===id))return {ok:false,code:'contract',reason:'Este carimbo pertence a outro plano. Escolha o seu.'};
     const energy=match.stampQuote?.(node.rule,node.resolver,node.size,{contract:id});
     const quote={contract:id,cost:node.cost.slice(),available:inventory[owner].slice(),energyCost:energy?.total??node.size*match.stampPrice(node.resolver)};
     if(!Array.isArray(ids)||ids.length!==node.size||new Set(ids).size!==ids.length||ids.some(site=>!Number.isSafeInteger(site)||site<0||site>=graph.n))
@@ -217,7 +245,7 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
   }
   function bootstrap(owner,id,ids){
     const node=byId.get(id);
-    if(!raw.bootstrap||match.gen!==0||bootstrapped.has(owner)||id!==plan.base||!node||!ownerValid(owner)||ids?.length!==node.size)return false;
+    if(!raw.bootstrap||match.gen!==0||bootstrapped.has(owner)||id!==planFor(owner).base||!node||!ownerValid(owner)||ids?.length!==node.size)return false;
     const result=raw.bootstrap(owner,node.rule,node.resolver,ids,node.ballot,node.sense,{contract:id});
     if(!result)return false;
     bootstrapped.add(owner);seedDeposits(ids,owner);return true;
@@ -269,27 +297,27 @@ export function attachProgression(match,{plan=defaultProgressionPlan(),seed=1,st
       bootstrapped:owner===null?[...bootstrapped]:[...bootstrapped].filter(id=>id===owner),
       quiet:[...quiet].filter(([site])=>owner===null||visible(owner,site)).map(([site,row])=>[site,[...row]]),harvestedGeneration,observedOwner:owner};
   }
-  const forkOptions={plan,seed,stock,initialResources,harvestAfter,harvestRate,depositRate};
+  const forkOptions={plan,opponentPlans,seed,stock,initialResources,harvestAfter,harvestRate,depositRate};
   if(raw.fork)match.fork=(...args)=>attachProgression(raw.fork(...args),{...forkOptions,snapshot:takeSnapshot(observedOwner)}).match;
   if(raw.forkObserved)match.forkObserved=(owner,...args)=>attachProgression(raw.forkObserved(owner,...args),{...forkOptions,snapshot:takeSnapshot(owner)}).match;
   match.canStamp=canStamp;match.stamp=stamp;
   if(raw.bootstrap)match.bootstrapStamp=(owner,rule,resolver,ids,ballot='support',sense='native',metadata={})=>
     matches(byId.get(metadata.contract),rule,resolver,ballot,sense)&&bootstrap(owner,metadata.contract,ids);
   match.step=(...args)=>{const result=raw.step(...args);collect();return result;};
-  const api={match,plan,resources:resourceKinds,contractForCard,getQuote,quote:getQuote,canStamp,stamp,bootstrap,
+  const api={match,plan,planFor,resources:resourceKinds,contractForCard,getQuote,quote:getQuote,canStamp,stamp,bootstrap,
     inventory:owner=>ownerValid(owner)&&(observedOwner===null||owner===observedOwner)?inventory[owner].slice():[0,0,0,0],
     stats:owner=>ownerValid(owner)&&(observedOwner===null||owner===observedOwner)?{initial:initial[owner].slice(),harvested:harvested[owner].slice(),spent:spent[owner].slice(),inventory:inventory[owner].slice()}:null,
     sourceAt:(site,owner)=>{const c=match.cells.get(site);if(!ownerValid(owner)||c?.owner!==owner||c.wave||!c.contract)return null;
       const node=byId.get(c.contract);return node?{site,contract:node.id,name:node.name,reach:node.reach}:null;},
-    childrenFor:contract=>plan.nodes.filter(n=>n.parent===contract||n.id===contract&&contract===plan.base).map(card),
-    legalCards:owner=>!ownerValid(owner)?[]:plan.nodes.filter(n=>{
-      const parent=byId.get(n.parent??plan.base);return living(owner,parent.id).length>=parent.minimumBuilders&&n.cost.every((v,k)=>inventory[owner][k]+EPS>=v);
+    childrenFor:(contract,owner=1)=>planFor(owner).nodes.filter(n=>n.parent===contract||n.id===contract&&contract===planFor(owner).base).map(card),
+    legalCards:owner=>!ownerValid(owner)?[]:planFor(owner).nodes.filter(n=>{
+      const parent=byId.get(n.parent??planFor(owner).base);return living(owner,parent.id).length>=parent.minimumBuilders&&n.cost.every((v,k)=>inventory[owner][k]+EPS>=v);
     }).map(card),
-    cards:()=>plan.nodes.map(card),
+    cards:(owner=1)=>planFor(owner).nodes.map(card),
     resourceAt:(site,owner=null)=>Number.isSafeInteger(site)&&site>=0&&site<graph.n&&(owner===null||visible(owner,site))&&terrain.kind[site]?
       {site,kind:terrain.kind[site]-1,resource:resourceKinds[terrain.kind[site]-1],remaining:terrain.amount[site]}:null,
     visibleDeposits:owner=>{const found=[];for(let site=0;site<graph.n;site++)if(terrain.kind[site]&&visible(owner,site))found.push({site,kind:terrain.kind[site]-1,remaining:terrain.amount[site]});return found;},
-    objective:owner=>{const rootCells=living(owner,plan.base).length;return {started:bootstrapped.has(owner),base:plan.base,rootCells,defeated:bootstrapped.has(owner)&&rootCells===0};},
+    objective:owner=>{const root=planFor(owner).base,rootCells=living(owner,root).length;return {started:bootstrapped.has(owner),base:root,rootCells,defeated:bootstrapped.has(owner)&&rootCells===0};},
     terrainTotals:()=>{const totals=[0,0,0,0];for(let site=0;site<graph.n;site++)if(terrain.kind[site])totals[terrain.kind[site]-1]+=terrain.amount[site];return totals;},
     snapshot:takeSnapshot,
   };

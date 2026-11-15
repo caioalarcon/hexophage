@@ -15,7 +15,7 @@ function capabilities(m,owner){
   if(!m.progression)return 0;
   const counts=new Map();
   for(const c of m.cells.values())if(c.owner===owner&&!c.wave&&c.contract)counts.set(c.contract,(counts.get(c.contract)??0)+1);
-  return m.progression.plan.nodes.reduce((score,node)=>score+((counts.get(node.id)??0)>=node.minimumBuilders?node.childPoints:0),0);
+  return m.progression.planFor(owner).nodes.reduce((score,node)=>score+((counts.get(node.id)??0)>=node.minimumBuilders?node.childPoints:0),0);
 }
 function random(seed){
   let x=seed>>>0;
@@ -76,7 +76,7 @@ export function createSpatialGameBots(match,{seed=1,owners=match.players.slice(2
     if(view.progression&&bot.decision%2===0){
       const present=new Set([...view.cells.values()].filter(c=>c.owner===bot.owner).map(c=>c.contract));
       const newCapability=affordable.filter(q=>!present.has(q.card.contract)&&!bot.researched.has(q.card.contract)).sort((a,b)=>{
-        const node=c=>view.progression.plan.nodes.find(n=>n.id===c.contract);
+        const node=c=>view.progression.planFor(bot.owner).nodes.find(n=>n.id===c.contract);
         return (node(b.card)?.childPoints??0)-(node(a.card)?.childPoints??0)||a.card.offsets.length-b.card.offsets.length;
       });
       if(newCapability.length)selected.push(newCapability[0].card);
@@ -183,7 +183,7 @@ export function createSpatialGameBots(match,{seed=1,owners=match.players.slice(2
     // loss consumes it. This prevents a profit-only planner from never trying
     // scouts, circuits, or an unfamiliar custom machine.
     const researchBudget=Math.max(0,.15*match.players[owner].income-bot.researchSpent);
-    const recipe=card?.contract&&match.progression?.plan.nodes.find(n=>n.id===card.contract);
+    const recipe=card?.contract&&match.progression?.planFor(owner).nodes.find(n=>n.id===card.contract);
     const allocated=recipe?match.stampQuote(card.rule,card.resolver??'contact',card.offsets.length,metadata(card)).total+2.5*sum(recipe.cost):0;
     const researchCharge=Math.max(0,-pay,allocated);
     const research=!!j.novel&&anchorLoss===0&&survived&&pay<=EPS&&researchCharge<=researchBudget&&
