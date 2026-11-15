@@ -1,7 +1,7 @@
 name: Verify Hexophage
 on:
   push:
-    branches: [dev, preview/grower-siege, research/mixed-stamp-collisions]
+    branches: [dev, preview/grower-siege, research/mixed-stamp-collisions, 'experiment/**']
   pull_request:
     branches: [main, preview/economic-tactics, "experiment/**"]
 permissions:
@@ -21,6 +21,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: git diff --exit-code --stat -- experiments/typed-world/index.html
+        if: github.event_name == 'pull_request'
       - name: Verify the published game matches its sources
         if: github.event_name == 'pull_request'
         run: git diff --exit-code --stat -- index.html
@@ -38,9 +39,9 @@ jobs:
           node experiments/economy/lab/browser.test.js
           node experiments/economy/incoming-glider-replay.mjs
       - name: Update the tested preview HTML after successful checks
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/preview/grower-siege' || github.ref == 'refs/heads/research/mixed-stamp-collisions')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/preview/grower-siege' || github.ref == 'refs/heads/research/mixed-stamp-collisions' || startsWith(github.ref, 'refs/heads/experiment/'))
         run: |
-          git add index.html
+          git add index.html experiments/typed-world/index.html
           if ! git diff --cached --quiet; then
             git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Build dev preview from tested features'
             git push origin HEAD:${GITHUB_REF_NAME}

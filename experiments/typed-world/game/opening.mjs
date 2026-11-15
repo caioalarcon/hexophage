@@ -4,8 +4,8 @@ import {patchForStamp} from '../../../src/patterns/spherical-patch.js';
 import {graphBall} from '../spatial.mjs';
 
 export function normalizeOpening(value) {
-  const fallback=cards.get('hex-b2s245/farm-4-12');
-  const c=value??{...fallback,key:'hex-b2s245/farm-4-12',rule:fallback.source};
+  const fallback=cards.get('hex-b2s245/scan-cf5664');
+  const c=value??{...fallback,key:'hex-b2s245/scan-cf5664',rule:fallback.source};
   const raw=c.offsets;
   if(!Array.isArray(raw)||!raw.length||raw.length>1024||raw.some(p=>!Array.isArray(p)||p.length!==2||p.some(v=>!Number.isSafeInteger(v)||Math.abs(v)>128))||
       new Set(raw.map(p=>p.join(','))).size!==raw.length)throw RangeError('A base precisa de 1–1.024 células distintas, com coordenadas inteiras entre −128 e 128.');

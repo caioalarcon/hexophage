@@ -38,6 +38,6 @@ test('a larger user composition finds a valid initial sector for all six players
   const card=normalizeOpening(),shape=card.offsets;card.key='custom/double-producer';card.name='Minha composição';
   card.offsets=[...shape.map(([q,r])=>[q-4,r]),...shape.map(([q,r])=>[q+4,r])];
   const s=createGameMatch({F:32,spatial:{enabled:true},initialCard:card});
-  assert(s.opening.slice(1).every(c=>c.ids.length===8));assert(s.baseTrial.income>0);
-  assert.equal(new Set(s.opening.slice(1).flatMap(c=>c.ids)).size,48);
+  assert(s.opening.slice(1).every(c=>c.ids.length===2*shape.length));assert(s.baseTrial.income>0);
+  assert.equal(new Set(s.opening.slice(1).flatMap(c=>c.ids)).size,6*2*shape.length);
 });
