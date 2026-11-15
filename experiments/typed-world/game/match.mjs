@@ -25,7 +25,7 @@ export function createGameMatch(options={}) {
   if(!Number.isInteger(players)||players<2||players>graph.n)throw RangeError('A partida precisa de pelo menos dois jogadores e espaço na esfera.');
   if(!Array.isArray(unseededOwners)||unseededOwners.some(owner=>!Number.isInteger(owner)||owner<1||owner>players))
     throw RangeError('A abertura vazia precisa indicar jogadores da partida.');
-  const match=createTypedWorld(graph,{seed,wallets:Array(players).fill(bank),
+  let match=createTypedWorld(graph,{seed,wallets:Array(players).fill(bank),
     economy:{...gameEconomies[policy],...economy},arbitration,eligibility,existence,passage,friendlyFire,spatial});
   const sites=spreadSites(graph,players), starts=[null], opening=[null], alive=[false];
   const local=match.spatial.enabled,base=local?normalizeOpening(initialCard):null;
@@ -68,5 +68,12 @@ export function createGameMatch(options={}) {
     if(survivors<=1)outcome=survivors?survivor:0;
     return true;
   }
-  return {match,graph,starts,opening,alive,eliminatedAt,baseTrial,step,get outcome(){return outcome;}};
+  function restore(previous,previousAlive=alive,previousEliminated=eliminatedAt){
+    if(!previous||previous.graph!==graph)throw RangeError('O estado anterior precisa pertencer à mesma esfera.');
+    match=previous;
+    alive.splice(0,alive.length,...previousAlive);
+    eliminatedAt.splice(0,eliminatedAt.length,...previousEliminated);
+    outcome=null;
+  }
+  return {get match(){return match;},graph,starts,opening,alive,eliminatedAt,baseTrial,step,restore,get outcome(){return outcome;}};
 }

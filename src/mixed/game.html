@@ -1,11 +1,11 @@
 <template id="mx-panel-template">
  <section class="mx-console">
   <div class="mx-mode"><label for="hl-rulechoice">Autômato da partida</label><span id="mx-mode-slot"></span></div>
-  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Configurar partida" title="Configurar partida">⚙</button></div>
+  <div class="mx-actions" id="mx-actions"><button id="mx-config" type="button" aria-label="Preparar partida" title="Preparar partida">⚙</button><button id="mx-undo" type="button" aria-label="Desfazer último carimbo" title="Desfazer último carimbo (Ctrl+Z)" hidden>↶</button></div>
   <div class="mx-metrics"><div><small>RESERVA</small><strong id="mx-cash"></strong></div><div><small>CAMPO</small><strong id="mx-field"></strong></div><div><small title="Média recente da renda menos nascimentos e cortes">FLUXO / G</small><strong id="mx-flow"></strong></div></div>
   <div class="mx-speed" id="mx-speed-slot"></div>
   <div class="mx-rail-links"><button id="mx-profile-button" type="button" title="Ajustes econômicos da partida"></button><button id="mx-globe" type="button">Globo</button></div>
-  <section id="mx-frontier" hidden aria-label="Economia celular e exploração"><strong>Fronteira celular</strong><p id="mx-frontier-help">Expanda a luz com células próprias. Carimbe dentro dela e abasteça a construção com energia próxima.</p><output id="mx-vision"></output><output id="mx-local-energy"></output><button id="mx-home" type="button">Voltar à base</button></section>
+  <section id="mx-frontier" hidden aria-label="Economia celular e exploração"><strong>Fronteira celular</strong><p id="mx-frontier-help" hidden>Explore o mundo para liberar terrenos. Fontes vivas transportam energia e dão alcance às estruturas.</p><output id="mx-vision"></output><output id="mx-local-energy"></output><button id="mx-home" type="button">Voltar à base</button></section>
   <details id="mx-league" open><summary>Classificação</summary><ol id="mx-score"></ol></details>
   <details id="mx-conflicts"><summary>Disputas em campo</summary><div id="mx-event">Avance para observar.</div><button id="mx-locate" type="button" hidden>Ver no mapa</button></details>
  </section>
