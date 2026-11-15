@@ -59,7 +59,7 @@ test('splitting an electorate into fabrication contracts does not gain arbitrati
 
 test('spatial fuel and maturity stay equivalent under a pure contract relabeling with equal traits',()=>{
   const ids=footprint(graph,'callahan/glider',center);
-  const options={wallets:[1024],economy:{...free,birthCost:1,stampCost:8},spatial:{enabled:true,stableEnergy:0},existence:'majority'};
+  const options={wallets:[1024],economy:{...free,birthCost:1,stampCost:8},spatial:{enabled:true,safeStampGap:0,stableEnergy:0},existence:'majority'};
   const plain=createTypedWorld(graph,options),split=createTypedWorld(graph,options);
   assert(plain.bootstrapStamp(1,'callahan','phase',ids));
   assert(split.bootstrapStamp(1,'callahan','phase',ids,'support','native',{contract:'a'}));
