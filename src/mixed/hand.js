@@ -56,7 +56,7 @@ export function createHand(getMatch,{onInspect=()=>{},onChoose=()=>{},getSourceS
       progress.style.setProperty('--charge',String(cost?available/cost:1));
       progress.setAttribute('aria-valuemax',String(cost));
       progress.setAttribute('aria-valuenow',String(available));
-      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':quote?.reason??(!permitted?'Selecione uma fonte da receita e confira os materiais':affordable?'Escolha um local disponível':'Faltam ◈ '+fmt.format(cost-available)));
+      progress.setAttribute('aria-valuetext',!withinLimit?'Acima do limite de células por carimbo':quote?.reason??(!permitted?'Selecione uma fonte da receita e confira os materiais':affordable?(progression?'Escolha um local disponível':'Pronto para usar'):'Faltam ◈ '+fmt.format(cost-available)));
       if(btn.dataset.price!==String(cost)||btn.dataset.withinLimit!==String(withinLimit)){
         btn.dataset.price=String(cost);
         btn.dataset.withinLimit=String(withinLimit);
